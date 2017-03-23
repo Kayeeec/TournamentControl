@@ -25,6 +25,7 @@
                     <th><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.tournamentType">Tournament Type</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.user">User</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.participants">Participants</span></th>
                     <th></th>
@@ -39,6 +40,7 @@
                     <td>{{tournament.pointsForWinning}}</td>
                     <td>{{tournament.pointsForLosing}}</td>
                     <td>{{tournament.pointsForTie}}</td>
+                    <td data-translate="{{'tournamentControlApp.TournamentType.' + tournament.tournamentType}}">{{tournament.tournamentType}}</td>
                     <td>
                         {{tournament.user.login}}
                     </td>

@@ -3,19 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.tournament.control.domain;
+package cz.tournament.control.domain.tournaments;
 
+import cz.tournament.control.domain.Game;
+import cz.tournament.control.domain.Participant;
+import cz.tournament.control.domain.Tournament;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ *
+ * @author Karolina Bozkova
+ */
 public class AllVersusAll extends Tournament {
 
     public AllVersusAll() {
-    }
-    
-    public String getType(){
-        return "ALL VERSUS ALL";
     }
     
     private int getNumberOfRounds() {

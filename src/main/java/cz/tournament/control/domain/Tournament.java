@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 
+import cz.tournament.control.domain.enumeration.TournamentType;
+
 /**
  * A Tournament.
  */
@@ -45,6 +47,11 @@ public class Tournament implements Serializable {
     @Column(name = "points_for_tie")
     private Integer pointsForTie;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tournament_type", nullable = false)
+    private TournamentType tournamentType = TournamentType.ALL_VERSUS_ALL;
+
     @OneToMany(mappedBy = "tournament")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -59,11 +66,6 @@ public class Tournament implements Serializable {
                joinColumns = @JoinColumn(name="tournaments_id", referencedColumnName="id"),
                inverseJoinColumns = @JoinColumn(name="participants_id", referencedColumnName="id"))
     private Set<Participant> participants = new HashSet<>();
-
-    public Tournament() {
-    }
-    
-    
 
     public Long getId() {
         return id;
@@ -149,6 +151,19 @@ public class Tournament implements Serializable {
 
     public void setPointsForTie(Integer pointsForTie) {
         this.pointsForTie = pointsForTie;
+    }
+
+    public TournamentType getTournamentType() {
+        return tournamentType;
+    }
+
+    public Tournament tournamentType(TournamentType tournamentType) {
+        this.tournamentType = tournamentType;
+        return this;
+    }
+
+    public void setTournamentType(TournamentType tournamentType) {
+        this.tournamentType = tournamentType;
     }
 
     public Set<Game> getMatches() {
@@ -242,6 +257,7 @@ public class Tournament implements Serializable {
             ", pointsForWinning='" + pointsForWinning + "'" +
             ", pointsForLosing='" + pointsForLosing + "'" +
             ", pointsForTie='" + pointsForTie + "'" +
+            ", tournamentType='" + tournamentType + "'" +
             '}';
     }
 }
