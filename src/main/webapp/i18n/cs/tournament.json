@@ -1,0 +1,29 @@
+{
+    "tournamentControlApp": {
+        "tournament" : {
+            "home": {
+                "title": "Tournaments",
+                "createLabel": "Vytvořit Tournament",
+                "createOrEditLabel": "Vytvořit nebo upravit Tournament"
+            },
+            "created": "Byl vytvořen potomek entity Tournament s identifikátorem {{ param }}",
+            "updated": "Potomek entity Tournament s identifikátorem {{ param }} byl upravený.",
+            "deleted": "Potomek entity Tournament s identifikátorem {{ param }} bol smazaný.",
+            "delete": {
+                "question": "Jste si jisti, že chcete smazat Tournament {{ id }}?"
+            },
+            "detail": {
+                "title": "Tournament"
+            },
+            "name": "Name",
+            "note": "Note",
+            "numberOfMutualMatches": "Number Of Mutual Matches",
+            "pointsForWinning": "Points For Winning",
+            "pointsForLosing": "Points For Losing",
+            "pointsForTie": "Points For Tie",
+            "matches": "Matches",
+            "user": "User",
+            "participants": "Participants"
+        }
+    }
+}

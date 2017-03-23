@@ -1,0 +1,63 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "matches",
+            "otherEntityName": "game",
+            "otherEntityRelationshipName": "tournament"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "otherEntityField": "login"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "",
+            "relationshipName": "participants",
+            "otherEntityName": "participant",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "note",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "numberOfMutualMatches",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "min"
+            ],
+            "fieldValidateRulesMin": 1
+        },
+        {
+            "fieldName": "pointsForWinning",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "pointsForLosing",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "pointsForTie",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20170320075825",
+    "entityTableName": "tournament",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no"
+}

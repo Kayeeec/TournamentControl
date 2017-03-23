@@ -1,0 +1,55 @@
+#title: entities_pokus
+
+entity Team{
+name String required,
+note String
+}
+entity Player {
+name String required,
+note String
+}
+
+entity Participant 
+
+entity Tournament {
+name String required,
+note String,
+numberOfMutualMatches Integer min(1),
+pointsForWinning Integer,
+pointsForLosing Integer,
+pointsForTie Integer
+}
+
+entity Game {
+scoreA Integer min(0),
+scoreB Integer min(0),
+finished Boolean,
+round Integer min(1),
+period Integer min(1),
+note String
+}
+
+relationship ManyToOne {
+Team{user(login)} to User,
+Player{user(login)} to User,
+Tournament{user(login)} to User
+}
+
+relationship OneToMany {
+Tournament{matches} to Game{tournament}
+}
+
+relationship ManyToMany {
+Tournament{participants} to Participant,
+Team{members} to Player{teams}
+}
+
+relationship OneToOne {
+Game{rivalA} to Participant,
+Game{rivalB} to Participant,
+Participant{player} to Player,
+Participant{team} to Team
+}
+
+
+

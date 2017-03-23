@@ -1,0 +1,23 @@
+{
+    "tournamentControlApp": {
+        "participant" : {
+            "home": {
+                "title": "Participants",
+                "createLabel": "Vytvořit Participant",
+                "createOrEditLabel": "Vytvořit nebo upravit Participant"
+            },
+            "created": "Byl vytvořen potomek entity Participant s identifikátorem {{ param }}",
+            "updated": "Potomek entity Participant s identifikátorem {{ param }} byl upravený.",
+            "deleted": "Potomek entity Participant s identifikátorem {{ param }} bol smazaný.",
+            "delete": {
+                "question": "Jste si jisti, že chcete smazat Participant {{ id }}?"
+            },
+            "detail": {
+                "title": "Participant"
+            },
+            "player": "Player",
+            "team": "Team",
+            "user": "User"
+        }
+    }
+}

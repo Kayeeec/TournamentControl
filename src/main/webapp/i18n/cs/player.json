@@ -1,0 +1,24 @@
+{
+    "tournamentControlApp": {
+        "player" : {
+            "home": {
+                "title": "Players",
+                "createLabel": "Vytvořit Player",
+                "createOrEditLabel": "Vytvořit nebo upravit Player"
+            },
+            "created": "Byl vytvořen potomek entity Player s identifikátorem {{ param }}",
+            "updated": "Potomek entity Player s identifikátorem {{ param }} byl upravený.",
+            "deleted": "Potomek entity Player s identifikátorem {{ param }} bol smazaný.",
+            "delete": {
+                "question": "Jste si jisti, že chcete smazat Player {{ id }}?"
+            },
+            "detail": {
+                "title": "Player"
+            },
+            "name": "Name",
+            "note": "Note",
+            "user": "User",
+            "teams": "Teams"
+        }
+    }
+}
