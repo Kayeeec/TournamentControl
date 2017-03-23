@@ -1,0 +1,55 @@
+
+<div>
+    <h2><span data-translate="tournamentControlApp.game.detail.title">Game</span> {{vm.game.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="tournamentControlApp.game.scoreA">Score A</span></dt>
+        <dd>
+            <span>{{vm.game.scoreA}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.game.scoreB">Score B</span></dt>
+        <dd>
+            <span>{{vm.game.scoreB}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.game.finished">Finished</span></dt>
+        <dd>
+            <span>{{vm.game.finished}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.game.round">Round</span></dt>
+        <dd>
+            <span>{{vm.game.round}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.game.period">Period</span></dt>
+        <dd>
+            <span>{{vm.game.period}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.game.note">Note</span></dt>
+        <dd>
+            <span>{{vm.game.note}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.game.rivalA">Rival A</span></dt>
+        <dd>
+            <a ui-sref="participant-detail({id:vm.game.rivalA.id})">{{vm.game.rivalA.id}}</a>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.game.rivalB">Rival B</span></dt>
+        <dd>
+            <a ui-sref="participant-detail({id:vm.game.rivalB.id})">{{vm.game.rivalB.id}}</a>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.game.tournament">Tournament</span></dt>
+        <dd>
+            <a ui-sref="tournament-detail({id:vm.game.tournament.id})">{{vm.game.tournament.id}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="game-detail.edit({id:vm.game.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

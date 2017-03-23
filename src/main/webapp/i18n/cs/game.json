@@ -1,0 +1,29 @@
+{
+    "tournamentControlApp": {
+        "game" : {
+            "home": {
+                "title": "Games",
+                "createLabel": "Vytvořit Game",
+                "createOrEditLabel": "Vytvořit nebo upravit Game"
+            },
+            "created": "Byl vytvořen potomek entity Game s identifikátorem {{ param }}",
+            "updated": "Potomek entity Game s identifikátorem {{ param }} byl upravený.",
+            "deleted": "Potomek entity Game s identifikátorem {{ param }} bol smazaný.",
+            "delete": {
+                "question": "Jste si jisti, že chcete smazat Game {{ id }}?"
+            },
+            "detail": {
+                "title": "Game"
+            },
+            "scoreA": "Score A",
+            "scoreB": "Score B",
+            "finished": "Finished",
+            "round": "Round",
+            "period": "Period",
+            "note": "Note",
+            "rivalA": "Rival A",
+            "rivalB": "Rival B",
+            "tournament": "Tournament"
+        }
+    }
+}

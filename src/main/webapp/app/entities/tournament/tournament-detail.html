@@ -1,0 +1,53 @@
+
+<div>
+    <h2><span data-translate="tournamentControlApp.tournament.detail.title">Tournament</span> {{vm.tournament.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="tournamentControlApp.tournament.name">Name</span></dt>
+        <dd>
+            <span>{{vm.tournament.name}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.note">Note</span></dt>
+        <dd>
+            <span>{{vm.tournament.note}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.numberOfMutualMatches">Number Of Mutual Matches</span></dt>
+        <dd>
+            <span>{{vm.tournament.numberOfMutualMatches}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
+        <dd>
+            <span>{{vm.tournament.pointsForWinning}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
+        <dd>
+            <span>{{vm.tournament.pointsForLosing}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
+        <dd>
+            <span>{{vm.tournament.pointsForTie}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.user">User</span></dt>
+        <dd>
+            {{vm.tournament.user.login}}
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
+        <dd>
+            <span ng-repeat="participants in vm.tournament.participants">
+                <a ui-sref="participant-detail({id: participants.id})">{{participants.id}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="tournament-detail.edit({id:vm.tournament.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

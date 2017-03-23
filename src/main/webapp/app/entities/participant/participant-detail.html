@@ -1,0 +1,31 @@
+
+<div>
+    <h2><span data-translate="tournamentControlApp.participant.detail.title">Participant</span> {{vm.participant.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="tournamentControlApp.participant.player">Player</span></dt>
+        <dd>
+            <a ui-sref="player-detail({id:vm.participant.player.id})">{{vm.participant.player.id}}</a>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.participant.team">Team</span></dt>
+        <dd>
+            <a ui-sref="team-detail({id:vm.participant.team.id})">{{vm.participant.team.id}}</a>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.participant.user">User</span></dt>
+        <dd>
+            {{vm.participant.user.login}}
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="participant-detail.edit({id:vm.participant.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

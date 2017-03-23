@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity Tournament.
+    -->
+    <changeSet id="20170320075825-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="tournament"
+                                 constraintName="fk_tournament_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="tournaments_id"
+                                 baseTableName="tournament_participants"
+                                 constraintName="fk_tournament_participants_tournaments_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tournament"/>
+        <addForeignKeyConstraint baseColumnNames="participants_id"
+                                 baseTableName="tournament_participants"
+                                 constraintName="fk_tournament_participants_participants_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="participant"/>
+        
+    </changeSet>
+</databaseChangeLog>
