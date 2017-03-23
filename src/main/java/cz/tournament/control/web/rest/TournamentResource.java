@@ -7,6 +7,7 @@ import cz.tournament.control.domain.User;
 import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
+import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -33,11 +34,15 @@ public class TournamentResource {
         
     private final TournamentRepository tournamentRepository;
     private final UserRepository userRepository;
+    private final TournamentService tournamentService;
 
-    public TournamentResource(TournamentRepository tournamentRepository, UserRepository userRepository) {
+    public TournamentResource(TournamentRepository tournamentRepository, UserRepository userRepository, TournamentService tournamentService) {
         this.tournamentRepository = tournamentRepository;
         this.userRepository = userRepository;
+        this.tournamentService = tournamentService;
     }
+
+    
     
     
 
@@ -56,11 +61,7 @@ public class TournamentResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new tournament cannot already have an ID")).body(null);
         }
         
-        //set creator as user
-        User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
-        tournament.setUser(creator);
-        
-        Tournament result = tournamentRepository.save(tournament);
+        Tournament result = tournamentService.createTournament(tournament);
         return ResponseEntity.created(new URI("/api/tournaments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

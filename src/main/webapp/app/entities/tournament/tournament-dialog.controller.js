@@ -5,37 +5,27 @@
         .module('tournamentControlApp')
         .controller('TournamentDialogController', TournamentDialogController);
 
-    TournamentDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Tournament', 'Game', 'User', 'Participant', 'Team', 'Player', '$filter'];
+    TournamentDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Tournament', 'Game', 'User', 'Participant'];
 
-    function TournamentDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Tournament, Game, User, Participant, Team, Player, $filter) {
+    function TournamentDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Tournament, Game, User, Participant) {
         var vm = this;
 
         vm.tournament = entity;
         vm.clear = clear;
         vm.save = save;
-        
-        vm.games = Game.query(); //should not be needed 
-        vm.users = User.query(); //should not be needed
-        vm.participants = Participant.query();   
-        $scope.participantType = 'player';
-        $scope.selectedParticipants;
-        
+        vm.games = Game.query();
+        vm.users = User.query();
+        vm.participants = Participant.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
         });
-        
-        function uncheckAll () {
-            $scope.selectedParticipants = [];  
-        }
 
         function clear () {
             $uibModalInstance.dismiss('cancel');
         }
 
         function save () {
-            vm.tournament.participants = $scope.selectedParticipants;
-            
             vm.isSaving = true;
             if (vm.tournament.id !== null) {
                 Tournament.update(vm.tournament, onSaveSuccess, onSaveError);
