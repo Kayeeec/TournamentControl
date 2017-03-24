@@ -30,10 +30,6 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="number_of_mutual_matches" type="integer">
-                <constraints nullable="true" />
-            </column>
-
             <column name="points_for_winning" type="integer">
                 <constraints nullable="true" />
             </column>

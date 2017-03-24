@@ -51,7 +51,6 @@ public class TournamentService {
         tmp.setMatches(tournament.getMatches());
         tmp.setName(tournament.getName());
         tmp.setNote(tournament.getNote());
-        tmp.setNumberOfMutualMatches(tournament.getNumberOfMutualMatches());
         tmp.setParticipants(tournament.getParticipants());
         tmp.setPointsForLosing(tournament.getPointsForLosing());
         tmp.setPointsForTie(tournament.getPointsForTie());

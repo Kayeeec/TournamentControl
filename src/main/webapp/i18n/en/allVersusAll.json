@@ -1,0 +1,21 @@
+{
+    "tournamentControlApp": {
+        "allVersusAll" : {
+            "home": {
+                "title": "All Versus Alls",
+                "createLabel": "Create a new All Versus All",
+                "createOrEditLabel": "Create or edit a All Versus All"
+            },
+            "created": "A new All Versus All is created with identifier {{ param }}",
+            "updated": "A All Versus All is updated with identifier {{ param }}",
+            "deleted": "A All Versus All is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete All Versus All {{ id }}?"
+            },
+            "detail": {
+                "title": "All Versus All"
+            },
+            "numberOfMutualMatches": "Number Of Mutual Matches"
+        }
+    }
+}

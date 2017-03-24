@@ -35,14 +35,6 @@
             "fieldType": "String"
         },
         {
-            "fieldName": "numberOfMutualMatches",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "min"
-            ],
-            "fieldValidateRulesMin": 1
-        },
-        {
             "fieldName": "pointsForWinning",
             "fieldType": "Integer"
         },
