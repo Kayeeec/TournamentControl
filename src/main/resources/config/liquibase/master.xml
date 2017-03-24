@@ -10,6 +10,7 @@
     <include file="classpath:config/liquibase/changelog/20170320075825_added_entity_Player.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170320075825_added_entity_Team.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170320075825_added_entity_Tournament.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170324090742_added_entity_AllVersusAll.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170320075825_added_entity_constraints_Game.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170320075825_added_entity_constraints_Participant.xml" relativeToChangelogFile="false"/>

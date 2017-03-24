@@ -29,6 +29,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import cz.tournament.control.domain.enumeration.TournamentType;
+import cz.tournament.control.repository.UserRepository;
+import cz.tournament.control.service.TournamentService;
 /**
  * Test class for the TournamentResource REST controller.
  *
@@ -44,9 +46,6 @@ public class TournamentResourceIntTest {
     private static final String DEFAULT_NOTE = "AAAAAAAAAA";
     private static final String UPDATED_NOTE = "BBBBBBBBBB";
 
-    private static final Integer DEFAULT_NUMBER_OF_MUTUAL_MATCHES = 1;
-    private static final Integer UPDATED_NUMBER_OF_MUTUAL_MATCHES = 2;
-
     private static final Integer DEFAULT_POINTS_FOR_WINNING = 1;
     private static final Integer UPDATED_POINTS_FOR_WINNING = 2;
 
@@ -61,6 +60,11 @@ public class TournamentResourceIntTest {
 
     @Autowired
     private TournamentRepository tournamentRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private TournamentService tournamentService;
+    
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -81,7 +85,7 @@ public class TournamentResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        TournamentResource tournamentResource = new TournamentResource(tournamentRepository);
+        TournamentResource tournamentResource = new TournamentResource(tournamentRepository, userRepository, tournamentService);
         this.restTournamentMockMvc = MockMvcBuilders.standaloneSetup(tournamentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -98,7 +102,6 @@ public class TournamentResourceIntTest {
         Tournament tournament = new Tournament()
             .name(DEFAULT_NAME)
             .note(DEFAULT_NOTE)
-            .numberOfMutualMatches(DEFAULT_NUMBER_OF_MUTUAL_MATCHES)
             .pointsForWinning(DEFAULT_POINTS_FOR_WINNING)
             .pointsForLosing(DEFAULT_POINTS_FOR_LOSING)
             .pointsForTie(DEFAULT_POINTS_FOR_TIE)
@@ -128,7 +131,6 @@ public class TournamentResourceIntTest {
         Tournament testTournament = tournamentList.get(tournamentList.size() - 1);
         assertThat(testTournament.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testTournament.getNote()).isEqualTo(DEFAULT_NOTE);
-        assertThat(testTournament.getNumberOfMutualMatches()).isEqualTo(DEFAULT_NUMBER_OF_MUTUAL_MATCHES);
         assertThat(testTournament.getPointsForWinning()).isEqualTo(DEFAULT_POINTS_FOR_WINNING);
         assertThat(testTournament.getPointsForLosing()).isEqualTo(DEFAULT_POINTS_FOR_LOSING);
         assertThat(testTournament.getPointsForTie()).isEqualTo(DEFAULT_POINTS_FOR_TIE);
@@ -203,7 +205,6 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(tournament.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
-            .andExpect(jsonPath("$.[*].numberOfMutualMatches").value(hasItem(DEFAULT_NUMBER_OF_MUTUAL_MATCHES)))
             .andExpect(jsonPath("$.[*].pointsForWinning").value(hasItem(DEFAULT_POINTS_FOR_WINNING)))
             .andExpect(jsonPath("$.[*].pointsForLosing").value(hasItem(DEFAULT_POINTS_FOR_LOSING)))
             .andExpect(jsonPath("$.[*].pointsForTie").value(hasItem(DEFAULT_POINTS_FOR_TIE)))
@@ -223,7 +224,6 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.id").value(tournament.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()))
-            .andExpect(jsonPath("$.numberOfMutualMatches").value(DEFAULT_NUMBER_OF_MUTUAL_MATCHES))
             .andExpect(jsonPath("$.pointsForWinning").value(DEFAULT_POINTS_FOR_WINNING))
             .andExpect(jsonPath("$.pointsForLosing").value(DEFAULT_POINTS_FOR_LOSING))
             .andExpect(jsonPath("$.pointsForTie").value(DEFAULT_POINTS_FOR_TIE))
@@ -250,7 +250,6 @@ public class TournamentResourceIntTest {
         updatedTournament
             .name(UPDATED_NAME)
             .note(UPDATED_NOTE)
-            .numberOfMutualMatches(UPDATED_NUMBER_OF_MUTUAL_MATCHES)
             .pointsForWinning(UPDATED_POINTS_FOR_WINNING)
             .pointsForLosing(UPDATED_POINTS_FOR_LOSING)
             .pointsForTie(UPDATED_POINTS_FOR_TIE)
@@ -267,7 +266,6 @@ public class TournamentResourceIntTest {
         Tournament testTournament = tournamentList.get(tournamentList.size() - 1);
         assertThat(testTournament.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testTournament.getNote()).isEqualTo(UPDATED_NOTE);
-        assertThat(testTournament.getNumberOfMutualMatches()).isEqualTo(UPDATED_NUMBER_OF_MUTUAL_MATCHES);
         assertThat(testTournament.getPointsForWinning()).isEqualTo(UPDATED_POINTS_FOR_WINNING);
         assertThat(testTournament.getPointsForLosing()).isEqualTo(UPDATED_POINTS_FOR_LOSING);
         assertThat(testTournament.getPointsForTie()).isEqualTo(UPDATED_POINTS_FOR_TIE);

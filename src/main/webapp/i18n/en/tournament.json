@@ -17,7 +17,6 @@
             },
             "name": "Name",
             "note": "Note",
-            "numberOfMutualMatches": "Number Of Mutual Matches",
             "pointsForWinning": "Points For Winning",
             "pointsForLosing": "Points For Losing",
             "pointsForTie": "Points For Tie",

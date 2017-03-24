@@ -12,6 +12,7 @@
                 "player": "Player",
                 "team": "Team",
                 "tournament": "Tournament",
+                "allVersusAll": "All Versus All",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

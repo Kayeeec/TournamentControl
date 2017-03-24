@@ -5,6 +5,35 @@ body {
 }
 
 /* ==========================================================================
+My styles
+============================================================================= */
+.myToAlignFields
+    {
+    display: block;
+    float: right;
+    padding-right: 20px;
+    }
+.myToAlignFields-First
+    {
+    display: block;
+    float: left;
+    padding-right: 10px;
+    }
+.my-first-button
+    {
+    float: left;
+    padding-right: 10px;
+    }
+.my-last-button
+    {
+    float: right;
+    padding-right: 10px;
+    }
+.my-end-float
+    {
+    clear: both;
+    }
+/* ==========================================================================
 Hide ng-cloak on page load, https://docs.angularjs.org/api/ng/directive/ngCloak
 ========================================================================== */
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {

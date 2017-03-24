@@ -19,11 +19,13 @@ import cz.tournament.control.domain.enumeration.TournamentType;
 @Entity
 @Table(name = "tournament")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Tournament implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -33,10 +35,6 @@ public class Tournament implements Serializable {
 
     @Column(name = "note")
     private String note;
-
-    @Min(value = 1)
-    @Column(name = "number_of_mutual_matches")
-    private Integer numberOfMutualMatches;
 
     @Column(name = "points_for_winning")
     private Integer pointsForWinning;
@@ -50,7 +48,7 @@ public class Tournament implements Serializable {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "tournament_type", nullable = false)
-    private TournamentType tournamentType = TournamentType.ALL_VERSUS_ALL;
+    private TournamentType tournamentType;
 
     @OneToMany(mappedBy = "tournament")
     @JsonIgnore
@@ -99,19 +97,6 @@ public class Tournament implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public Integer getNumberOfMutualMatches() {
-        return numberOfMutualMatches;
-    }
-
-    public Tournament numberOfMutualMatches(Integer numberOfMutualMatches) {
-        this.numberOfMutualMatches = numberOfMutualMatches;
-        return this;
-    }
-
-    public void setNumberOfMutualMatches(Integer numberOfMutualMatches) {
-        this.numberOfMutualMatches = numberOfMutualMatches;
     }
 
     public Integer getPointsForWinning() {
@@ -253,7 +238,6 @@ public class Tournament implements Serializable {
             "id=" + id +
             ", name='" + name + "'" +
             ", note='" + note + "'" +
-            ", numberOfMutualMatches='" + numberOfMutualMatches + "'" +
             ", pointsForWinning='" + pointsForWinning + "'" +
             ", pointsForLosing='" + pointsForLosing + "'" +
             ", pointsForTie='" + pointsForTie + "'" +

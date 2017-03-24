@@ -16,6 +16,7 @@
         vm.games = Game.query();
         vm.users = User.query();
         vm.participants = Participant.query();
+        $scope.player = 1;
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

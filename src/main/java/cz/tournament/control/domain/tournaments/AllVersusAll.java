@@ -1,23 +1,85 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.tournament.control.domain.tournaments;
 
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.Tournament;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- *
- * @author Karolina Bozkova
+ * A AllVersusAll.
  */
-public class AllVersusAll extends Tournament {
+@Entity
+@Table(name = "all_versus_all")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@PrimaryKeyJoinColumn(name="id")
+public class AllVersusAll extends Tournament implements Serializable  {
 
-    public AllVersusAll() {
+    private static final long serialVersionUID = 1L;
+
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
+
+    @NotNull
+    @Min(value = 1)
+    @Column(name = "number_of_mutual_matches", nullable = false)
+    private Integer numberOfMutualMatches;
+
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
+
+    public Integer getNumberOfMutualMatches() {
+        return numberOfMutualMatches;
+    }
+
+    public AllVersusAll numberOfMutualMatches(Integer numberOfMutualMatches) {
+        this.numberOfMutualMatches = numberOfMutualMatches;
+        return this;
+    }
+
+    public void setNumberOfMutualMatches(Integer numberOfMutualMatches) {
+        this.numberOfMutualMatches = numberOfMutualMatches;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AllVersusAll allVersusAll = (AllVersusAll) o;
+        if (allVersusAll.getId() == null || this.getId() == null) {
+            return false;
+        }
+        return Objects.equals(this.getId(), allVersusAll.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getId());
+    }
+
+    @Override
+    public String toString() {
+        return "AllVersusAll{" +
+            "id=" + this.getId() +
+            ", numberOfMutualMatches='" + numberOfMutualMatches + "'" +
+            '}';
     }
     
     private int getNumberOfRounds() {
@@ -78,8 +140,4 @@ public class AllVersusAll extends Tournament {
             }
         }  
     }
-
-    
-    
-    
 }
