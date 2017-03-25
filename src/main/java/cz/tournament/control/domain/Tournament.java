@@ -11,8 +11,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 
-import cz.tournament.control.domain.enumeration.TournamentType;
-
 /**
  * A Tournament.
  */
@@ -44,11 +42,6 @@ public class Tournament implements Serializable {
 
     @Column(name = "points_for_tie")
     private Integer pointsForTie;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tournament_type", nullable = false)
-    private TournamentType tournamentType;
 
     @OneToMany(mappedBy = "tournament")
     @JsonIgnore
@@ -136,19 +129,6 @@ public class Tournament implements Serializable {
 
     public void setPointsForTie(Integer pointsForTie) {
         this.pointsForTie = pointsForTie;
-    }
-
-    public TournamentType getTournamentType() {
-        return tournamentType;
-    }
-
-    public Tournament tournamentType(TournamentType tournamentType) {
-        this.tournamentType = tournamentType;
-        return this;
-    }
-
-    public void setTournamentType(TournamentType tournamentType) {
-        this.tournamentType = tournamentType;
     }
 
     public Set<Game> getMatches() {
@@ -241,7 +221,6 @@ public class Tournament implements Serializable {
             ", pointsForWinning='" + pointsForWinning + "'" +
             ", pointsForLosing='" + pointsForLosing + "'" +
             ", pointsForTie='" + pointsForTie + "'" +
-            ", tournamentType='" + tournamentType + "'" +
             '}';
     }
 }

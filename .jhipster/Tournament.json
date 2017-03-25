@@ -45,14 +45,6 @@
         {
             "fieldName": "pointsForTie",
             "fieldType": "Integer"
-        },
-        {
-            "fieldName": "tournamentType",
-            "fieldType": "TournamentType",
-            "fieldValues": "ALL_VERSUS_ALL, PLAY_OFF, SWISS_SYSTEM",
-            "fieldValidateRules": [
-                "required"
-            ]
         }
     ],
     "changelogDate": "20170320075825",

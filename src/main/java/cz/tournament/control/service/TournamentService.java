@@ -39,25 +39,7 @@ public class TournamentService {
         User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
         tournament.setUser(creator);
         
-        Tournament tmp;
-        
-//      --------------use the right constructor
-        if(tournament.getTournamentType().equals(TournamentType.ALL_VERSUS_ALL)){
-            tmp = new AllVersusAll();
-        }
-        else { tmp = new Tournament();}
-        
-//      --------------use the right constructor - END
-        tmp.setMatches(tournament.getMatches());
-        tmp.setName(tournament.getName());
-        tmp.setNote(tournament.getNote());
-        tmp.setParticipants(tournament.getParticipants());
-        tmp.setPointsForLosing(tournament.getPointsForLosing());
-        tmp.setPointsForTie(tournament.getPointsForTie());
-        tmp.setPointsForWinning(tournament.getPointsForWinning());
-        tmp.setTournamentType(tournament.getTournamentType());
-        
-        Tournament result = tournamentRepository.save(tmp);
+        Tournament result = tournamentRepository.save(tournament);
         log.debug("TOUTNAMENT_SERVICE: Created Tournament: {}", result);
         return result;
         

@@ -28,9 +28,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import cz.tournament.control.domain.enumeration.TournamentType;
-import cz.tournament.control.repository.UserRepository;
-import cz.tournament.control.service.TournamentService;
 /**
  * Test class for the TournamentResource REST controller.
  *
@@ -55,16 +52,8 @@ public class TournamentResourceIntTest {
     private static final Integer DEFAULT_POINTS_FOR_TIE = 1;
     private static final Integer UPDATED_POINTS_FOR_TIE = 2;
 
-    private static final TournamentType DEFAULT_TOURNAMENT_TYPE = TournamentType.ALL_VERSUS_ALL;
-    private static final TournamentType UPDATED_TOURNAMENT_TYPE = TournamentType.PLAY_OFF;
-
     @Autowired
     private TournamentRepository tournamentRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TournamentService tournamentService;
-    
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -85,7 +74,7 @@ public class TournamentResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        TournamentResource tournamentResource = new TournamentResource(tournamentRepository, userRepository, tournamentService);
+        TournamentResource tournamentResource = new TournamentResource(tournamentRepository);
         this.restTournamentMockMvc = MockMvcBuilders.standaloneSetup(tournamentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -104,8 +93,7 @@ public class TournamentResourceIntTest {
             .note(DEFAULT_NOTE)
             .pointsForWinning(DEFAULT_POINTS_FOR_WINNING)
             .pointsForLosing(DEFAULT_POINTS_FOR_LOSING)
-            .pointsForTie(DEFAULT_POINTS_FOR_TIE)
-            .tournamentType(DEFAULT_TOURNAMENT_TYPE);
+            .pointsForTie(DEFAULT_POINTS_FOR_TIE);
         return tournament;
     }
 
@@ -134,7 +122,6 @@ public class TournamentResourceIntTest {
         assertThat(testTournament.getPointsForWinning()).isEqualTo(DEFAULT_POINTS_FOR_WINNING);
         assertThat(testTournament.getPointsForLosing()).isEqualTo(DEFAULT_POINTS_FOR_LOSING);
         assertThat(testTournament.getPointsForTie()).isEqualTo(DEFAULT_POINTS_FOR_TIE);
-        assertThat(testTournament.getTournamentType()).isEqualTo(DEFAULT_TOURNAMENT_TYPE);
     }
 
     @Test
@@ -176,24 +163,6 @@ public class TournamentResourceIntTest {
 
     @Test
     @Transactional
-    public void checkTournamentTypeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = tournamentRepository.findAll().size();
-        // set the field null
-        tournament.setTournamentType(null);
-
-        // Create the Tournament, which fails.
-
-        restTournamentMockMvc.perform(post("/api/tournaments")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(tournament)))
-            .andExpect(status().isBadRequest());
-
-        List<Tournament> tournamentList = tournamentRepository.findAll();
-        assertThat(tournamentList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllTournaments() throws Exception {
         // Initialize the database
         tournamentRepository.saveAndFlush(tournament);
@@ -207,8 +176,7 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
             .andExpect(jsonPath("$.[*].pointsForWinning").value(hasItem(DEFAULT_POINTS_FOR_WINNING)))
             .andExpect(jsonPath("$.[*].pointsForLosing").value(hasItem(DEFAULT_POINTS_FOR_LOSING)))
-            .andExpect(jsonPath("$.[*].pointsForTie").value(hasItem(DEFAULT_POINTS_FOR_TIE)))
-            .andExpect(jsonPath("$.[*].tournamentType").value(hasItem(DEFAULT_TOURNAMENT_TYPE.toString())));
+            .andExpect(jsonPath("$.[*].pointsForTie").value(hasItem(DEFAULT_POINTS_FOR_TIE)));
     }
 
     @Test
@@ -226,8 +194,7 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()))
             .andExpect(jsonPath("$.pointsForWinning").value(DEFAULT_POINTS_FOR_WINNING))
             .andExpect(jsonPath("$.pointsForLosing").value(DEFAULT_POINTS_FOR_LOSING))
-            .andExpect(jsonPath("$.pointsForTie").value(DEFAULT_POINTS_FOR_TIE))
-            .andExpect(jsonPath("$.tournamentType").value(DEFAULT_TOURNAMENT_TYPE.toString()));
+            .andExpect(jsonPath("$.pointsForTie").value(DEFAULT_POINTS_FOR_TIE));
     }
 
     @Test
@@ -252,8 +219,7 @@ public class TournamentResourceIntTest {
             .note(UPDATED_NOTE)
             .pointsForWinning(UPDATED_POINTS_FOR_WINNING)
             .pointsForLosing(UPDATED_POINTS_FOR_LOSING)
-            .pointsForTie(UPDATED_POINTS_FOR_TIE)
-            .tournamentType(UPDATED_TOURNAMENT_TYPE);
+            .pointsForTie(UPDATED_POINTS_FOR_TIE);
 
         restTournamentMockMvc.perform(put("/api/tournaments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -269,7 +235,6 @@ public class TournamentResourceIntTest {
         assertThat(testTournament.getPointsForWinning()).isEqualTo(UPDATED_POINTS_FOR_WINNING);
         assertThat(testTournament.getPointsForLosing()).isEqualTo(UPDATED_POINTS_FOR_LOSING);
         assertThat(testTournament.getPointsForTie()).isEqualTo(UPDATED_POINTS_FOR_TIE);
-        assertThat(testTournament.getTournamentType()).isEqualTo(UPDATED_TOURNAMENT_TYPE);
     }
 
     @Test

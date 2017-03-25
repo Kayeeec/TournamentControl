@@ -44,8 +44,7 @@ public class PlayerService {
         
         Player result = playerRepository.save(player);
         
-        Participant participant = new Participant(result, creator);
-        participantRepository.save(participant);
+        Participant participant = participantRepository.save(new Participant(result, creator));
         
         log.debug("PLAYER_SERVICE: Created Player: {}", result);
         log.debug("PLAYER_SERVICE: Created Participant: {}", participant);

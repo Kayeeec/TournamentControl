@@ -26,7 +26,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('tournament');
-                    $translatePartialLoader.addPart('tournamentType');
+                    $translatePartialLoader.addPart('allVersusAll');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -49,7 +49,6 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('tournament');
-                    $translatePartialLoader.addPart('tournamentType');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'Tournament', function($stateParams, Tournament) {
@@ -111,7 +110,6 @@
                                 pointsForWinning: null,
                                 pointsForLosing: null,
                                 pointsForTie: null,
-                                tournamentType: null,
                                 id: null
                             };
                         }
