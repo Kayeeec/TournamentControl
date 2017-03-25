@@ -5,14 +5,17 @@
         .module('tournamentControlApp')
         .controller('AllVersusAllDialogController', AllVersusAllDialogController);
 
-    AllVersusAllDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'AllVersusAll'];
+    AllVersusAllDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'AllVersusAll', 'Participant'];
 
-    function AllVersusAllDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, AllVersusAll) {
+    function AllVersusAllDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, AllVersusAll, Participant) {
         var vm = this;
 
         vm.allVersusAll = entity;
         vm.clear = clear;
         vm.save = save;
+        
+        vm.participants = Participant.query();
+        $scope.player = 1;
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

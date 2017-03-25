@@ -11,142 +11,56 @@
         <div class="form-group" ng-show="vm.tournament.id">
             <label for="id" data-translate="global.field.id">ID</label>
             <input type="text" class="form-control" id="id" name="id"
-                   ng-model="vm.tournament.id" readonly />
+                    ng-model="vm.tournament.id" readonly />
         </div>
-
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.tournamentType" for="field_tournamentType">Tournament Type</label>
-            <select class="form-control" name="tournamentType" ng-model="vm.tournament.tournamentType" id="field_tournamentType" required ng-init="vm.tournament.tournamentType = vm.tournament.tournamentType || 'ALL_VERSUS_ALL'">
-                <option value="ALL_VERSUS_ALL" data-translate="tournamentControlApp.TournamentType.ALL_VERSUS_ALL">ALL_VERSUS_ALL</option>
-                <option disabled value="PLAY_OFF" data-translate="tournamentControlApp.TournamentType.PLAY_OFF">PLAY_OFF</option>
-                <option disabled value="SWISS_SYSTEM" data-translate="tournamentControlApp.TournamentType.SWISS_SYSTEM">SWISS_SYSTEM</option>
-            </select>
-            <div ng-show="editForm.tournamentType.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.tournamentType.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-            </div>
-        </div>
-
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
-                   ng-model="vm.tournament.name"
-                   required/>
+                    ng-model="vm.tournament.name"
+                    required/>
             <div ng-show="editForm.name.$invalid">
                 <p class="help-block"
-                   ng-show="editForm.name.$error.required" data-translate="entity.validation.required">
+                    ng-show="editForm.name.$error.required" data-translate="entity.validation.required">
                     This field is required.
                 </p>
             </div>
         </div>
-
-        <div class="form-group myToAlignFields">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.numberOfMutualMatches" for="field_numberOfMutualMatches">Number Of Mutual Matches</label>
-            <input type="number" class="form-control" name="numberOfMutualMatches" id="field_numberOfMutualMatches"
-                   ng-model="vm.tournament.numberOfMutualMatches"
-                   min="1"/>
-            <div ng-show="editForm.numberOfMutualMatches.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.numberOfMutualMatches.$error.min" data-translate="entity.validation.min" translate-value-min="1">
-                    This field should be at least 1.
-                </p>
-                <p class="help-block"
-                   ng-show="editForm.numberOfMutualMatches.$error.number" data-translate="entity.validation.number">
-                    This field should be a number.
-                </p>
-            </div>
-        </div>
-        <div>
-            <div class="form-group myToAlignFields-First">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" for="field_pointsForWinning">Points For Winning</label>
-                <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
-                       ng-model="vm.tournament.pointsForWinning"
-                       />
-            </div>
-            <div class="form-group myToAlignFields">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" for="field_pointsForLosing">Points For Losing</label>
-                <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
-                       ng-model="vm.tournament.pointsForLosing"
-                       />
-            </div>
-            <div class="form-group myToAlignFields">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" for="field_pointsForTie">Points For Tie</label>
-                <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
-                       ng-model="vm.tournament.pointsForTie"
-                       />
-            </div>
-        </div>
-        </br>
-        <div class="form-group my-end-float">
+        <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.tournament.note" for="field_note">Note</label>
             <input type="text" class="form-control" name="note" id="field_note"
-                   ng-model="vm.tournament.note"
-                   />
+                    ng-model="vm.tournament.note"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" for="field_pointsForWinning">Points For Winning</label>
+            <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
+                    ng-model="vm.tournament.pointsForWinning"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" for="field_pointsForLosing">Points For Losing</label>
+            <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
+                    ng-model="vm.tournament.pointsForLosing"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" for="field_pointsForTie">Points For Tie</label>
+            <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
+                    ng-model="vm.tournament.pointsForTie"
+                    />
         </div>
 
-        <div class="form-group my-first-button">
-            <div class="row">
-                <div class="col-xs-4">
-                    <button class="btn btn-primary" ng-click="player = 1">
-                        <span class="glyphicon glyphicon-plus"></span>
-                        <span  data-translate=""> <!--TODO--> 
-                            Add Players
-                        </span>
-                    </button>
-                </div>
-            </div>
+        <div class="form-group">
+            <label data-translate="tournamentControlApp.tournament.user" for="field_user">User</label>
+            <select class="form-control" id="field_user" name="user" ng-model="vm.tournament.user" ng-options="user as user.login for user in vm.users track by user.id">
+                <option value=""></option>
+            </select>
         </div>
-        <div class="form-group my-last-button">
-            <div class="row">
-                <div class="col-xs-4">
-                    <button class="btn btn-primary" ng-click="player = 2">
-                        <span class="glyphicon glyphicon-plus"></span>
-                        <span  data-translate=""> <!--TODO--> 
-                            Add Teams
-                        </span>
-                    </button>
-                </div>
-            </div>
+        <div class="form-group">
+            <label data-translate="tournamentControlApp.tournament.participants" for="field_participants">Participants</label>
+            <select class="form-control" id="field_participants" multiple name="participants" ng-model="vm.tournament.participants" ng-options="participant as participant.id for participant in vm.participants track by participant.id"></select>
         </div>
-
-        </br>
-
-        <!--PARTICIPANTS------------------------------------------------------------------------------>
-
-        <div class="form-group my-end-float">
-            <fieldset>
-                <!--                            <legend data-translate="tournamentControlApp.tournament.participants" for="field_participants">Participants</legend>-->
-                <div class="form-group" ng-if="player == 1">
-
-                    <legend data-translate="" for="field_participants">Players</legend> <!--TODO-->
-                    <div ng-repeat="participant in vm.participants">
-                        <span ng-if="participant.player">
-                            <label>
-                                <input  type="checkbox"  id="field_participants" name="participants" 
-                                        checklist-model="vm.tournament.participants" checklist-value="participant" > {{participant.player.name}}
-                            </label> 
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group" ng-if="player == 2">
-                    <legend data-translate="" for="field_participants">Teams</legend> <!--TODO-->
-                    <div ng-repeat="participant in vm.participants">
-                        <span ng-if="participant.team">
-                            <label>
-                                <input  type="checkbox"  id="field_participants" name="participants"
-                                        checklist-model="vm.tournament.participants" checklist-value="participant" > {{participant.team.name}}
-                            </label>
-                        </span>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <!--PARTICIPANTS------------------------------------------------------------------------------>
-
     </div>
-    </br>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>

@@ -44,8 +44,7 @@ public class TeamService {
         
         Team result = teamRepository.save(team);
         
-        Participant participant = new Participant(result, creator);
-        participantRepository.save(participant);
+        Participant participant = participantRepository.save(new Participant(result, creator));
         
         log.debug("TEAM_SERVICE: Created Team: {}", result);
         log.debug("TEAM_SERVICE: Created Participant: {}", participant);

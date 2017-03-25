@@ -1,13 +1,25 @@
 <div>
     <h2 data-translate="tournamentControlApp.tournament.home.title">Tournaments</h2>
     <jhi-alert></jhi-alert>
-    <div class="container-fluid">
+<!--    <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
                 <button class="btn btn-primary" ui-sref="tournament.new" >
                     <span class="glyphicon glyphicon-plus"></span>
                     <span  data-translate="tournamentControlApp.tournament.home.createLabel">
                         Create new Tournament
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="all-versus-all.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="tournamentControlApp.allVersusAll.home.createLabel">
+                        Create new All Versus All
                     </span>
                 </button>
             </div>
@@ -24,7 +36,6 @@
                     <th><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></th>
-                    <th><span data-translate="tournamentControlApp.tournament.tournamentType">Tournament Type</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.user">User</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.participants">Participants</span></th>
                     <th></th>
@@ -38,7 +49,6 @@
                     <td>{{tournament.pointsForWinning}}</td>
                     <td>{{tournament.pointsForLosing}}</td>
                     <td>{{tournament.pointsForTie}}</td>
-                    <td data-translate="{{'tournamentControlApp.TournamentType.' + tournament.tournamentType}}">{{tournament.tournamentType}}</td>
                     <td>
                         {{tournament.user.login}}
                     </td>

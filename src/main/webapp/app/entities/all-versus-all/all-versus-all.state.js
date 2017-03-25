@@ -89,8 +89,8 @@
             }]
         })
         .state('all-versus-all.new', {
-            parent: 'all-versus-all',
-            url: '/new',
+            parent: 'tournament',
+            url: '/all-versus-all/new',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -104,15 +104,22 @@
                     resolve: {
                         entity: function () {
                             return {
+                                name: null,
+                                note: null,
+                                pointsForWinning: null,
+                                pointsForLosing: null,
+                                pointsForTie: null,
+                                tournamentType: null,
+                                
                                 numberOfMutualMatches: null,
                                 id: null
                             };
                         }
                     }
                 }).result.then(function() {
-                    $state.go('all-versus-all', null, { reload: 'all-versus-all' });
+                    $state.go('tournament', null, { reload: 'tournament' });
                 }, function() {
-                    $state.go('all-versus-all');
+                    $state.go('tournament');
                 });
             }]
         })
