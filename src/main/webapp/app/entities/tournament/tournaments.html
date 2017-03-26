@@ -1,18 +1,18 @@
 <div>
     <h2 data-translate="tournamentControlApp.tournament.home.title">Tournaments</h2>
     <jhi-alert></jhi-alert>
-<!--    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="tournament.new" >
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span  data-translate="tournamentControlApp.tournament.home.createLabel">
-                        Create new Tournament
-                    </span>
-                </button>
+    <!--    <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-4 no-padding-left">
+                    <button class="btn btn-primary" ui-sref="tournament.new" >
+                        <span class="glyphicon glyphicon-plus"></span>
+                        <span  data-translate="tournamentControlApp.tournament.home.createLabel">
+                            Create new Tournament
+                        </span>
+                    </button>
+                </div>
             </div>
-        </div>
-    </div>-->
+        </div>-->
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
@@ -26,7 +26,62 @@
         </div>
     </div>
     <br/>
-    <div class="table-responsive">
+
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active"><a showtab href="#allversusall"><span  data-translate="">All versus all</span></a></li><!--TODO-->
+        <li><a showtab href="#palyoff"><span  data-translate="">Play-Off</span></a></li><!--TODO-->
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="allversusall">
+            <div class="table-responsive">
+                <table class="jh-table table table-striped">
+                    <thead>
+                        <tr>
+                            <th><span data-translate="global.field.id">ID</span></th>
+                            <th><span data-translate="tournamentControlApp.tournament.name">Name</span></th>
+                            <th><span data-translate="tournamentControlApp.tournament.note">Note</span></th>
+                            <th><span data-translate="tournamentControlApp.tournament.created">Created</span></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="allVersusAll in vm.allVersusAlls track by allVersusAll.id">
+                            <td><a ui-sref="all-versus-all-detail({id:allVersusAll.id})">{{allVersusAll.id}}</a></td>
+                            <td>{{allVersusAll.name}}</td>
+                            <td>{{allVersusAll.note}}</td>
+                            <td>{{allVersusAll.created | date:'medium'}}</td>
+                            <td class="text-right">
+                                <div class="btn-group flex-btn-group-container">
+                                    <button type="submit"
+                                            ui-sref="all-versus-all-detail({id:allVersusAll.id})"
+                                            class="btn btn-info btn-sm">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                        <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                                    </button>
+                                    <button type="submit"
+                                            ui-sref="all-versus-all.edit({id:allVersusAll.id})"
+                                            class="btn btn-primary btn-sm">
+                                        <span class="glyphicon glyphicon-pencil"></span>
+                                        <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                                    </button>
+                                    <button type="submit"
+                                            ui-sref="all-versus-all.delete({id:allVersusAll.id})"
+                                            class="btn btn-danger btn-sm">
+                                        <span class="glyphicon glyphicon-remove-circle"></span>
+                                        <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tab-pane" id="palyoff">druhy tab</div>
+    </div>
+
+<!--    <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
                 <tr>
@@ -82,5 +137,5 @@
                 </tr>
             </tbody>
         </table>
-    </div>
+    </div>-->
 </div>

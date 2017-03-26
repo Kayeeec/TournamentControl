@@ -12,6 +12,7 @@ import cz.tournament.control.domain.enumeration.TournamentType;
 import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,8 @@ public class TournamentService {
         //set creator as user
         User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
         tournament.setUser(creator);
+        //set creation date
+        tournament.setCreated(ZonedDateTime.now());
         
         Tournament result = tournamentRepository.save(tournament);
         log.debug("TOUTNAMENT_SERVICE: Created Tournament: {}", result);

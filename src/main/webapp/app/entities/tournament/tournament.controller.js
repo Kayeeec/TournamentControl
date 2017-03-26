@@ -3,15 +3,27 @@
 
     angular
         .module('tournamentControlApp')
+        .directive('showtab',
+            function () {
+                return {
+                    link: function (scope, element, attrs) {
+                        element.click(function(e) {
+                            e.preventDefault();
+                            $(element).tab('show');
+                        });
+                    }
+                };
+            })
         .controller('TournamentController', TournamentController);
 
-    TournamentController.$inject = ['Tournament'];
+    TournamentController.$inject = ['Tournament', 'AllVersusAll'];
 
-    function TournamentController(Tournament) {
+    function TournamentController(Tournament, AllVersusAll) {
 
         var vm = this;
 
         vm.tournaments = [];
+        vm.allVersusAlls = [];
 
         loadAll();
 
@@ -20,6 +32,19 @@
                 vm.tournaments = result;
                 vm.searchQuery = null;
             });
+            AllVersusAll.query(function(result) {
+                vm.allVersusAlls = result;
+                vm.searchQuery = null;
+            });
         }
+        
+        $('#myTab a[href="#allversusall"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        $('#myTab a[href="#playoff"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
     }
 })();

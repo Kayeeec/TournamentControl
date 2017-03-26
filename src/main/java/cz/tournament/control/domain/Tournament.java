@@ -7,6 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -42,6 +43,9 @@ public class Tournament implements Serializable {
 
     @Column(name = "points_for_tie")
     private Integer pointsForTie;
+
+    @Column(name = "created")
+    private ZonedDateTime created;
 
     @OneToMany(mappedBy = "tournament")
     @JsonIgnore
@@ -129,6 +133,19 @@ public class Tournament implements Serializable {
 
     public void setPointsForTie(Integer pointsForTie) {
         this.pointsForTie = pointsForTie;
+    }
+
+    public ZonedDateTime getCreated() {
+        return created;
+    }
+
+    public Tournament created(ZonedDateTime created) {
+        this.created = created;
+        return this;
+    }
+
+    public void setCreated(ZonedDateTime created) {
+        this.created = created;
     }
 
     public Set<Game> getMatches() {
@@ -221,6 +238,7 @@ public class Tournament implements Serializable {
             ", pointsForWinning='" + pointsForWinning + "'" +
             ", pointsForLosing='" + pointsForLosing + "'" +
             ", pointsForTie='" + pointsForTie + "'" +
+            ", created='" + created + "'" +
             '}';
     }
 }
