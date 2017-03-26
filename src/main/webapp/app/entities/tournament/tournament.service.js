@@ -4,9 +4,9 @@
         .module('tournamentControlApp')
         .factory('Tournament', Tournament);
 
-    Tournament.$inject = ['$resource'];
+    Tournament.$inject = ['$resource', 'DateUtils'];
 
-    function Tournament ($resource) {
+    function Tournament ($resource, DateUtils) {
         var resourceUrl =  'api/tournaments/:id';
 
         return $resource(resourceUrl, {}, {
@@ -16,6 +16,7 @@
                 transformResponse: function (data) {
                     if (data) {
                         data = angular.fromJson(data);
+                        data.created = DateUtils.convertDateTimeFromServer(data.created);
                     }
                     return data;
                 }

@@ -24,6 +24,10 @@
         <dd>
             <span>{{vm.tournament.pointsForTie}}</span>
         </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.created">Created</span></dt>
+        <dd>
+            <span>{{vm.tournament.created | date:'medium'}}</span>
+        </dd>
         <dt><span data-translate="tournamentControlApp.tournament.user">User</span></dt>
         <dd>
             {{vm.tournament.user.login}}

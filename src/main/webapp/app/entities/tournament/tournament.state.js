@@ -110,6 +110,7 @@
                                 pointsForWinning: null,
                                 pointsForLosing: null,
                                 pointsForTie: null,
+                                created: null,
                                 id: null
                             };
                         }

@@ -1,7 +1,11 @@
 package cz.tournament.control.service;
 
+import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.repository.AllVersusAllRepository;
+import cz.tournament.control.repository.UserRepository;
+import cz.tournament.control.security.SecurityUtils;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +23,14 @@ public class AllVersusAllService {
     private final Logger log = LoggerFactory.getLogger(AllVersusAllService.class);
     
     private final AllVersusAllRepository allVersusAllRepository;
+    private final UserRepository userRepository;
 
-    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository) {
+    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository) {
         this.allVersusAllRepository = allVersusAllRepository;
+        this.userRepository = userRepository;
     }
+
+    
 
     /**
      * Save a allVersusAll.
@@ -35,6 +43,20 @@ public class AllVersusAllService {
         AllVersusAll result = allVersusAllRepository.save(allVersusAll);
         return result;
     }
+    
+    public AllVersusAll createAllVersusAll(AllVersusAll allVersusAll){
+        //set creator as user
+        User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
+        allVersusAll.setUser(creator);
+        //set creation date
+        allVersusAll.setCreated(ZonedDateTime.now());
+        
+        AllVersusAll result = allVersusAllRepository.save(allVersusAll);
+        log.debug("ALL-VERSUS-ALL_SERVICE: Created all-v-all Tournament: {}", result);
+        return result;
+        
+        
+    }
 
     /**
      *  Get all the allVersusAlls.
@@ -44,7 +66,7 @@ public class AllVersusAllService {
     @Transactional(readOnly = true)
     public List<AllVersusAll> findAll() {
         log.debug("Request to get all AllVersusAlls");
-        List<AllVersusAll> result = allVersusAllRepository.findAll();
+        List<AllVersusAll> result = allVersusAllRepository.findByUserIsCurrentUser();
 
         return result;
     }

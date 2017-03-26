@@ -28,7 +28,7 @@
         
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.tournament.note" for="field_note">Note</label>
-            <input type="text" class="form-control" name="note" id="field_note"
+            <textarea rows="3" type="text" class="form-control" name="note" id="field_note"
                     ng-model="vm.allVersusAll.note"
                     />
         </div>
@@ -50,14 +50,14 @@
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" for="field_pointsForTie">Points For Tie</label>
             <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
-                    ng-model="vm.allVersusAll.pointsForTie"
+                   ng-model="vm.allVersusAll.pointsForTie"
                     />
         </div>
         
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" for="field_numberOfMutualMatches">Number Of Mutual Matches</label>
             <input type="number" class="form-control" name="numberOfMutualMatches" id="field_numberOfMutualMatches"
-                    ng-model="vm.allVersusAll.numberOfMutualMatches"
+                    ng-model="vm.allVersusAll.numberOfMutualMatches" ng-init="1"
                     required min="1"/>
             <div ng-show="editForm.numberOfMutualMatches.$invalid">
                 <p class="help-block"
@@ -74,6 +74,7 @@
                 </p>
             </div>
         </div>
+        
         
         <!--PARTICIPANTS - TODO ======================================================-->
         <div class="form-group">

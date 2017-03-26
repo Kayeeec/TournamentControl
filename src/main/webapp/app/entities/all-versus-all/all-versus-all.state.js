@@ -32,7 +32,7 @@
             }
         })
         .state('all-versus-all-detail', {
-            parent: 'all-versus-all',
+            parent: 'tournament',
             url: '/all-versus-all/{id}',
             data: {
                 authorities: ['ROLE_USER'],
@@ -55,7 +55,7 @@
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'all-versus-all',
+                        name: $state.current.name || 'tournament',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -65,7 +65,7 @@
         })
         .state('all-versus-all-detail.edit', {
             parent: 'all-versus-all-detail',
-            url: '/detail/edit',
+            url: '/all-versus-all/detail/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -90,7 +90,7 @@
         })
         .state('all-versus-all.new', {
             parent: 'tournament',
-            url: '/all-versus-all/new',
+            url: '/all-versus-all-new',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -110,7 +110,7 @@
                                 pointsForLosing: null,
                                 pointsForTie: null,
                                 tournamentType: null,
-                                
+                                created: null,
                                 numberOfMutualMatches: null,
                                 id: null
                             };
@@ -124,8 +124,8 @@
             }]
         })
         .state('all-versus-all.edit', {
-            parent: 'all-versus-all',
-            url: '/{id}/edit',
+            parent: 'tournament',
+            url: '/all-versus-all/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -142,15 +142,15 @@
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('all-versus-all', null, { reload: 'all-versus-all' });
+                    $state.go('tournament', null, { reload: 'tournament' });
                 }, function() {
                     $state.go('^');
                 });
             }]
         })
         .state('all-versus-all.delete', {
-            parent: 'all-versus-all',
-            url: '/{id}/delete',
+            parent: 'tournament',
+            url: '/all-versus-all/{id}/delete',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -166,7 +166,7 @@
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('all-versus-all', null, { reload: 'all-versus-all' });
+                    $state.go('tournament', null, { reload: 'tournament' });
                 }, function() {
                     $state.go('^');
                 });

@@ -13,6 +13,7 @@
         vm.allVersusAll = entity;
         vm.clear = clear;
         vm.save = save;
+        vm.allVersusAll.numberOfMutualMatches = 1;
         
         vm.participants = Participant.query();
         $scope.player = 1;

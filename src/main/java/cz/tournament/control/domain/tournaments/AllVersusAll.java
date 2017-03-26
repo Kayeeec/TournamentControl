@@ -31,7 +31,7 @@ public class AllVersusAll extends Tournament implements Serializable  {
     @NotNull
     @Min(value = 1)
     @Column(name = "number_of_mutual_matches", nullable = false)
-    private Integer numberOfMutualMatches;
+    private Integer numberOfMutualMatches = 1;
 
 //    public Long getId() {
 //        return id;

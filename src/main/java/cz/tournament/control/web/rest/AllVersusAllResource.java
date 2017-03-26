@@ -47,7 +47,7 @@ public class AllVersusAllResource {
         if (allVersusAll.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new allVersusAll cannot already have an ID")).body(null);
         }
-        AllVersusAll result = allVersusAllService.save(allVersusAll);
+        AllVersusAll result = allVersusAllService.createAllVersusAll(allVersusAll);
         return ResponseEntity.created(new URI("/api/all-versus-alls/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
