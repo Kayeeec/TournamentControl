@@ -26,6 +26,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('allVersusAll');
+                    $translatePartialLoader.addPart('game');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -109,7 +110,6 @@
                                 pointsForWinning: null,
                                 pointsForLosing: null,
                                 pointsForTie: null,
-                                tournamentType: null,
                                 created: null,
                                 numberOfMutualMatches: null,
                                 id: null

@@ -69,7 +69,7 @@ public class AllVersusAllResource {
         if (allVersusAll.getId() == null) {
             return createAllVersusAll(allVersusAll);
         }
-        AllVersusAll result = allVersusAllService.save(allVersusAll);
+        AllVersusAll result = allVersusAllService.updateAllVersusAll(allVersusAll);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, allVersusAll.getId().toString()))
             .body(result);

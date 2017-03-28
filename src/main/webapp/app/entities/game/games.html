@@ -25,9 +25,9 @@
                     <th><span data-translate="tournamentControlApp.game.round">Round</span></th>
                     <th><span data-translate="tournamentControlApp.game.period">Period</span></th>
                     <th><span data-translate="tournamentControlApp.game.note">Note</span></th>
+                    <th><span data-translate="tournamentControlApp.game.tournament">Tournament</span></th>
                     <th><span data-translate="tournamentControlApp.game.rivalA">Rival A</span></th>
                     <th><span data-translate="tournamentControlApp.game.rivalB">Rival B</span></th>
-                    <th><span data-translate="tournamentControlApp.game.tournament">Tournament</span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -41,13 +41,13 @@
                     <td>{{game.period}}</td>
                     <td>{{game.note}}</td>
                     <td>
+                        <a ui-sref="tournament-detail({id:game.tournament.id})">{{game.tournament.id}}</a>
+                    </td>
+                    <td>
                         <a ui-sref="participant-detail({id:game.rivalA.id})">{{game.rivalA.id}}</a>
                     </td>
                     <td>
                         <a ui-sref="participant-detail({id:game.rivalB.id})">{{game.rivalB.id}}</a>
-                    </td>
-                    <td>
-                        <a ui-sref="tournament-detail({id:game.tournament.id})">{{game.tournament.id}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

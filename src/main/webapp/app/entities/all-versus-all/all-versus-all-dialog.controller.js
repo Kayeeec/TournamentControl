@@ -16,18 +16,39 @@
         vm.allVersusAll.numberOfMutualMatches = 1;
         
         vm.participants = Participant.query();
-        $scope.player = 1;
+        $scope.selectedPlayers;
+        $scope.selectedTeams;
+        $scope.chosen = 1;
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
         });
+        
+        $('#myTab a[href="#players"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        $('#myTab a[href="#teams"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        
 
         function clear () {
             $uibModalInstance.dismiss('cancel');
         }
 
         function save () {
+            
             vm.isSaving = true;
+            
+//            if ($scope.chosen === 1){
+//                vm.allVersusAll.participants = $scope.selectedPlayers;
+//            }else {
+//                vm.allVersusAll.participants = $scope.selectedTeams;
+//            }
+//            
+            
             if (vm.allVersusAll.id !== null) {
                 AllVersusAll.update(vm.allVersusAll, onSaveSuccess, onSaveError);
             } else {

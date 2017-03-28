@@ -32,8 +32,8 @@
             }
         })
         .state('game-detail', {
-            parent: 'game',
-            url: '/game/{id}',
+            parent: 'all-versus-all-detail',
+            url: '/game-detail/{id}',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'tournamentControlApp.game.detail.title'
@@ -55,7 +55,7 @@
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'game',
+                        name: $state.current.name || 'all-versus-all-detail',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -122,8 +122,8 @@
             }]
         })
         .state('game.edit', {
-            parent: 'game',
-            url: '/{id}/edit',
+            parent: 'all-versus-all-detail',
+            url: '/game-edit/{id}',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -140,7 +140,7 @@
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('game', null, { reload: 'game' });
+                    $state.go('all-versus-all-detail', null, { reload: 'all-versus-all-detail' });
                 }, function() {
                     $state.go('^');
                 });
