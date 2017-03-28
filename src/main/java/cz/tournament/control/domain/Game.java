@@ -1,5 +1,6 @@
 package cz.tournament.control.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -44,28 +45,15 @@ public class Game implements Serializable {
     @Column(name = "note")
     private String note;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private Participant rivalA;
-
-    @OneToOne
-    @JoinColumn(unique = true)
-    private Participant rivalB;
-
     @ManyToOne
     private Tournament tournament;
 
-    public Game(Integer period, Integer round, Participant rivalA, Participant rivalB, Tournament tournament) {
-        this.round = round;
-        this.period = period;
-        this.rivalA = rivalA;
-        this.rivalB = rivalB;
-        this.tournament = tournament;
-    }
+    @ManyToOne
+    private Participant rivalA;
 
-    public Game() {
-    }
-    
+    @ManyToOne
+    private Participant rivalB;
+
     
     
     
@@ -156,6 +144,19 @@ public class Game implements Serializable {
         this.note = note;
     }
 
+    public Tournament getTournament() {
+        return tournament;
+    }
+
+    public Game tournament(Tournament tournament) {
+        this.tournament = tournament;
+        return this;
+    }
+
+    public void setTournament(Tournament tournament) {
+        this.tournament = tournament;
+    }
+
     public Participant getRivalA() {
         return rivalA;
     }
@@ -180,19 +181,6 @@ public class Game implements Serializable {
 
     public void setRivalB(Participant participant) {
         this.rivalB = participant;
-    }
-
-    public Tournament getTournament() {
-        return tournament;
-    }
-
-    public Game tournament(Tournament tournament) {
-        this.tournament = tournament;
-        return this;
-    }
-
-    public void setTournament(Tournament tournament) {
-        this.tournament = tournament;
     }
 
     @Override

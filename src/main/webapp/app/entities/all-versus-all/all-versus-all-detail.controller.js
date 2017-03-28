@@ -5,9 +5,9 @@
         .module('tournamentControlApp')
         .controller('AllVersusAllDetailController', AllVersusAllDetailController);
 
-    AllVersusAllDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'AllVersusAll'];
+    AllVersusAllDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'AllVersusAll', 'Game', 'User', 'Participant'];
 
-    function AllVersusAllDetailController($scope, $rootScope, $stateParams, previousState, entity, AllVersusAll) {
+    function AllVersusAllDetailController($scope, $rootScope, $stateParams, previousState, entity, AllVersusAll, Game, User, Participant) {
         var vm = this;
 
         vm.allVersusAll = entity;

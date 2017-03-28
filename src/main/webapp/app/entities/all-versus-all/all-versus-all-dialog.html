@@ -11,76 +11,113 @@
         <div class="form-group" ng-show="vm.allVersusAll.id">
             <label for="id" data-translate="global.field.id">ID</label>
             <input type="text" class="form-control" id="id" name="id"
-                    ng-model="vm.allVersusAll.id" readonly />
+                   ng-model="vm.allVersusAll.id" readonly />
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
-                    ng-model="vm.allVersusAll.name"
-                    required/>
+                   ng-model="vm.allVersusAll.name"
+                   required/>
             <div ng-show="editForm.name.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.name.$error.required" data-translate="entity.validation.required">
+                   ng-show="editForm.name.$error.required" data-translate="entity.validation.required">
                     This field is required.
                 </p>
             </div>
         </div>
-        
+
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.tournament.note" for="field_note">Note</label>
             <textarea rows="3" type="text" class="form-control" name="note" id="field_note"
-                    ng-model="vm.allVersusAll.note"
-                    />
+                      ng-model="vm.allVersusAll.note"
+                      />
         </div>
-        
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" for="field_pointsForWinning">Points For Winning</label>
-            <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
-                    ng-model="vm.allVersusAll.pointsForWinning"
-                    />
-        </div>
-        
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" for="field_pointsForLosing">Points For Losing</label>
-            <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
-                    ng-model="vm.allVersusAll.pointsForLosing"
-                    />
-        </div>
-        
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" for="field_pointsForTie">Points For Tie</label>
-            <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
-                   ng-model="vm.allVersusAll.pointsForTie"
-                    />
-        </div>
-        
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" for="field_numberOfMutualMatches">Number Of Mutual Matches</label>
-            <input type="number" class="form-control" name="numberOfMutualMatches" id="field_numberOfMutualMatches"
-                    ng-model="vm.allVersusAll.numberOfMutualMatches" ng-init="1"
-                    required min="1"/>
-            <div ng-show="editForm.numberOfMutualMatches.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.numberOfMutualMatches.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.numberOfMutualMatches.$error.min" data-translate="entity.validation.min" translate-value-min="1">
-                    This field should be at least 1.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.numberOfMutualMatches.$error.number" data-translate="entity.validation.number">
-                    This field should be a number.
-                </p>
+        <div class="myDistributeHorizontally">
+            <div class="form-group myFields">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" for="field_pointsForWinning">Points For Winning</label>
+                <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
+                       ng-model="vm.allVersusAll.pointsForWinning"
+                       />
+            </div>
+
+            <div class="form-group myFields">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" for="field_pointsForLosing">Points For Losing</label>
+                <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
+                       ng-model="vm.allVersusAll.pointsForLosing"
+                       />
+            </div>
+
+            <div class="form-group myFields">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" for="field_pointsForTie">Points For Tie</label>
+                <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
+                       ng-model="vm.allVersusAll.pointsForTie"
+                       />
+            </div>
+
+            <div class="form-group myFields">
+                <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" for="field_numberOfMutualMatches">Number Of Mutual Matches</label>
+                <input type="number" class="form-control" name="numberOfMutualMatches" id="field_numberOfMutualMatches"
+                       ng-model="vm.allVersusAll.numberOfMutualMatches" ng-init="1"
+                       required min="1"/>
+                <div ng-show="editForm.numberOfMutualMatches.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.numberOfMutualMatches.$error.required" data-translate="entity.validation.required">
+                        This field is required.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfMutualMatches.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfMutualMatches.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
             </div>
         </div>
-        
-        
+        <div style="clear: both"/>
+
         <!--PARTICIPANTS - TODO ======================================================-->
-        <div class="form-group">
-            <label data-translate="tournamentControlApp.tournament.participants" for="field_participants">Participants</label>
-            <select class="form-control" id="field_participants" multiple name="participants" ng-model="vm.tournament.participants" ng-options="participant as participant.id for participant in vm.participants track by participant.id"></select>
+        <div class="well well-sm">
+            <ul class="nav nav-pills" id="myTab">
+                <li class="active"><a showtab href="#players" ng-init="this.chosen = 1" ng-click="this.chosen = 1"><span  data-translate=""> Add Players</span></a></li><!--TODO-->
+                <li ng-disabled=""><p class="text-center text" style="padding-top: 10px;padding-left: 5px;padding-right: 5px" data-translate="">or</p></li>
+                <li><a showtab href="#teams" ng-click="this.chosen = 2"><span  data-translate="">Add Teams</span></a></li><!--TODO-->
+            </ul>
+
+            <div class="tab-content" style="padding: 10px">
+                <div class="tab-pane active" id="players">
+                    <div ng-repeat="participant in vm.participants">
+                        <span ng-if="participant.player">
+                            <label>
+                                <input  type="checkbox"  id="field_participants" name="participants" 
+                                        checklist-model="vm.allVersusAll.participants" checklist-value="participant" > {{participant.player.name}}
+                            </label> 
+                        </span>
+                    </div>
+                </div>
+                <div class="tab-pane" id="teams">
+                    <div ng-repeat="participant in vm.participants">
+                        <span ng-if="participant.team">
+                            <label>
+                                <input  type="checkbox"  id="field_participants" name="participants"
+                                        checklist-model="vm.allVersusAll.participants" checklist-value="participant" > {{participant.team.name}}
+                            </label>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <p>{{chosen}}</p>
+            
         </div>
+
+
+
+        <!--OLD =================-->
+        <!--        <div class="form-group">
+                    <label data-translate="tournamentControlApp.tournament.participants" for="field_participants">Participants</label>
+                    <select class="form-control" id="field_participants" multiple name="participants" ng-model="vm.tournament.participants" ng-options="participant as participant.id for participant in vm.participants track by participant.id"></select>
+                </div>-->
         <!--PARTICIPANTS - TODO ======================================================-->
 
     </div>

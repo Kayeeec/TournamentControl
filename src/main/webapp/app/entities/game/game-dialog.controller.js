@@ -5,33 +5,20 @@
         .module('tournamentControlApp')
         .controller('GameDialogController', GameDialogController);
 
-    GameDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', '$q', 'entity', 'Game', 'Participant', 'Tournament'];
+    GameDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Game', 'Tournament', 'Participant'];
 
-    function GameDialogController ($timeout, $scope, $stateParams, $uibModalInstance, $q, entity, Game, Participant, Tournament) {
+    function GameDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Game, Tournament, Participant) {
         var vm = this;
 
         vm.game = entity;
         vm.clear = clear;
         vm.save = save;
-        vm.rivalas = Participant.query({filter: 'game-is-null'});
-        $q.all([vm.game.$promise, vm.rivalas.$promise]).then(function() {
-            if (!vm.game.rivalA || !vm.game.rivalA.id) {
-                return $q.reject();
-            }
-            return Participant.get({id : vm.game.rivalA.id}).$promise;
-        }).then(function(rivalA) {
-            vm.rivalas.push(rivalA);
-        });
-        vm.rivalbs = Participant.query({filter: 'game-is-null'});
-        $q.all([vm.game.$promise, vm.rivalbs.$promise]).then(function() {
-            if (!vm.game.rivalB || !vm.game.rivalB.id) {
-                return $q.reject();
-            }
-            return Participant.get({id : vm.game.rivalB.id}).$promise;
-        }).then(function(rivalB) {
-            vm.rivalbs.push(rivalB);
-        });
+        
         vm.tournaments = Tournament.query();
+        vm.participants = Participant.query();
+        
+        vm.game.scoreA = vm.game.scoreA || 0;
+        vm.game.scoreB = vm.game.scoreB || 0;
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

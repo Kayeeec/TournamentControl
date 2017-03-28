@@ -1,6 +1,6 @@
 package cz.tournament.control.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -47,15 +47,15 @@ public class Tournament implements Serializable {
     @Column(name = "created")
     private ZonedDateTime created;
 
-    @OneToMany(mappedBy = "tournament")
-    @JsonIgnore
+    @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnoreProperties({"tournament"})
     private Set<Game> matches = new HashSet<>();
 
     @ManyToOne
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "tournament_participants",
                joinColumns = @JoinColumn(name="tournaments_id", referencedColumnName="id"),
