@@ -79,13 +79,13 @@
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
-                                    ui-sref="game-detail({id:game.id})"
+                                    ui-sref="game-detail({gameid:game.id, id:vm.allVersusAll.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
-                                    ui-sref="game.edit({id:game.id})"
+                                    ui-sref="game.edit({gameid:game.id, id:vm.allVersusAll.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
                                 <span class="hidden-sm-down" data-translate="entity.action.edit"></span>

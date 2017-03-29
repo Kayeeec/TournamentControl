@@ -33,7 +33,7 @@
         })
         .state('game-detail', {
             parent: 'all-versus-all-detail',
-            url: '/game-detail/{id}',
+            url: '/game-detail/{gameid}',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'tournamentControlApp.game.detail.title'
@@ -51,7 +51,7 @@
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'Game', function($stateParams, Game) {
-                    return Game.get({id : $stateParams.id}).$promise;
+                    return Game.get({id : $stateParams.gameid}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -123,7 +123,7 @@
         })
         .state('game.edit', {
             parent: 'all-versus-all-detail',
-            url: '/game-edit/{id}',
+            url: '/game-edit/{gameid}',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -136,7 +136,7 @@
                     size: 'lg',
                     resolve: {
                         entity: ['Game', function(Game) {
-                            return Game.get({id : $stateParams.id}).$promise;
+                            return Game.get({id : $stateParams.gameid}).$promise;
                         }]
                     }
                 }).result.then(function() {

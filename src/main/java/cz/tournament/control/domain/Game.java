@@ -45,7 +45,7 @@ public class Game implements Serializable {
     @Column(name = "note")
     private String note;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Tournament tournament;
 
     @ManyToOne
