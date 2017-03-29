@@ -1,7 +1,5 @@
 package cz.tournament.control.domain.tournaments;
 
-import cz.tournament.control.domain.Game;
-import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.Tournament;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -9,8 +7,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
