@@ -55,49 +55,40 @@
         </div>
 
         <!-- Table -->
-        <div class="table-responsive">  
-            <table class="jh-table table table-striped">
+        <div class="table-responsive">
+            <table class="jh-table table table-striped myTextCenter">
                 <thead>
                     <tr>
-                        <th>Rank</th>
-                        <th>Participant</th>
-                        <th>Wins</th>
-                        <th>Loses</th>
-                        <th>Ties</th>
-                        <th>Score</th>
-                        <th>Points</th>
+                        <th class="myTextCenter">Rank</th>
+                        <th class="myTextCenter">Participant</th>
+                        <th class="myWins myTextCenter">Wins</th>
+                        <th class="myTextCenter myLoses">Loses</th>
+                        <th class="myTextCenter">Ties</th>
+                        <th class="myTextCenter" colspan="3">Score</th>
+                        <th class="myTextCenter">Points</th>
                     </tr>
                 </thead>
-<!--                <tbody>
-                    <tr ng-repeat="participant in evaluated">
-                        <td >{{$index + 1}}</td>
-                    <td id="participant">
-                        <span ng-if="participant.rival.player">{{participant.rival.player.name}}</span>
-                        <span ng-if="participant.rival.team">{{participant.rival.team.name}}</span>
-                    </td>
-                    <td id="wins">{{participant.wins}}</td>
-                    <td id="loses">{{participant.loses}}</td>
-                    <td id="ties">{{participant.ties}}</td>    
-                    <td id="score">score</td>
-                    <td id="points">{{participant.total}}</td>
-                </tr>
-                </tbody>-->
                 <tbody>
-                    <tr ng-repeat="participant in vm.allVersusAll.participants">
-                        <td >{{$index + 1}}</td>
-                    <td id="participant">
-                        <span ng-if="participant.player">{{participant.player.name}}</span>
-                        <span ng-if="participant.team">{{participant.team.name}}</span>
-                    </td>
-                    <td id="wins">{{winCount(participant.id)}}</td>
-                    <td id="loses">{{lossCount(participant.id)}}</td>
-                    <td id="ties">{{tieCount(participant.id)}}</td>    
-                    <td id="score">score</td>
-                    <td id="points">{{pointCount(participant.id).total}}</td>
+                <div ng-repeat="participant in vm.allVersusAll.participants">
+                    <div ng-if="participant.player" ng-init="temp = pointCount(participant.id);temp.rival = participant.player.name; counts.push(temp)"></div>
+                    <div ng-if="participant.team" ng-init="temp = pointCount(participant.id);temp.rival = participant.team.name; counts.push(temp)"></div>
+                </div>
+                <tr ng-repeat="count in counts | orderBy:'-total'">
+                    <td >{{$index + 1}}</td>
+                    <td id="participant">{{count.rival}}</td>
+                    <td id="wins" class="myWins">{{count.wins}}</td>
+                    <td id="loses" class="myLoses">{{count.loses}}</td>
+                    <td id="ties">{{count.ties}}</td>    
+                    <td id="score" style="text-align: right">{{count.score}}</td>
+                    <td id="colon" style="text-align: center; padding: 0px">:</td>
+                    <td id="scoreRival" style="text-align: left">{{count.scoreRival}}</td>
+                    <td id="points" class="myTotal">{{count.total}}</td>
                 </tr>
+                <div ng-init="emptyCounts()"></div> 
                 </tbody>
             </table>
         </div>
+
     </div>
     <!--END evaluation able ==========================================================================================--> 
 
@@ -122,7 +113,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="game in games track by game.id">
+                    <tr ng-class="{'success': game.finished}" ng-repeat="game in games | orderBy:'round' track by game.id">
                         <td>{{game.id}}</td>
                         <td style="text-align: center">{{game.round}}</td>
                         <td style="text-align: right">

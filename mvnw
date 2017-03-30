@@ -47,6 +47,7 @@ if [ -z "$MAVEN_SKIP_RC" ] ; then
 fi
 
 # OS specific support.  $var _must_ be set to either true or false.
+#MAVEN_OPTS=" -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n"
 cygwin=false;
 darwin=false;
 mingw=false
@@ -225,6 +226,8 @@ MAVEN_CMD_LINE_ARGS="$MAVEN_CONFIG $@"
 export MAVEN_CMD_LINE_ARGS
 
 WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
+
+#MAVEN_OPTS="$MAVEN_OPTS -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n"
 
 exec "$JAVACMD" \
   $MAVEN_OPTS \

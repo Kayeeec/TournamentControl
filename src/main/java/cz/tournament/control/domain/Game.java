@@ -212,7 +212,7 @@ public class Game implements Serializable {
             ", finished='" + finished + "'" +
             ", round='" + round + "'" +
             ", period='" + period + "'" +
-            ", note='" + note + "'" +
+            ", note='" + note + "'" +  
             '}';
     }
 }
