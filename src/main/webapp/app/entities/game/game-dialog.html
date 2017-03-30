@@ -13,8 +13,8 @@
                 <td id="scoreA_input">
                     <div class="form-group form-group-lg">
                         <label class="control-label" for="field_scoreA">
-                            <a ng-if="vm.game.rivalA.player" ui-sref="player-detail({id:vm.game.rivalA.player.id})">{{vm.game.rivalA.player.name}}</a>
-                            <a ng-if="vm.game.rivalA.team" ui-sref="team-detail({id:vm.game.rivalA.team.id})">{{vm.game.rivalA.team.name}}</a>
+                            <a ng-if="vm.game.rivalA.player" ui-sref="player-detail({id:vm.game.rivalA.player.id})"><h3>{{vm.game.rivalA.player.name}}</h3></a>
+                            <a ng-if="vm.game.rivalA.team" ui-sref="team-detail({id:vm.game.rivalA.team.id})"><h3>{{vm.game.rivalA.team.name}}</h3></a>
                         </label>
                         <input type="number" class="form-control" name="scoreA" id="field_scoreA"
                                ng-model="vm.game.scoreA"
@@ -35,8 +35,8 @@
                 <td id="scoreB_input">
                     <div class="form-group form-group-lg">
                         <label class="control-label" for="field_scoreB">
-                            <a ng-if="vm.game.rivalB.player" ui-sref="player-detail({id:vm.game.rivalB.player.id})">{{vm.game.rivalB.player.name}}</a>
-                            <a ng-if="vm.game.rivalB.team" ui-sref="team-detail({id:vm.game.rivalB.team.id})">{{vm.game.rivalB.team.name}}</a>
+                            <a ng-if="vm.game.rivalB.player" ui-sref="player-detail({id:vm.game.rivalB.player.id})"><h3>{{vm.game.rivalB.player.name}}</h3></a>
+                            <a ng-if="vm.game.rivalB.team" ui-sref="team-detail({id:vm.game.rivalB.team.id})"><h3>{{vm.game.rivalB.team.name}}</h3></a>
                         </label>
                         <input type="number" class="form-control" name="scoreB" id="field_scoreB"
                                ng-model="vm.game.scoreB"

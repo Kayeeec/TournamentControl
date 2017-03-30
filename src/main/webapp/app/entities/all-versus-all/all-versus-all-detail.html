@@ -47,55 +47,68 @@
         </dd>
     </dl>
 
-    <div class="table-responsive">
-        <table class="jh-table table table-striped">
-            <thead>
-                <tr >
-                    <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.round">Round</span></th>
-                    <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
-                    <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.score">Score</span></th>
+    <div class="panel panel-primary" ng-repeat="(period,games) in vm.allVersusAll.matches | groupBy: 'period'">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <h3 class="panel-title">Period {{period}}</h3>
 
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="game in vm.allVersusAll.matches track by game.id">
-                    <!--                    <td><a ui-sref="game-detail({id:game.id})">{{game.id}}</a></td>-->
-                    <td style="text-align: center">{{game.round}}</td>
-                    <td style="text-align: right">
-                        <a ng-if="game.rivalA.player" ui-sref="player-detail({id:game.rivalA.player.id})">{{game.rivalA.player.name}}</a>
-                        <a ng-if="game.rivalA.team" ui-sref="team-detail({id:game.rivalA.team.id})">{{game.rivalA.team.name}}</a>
-                    </td>
-                    <td style="text-align: center;padding: 0px">:</td>
-                    <td style="text-align: left">
-                        <a ng-if="game.rivalB.player" ui-sref="player-detail({id:game.rivalB.player.id})">{{game.rivalB.player.name}}</a>
-                        <a ng-if="game.rivalB.team" ui-sref="team-detail({id:game.rivalB.team.id})">{{game.rivalB.team.name}}</a>
-                    </td>
-                   
-                    <td style="text-align: right">{{game.scoreA || '-'}}</td>
-                    <td style="text-align: center; padding: 0px">:</td>
-                    <td style="text-align: left">{{game.scoreB || '-'}}</td>
+        </div> <!-- TODO data translate -->
 
-                    <td class="text-right">
-                        <div class="btn-group flex-btn-group-container">
-                            <button type="submit"
-                                    ui-sref="game-detail({gameid:game.id, id:vm.allVersusAll.id})"
-                                    class="btn btn-info btn-sm">
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
-                            </button>
-                            <button type="submit"
-                                    ui-sref="game.edit({gameid:game.id, id:vm.allVersusAll.id})"
-                                    class="btn btn-primary btn-sm">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="jh-table table table-striped">
+                <thead>
+                    <tr >
+                        <th>ID</th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.round">Round</span></th>
+                        <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
+                        <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.score">Score</span></th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="game in games track by game.id">
+                        <td>{{game.id}}</td>
+                        <td style="text-align: center">{{game.round}}</td>
+                        <td style="text-align: right">
+                            <a ng-if="game.rivalA.player" ui-sref="player-detail({id:game.rivalA.player.id})">{{game.rivalA.player.name}}</a>
+                            <a ng-if="game.rivalA.team" ui-sref="team-detail({id:game.rivalA.team.id})">{{game.rivalA.team.name}}</a>
+                        </td>
+                        <td style="text-align: center;padding: 0px">:</td>
+                        <td style="text-align: left">
+                            <a ng-if="game.rivalB.player" ui-sref="player-detail({id:game.rivalB.player.id})">{{game.rivalB.player.name}}</a>
+                            <a ng-if="game.rivalB.team" ui-sref="team-detail({id:game.rivalB.team.id})">{{game.rivalB.team.name}}</a>
+                        </td>
+
+                        <td style="text-align: right">{{game.scoreA|| '-'}}</td>
+                        <td style="text-align: center; padding: 0px">:</td>
+                        <td style="text-align: left">{{game.scoreB|| '-'}}</td>
+
+                        <td class="text-right">
+                            <div class="btn-group flex-btn-group-container">
+                                <button type="submit"
+                                        ui-sref="game-detail({gameid:game.id, id:vm.allVersusAll.id})"
+                                        class="btn btn-info btn-sm">
+                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                    <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                                </button>
+                                <button type="submit"
+                                        ui-sref="game.edit({gameid:game.id, id:vm.allVersusAll.id})"
+                                        class="btn btn-primary btn-sm">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                    <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
+
+
+
 
     <button type="submit"
             ui-sref="{{ vm.previousState}}"
