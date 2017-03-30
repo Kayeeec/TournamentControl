@@ -10,6 +10,8 @@ import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,10 +53,11 @@ public class AllVersusAllService {
     public AllVersusAll updateAllVersusAll(AllVersusAll allVersusAll){
         log.debug("Request to update AllVersusAll : {}", allVersusAll);
         
-        //generate assignment if it has participants
-        if(!allVersusAll.getParticipants().isEmpty()){
+        AllVersusAll old = allVersusAllRepository.findOne(allVersusAll.getId());
+        if(!old.getParticipants().equals(allVersusAll.getParticipants()) 
+                || old.getNumberOfMutualMatches() != allVersusAll.getNumberOfMutualMatches()){
             if(!allVersusAll.getMatches().isEmpty()) deleteAllMatches(allVersusAll);
-            generateAssignment(allVersusAll);
+            if(allVersusAll.getParticipants().size() >= 2) generateAssignment(allVersusAll);
         }
         
         AllVersusAll result = allVersusAllRepository.save(allVersusAll);
@@ -70,14 +73,15 @@ public class AllVersusAllService {
         allVersusAll.setUser(creator);
         //set creation date
         allVersusAll.setCreated(ZonedDateTime.now());
+        
+        AllVersusAll tmp = allVersusAllRepository.save(allVersusAll); //has to be in db before generating games
         //generate assignment if it has participants
-        if(!allVersusAll.getParticipants().isEmpty()){
-            generateAssignment(allVersusAll);
-            log.debug("AllVersusAll SERVICE: generated matches: {}", allVersusAll.getMatches());
+        if(tmp.getParticipants().size() >= 2){
+            generateAssignment(tmp);
+            log.debug("AllVersusAll SERVICE: generated matches: {}", tmp.getMatches());
         }
         
-        
-        AllVersusAll result = allVersusAllRepository.save(allVersusAll);
+        AllVersusAll result = allVersusAllRepository.save(tmp);
         log.debug("AllVersusAll SERVICE: created AllVersusAll tournament: {}", result);
         return result;
         
@@ -126,75 +130,93 @@ public class AllVersusAllService {
     
     //delete all tournaments matches from tournament and database
     private void deleteAllMatches(AllVersusAll ava){
-        for (Game match : ava.getMatches()) {
-            ava.removeMatches(match);
-            gameRepository.delete(match.getId());
-        }
+        List<Game> matches = new ArrayList<>(ava.getMatches());
+        ava.setMatches(new HashSet<>());
+        gameRepository.delete(matches);
     }
     
     //==========================================================================
     //Assignment generation 
     //==========================================================================
-    private int getNumberOfRounds(AllVersusAll allVersusAll) {
-        //při sudém počtu týmů je počet kol N–1, při lichém počtu je počet kol roven počtu týmů N
-       int n = allVersusAll.getParticipants().size();
-       if (n % 2 == 0) return n-1;
-       return n;
+    
+    private List<Participant> initCorrectListOfParticipants(AllVersusAll tournament){
+         List<Participant> result = new ArrayList<>(tournament.getParticipants());
+         if(result.size() % 2 == 1){
+             result.add(null);
+         }
+         return result;
     }
     
-    private Integer[] assignmentInit(int n){
-        if(n%2==1){
-            Integer[] result = new Integer[n + 1];
-            for (int i = 0; i < n; i++){
-                result[i]=i;
+    private void generateMatches(int period, int round, List<Participant> participant, AllVersusAll tournament){
+        int n = participant.size();
+        Participant rivalA, rivalB;
+        for (int i = 0; i < n/2; i++){
+            rivalA = participant.get(i);
+            rivalB = participant.get(n-1-i);
+            if(rivalA != null && rivalB != null){
+                
+                if(period % 2 == 0){
+                    Game match = new Game().period(period).round(round).rivalA(rivalB).rivalB(rivalA).tournament(tournament);
+                    Game saved = gameRepository.save(match);
+                    tournament.addMatches(saved);
+                }else{
+                    Game match = new Game().period(period).round(round).rivalA(rivalA).rivalB(rivalB).tournament(tournament);
+                    Game saved = gameRepository.save(match);
+                    tournament.addMatches(saved);
+                }
             }
-            result[n] = null;
-            return result;
-        }
-        Integer[] result = new Integer[n];
-        for (int i = 0; i < n; i++){
-            result[i]=i;
-        }
-        return result;
-    }
-    
-    private void generateMatches(List<Participant> arr, Integer[] index, int round, int period, AllVersusAll allVersusAll){
-        int n = index.length;
-        for (int i = 0; i <= n/2; i++){
-            if (index[i] != null && index[n-1-i] != null){  
-                Game match = gameRepository.save(new Game().tournament(allVersusAll)
-                        .period(period)
-                        .round(round)
-                        .rivalA(arr.get(index[i]))
-                        .rivalB(arr.get(index[n-1-i])));                
-                allVersusAll.addMatches(match);  
-            }  
         }
     }
     
-    private Integer[] shiftIndices(Integer[] index){
-        int n = index.length;
-        Integer[] result = new Integer[n];
-        
-        for (int i = 1; i <= n-2; i++){
-            result[i+1]=index[i];
+    
+    private List<Participant> shift(List<Participant> participant){
+        int n = participant.size();
+        Participant[] result = new Participant[n];
+        result[0] = participant.get(0);
+        result[1] = participant.get(n-1);
+        for (int i = 1; i < n-1; i++){
+            result[i+1] = participant.get(i);
         }
-        result[1]=index[n-1];
-        
-        return result;
+        return Arrays.asList(result);
     }
     
-    public void generateAssignment(AllVersusAll allVersusAll){
-        int numberOfPeriods = allVersusAll.getNumberOfMutualMatches();
-        
-        List<Participant> arr = new ArrayList<>(allVersusAll.getParticipants());
-        Integer[] index = assignmentInit(arr.size());
-        
-        for (int period = 1; period <= numberOfPeriods; period++) {
-            for (int round = 1; round <= getNumberOfRounds(allVersusAll); round++){
-                generateMatches(arr, index, round, period, allVersusAll);
-                index = shiftIndices(index);
-            }
-        }  
+    public void generateAssignment(AllVersusAll tournament){
+         List<Participant> participant = initCorrectListOfParticipants(tournament);
+         int roundCount = participant.size() - 1;
+         int periodCount = tournament.getNumberOfMutualMatches(); //readability
+         
+         for(int p = 1; p <= periodCount; p++){
+             for (int r = 1; r <= roundCount; r++){
+                 log.debug("p: {}, r: {}, working list: {}", p,r,participant);
+                 generateMatches(p, r, participant, tournament);
+                 participant = shift(participant);
+             }
+         }
+         
     }
+    
+//    public static List<String> shiftStrings(List<String> participant){
+//        int n = participant.size();
+//        String[] result = new String[n];
+//        result[0] = participant.get(0);
+//        result[1] = participant.get(n-1);
+//        for (int i = 1; i < n-1; i++){
+//            result[i+1] = participant.get(i);
+//        }
+//        return Arrays.asList(result);
+//    }
+//    
+//    public static void main(String[] args) {
+//        System.out.println("Hello");
+//        List<String> list = new ArrayList<>();
+//        list.add(new String("Dana"));
+//        list.add(new String("Bety"));
+//        System.out.println(list);
+//        System.out.println("size = " + list.size());
+//        System.out.println("list after shift:");
+//        list = shiftStrings(list);
+//        System.out.println(list);
+//        
+//        
+//    }
 }
