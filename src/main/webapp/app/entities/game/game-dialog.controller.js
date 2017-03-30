@@ -13,7 +13,6 @@
         vm.game = entity;
         vm.clear = clear;
         vm.save = save;
-        
         vm.tournaments = Tournament.query();
         vm.participants = Participant.query();
         
