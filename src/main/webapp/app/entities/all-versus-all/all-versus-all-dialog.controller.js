@@ -13,13 +13,17 @@
         vm.allVersusAll = entity;
         vm.clear = clear;
         vm.save = save;
-        vm.allVersusAll.numberOfMutualMatches = 1;
+        
 
         vm.participants = Participant.query();
         $scope.selectedPlayers;
         $scope.selectedTeams;
+        
+        
+//        initiating default values 
         $scope.chosen = 1;
         vm.allVersusAll.numberOfMutualMatches = vm.allVersusAll.numberOfMutualMatches || 1;
+
 
         $timeout(function () {
             angular.element('.form-group:eq(1)>input').focus();
@@ -33,6 +37,8 @@
             e.preventDefault();
             $(this).tab('show');
         });
+        
+        
 
 
         function clear() {
