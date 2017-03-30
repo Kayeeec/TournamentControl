@@ -47,11 +47,65 @@
         </dd>
     </dl>
 
+    <!--evaluation able ==========================================================================================--> 
+    <div class="panel panel-default panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <h3 class="panel-title">Evaluation table</h3><!--TODO: data-translate-->
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">  
+            <table class="jh-table table table-striped">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Participant</th>
+                        <th>Wins</th>
+                        <th>Loses</th>
+                        <th>Ties</th>
+                        <th>Score</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+<!--                <tbody>
+                    <tr ng-repeat="participant in evaluated">
+                        <td >{{$index + 1}}</td>
+                    <td id="participant">
+                        <span ng-if="participant.rival.player">{{participant.rival.player.name}}</span>
+                        <span ng-if="participant.rival.team">{{participant.rival.team.name}}</span>
+                    </td>
+                    <td id="wins">{{participant.wins}}</td>
+                    <td id="loses">{{participant.loses}}</td>
+                    <td id="ties">{{participant.ties}}</td>    
+                    <td id="score">score</td>
+                    <td id="points">{{participant.total}}</td>
+                </tr>
+                </tbody>-->
+                <tbody>
+                    <tr ng-repeat="participant in vm.allVersusAll.participants">
+                        <td >{{$index + 1}}</td>
+                    <td id="participant">
+                        <span ng-if="participant.player">{{participant.player.name}}</span>
+                        <span ng-if="participant.team">{{participant.team.name}}</span>
+                    </td>
+                    <td id="wins">{{winCount(participant.id)}}</td>
+                    <td id="loses">{{lossCount(participant.id)}}</td>
+                    <td id="ties">{{tieCount(participant.id)}}</td>    
+                    <td id="score">score</td>
+                    <td id="points">{{pointCount(participant.id).total}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--END evaluation able ==========================================================================================--> 
+
+    <!--tables for matches and editing scores =================================================================== -->
     <div class="panel panel-primary" ng-repeat="(period,games) in vm.allVersusAll.matches | groupBy: 'period'">
         <!-- Default panel contents -->
         <div class="panel-heading">
             <h3 class="panel-title">Period {{period}}</h3>
-
         </div> <!-- TODO data translate -->
 
         <!-- Table -->
@@ -63,7 +117,7 @@
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.round">Round</span></th>
                         <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
                         <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.score">Score</span></th>
-
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.finished">Finished</span></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -81,10 +135,10 @@
                             <a ng-if="game.rivalB.team" ui-sref="team-detail({id:game.rivalB.team.id})">{{game.rivalB.team.name}}</a>
                         </td>
 
-                        <td style="text-align: right">{{game.scoreA|| '-'}}</td>
+                        <td style="text-align: right">{{game.scoreA}}</td>
                         <td style="text-align: center; padding: 0px">:</td>
-                        <td style="text-align: left">{{game.scoreB|| '-'}}</td>
-
+                        <td style="text-align: left">{{game.scoreB}}</td>
+                        <td style="text-align: center">{{game.finished}}</td>
                         <td class="text-right">
                             <div class="btn-group flex-btn-group-container">
                                 <button type="submit"
