@@ -5,10 +5,8 @@
  */
 package cz.tournament.control.service;
 
-import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.User;
-import cz.tournament.control.domain.enumeration.TournamentType;
 import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
@@ -25,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class TournamentService {
-    private final Logger log = LoggerFactory.getLogger(UserService.class);
+    private final Logger log = LoggerFactory.getLogger(TournamentService.class);
 
     private final UserRepository userRepository;
     private final TournamentRepository tournamentRepository;

@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TeamService {
     
-    private final Logger log = LoggerFactory.getLogger(UserService.class);
+    private final Logger log = LoggerFactory.getLogger(TeamService.class);
 
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
