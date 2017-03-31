@@ -35,5 +35,7 @@
             e.preventDefault();
             $(this).tab('show');
         });
+        
+        $("#allversusallTable").stupidtable();
     }
 })();
