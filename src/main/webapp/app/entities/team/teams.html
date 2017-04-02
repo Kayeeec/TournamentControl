@@ -22,7 +22,7 @@
                     <th><span data-translate="tournamentControlApp.team.name">Name</span></th>
                     <th><span data-translate="tournamentControlApp.team.note">Note</span></th>
                     <th><span data-translate="tournamentControlApp.team.user">User</span></th>
-                    <th><span data-translate="tournamentControlApp.team.members">Members</span></th>
+                    <th><span data-translate="">Number of Members</span></th> <!--TODO-->
                     <th></th>
                 </tr>
             </thead>
@@ -35,9 +35,7 @@
                         {{team.user.login}}
                     </td>
                     <td>
-                        <span ng-repeat="member in team.members">
-                            <a class="form-control-static" ui-sref="player-detail({id: member.id})">{{member.name}}</a>{{$last ? '' : ', '}}
-                        </span>
+                        {{team.members.length}}
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

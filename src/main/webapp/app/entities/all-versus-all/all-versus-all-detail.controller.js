@@ -5,9 +5,9 @@
             .module('tournamentControlApp')
             .controller('AllVersusAllDetailController', AllVersusAllDetailController);
 
-    AllVersusAllDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'AllVersusAll', 'Game', 'User', 'Participant', 'filterFilter'];
+    AllVersusAllDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'AllVersusAll', 'Game', 'User', 'Participant', '$resource'];
 
-    function AllVersusAllDetailController($scope, $rootScope, $stateParams, previousState, entity, AllVersusAll, Game, User, Participant, filterFilter) {
+    function AllVersusAllDetailController($scope, $rootScope, $stateParams, previousState, entity, AllVersusAll, Game, User, Participant, $resource) {
         var vm = this;
 
         vm.allVersusAll = entity;
@@ -33,7 +33,7 @@
 
         $scope.pointCount = function pointCount(participantID) {
             var hisFinishedMatches = participantsFinishedMatches(participantID);
-            console.log('hisFinishedMatches: ' + hisFinishedMatches);
+//            console.log('hisFinishedMatches: ' + hisFinishedMatches);
             var points = {rival: "rival",wins: 0, loses: 0, ties: 0, total: 0, score: 0, scoreRival: 0};
 
             hisFinishedMatches.forEach(function (match) {
@@ -81,7 +81,36 @@
         
         $scope.emptyCounts = function(){
             $scope.counts = [];
-            console.log('counts: ' + $scope.counts);
+        };
+        
+        $scope.downloadGeneratedFile = function(tournamentID){
+            var fileName = "tournament_" + tournamentID.toString() + ".ods";
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            
+            var File = $resource('/generateFile/allVersusAll_file/:tournamentID', {tournamentID:'@tournamentID'}, {responseType:'arraybuffer'});
+            File.get( {tournamentID:tournamentID}, function(result){
+                var file = new Blob([result.data], {type: 'application/vnd.oasis.opendocument.spreadsheet'});
+                var fileURL = window.URL.createObjectURL(file);
+                a.href = fileURL;
+                a.download = fileName;
+                a.click();
+            });
+        };
+        
+        $scope.getFile = function(tournamentID){
+            var fileName = "tournament_" + tournamentID.toString() + ".ods";
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            
+            var File = $resource('/generateFile/file/:tournamentID', {tournamentID:'@tournamentID'}, {responseType:'arraybuffer'});
+            File.get( {tournamentID:tournamentID}, function(result){
+                var file = new Blob([result.data], {type: 'application/vnd.oasis.opendocument.spreadsheet;charset=utf-8;'});
+                var fileURL = window.URL.createObjectURL(file);
+                a.href = fileURL;
+                a.download = fileName;
+                a.click();
+            });
         };
         
         

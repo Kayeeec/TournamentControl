@@ -5,25 +5,21 @@
             .module('tournamentControlApp')
             .controller('AllVersusAllDialogController', AllVersusAllDialogController);
 
-    AllVersusAllDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'AllVersusAll', 'Participant'];
+    AllVersusAllDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'AllVersusAll', 'Participant', 'filterFilter'];
 
-    function AllVersusAllDialogController($timeout, $scope, $stateParams, $uibModalInstance, entity, AllVersusAll, Participant) {
+    function AllVersusAllDialogController($timeout, $scope, $stateParams, $uibModalInstance, entity, AllVersusAll, Participant, filterFilter) {
         var vm = this;
 
         vm.allVersusAll = entity;
         vm.clear = clear;
         vm.save = save;
-        
-
         vm.participants = Participant.query();
-        $scope.selectedPlayers;
-        $scope.selectedTeams;
-        
         
 //        initiating default values 
-        $scope.chosen = 1;
         vm.allVersusAll.numberOfMutualMatches = vm.allVersusAll.numberOfMutualMatches || 1;
-
+        vm.selectedPlayers = filterFilter(vm.allVersusAll.participants, {team : null});
+        vm.selectedTeams = filterFilter(vm.allVersusAll.participants, {player : null});
+        $scope.chosen = 1;
 
         $timeout(function () {
             angular.element('.form-group:eq(1)>input').focus();
@@ -38,24 +34,31 @@
             $(this).tab('show');
         });
         
+        function selectParticipants() {
+            console.log("Selecting participants");
+            if($scope.chosen === 1){
+                angular.copy(vm.selectedPlayers, vm.allVersusAll.participants);
+                console.log("vm.selectedPlayers: " + vm.selectedPlayers);
+                console.log("vm.allVersusAll.participants: " + vm.allVersusAll.participants);
+            }
+            if($scope.chosen === 2){
+                angular.copy(vm.selectedTeams, vm.allVersusAll.participants);
+                console.log("vm.selectedTeams: " + vm.selectedTeams);
+                console.log("vm.allVersusAll.participants: " + vm.allVersusAll.participants);
+            }
+        }
         
-
 
         function clear() {
             $uibModalInstance.dismiss('cancel');
         }
 
         function save() {
-
+            
             vm.isSaving = true;
-
-//            if ($scope.chosen === 1){
-//                vm.allVersusAll.participants = $scope.selectedPlayers;
-//            }else {
-//                vm.allVersusAll.participants = $scope.selectedTeams;
-//            }
-//            
-
+            
+            selectParticipants();
+            
             if (vm.allVersusAll.id !== null) {
                 AllVersusAll.update(vm.allVersusAll, onSaveSuccess, onSaveError);
             } else {
