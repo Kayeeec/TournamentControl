@@ -16,6 +16,7 @@
         vm.participants = Participant.query();
         
 //        initiating default values 
+        vm.allVersusAll.participants = vm.allVersusAll.participants || [];
         vm.allVersusAll.numberOfMutualMatches = vm.allVersusAll.numberOfMutualMatches || 1;
         vm.selectedPlayers = filterFilter(vm.allVersusAll.participants, {team : null});
         vm.selectedTeams = filterFilter(vm.allVersusAll.participants, {player : null});
