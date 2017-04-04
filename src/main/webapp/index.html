@@ -17,6 +17,7 @@
     <!-- build:css content/css/main.css -->
     <link rel="stylesheet" href="content/css/main.css">
     <!-- endbuild -->
+    
 </head>
 <body ng-app="tournamentControlApp" ng-strict-di>
     <!--[if lt IE 9]>
@@ -220,6 +221,14 @@
     <script src="app/showtab-directive.js"></script>
     <script src="bower_components/angular-filter/dist/angular-filter.js"></script>
     <script src="bower_components/jquery-stupid-table/stupidtable.min.js"></script>
+    <!--my text editor-->
+    <script src="bower_components/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript">
+        tinymce.init({
+          selector: 'textarea'
+        });
+    </script>
+    <!--END my text editor-->
 
     <!--END__my added modules - should not be changed by jhipster-->
 
