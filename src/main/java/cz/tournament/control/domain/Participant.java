@@ -46,6 +46,11 @@ public class Participant implements Serializable {
         this.team = team;
         this.user = user;
     }
+    
+    public String getName(){
+        if(this.player != null) return player.getName();
+        return team.getName();
+    }
 
     public Long getId() {
         return id;
