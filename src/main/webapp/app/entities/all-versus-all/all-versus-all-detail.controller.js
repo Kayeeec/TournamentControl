@@ -83,39 +83,6 @@
             $scope.counts = [];
         };
         
-        $scope.downloadGeneratedFile = function(tournamentID){
-            var fileName = "tournament_" + tournamentID.toString() + ".ods";
-            var a = document.createElement("a");
-            document.body.appendChild(a);
-            
-            var File = $resource('/generateFile/allVersusAll_file/:tournamentID', {tournamentID:'@tournamentID'}, {responseType:'arraybuffer'});
-            File.get( {tournamentID:tournamentID}, function(result){
-                var file = new Blob([result.data], {type: 'application/vnd.oasis.opendocument.spreadsheet'});
-                var fileURL = window.URL.createObjectURL(file);
-                a.href = fileURL;
-                a.download = fileName;
-                a.click();
-            });
-        };
-        
-        $scope.getFile = function(tournamentID){
-            var fileName = "tournament_" + tournamentID.toString() + ".ods";
-            var a = document.createElement("a");
-            document.body.appendChild(a);
-            
-            var File = $resource('/generateFile/file/:tournamentID', {tournamentID:'@tournamentID'}, {responseType:'arraybuffer'});
-            File.get( {tournamentID:tournamentID}, function(result){
-                var file = new Blob([result.data], {type: 'application/vnd.oasis.opendocument.spreadsheet;charset=utf-8;'});
-                var fileURL = window.URL.createObjectURL(file);
-                a.href = fileURL;
-                a.download = fileName;
-                a.click();
-            });
-        };
-        
-        
-
-        
 
         var unsubscribe = $rootScope.$on('tournamentControlApp:allVersusAllUpdate', function (event, result) {
             vm.allVersusAll = result;
