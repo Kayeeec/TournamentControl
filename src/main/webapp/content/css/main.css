@@ -5,6 +5,31 @@ body {
 }
 
 /* ==========================================================================
+My styles
+============================================================================= */
+.myFields
+    {
+    display: block;
+    float: left;
+    }
+.myDistributeHorizontally{
+    display: flex; 
+    justify-content: space-between;
+}
+.myWins{
+    color: #060;
+}
+.myLoses{
+    color: #a00;
+}
+.myTotal{
+    font-weight: bold; 
+}
+.myTextCenter{
+    text-align: center;
+}
+
+/* ==========================================================================
 Hide ng-cloak on page load, https://docs.angularjs.org/api/ng/directive/ngCloak
 ========================================================================== */
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {

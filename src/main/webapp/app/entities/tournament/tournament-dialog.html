@@ -32,22 +32,6 @@
                     />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.numberOfMutualMatches" for="field_numberOfMutualMatches">Number Of Mutual Matches</label>
-            <input type="number" class="form-control" name="numberOfMutualMatches" id="field_numberOfMutualMatches"
-                    ng-model="vm.tournament.numberOfMutualMatches"
-                    min="1"/>
-            <div ng-show="editForm.numberOfMutualMatches.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.numberOfMutualMatches.$error.min" data-translate="entity.validation.min" translate-value-min="1">
-                    This field should be at least 1.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.numberOfMutualMatches.$error.number" data-translate="entity.validation.number">
-                    This field should be a number.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" for="field_pointsForWinning">Points For Winning</label>
             <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
                     ng-model="vm.tournament.pointsForWinning"
@@ -65,39 +49,17 @@
                     ng-model="vm.tournament.pointsForTie"
                     />
         </div>
-    <div> 
-        <label><input type="radio" ng-model="participantType" value="player" ng-change="vm.uncheckAll()">Player</label>
-        <label><input type="radio" ng-model="participantType" value="team">Team</label>
-        <div ng-switch on="participantType">
-            <fieldset>
-                <legend data-translate="tournamentControlApp.tournament.participants" for="field_participants">Participants</legend>
-                <div class="form-group" ng-switch-when="player">
 
-                    <!--<label data-translate="tournamentControlApp.tournament.participants" for="field_participants">Participants</label>-->
-                    <div ng-repeat="participant in vm.participants">
-                        <span ng-if="participant.player">
-                            <label>
-                                <input  type="checkbox"  id="field_participants" name="participants" 
-                                        checklist-model="$scope.selectedParticipants" checklist-value="participant" > {{participant.player.name}}
-                            </label> 
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group" ng-switch-when="team">
-                    <!--<label data-translate="tournamentControlApp.tournament.participants" for="field_participants">Participants</label>-->
-                    <div ng-repeat="participant in vm.participants">
-                        <span ng-if="participant.team">
-                            <label>
-                                <input  type="checkbox"  id="field_participants" name="participants"
-                                        checklist-model="selectedParticipants" checklist-value="participant" > {{participant.team.name}}
-                            </label>
-                        </span>
-                    </div>
-                </div>
-            </fieldset>
-            <input type="hidden" ng-model="vm.tournament.participants" value="$scope.selectedParticipants">
-        </div>    
-    </div>
+        <div class="form-group">
+            <label data-translate="tournamentControlApp.tournament.user" for="field_user">User</label>
+            <select class="form-control" id="field_user" name="user" ng-model="vm.tournament.user" ng-options="user as user.login for user in vm.users track by user.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="tournamentControlApp.tournament.participants" for="field_participants">Participants</label>
+            <select class="form-control" id="field_participants" multiple name="participants" ng-model="vm.tournament.participants" ng-options="participant as participant.id for participant in vm.participants track by participant.id"></select>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">

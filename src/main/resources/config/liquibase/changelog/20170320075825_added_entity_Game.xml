@@ -45,12 +45,16 @@
             <column name="note" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="rivala_id" type="bigint">
-                <constraints unique="true" nullable="true" />
-            </column>            <column name="rivalb_id" type="bigint">
-                <constraints unique="true" nullable="true" />
-            </column>
+
             <column name="tournament_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="rivala_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="rivalb_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 

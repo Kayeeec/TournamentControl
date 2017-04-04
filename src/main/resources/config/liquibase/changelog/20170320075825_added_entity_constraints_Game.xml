@@ -8,6 +8,12 @@
     -->
     <changeSet id="20170320075825-2" author="jhipster">
         
+        <addForeignKeyConstraint baseColumnNames="tournament_id"
+                                 baseTableName="game"
+                                 constraintName="fk_game_tournament_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tournament"/>
+
         <addForeignKeyConstraint baseColumnNames="rivala_id"
                                  baseTableName="game"
                                  constraintName="fk_game_rivala_id"
@@ -19,12 +25,6 @@
                                  constraintName="fk_game_rivalb_id"
                                  referencedColumnNames="id"
                                  referencedTableName="participant"/>
-
-        <addForeignKeyConstraint baseColumnNames="tournament_id"
-                                 baseTableName="game"
-                                 constraintName="fk_game_tournament_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="tournament"/>
 
     </changeSet>
 </databaseChangeLog>

@@ -13,7 +13,7 @@
         vm.team = entity;
         vm.clear = clear;
         vm.save = save;
-        vm.users = User.query();
+//        vm.users = User.query();
         vm.players = Player.query();
 
         $timeout(function (){

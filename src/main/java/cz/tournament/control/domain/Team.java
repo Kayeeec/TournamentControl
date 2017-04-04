@@ -34,7 +34,7 @@ public class Team implements Serializable {
     @ManyToOne
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "team_members",
                joinColumns = @JoinColumn(name="teams_id", referencedColumnName="id"),

@@ -21,9 +21,11 @@
             "round": "Round",
             "period": "Period",
             "note": "Note",
+            "tournament": "Tournament",
             "rivalA": "Rival A",
             "rivalB": "Rival B",
-            "tournament": "Tournament"
+            "rivals": "Rivals",
+            "score":"Score"
         }
     }
 }

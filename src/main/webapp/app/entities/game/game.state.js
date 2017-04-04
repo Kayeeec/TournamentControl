@@ -32,8 +32,8 @@
             }
         })
         .state('game-detail', {
-            parent: 'game',
-            url: '/game/{id}',
+            parent: 'all-versus-all-detail',
+            url: '/game-detail/{gameid}',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'tournamentControlApp.game.detail.title'
@@ -51,11 +51,11 @@
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'Game', function($stateParams, Game) {
-                    return Game.get({id : $stateParams.id}).$promise;
+                    return Game.get({id : $stateParams.gameid}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'game',
+                        name: $state.current.name || 'all-versus-all-detail',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -122,8 +122,8 @@
             }]
         })
         .state('game.edit', {
-            parent: 'game',
-            url: '/{id}/edit',
+            parent: 'all-versus-all-detail',
+            url: '/game-edit/{gameid}',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -136,11 +136,11 @@
                     size: 'lg',
                     resolve: {
                         entity: ['Game', function(Game) {
-                            return Game.get({id : $stateParams.id}).$promise;
+                            return Game.get({id : $stateParams.gameid}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('game', null, { reload: 'game' });
+                    $state.go('all-versus-all-detail', null, { reload: 'all-versus-all-detail' });
                 }, function() {
                     $state.go('^');
                 });
