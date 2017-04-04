@@ -1,0 +1,10 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [],
+    "changelogDate": "20170404182930",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "elimination",
+    "pagination": "infinite-scroll"
+}

@@ -3,18 +3,14 @@
 
     angular
         .module('tournamentControlApp')
-        .controller('TournamentController', TournamentController);
+        .controller('EliminationController', EliminationController);
 
-    TournamentController.$inject = ['Tournament', 'AllVersusAll', 'Elimination', 'ParseLinks', 'AlertService', 'paginationConstants'];
+    EliminationController.$inject = ['Elimination', 'ParseLinks', 'AlertService', 'paginationConstants'];
 
-    function TournamentController(Tournament, AllVersusAll, Elimination, ParseLinks, AlertService, paginationConstants) {
+    function EliminationController(Elimination, ParseLinks, AlertService, paginationConstants) {
 
         var vm = this;
 
-        vm.tournaments = [];
-        vm.allVersusAlls = [];
-        
-// BEGIN elimination ============================================
         vm.eliminations = [];
         vm.loadPage = loadPage;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
@@ -25,21 +21,10 @@
         vm.predicate = 'id';
         vm.reset = reset;
         vm.reverse = true;
-// END elimination ============================================
 
         loadAll();
 
-        function loadAll() {
-            Tournament.query(function(result) {
-                vm.tournaments = result;
-                vm.searchQuery = null;
-            });
-            AllVersusAll.query(function(result) {
-                vm.allVersusAlls = result;
-                vm.searchQuery = null;
-            });
-            
-// BEGIN elimination ============================================
+        function loadAll () {
             Elimination.query({
                 page: vm.page,
                 size: vm.itemsPerPage,
@@ -64,9 +49,8 @@
             function onError(error) {
                 AlertService.error(error.data.message);
             }
-// END elimination ============================================
         }
-        
+
         function reset () {
             vm.page = 0;
             vm.eliminations = [];
@@ -77,17 +61,5 @@
             vm.page = page;
             loadAll();
         }
-        
-        $('#myTab a[href="#allversusall"]').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-        $('#myTab a[href="#elimination"]').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-        
-        $("#allversusallTable").stupidtable();
-        $("#eliminationTable").stupidtable();
     }
 })();
