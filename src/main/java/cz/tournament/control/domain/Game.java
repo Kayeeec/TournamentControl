@@ -15,7 +15,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "game")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Game implements Serializable {
+public class Game implements Serializable, Comparable<Game> {
 
     private static final long serialVersionUID = 1L;
 
@@ -214,5 +214,16 @@ public class Game implements Serializable {
             ", period='" + period + "'" +
             ", note='" + note + "'" +  
             '}';
+    }
+
+    @Override
+    public int compareTo(Game o) {
+        if(o == null) throw new NullPointerException("Game.compareTo(Game o) : o is null");
+        
+        int byPeriod = this.period.compareTo(o.period);
+        if(byPeriod != 0) return byPeriod;
+        
+        return this.round.compareTo(o.round);
+         
     }
 }
