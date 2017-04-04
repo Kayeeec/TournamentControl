@@ -9,52 +9,49 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('tournament', {
+        .state('elimination', {
             parent: 'entity',
-            url: '/tournament',
+            url: '/elimination',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'tournamentControlApp.tournament.home.title'
+                pageTitle: 'tournamentControlApp.elimination.home.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/entities/tournament/tournaments.html',
-                    controller: 'TournamentController',
+                    templateUrl: 'app/entities/elimination/eliminations.html',
+                    controller: 'EliminationController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('tournament');
-                    $translatePartialLoader.addPart('allVersusAll');
                     $translatePartialLoader.addPart('elimination');
-                    $translatePartialLoader.addPart('game');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
         })
-        .state('tournament-detail', {
+        .state('elimination-detail', {
             parent: 'tournament',
-            url: '/tournament/{id}',
+            url: '/elimination/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'tournamentControlApp.tournament.detail.title'
+                pageTitle: 'tournamentControlApp.elimination.detail.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/entities/tournament/tournament-detail.html',
-                    controller: 'TournamentDetailController',
+                    templateUrl: 'app/entities/elimination/elimination-detail.html',
+                    controller: 'EliminationDetailController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('tournament');
+                    $translatePartialLoader.addPart('elimination');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'Tournament', function($stateParams, Tournament) {
-                    return Tournament.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', 'Elimination', function($stateParams, Elimination) {
+                    return Elimination.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -66,22 +63,22 @@
                 }]
             }
         })
-        .state('tournament-detail.edit', {
-            parent: 'tournament-detail',
-            url: '/detail/edit',
+        .state('elimination-detail.edit', {
+            parent: 'elimination-detail',
+            url: '/elimination/detail/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/tournament/tournament-dialog.html',
-                    controller: 'TournamentDialogController',
+                    templateUrl: 'app/entities/elimination/elimination-dialog.html',
+                    controller: 'EliminationDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['Tournament', function(Tournament) {
-                            return Tournament.get({id : $stateParams.id}).$promise;
+                        entity: ['Elimination', function(Elimination) {
+                            return Elimination.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
@@ -91,16 +88,16 @@
                 });
             }]
         })
-        .state('tournament.new', {
+        .state('elimination.new', {
             parent: 'tournament',
-            url: '/new',
+            url: '/elimination-new',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/tournament/tournament-dialog.html',
-                    controller: 'TournamentDialogController',
+                    templateUrl: 'app/entities/elimination/elimination-dialog.html',
+                    controller: 'EliminationDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
@@ -124,22 +121,22 @@
                 });
             }]
         })
-        .state('tournament.edit', {
+        .state('elimination.edit', {
             parent: 'tournament',
-            url: '/{id}/edit',
+            url: '/elimination/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/tournament/tournament-dialog.html',
-                    controller: 'TournamentDialogController',
+                    templateUrl: 'app/entities/elimination/elimination-dialog.html',
+                    controller: 'EliminationDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['Tournament', function(Tournament) {
-                            return Tournament.get({id : $stateParams.id}).$promise;
+                        entity: ['Elimination', function(Elimination) {
+                            return Elimination.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
@@ -149,7 +146,7 @@
                 });
             }]
         })
-        .state('tournament.delete', {
+        .state('elimination.delete', {
             parent: 'tournament',
             url: '/{id}/delete',
             data: {
@@ -157,13 +154,13 @@
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/tournament/tournament-delete-dialog.html',
-                    controller: 'TournamentDeleteController',
+                    templateUrl: 'app/entities/elimination/elimination-delete-dialog.html',
+                    controller: 'EliminationDeleteController',
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
-                        entity: ['Tournament', function(Tournament) {
-                            return Tournament.get({id : $stateParams.id}).$promise;
+                        entity: ['Elimination', function(Elimination) {
+                            return Elimination.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {

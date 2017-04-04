@@ -1,0 +1,20 @@
+{
+    "tournamentControlApp": {
+        "elimination" : {
+            "home": {
+                "title": "Eliminations",
+                "createLabel": "Create a new Elimination",
+                "createOrEditLabel": "Create or edit a Elimination"
+            },
+            "created": "A new Elimination is created with identifier {{ param }}",
+            "updated": "A Elimination is updated with identifier {{ param }}",
+            "deleted": "A Elimination is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Elimination {{ id }}?"
+            },
+            "detail": {
+                "title": "Elimination"
+            }
+        }
+    }
+}
