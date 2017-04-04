@@ -2,6 +2,7 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Game;
+import cz.tournament.control.domain.Tournament;
 
 import cz.tournament.control.repository.GameRepository;
 import cz.tournament.control.web.rest.util.HeaderUtil;
@@ -70,7 +71,13 @@ public class GameResource {
         if (game.getId() == null) {
             return createGame(game);
         }
+        //ensure tournament
+        Tournament oldTournament = gameRepository.findOne(game.getId()).getTournament();
+        game.setTournament(oldTournament);
+        log.debug("old tournament: {}", oldTournament);
+        
         Game result = gameRepository.save(game);
+        log.debug("REST request to update SAVED result : {}", result);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, game.getId().toString()))
             .body(result);

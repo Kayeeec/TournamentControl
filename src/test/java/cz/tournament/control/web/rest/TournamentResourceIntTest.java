@@ -5,6 +5,7 @@ import cz.tournament.control.TournamentControlApp;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.repository.UserRepository;
+import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -22,8 +23,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.List;
 
+import static cz.tournament.control.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -44,9 +50,6 @@ public class TournamentResourceIntTest {
     private static final String DEFAULT_NOTE = "AAAAAAAAAA";
     private static final String UPDATED_NOTE = "BBBBBBBBBB";
 
-    private static final Integer DEFAULT_NUMBER_OF_MUTUAL_MATCHES = 1;
-    private static final Integer UPDATED_NUMBER_OF_MUTUAL_MATCHES = 2;
-
     private static final Integer DEFAULT_POINTS_FOR_WINNING = 1;
     private static final Integer UPDATED_POINTS_FOR_WINNING = 2;
 
@@ -56,11 +59,15 @@ public class TournamentResourceIntTest {
     private static final Integer DEFAULT_POINTS_FOR_TIE = 1;
     private static final Integer UPDATED_POINTS_FOR_TIE = 2;
 
+    private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_CREATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
     @Autowired
     private TournamentRepository tournamentRepository;
-    
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TournamentService tournamentService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -81,7 +88,7 @@ public class TournamentResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        TournamentResource tournamentResource = new TournamentResource(tournamentRepository, userRepository);
+        TournamentResource tournamentResource = new TournamentResource(tournamentRepository, userRepository, tournamentService);
         this.restTournamentMockMvc = MockMvcBuilders.standaloneSetup(tournamentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -98,10 +105,10 @@ public class TournamentResourceIntTest {
         Tournament tournament = new Tournament()
             .name(DEFAULT_NAME)
             .note(DEFAULT_NOTE)
-            .numberOfMutualMatches(DEFAULT_NUMBER_OF_MUTUAL_MATCHES)
             .pointsForWinning(DEFAULT_POINTS_FOR_WINNING)
             .pointsForLosing(DEFAULT_POINTS_FOR_LOSING)
-            .pointsForTie(DEFAULT_POINTS_FOR_TIE);
+            .pointsForTie(DEFAULT_POINTS_FOR_TIE)
+            .created(DEFAULT_CREATED);
         return tournament;
     }
 
@@ -127,10 +134,10 @@ public class TournamentResourceIntTest {
         Tournament testTournament = tournamentList.get(tournamentList.size() - 1);
         assertThat(testTournament.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testTournament.getNote()).isEqualTo(DEFAULT_NOTE);
-        assertThat(testTournament.getNumberOfMutualMatches()).isEqualTo(DEFAULT_NUMBER_OF_MUTUAL_MATCHES);
         assertThat(testTournament.getPointsForWinning()).isEqualTo(DEFAULT_POINTS_FOR_WINNING);
         assertThat(testTournament.getPointsForLosing()).isEqualTo(DEFAULT_POINTS_FOR_LOSING);
         assertThat(testTournament.getPointsForTie()).isEqualTo(DEFAULT_POINTS_FOR_TIE);
+        assertThat(testTournament.getCreated()).isEqualTo(DEFAULT_CREATED);
     }
 
     @Test
@@ -172,6 +179,24 @@ public class TournamentResourceIntTest {
 
     @Test
     @Transactional
+    public void checkCreatedIsRequired() throws Exception {
+        int databaseSizeBeforeTest = tournamentRepository.findAll().size();
+        // set the field null
+        tournament.setCreated(null);
+
+        // Create the Tournament, which fails.
+
+        restTournamentMockMvc.perform(post("/api/tournaments")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(tournament)))
+            .andExpect(status().isBadRequest());
+
+        List<Tournament> tournamentList = tournamentRepository.findAll();
+        assertThat(tournamentList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllTournaments() throws Exception {
         // Initialize the database
         tournamentRepository.saveAndFlush(tournament);
@@ -183,10 +208,10 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(tournament.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
-            .andExpect(jsonPath("$.[*].numberOfMutualMatches").value(hasItem(DEFAULT_NUMBER_OF_MUTUAL_MATCHES)))
             .andExpect(jsonPath("$.[*].pointsForWinning").value(hasItem(DEFAULT_POINTS_FOR_WINNING)))
             .andExpect(jsonPath("$.[*].pointsForLosing").value(hasItem(DEFAULT_POINTS_FOR_LOSING)))
-            .andExpect(jsonPath("$.[*].pointsForTie").value(hasItem(DEFAULT_POINTS_FOR_TIE)));
+            .andExpect(jsonPath("$.[*].pointsForTie").value(hasItem(DEFAULT_POINTS_FOR_TIE)))
+            .andExpect(jsonPath("$.[*].created").value(hasItem(sameInstant(DEFAULT_CREATED))));
     }
 
     @Test
@@ -202,10 +227,10 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.id").value(tournament.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()))
-            .andExpect(jsonPath("$.numberOfMutualMatches").value(DEFAULT_NUMBER_OF_MUTUAL_MATCHES))
             .andExpect(jsonPath("$.pointsForWinning").value(DEFAULT_POINTS_FOR_WINNING))
             .andExpect(jsonPath("$.pointsForLosing").value(DEFAULT_POINTS_FOR_LOSING))
-            .andExpect(jsonPath("$.pointsForTie").value(DEFAULT_POINTS_FOR_TIE));
+            .andExpect(jsonPath("$.pointsForTie").value(DEFAULT_POINTS_FOR_TIE))
+            .andExpect(jsonPath("$.created").value(sameInstant(DEFAULT_CREATED)));
     }
 
     @Test
@@ -228,10 +253,10 @@ public class TournamentResourceIntTest {
         updatedTournament
             .name(UPDATED_NAME)
             .note(UPDATED_NOTE)
-            .numberOfMutualMatches(UPDATED_NUMBER_OF_MUTUAL_MATCHES)
             .pointsForWinning(UPDATED_POINTS_FOR_WINNING)
             .pointsForLosing(UPDATED_POINTS_FOR_LOSING)
-            .pointsForTie(UPDATED_POINTS_FOR_TIE);
+            .pointsForTie(UPDATED_POINTS_FOR_TIE)
+            .created(UPDATED_CREATED);
 
         restTournamentMockMvc.perform(put("/api/tournaments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -244,10 +269,10 @@ public class TournamentResourceIntTest {
         Tournament testTournament = tournamentList.get(tournamentList.size() - 1);
         assertThat(testTournament.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testTournament.getNote()).isEqualTo(UPDATED_NOTE);
-        assertThat(testTournament.getNumberOfMutualMatches()).isEqualTo(UPDATED_NUMBER_OF_MUTUAL_MATCHES);
         assertThat(testTournament.getPointsForWinning()).isEqualTo(UPDATED_POINTS_FOR_WINNING);
         assertThat(testTournament.getPointsForLosing()).isEqualTo(UPDATED_POINTS_FOR_LOSING);
         assertThat(testTournament.getPointsForTie()).isEqualTo(UPDATED_POINTS_FOR_TIE);
+        assertThat(testTournament.getCreated()).isEqualTo(UPDATED_CREATED);
     }
 
     @Test

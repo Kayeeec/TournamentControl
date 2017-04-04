@@ -35,14 +35,6 @@
             "fieldType": "String"
         },
         {
-            "fieldName": "numberOfMutualMatches",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "min"
-            ],
-            "fieldValidateRulesMin": 1
-        },
-        {
             "fieldName": "pointsForWinning",
             "fieldType": "Integer"
         },
@@ -53,11 +45,18 @@
         {
             "fieldName": "pointsForTie",
             "fieldType": "Integer"
+        },
+        {
+            "fieldName": "created",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20170320075825",
-    "entityTableName": "tournament",
     "dto": "no",
-    "pagination": "no",
-    "service": "no"
+    "service": "no",
+    "entityTableName": "tournament",
+    "pagination": "no"
 }

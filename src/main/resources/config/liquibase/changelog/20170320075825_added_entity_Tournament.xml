@@ -30,10 +30,6 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="number_of_mutual_matches" type="integer">
-                <constraints nullable="true" />
-            </column>
-
             <column name="points_for_winning" type="integer">
                 <constraints nullable="true" />
             </column>
@@ -46,12 +42,17 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="created" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+
             <column name="user_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
+        <dropDefaultValue tableName="tournament" columnName="created" columnDataType="datetime"/>
         
         <createTable tableName="tournament_participants">
             <column name="participants_id" type="bigint">

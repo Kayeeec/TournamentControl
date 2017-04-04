@@ -1,0 +1,21 @@
+{
+    "tournamentControlApp": {
+        "allVersusAll" : {
+            "home": {
+                "title": "All Versus Alls",
+                "createLabel": "Vytvořit All Versus All",
+                "createOrEditLabel": "Vytvořit nebo upravit All Versus All"
+            },
+            "created": "Byl vytvořen potomek entity All Versus All s identifikátorem {{ param }}",
+            "updated": "Potomek entity All Versus All s identifikátorem {{ param }} byl upravený.",
+            "deleted": "Potomek entity All Versus All s identifikátorem {{ param }} bol smazaný.",
+            "delete": {
+                "question": "Jste si jisti, že chcete smazat All Versus All {{ id }}?"
+            },
+            "detail": {
+                "title": "All Versus All"
+            },
+            "numberOfMutualMatches": "Number Of Mutual Matches"
+        }
+    }
+}

@@ -28,17 +28,19 @@
         <dd>
             <span>{{vm.game.note}}</span>
         </dd>
-        <dt><span data-translate="tournamentControlApp.game.rivalA">Rival A</span></dt>
-        <dd>
-            <a ui-sref="participant-detail({id:vm.game.rivalA.id})">{{vm.game.rivalA.id}}</a>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.game.rivalB">Rival B</span></dt>
-        <dd>
-            <a ui-sref="participant-detail({id:vm.game.rivalB.id})">{{vm.game.rivalB.id}}</a>
-        </dd>
         <dt><span data-translate="tournamentControlApp.game.tournament">Tournament</span></dt>
         <dd>
             <a ui-sref="tournament-detail({id:vm.game.tournament.id})">{{vm.game.tournament.id}}</a>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.game.rivalA">Rival A</span></dt>
+        <dd>
+            <a ng-if="vm.game.rivalA.player" ui-sref="player-detail({id:vm.game.rivalA.player.id})">{{vm.game.rivalA.player.name}}</a>
+            <a ng-if="vm.game.rivalA.team" ui-sref="team-detail({id:vm.game.rivalA.team.id})">{{vm.game.rivalA.team.name}}</a>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.game.rivalB">Rival B</span></dt>
+        <dd>
+            <a ng-if="vm.game.rivalB.player" ui-sref="player-detail({id:vm.game.rivalB.player.id})">{{vm.game.rivalB.player.name}}</a>
+            <a ng-if="vm.game.rivalB.team" ui-sref="team-detail({id:vm.game.rivalB.team.id})">{{vm.game.rivalB.team.name}}</a>
         </dd>
     </dl>
 

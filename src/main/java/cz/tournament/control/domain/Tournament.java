@@ -1,12 +1,13 @@
 package cz.tournament.control.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -17,11 +18,13 @@ import java.util.Objects;
 @Entity
 @Table(name = "tournament")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Tournament implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -32,10 +35,6 @@ public class Tournament implements Serializable {
     @Column(name = "note")
     private String note;
 
-    @Min(value = 1)
-    @Column(name = "number_of_mutual_matches")
-    private Integer numberOfMutualMatches;
-
     @Column(name = "points_for_winning")
     private Integer pointsForWinning;
 
@@ -45,25 +44,23 @@ public class Tournament implements Serializable {
     @Column(name = "points_for_tie")
     private Integer pointsForTie;
 
-    @OneToMany(mappedBy = "tournament")
-    @JsonIgnore
+    @Column(name = "created")
+    private ZonedDateTime created;
+
+    @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnoreProperties({"tournament"})
     private Set<Game> matches = new HashSet<>();
 
     @ManyToOne
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "tournament_participants",
                joinColumns = @JoinColumn(name="tournaments_id", referencedColumnName="id"),
                inverseJoinColumns = @JoinColumn(name="participants_id", referencedColumnName="id"))
     private Set<Participant> participants = new HashSet<>();
-
-    public Tournament() {
-    }
-    
-    
 
     public Long getId() {
         return id;
@@ -97,19 +94,6 @@ public class Tournament implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public Integer getNumberOfMutualMatches() {
-        return numberOfMutualMatches;
-    }
-
-    public Tournament numberOfMutualMatches(Integer numberOfMutualMatches) {
-        this.numberOfMutualMatches = numberOfMutualMatches;
-        return this;
-    }
-
-    public void setNumberOfMutualMatches(Integer numberOfMutualMatches) {
-        this.numberOfMutualMatches = numberOfMutualMatches;
     }
 
     public Integer getPointsForWinning() {
@@ -149,6 +133,19 @@ public class Tournament implements Serializable {
 
     public void setPointsForTie(Integer pointsForTie) {
         this.pointsForTie = pointsForTie;
+    }
+
+    public ZonedDateTime getCreated() {
+        return created;
+    }
+
+    public Tournament created(ZonedDateTime created) {
+        this.created = created;
+        return this;
+    }
+
+    public void setCreated(ZonedDateTime created) {
+        this.created = created;
     }
 
     public Set<Game> getMatches() {
@@ -238,10 +235,10 @@ public class Tournament implements Serializable {
             "id=" + id +
             ", name='" + name + "'" +
             ", note='" + note + "'" +
-            ", numberOfMutualMatches='" + numberOfMutualMatches + "'" +
             ", pointsForWinning='" + pointsForWinning + "'" +
             ", pointsForLosing='" + pointsForLosing + "'" +
             ", pointsForTie='" + pointsForTie + "'" +
+            ", created='" + created + "'" +
             '}';
     }
 }

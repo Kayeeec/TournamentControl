@@ -1,0 +1,10 @@
+{
+    "tournamentControlApp": {
+        "TournamentType" : {
+            "null": "",
+            "ALL_VERSUS_ALL": "ALL_VERSUS_ALL",
+            "PLAY_OFF": "PLAY_OFF",
+            "SWISS_SYSTEM": "SWISS_SYSTEM"
+        }
+    }
+}
