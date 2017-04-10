@@ -148,7 +148,7 @@
         })
         .state('elimination.delete', {
             parent: 'tournament',
-            url: '/{id}/delete',
+            url: '/elimination/{id}/delete',
             data: {
                 authorities: ['ROLE_USER']
             },

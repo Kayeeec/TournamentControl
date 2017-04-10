@@ -1,19 +1,70 @@
 
 <div>
-    <h2><span data-translate="tournamentControlApp.elimination.detail.title">Elimination</span> {{vm.elimination.id}}</h2>
+    <h2><small>Tournament:</small> {{vm.elimination.name}}</h2> <!--TODO: -->
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="global.field.id">Id</span></dt>
+        <dd>
+            <span>{{vm.elimination.id}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.note">Note</span></dt>
+        <dd>
+            <span>{{vm.elimination.note}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
+        <dd>
+            <span>{{vm.elimination.pointsForWinning}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
+        <dd>
+            <span>{{vm.elimination.pointsForLosing}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
+        <dd>
+            <span>{{vm.elimination.pointsForTie}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.created">Created</span></dt>
+        <dd>
+            <span>{{vm.elimination.created| date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
+        <dd>
+            <span ng-repeat="participant in vm.elimination.participants">
+                <a ng-if="participant.player" ui-sref="player-detail({id: participant.player.id})">{{participant.player.name}}</a>
+                <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
+<!--        <dd>
+            <div class="btn-group myPadding">
+                <label>
+                    <input type="radio" ng-model="singleElim" value='true'>
+                    Single elimination
+                </label>
+                <label>
+                    <input type="radio" ng-model="singleElim" value='false'>
+                    Double elimination
+                </label>
+            </div>
+            {{singleElim}}
+        </dd>-->
+        <dd>
+            <div id="save"></div> 
+        </dd>
     </dl>
 
-    <button type="submit"
-            ui-sref="{{ vm.previousState }}"
-            class="btn btn-info">
-        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
-    </button>
 
-    <button type="button" ui-sref="elimination-detail.edit({id:vm.elimination.id})" class="btn btn-primary">
-        <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
-    </button>
+
+    <div style="padding-top: 20px">
+        <button type="submit"
+                ui-sref="{{ vm.previousState}}"
+                class="btn btn-info">
+            <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+        </button>
+
+        <button type="button" ui-sref="elimination-detail.edit({id:vm.elimination.id})" class="btn btn-primary">
+            <span class="glyphicon glyphicon-pencil"></span>
+            <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+        </button>
+    </div>
 </div>
