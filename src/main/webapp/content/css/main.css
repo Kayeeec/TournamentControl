@@ -7,15 +7,6 @@ body {
 /* ==========================================================================
 My styles
 ============================================================================= */
-.myFields
-    {
-    display: block;
-    float: left;
-    }
-.myDistributeHorizontally{
-    display: flex; 
-    justify-content: space-between;
-}
 .myWins{
     color: #060;
 }

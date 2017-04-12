@@ -47,6 +47,18 @@ public class Tournament implements Serializable {
     @Column(name = "created")
     private ZonedDateTime created;
 
+    @Column(name = "number_of_sets")
+    private Integer numberOfSets;
+
+    @Column(name = "sets_to_win")
+    private Integer setsToWin;
+
+    @Column(name = "ties_allowed")
+    private Boolean tiesAllowed;
+
+    @Column(name = "score_max")
+    private Integer scoreMax;
+
     @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnoreProperties({"tournament"})
@@ -148,6 +160,58 @@ public class Tournament implements Serializable {
         this.created = created;
     }
 
+    public Integer getNumberOfSets() {
+        return numberOfSets;
+    }
+
+    public Tournament numberOfSets(Integer numberOfSets) {
+        this.numberOfSets = numberOfSets;
+        return this;
+    }
+
+    public void setNumberOfSets(Integer numberOfSets) {
+        this.numberOfSets = numberOfSets;
+    }
+
+    public Integer getSetsToWin() {
+        return setsToWin;
+    }
+
+    public Tournament setsToWin(Integer setsToWin) {
+        this.setsToWin = setsToWin;
+        return this;
+    }
+
+    public void setSetsToWin(Integer setsToWin) {
+        this.setsToWin = setsToWin;
+    }
+
+    public Boolean isTiesAllowed() {
+        return tiesAllowed;
+    }
+
+    public Tournament tiesAllowed(Boolean tiesAllowed) {
+        this.tiesAllowed = tiesAllowed;
+        return this;
+    }
+
+    public void setTiesAllowed(Boolean tiesAllowed) {
+        this.tiesAllowed = tiesAllowed;
+    }
+
+    public Integer getScoreMax() {
+        return scoreMax;
+    }
+
+    public Tournament scoreMax(Integer scoreMax) {
+        this.scoreMax = scoreMax;
+        return this;
+    }
+
+    public void setScoreMax(Integer scoreMax) {
+        this.scoreMax = scoreMax;
+    }
+
     public Set<Game> getMatches() {
         return matches;
     }
@@ -239,6 +303,10 @@ public class Tournament implements Serializable {
             ", pointsForLosing='" + pointsForLosing + "'" +
             ", pointsForTie='" + pointsForTie + "'" +
             ", created='" + created + "'" +
+            ", numberOfSets='" + numberOfSets + "'" +
+            ", setsToWin='" + setsToWin + "'" +
+            ", tiesAllowed='" + tiesAllowed + "'" +
+            ", scoreMax='" + scoreMax + "'" +
             '}';
     }
 }

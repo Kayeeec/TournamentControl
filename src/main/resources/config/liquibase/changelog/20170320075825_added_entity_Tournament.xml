@@ -46,6 +46,22 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="number_of_sets" type="integer">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="sets_to_win" type="integer">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="ties_allowed" type="bit">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="score_max" type="integer">
+                <constraints nullable="true" />
+            </column>
+
             <column name="user_id" type="bigint">
                 <constraints nullable="true" />
             </column>

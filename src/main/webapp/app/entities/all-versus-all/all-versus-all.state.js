@@ -112,6 +112,10 @@
                                 pointsForTie: null,
                                 created: null,
                                 numberOfMutualMatches: null,
+                                numberOfSets: null,
+                                setsToWin: null,
+                                tiesAllowed: null,
+                                scoreMax: null,
                                 id: null
                             };
                         }
