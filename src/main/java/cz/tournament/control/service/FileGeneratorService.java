@@ -7,30 +7,24 @@ package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
-import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.repository.UserRepository;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import org.jopendocument.dom.spreadsheet.RowStyle;
 import org.jopendocument.dom.spreadsheet.Sheet;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
-import org.jopendocument.model.OpenDocument;
-import org.jopendocument.sample.SpreadSheetCreation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ResourceUtils;
 
 /**
  *

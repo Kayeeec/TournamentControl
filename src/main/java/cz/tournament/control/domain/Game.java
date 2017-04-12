@@ -7,6 +7,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -22,14 +24,6 @@ public class Game implements Serializable, Comparable<Game> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Min(value = 0)
-    @Column(name = "score_a")
-    private Integer scoreA = 0;
-
-    @Min(value = 0)
-    @Column(name = "score_b")
-    private Integer scoreB = 0;
 
     @Column(name = "finished")
     private Boolean finished = false;
@@ -54,9 +48,10 @@ public class Game implements Serializable, Comparable<Game> {
     @ManyToOne
     private Participant rivalB;
 
-    
-    
-    
+    @OneToMany(mappedBy = "game")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<GameSet> sets = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -64,32 +59,6 @@ public class Game implements Serializable, Comparable<Game> {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getScoreA() {
-        return scoreA;
-    }
-
-    public Game scoreA(Integer scoreA) {
-        this.scoreA = scoreA;
-        return this;
-    }
-
-    public void setScoreA(Integer scoreA) {
-        this.scoreA = scoreA;
-    }
-
-    public Integer getScoreB() {
-        return scoreB;
-    }
-
-    public Game scoreB(Integer scoreB) {
-        this.scoreB = scoreB;
-        return this;
-    }
-
-    public void setScoreB(Integer scoreB) {
-        this.scoreB = scoreB;
     }
 
     public Boolean isFinished() {
@@ -183,6 +152,31 @@ public class Game implements Serializable, Comparable<Game> {
         this.rivalB = participant;
     }
 
+    public Set<GameSet> getSets() {
+        return sets;
+    }
+
+    public Game sets(Set<GameSet> gameSets) {
+        this.sets = gameSets;
+        return this;
+    }
+
+    public Game addSets(GameSet gameSet) {
+        this.sets.add(gameSet);
+        gameSet.setGame(this);
+        return this;
+    }
+
+    public Game removeSets(GameSet gameSet) {
+        this.sets.remove(gameSet);
+        gameSet.setGame(null);
+        return this;
+    }
+
+    public void setSets(Set<GameSet> gameSets) {
+        this.sets = gameSets;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -205,25 +199,35 @@ public class Game implements Serializable, Comparable<Game> {
 
     @Override
     public String toString() {
-        return "Game{" +
-            "id=" + id +
-            ", scoreA='" + scoreA + "'" +
-            ", scoreB='" + scoreB + "'" +
-            ", finished='" + finished + "'" +
-            ", round='" + round + "'" +
-            ", period='" + period + "'" +
-            ", note='" + note + "'" +  
-            '}';
+        return "Game{"
+                + "id=" + id
+                + ", finished='" + finished + "'"
+                + ", round='" + round + "'"
+                + ", period='" + period + "'"
+                + ", note='" + note + "'"
+                + '}';
     }
 
     @Override
     public int compareTo(Game o) {
-        if(o == null) throw new NullPointerException("Game.compareTo(Game o) : o is null");
-        
+        if (o == null) {
+            throw new NullPointerException("Game.compareTo(Game o) : o is null");
+        }
+
         int byPeriod = this.period.compareTo(o.period);
-        if(byPeriod != 0) return byPeriod;
-        
+        if (byPeriod != 0) {
+            return byPeriod;
+        }
+
         return this.round.compareTo(o.round);
-         
+
+    }
+    
+//    TODO
+    public int getScoreA(){
+        return 1;
+    }
+    public int getScoreB(){
+        return 1;
     }
 }

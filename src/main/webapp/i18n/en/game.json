@@ -15,8 +15,6 @@
             "detail": {
                 "title": "Game"
             },
-            "scoreA": "Score A",
-            "scoreB": "Score B",
             "finished": "Finished",
             "round": "Round",
             "period": "Period",
@@ -24,8 +22,7 @@
             "tournament": "Tournament",
             "rivalA": "Rival A",
             "rivalB": "Rival B",
-            "rivals": "Rivals",
-            "score":"Score"
+            "sets": "Sets"
         }
     }
 }

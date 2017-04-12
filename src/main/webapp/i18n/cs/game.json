@@ -15,15 +15,14 @@
             "detail": {
                 "title": "Game"
             },
-            "scoreA": "Score A",
-            "scoreB": "Score B",
             "finished": "Finished",
             "round": "Round",
             "period": "Period",
             "note": "Note",
             "tournament": "Tournament",
             "rivalA": "Rival A",
-            "rivalB": "Rival B"
+            "rivalB": "Rival B",
+            "sets": "Sets"
         }
     }
 }
