@@ -1,0 +1,49 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myGameSetLabel" data-translate="tournamentControlApp.gameSet.home.createOrEditLabel">Create or edit a Game Set</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.gameSet.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.gameSet.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.gameSet.scoreA" for="field_scoreA">Score A</label>
+            <input type="number" class="form-control" name="scoreA" id="field_scoreA"
+                    ng-model="vm.gameSet.scoreA"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.gameSet.scoreB" for="field_scoreB">Score B</label>
+            <input type="number" class="form-control" name="scoreB" id="field_scoreB"
+                    ng-model="vm.gameSet.scoreB"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.gameSet.finished" for="field_finished">Finished</label>
+                <input type="checkbox" name="finished" id="field_finished"
+                          ng-model="vm.gameSet.finished"/>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="tournamentControlApp.gameSet.game" for="field_game">Game</label>
+            <select class="form-control" id="field_game" name="game" ng-model="vm.gameSet.game" ng-options="game as game.id for game in vm.games track by game.id">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

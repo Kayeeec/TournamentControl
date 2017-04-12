@@ -19,25 +19,15 @@
             "otherEntityName": "participant",
             "relationshipType": "many-to-one",
             "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "sets",
+            "otherEntityName": "gameSet",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "game"
         }
     ],
     "fields": [
-        {
-            "fieldName": "scoreA",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "min"
-            ],
-            "fieldValidateRulesMin": 0
-        },
-        {
-            "fieldName": "scoreB",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "min"
-            ],
-            "fieldValidateRulesMin": 0
-        },
         {
             "fieldName": "finished",
             "fieldType": "Boolean"

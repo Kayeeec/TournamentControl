@@ -1,0 +1,24 @@
+{
+    "tournamentControlApp": {
+        "gameSet" : {
+            "home": {
+                "title": "Game Sets",
+                "createLabel": "Create a new Game Set",
+                "createOrEditLabel": "Create or edit a Game Set"
+            },
+            "created": "A new Game Set is created with identifier {{ param }}",
+            "updated": "A Game Set is updated with identifier {{ param }}",
+            "deleted": "A Game Set is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Game Set {{ id }}?"
+            },
+            "detail": {
+                "title": "Game Set"
+            },
+            "scoreA": "Score A",
+            "scoreB": "Score B",
+            "finished": "Finished",
+            "game": "Game"
+        }
+    }
+}

@@ -37,12 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = TournamentControlApp.class)
 public class GameResourceIntTest {
 
-    private static final Integer DEFAULT_SCORE_A = 0;
-    private static final Integer UPDATED_SCORE_A = 1;
-
-    private static final Integer DEFAULT_SCORE_B = 0;
-    private static final Integer UPDATED_SCORE_B = 1;
-
     private static final Boolean DEFAULT_FINISHED = false;
     private static final Boolean UPDATED_FINISHED = true;
 
@@ -92,8 +86,6 @@ public class GameResourceIntTest {
      */
     public static Game createEntity(EntityManager em) {
         Game game = new Game()
-            .scoreA(DEFAULT_SCORE_A)
-            .scoreB(DEFAULT_SCORE_B)
             .finished(DEFAULT_FINISHED)
             .round(DEFAULT_ROUND)
             .period(DEFAULT_PERIOD)
@@ -121,8 +113,6 @@ public class GameResourceIntTest {
         List<Game> gameList = gameRepository.findAll();
         assertThat(gameList).hasSize(databaseSizeBeforeCreate + 1);
         Game testGame = gameList.get(gameList.size() - 1);
-        assertThat(testGame.getScoreA()).isEqualTo(DEFAULT_SCORE_A);
-        assertThat(testGame.getScoreB()).isEqualTo(DEFAULT_SCORE_B);
         assertThat(testGame.isFinished()).isEqualTo(DEFAULT_FINISHED);
         assertThat(testGame.getRound()).isEqualTo(DEFAULT_ROUND);
         assertThat(testGame.getPeriod()).isEqualTo(DEFAULT_PERIOD);
@@ -159,8 +149,6 @@ public class GameResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(game.getId().intValue())))
-            .andExpect(jsonPath("$.[*].scoreA").value(hasItem(DEFAULT_SCORE_A)))
-            .andExpect(jsonPath("$.[*].scoreB").value(hasItem(DEFAULT_SCORE_B)))
             .andExpect(jsonPath("$.[*].finished").value(hasItem(DEFAULT_FINISHED.booleanValue())))
             .andExpect(jsonPath("$.[*].round").value(hasItem(DEFAULT_ROUND)))
             .andExpect(jsonPath("$.[*].period").value(hasItem(DEFAULT_PERIOD)))
@@ -178,8 +166,6 @@ public class GameResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(game.getId().intValue()))
-            .andExpect(jsonPath("$.scoreA").value(DEFAULT_SCORE_A))
-            .andExpect(jsonPath("$.scoreB").value(DEFAULT_SCORE_B))
             .andExpect(jsonPath("$.finished").value(DEFAULT_FINISHED.booleanValue()))
             .andExpect(jsonPath("$.round").value(DEFAULT_ROUND))
             .andExpect(jsonPath("$.period").value(DEFAULT_PERIOD))
@@ -204,8 +190,6 @@ public class GameResourceIntTest {
         // Update the game
         Game updatedGame = gameRepository.findOne(game.getId());
         updatedGame
-            .scoreA(UPDATED_SCORE_A)
-            .scoreB(UPDATED_SCORE_B)
             .finished(UPDATED_FINISHED)
             .round(UPDATED_ROUND)
             .period(UPDATED_PERIOD)
@@ -220,8 +204,6 @@ public class GameResourceIntTest {
         List<Game> gameList = gameRepository.findAll();
         assertThat(gameList).hasSize(databaseSizeBeforeUpdate);
         Game testGame = gameList.get(gameList.size() - 1);
-        assertThat(testGame.getScoreA()).isEqualTo(UPDATED_SCORE_A);
-        assertThat(testGame.getScoreB()).isEqualTo(UPDATED_SCORE_B);
         assertThat(testGame.isFinished()).isEqualTo(UPDATED_FINISHED);
         assertThat(testGame.getRound()).isEqualTo(UPDATED_ROUND);
         assertThat(testGame.getPeriod()).isEqualTo(UPDATED_PERIOD);

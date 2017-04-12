@@ -2,9 +2,9 @@
 
 describe('Controller Tests', function() {
 
-    describe('Game Management Detail Controller', function() {
+    describe('GameSet Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockGame, MockTournament, MockParticipant, MockGameSet;
+        var MockEntity, MockPreviousState, MockGameSet, MockGame;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -12,10 +12,8 @@ describe('Controller Tests', function() {
             $scope = $rootScope.$new();
             MockEntity = jasmine.createSpy('MockEntity');
             MockPreviousState = jasmine.createSpy('MockPreviousState');
-            MockGame = jasmine.createSpy('MockGame');
-            MockTournament = jasmine.createSpy('MockTournament');
-            MockParticipant = jasmine.createSpy('MockParticipant');
             MockGameSet = jasmine.createSpy('MockGameSet');
+            MockGame = jasmine.createSpy('MockGame');
             
 
             var locals = {
@@ -23,20 +21,18 @@ describe('Controller Tests', function() {
                 '$rootScope': $rootScope,
                 'entity': MockEntity,
                 'previousState': MockPreviousState,
-                'Game': MockGame,
-                'Tournament': MockTournament,
-                'Participant': MockParticipant,
-                'GameSet': MockGameSet
+                'GameSet': MockGameSet,
+                'Game': MockGame
             };
             createController = function() {
-                $injector.get('$controller')("GameDetailController", locals);
+                $injector.get('$controller')("GameSetDetailController", locals);
             };
         }));
 
 
         describe('Root Scope Listening', function() {
             it('Unregisters root scope listener upon scope destruction', function() {
-                var eventType = 'tournamentControlApp:gameUpdate';
+                var eventType = 'tournamentControlApp:gameSetUpdate';
 
                 createController();
                 expect($rootScope.$$listenerCount[eventType]).toEqual(1);

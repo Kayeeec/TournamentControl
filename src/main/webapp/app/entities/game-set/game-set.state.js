@@ -9,53 +9,53 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('game', {
+        .state('game-set', {
             parent: 'entity',
-            url: '/game',
+            url: '/game-set',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'tournamentControlApp.game.home.title'
+                pageTitle: 'tournamentControlApp.gameSet.home.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/entities/game/games.html',
-                    controller: 'GameController',
+                    templateUrl: 'app/entities/game-set/game-sets.html',
+                    controller: 'GameSetController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('game');
+                    $translatePartialLoader.addPart('gameSet');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
         })
-        .state('game-detail', {
-            parent: 'all-versus-all-detail',
-            url: '/game-detail/{gameid}',
+        .state('game-set-detail', {
+            parent: 'game-set',
+            url: '/game-set/{id}',
             data: {
                 authorities: ['ROLE_USER'],
-                pageTitle: 'tournamentControlApp.game.detail.title'
+                pageTitle: 'tournamentControlApp.gameSet.detail.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/entities/game/game-detail.html',
-                    controller: 'GameDetailController',
+                    templateUrl: 'app/entities/game-set/game-set-detail.html',
+                    controller: 'GameSetDetailController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('game');
+                    $translatePartialLoader.addPart('gameSet');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'Game', function($stateParams, Game) {
-                    return Game.get({id : $stateParams.gameid}).$promise;
+                entity: ['$stateParams', 'GameSet', function($stateParams, GameSet) {
+                    return GameSet.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'all-versus-all-detail',
+                        name: $state.current.name || 'game-set',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -63,22 +63,22 @@
                 }]
             }
         })
-        .state('game-detail.edit', {
-            parent: 'game-detail',
+        .state('game-set-detail.edit', {
+            parent: 'game-set-detail',
             url: '/detail/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/game/game-dialog.html',
-                    controller: 'GameDialogController',
+                    templateUrl: 'app/entities/game-set/game-set-dialog.html',
+                    controller: 'GameSetDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['Game', function(Game) {
-                            return Game.get({id : $stateParams.id}).$promise;
+                        entity: ['GameSet', function(GameSet) {
+                            return GameSet.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
@@ -88,81 +88,80 @@
                 });
             }]
         })
-        .state('game.new', {
-            parent: 'game',
+        .state('game-set.new', {
+            parent: 'game-set',
             url: '/new',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/game/game-dialog.html',
-                    controller: 'GameDialogController',
+                    templateUrl: 'app/entities/game-set/game-set-dialog.html',
+                    controller: 'GameSetDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
                         entity: function () {
                             return {
+                                scoreA: null,
+                                scoreB: null,
                                 finished: null,
-                                round: null,
-                                period: null,
-                                note: null,
                                 id: null
                             };
                         }
                     }
                 }).result.then(function() {
-                    $state.go('game', null, { reload: 'game' });
+                    $state.go('game-set', null, { reload: 'game-set' });
                 }, function() {
-                    $state.go('game');
+                    $state.go('game-set');
                 });
             }]
         })
-        .state('game.edit', {
-            parent: 'all-versus-all-detail',
-            url: '/game-edit/{gameid}',
+        .state('game-set.edit', {
+            parent: 'game-set',
+            url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/game/game-dialog.html',
-                    controller: 'GameDialogController',
+                    templateUrl: 'app/entities/game-set/game-set-dialog.html',
+                    controller: 'GameSetDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['Game', function(Game) {
-                            return Game.get({id : $stateParams.gameid}).$promise;
+                        entity: ['GameSet', function(GameSet) {
+                            return GameSet.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('all-versus-all-detail', null, { reload: 'all-versus-all-detail' });
+                    $state.go('game-set', null, { reload: 'game-set' });
                 }, function() {
                     $state.go('^');
                 });
             }]
         })
-        .state('game.delete', {
-            parent: 'game',
+        .state('game-set.delete', {
+            parent: 'game-set',
             url: '/{id}/delete',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/entities/game/game-delete-dialog.html',
-                    controller: 'GameDeleteController',
+                    templateUrl: 'app/entities/game-set/game-set-delete-dialog.html',
+                    controller: 'GameSetDeleteController',
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
-                        entity: ['Game', function(Game) {
-                            return Game.get({id : $stateParams.id}).$promise;
+                        entity: ['GameSet', function(GameSet) {
+                            return GameSet.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('game', null, { reload: 'game' });
+                    $state.go('game-set', null, { reload: 'game-set' });
                 }, function() {
                     $state.go('^');
                 });
