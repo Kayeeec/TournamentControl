@@ -49,6 +49,49 @@
                     ng-model="vm.tournament.pointsForTie"
                     />
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.created" for="field_created">Created</label>
+                <div class="input-group">
+                    <input id="field_created" type="text" class="form-control" name="created" datetime-picker="{{dateformat}}" ng-model="vm.tournament.created" is-open="vm.datePickerOpenStatus.created"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('created')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.created.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.created.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.created.$error.ZonedDateTimelocal" data-translate="entity.validation.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.numberOfSets" for="field_numberOfSets">Number Of Sets</label>
+            <input type="number" class="form-control" name="numberOfSets" id="field_numberOfSets"
+                    ng-model="vm.tournament.numberOfSets"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.setsToWin" for="field_setsToWin">Sets To Win</label>
+            <input type="number" class="form-control" name="setsToWin" id="field_setsToWin"
+                    ng-model="vm.tournament.setsToWin"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.tiesAllowed" for="field_tiesAllowed">Ties Allowed</label>
+                <input type="checkbox" name="tiesAllowed" id="field_tiesAllowed"
+                          ng-model="vm.tournament.tiesAllowed"/>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.scoreMax" for="field_scoreMax">Score Max</label>
+            <input type="number" class="form-control" name="scoreMax" id="field_scoreMax"
+                    ng-model="vm.tournament.scoreMax"
+                    />
+        </div>
 
         <div class="form-group">
             <label data-translate="tournamentControlApp.tournament.user" for="field_user">User</label>

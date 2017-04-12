@@ -29,6 +29,24 @@
         <dd>
             <span>{{vm.allVersusAll.created| date:'medium'}}</span>
         </dd>
+        
+        <dt><span data-translate="tournamentControlApp.tournament.numberOfSets">Number Of Sets</span></dt>
+        <dd>
+            <span>{{vm.tournament.numberOfSets}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></dt>
+        <dd>
+            <span>{{vm.tournament.setsToWin}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.tiesAllowed">Ties Allowed</span></dt>
+        <dd>
+            <span>{{vm.tournament.tiesAllowed}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.scoreMax">Score Max</span></dt>
+        <dd>
+            <span>{{vm.tournament.scoreMax}}</span>
+        </dd>
+        
         <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
         <dd>
             <!--            <span ng-repeat="participant in vm.allVersusAll.participants">
@@ -47,6 +65,7 @@
         </dd>
     </dl>
     
+    <!-- buttons -->
     <div style="padding-bottom: 20px">    
         <button type="submit"
                 ui-sref="{{ vm.previousState}}"
@@ -64,6 +83,7 @@
             <span class="hidden-sm-down" data-translate=""> Generate .ods spreadsheet </span>
         </a>
     </div>
+    <!-- END - buttons -->
 
     <!--evaluation able ==========================================================================================--> 
     <div class="panel panel-default panel-info">

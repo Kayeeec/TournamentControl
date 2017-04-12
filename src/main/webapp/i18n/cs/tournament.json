@@ -21,6 +21,10 @@
             "pointsForLosing": "Points For Losing",
             "pointsForTie": "Points For Tie",
             "created": "Created",
+            "numberOfSets": "Number Of Sets",
+            "setsToWin": "Sets To Win",
+            "tiesAllowed": "Ties Allowed",
+            "scoreMax": "Score Max",
             "matches": "Matches",
             "user": "User",
             "participants": "Participants"

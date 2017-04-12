@@ -32,29 +32,29 @@
                       ng-model="vm.allVersusAll.note"
                       ></textarea>
         </div>
-        <div class="myDistributeHorizontally">
-            <div class="form-group myFields">
+        <div class="row">
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
                 <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" for="field_pointsForWinning">Points For Winning</label>
                 <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
                        ng-model="vm.allVersusAll.pointsForWinning"
                        />
             </div>
 
-            <div class="form-group myFields">
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
                 <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" for="field_pointsForLosing">Points For Losing</label>
                 <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
                        ng-model="vm.allVersusAll.pointsForLosing"
                        />
             </div>
 
-            <div class="form-group myFields">
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
                 <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" for="field_pointsForTie">Points For Tie</label>
                 <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
                        ng-model="vm.allVersusAll.pointsForTie"
                        />
             </div>
 
-            <div class="form-group myFields">
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
                 <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" for="field_numberOfMutualMatches">Number Of Mutual Matches</label>
                 <input type="number" class="form-control" name="numberOfMutualMatches" id="field_numberOfMutualMatches"
                        ng-model="vm.allVersusAll.numberOfMutualMatches"
@@ -76,7 +76,35 @@
             </div>
         </div>
         <div style="clear: both"></div>
+        <div class="row">
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.numberOfSets" for="field_numberOfSets">Number Of Sets</label>
+                <input type="number" class="form-control" name="numberOfSets" id="field_numberOfSets"
+                       ng-model="vm.allVersusAll.numberOfSets"
+                       />
+            </div>
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3" >
+                <label class="control-label" data-translate="tournamentControlApp.tournament.setsToWin" for="field_setsToWin">Sets To Win</label>
+                <input type="number" class="form-control" name="setsToWin" id="field_setsToWin"
+                       ng-model="vm.allVersusAll.setsToWin"
+                       />
+            </div>
 
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.scoreMax" for="field_scoreMax">Score Max</label>
+                <input type="number" class="form-control" name="scoreMax" id="field_scoreMax"
+                       ng-model="vm.allVersusAll.scoreMax"
+                       />
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.tiesAllowed" for="field_tiesAllowed">Ties Allowed</label>
+                <select name="tiesAllowed" id="field_tiesAllowed" ng-model="vm.allVersusAll.tiesAllowed"  class="form-control"
+                    ng-options="bool.value as bool.display for bool in [{ display: 'No', value: false }, { display: 'Yes', value: true }]"> 
+                </select>
+            </div>
+        </div>
+        <div style="clear: both"></div>
         <!--PARTICIPANTS ======================================================-->
         <div class="well well-sm">
             <ul class="nav nav-pills" id="myTab">

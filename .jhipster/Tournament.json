@@ -52,6 +52,22 @@
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "numberOfSets",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "setsToWin",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "tiesAllowed",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "scoreMax",
+            "fieldType": "Integer"
         }
     ],
     "changelogDate": "20170320075825",
