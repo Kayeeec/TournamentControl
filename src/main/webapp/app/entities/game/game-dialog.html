@@ -8,73 +8,41 @@
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.game.id">
-            <label for="id" data-translate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                    ng-model="vm.game.id" readonly />
-        </div>
+        
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.game.finished" for="field_finished">Finished</label>
                 <input type="checkbox" name="finished" id="field_finished"
                           ng-model="vm.game.finished"/>
         </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.game.round" for="field_round">Round</label>
-            <input type="number" class="form-control" name="round" id="field_round"
-                    ng-model="vm.game.round"
-                    min="1"/>
-            <div ng-show="editForm.round.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.round.$error.min" data-translate="entity.validation.min" translate-value-min="1">
-                    This field should be at least 1.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.round.$error.number" data-translate="entity.validation.number">
-                    This field should be a number.
-                </p>
+        
+        <div class="">
+            <div class="form-inline" ng-repeat="set in vm.game.sets">
+                <label class="form-group control-label" data-translate=""> 
+                    <span ng-if="vm.game.rivalA.player">{{vm.game.rivalA.player.name}}</span>
+                    <span ng-if="vm.game.rivalA.team">{{vm.game.rivalA.team.name}}</span>
+                    <input type="number" class="form-control" name="scoreA" id="field_scoreA"
+                           ng-model="set.scoreA"
+                           />
+                </label>
+                <div class="form-group"> : </div>
+                <label class="form-group control-label" data-translate=""> 
+                    <span ng-if="vm.game.rivalB.player">{{vm.game.rivalB.player.name}}</span>
+                    <span ng-if="vm.game.rivalB.team">{{vm.game.rivalB.team.name}}</span>
+                    <input type="number" class="form-control" name="scoreB" id="field_scoreB"
+                           ng-model="set.scoreB"
+                           />
+                </label>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.game.period" for="field_period">Period</label>
-            <input type="number" class="form-control" name="period" id="field_period"
-                    ng-model="vm.game.period"
-                    min="1"/>
-            <div ng-show="editForm.period.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.period.$error.min" data-translate="entity.validation.min" translate-value-min="1">
-                    This field should be at least 1.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.period.$error.number" data-translate="entity.validation.number">
-                    This field should be a number.
-                </p>
-            </div>
-        </div>
+        
+        
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.game.note" for="field_note">Note</label>
-            <input type="text" class="form-control" name="note" id="field_note"
+            <textarea type="text" class="form-control" name="note" id="field_note"
                     ng-model="vm.game.note"
-                    />
+                    ></textarea>
         </div>
-
-        <div class="form-group">
-            <label data-translate="tournamentControlApp.game.tournament" for="field_tournament">Tournament</label>
-            <select class="form-control" id="field_tournament" name="tournament" ng-model="vm.game.tournament" ng-options="tournament as tournament.id for tournament in vm.tournaments track by tournament.id">
-                <option value=""></option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label data-translate="tournamentControlApp.game.rivalA" for="field_rivalA">Rival A</label>
-            <select class="form-control" id="field_rivalA" name="rivalA" ng-model="vm.game.rivalA" ng-options="participant as participant.id for participant in vm.participants track by participant.id">
-                <option value=""></option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label data-translate="tournamentControlApp.game.rivalB" for="field_rivalB">Rival B</label>
-            <select class="form-control" id="field_rivalB" name="rivalB" ng-model="vm.game.rivalB" ng-options="participant as participant.id for participant in vm.participants track by participant.id">
-                <option value=""></option>
-            </select>
-        </div>
+        
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">

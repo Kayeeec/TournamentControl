@@ -1,5 +1,6 @@
 package cz.tournament.control.service;
 
+import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
 import cz.tournament.control.repository.GameSetRepository;
 import org.slf4j.Logger;
@@ -45,6 +46,19 @@ public class GameSetService {
     public List<GameSet> findAll() {
         log.debug("Request to get all GameSets");
         List<GameSet> result = gameSetRepository.findAll();
+
+        return result;
+    }
+    
+    /**
+     *  Get all gameSets for given game.
+     *  
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public List<GameSet> findGameSetsByGame(Game game) {
+        log.debug("Request to get all GameSets for game: {}", game);
+        List<GameSet> result = gameSetRepository.findByGame(game);
 
         return result;
     }

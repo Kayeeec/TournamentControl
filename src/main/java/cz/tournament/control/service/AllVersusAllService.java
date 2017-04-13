@@ -31,12 +31,16 @@ public class AllVersusAllService {
     private final AllVersusAllRepository allVersusAllRepository;
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
+    private final GameService gameService;
 
-    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository, GameRepository gameRepository) {
+    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository, GameRepository gameRepository, GameService gameService) {
         this.allVersusAllRepository = allVersusAllRepository;
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
+        this.gameService = gameService;
     }
+
+    
 
     /**
      * Save a allVersusAll.
@@ -132,7 +136,7 @@ public class AllVersusAllService {
     private void deleteAllMatches(AllVersusAll ava){
         List<Game> matches = new ArrayList<>(ava.getMatches());
         ava.setMatches(new HashSet<>());
-        gameRepository.delete(matches);
+        gameService.delete(matches);
     }
     
     //==========================================================================
@@ -154,16 +158,14 @@ public class AllVersusAllService {
             rivalA = participant.get(i);
             rivalB = participant.get(n-1-i);
             if(rivalA != null && rivalB != null){
-                
+                Game match;
                 if(period % 2 == 0){
-                    Game match = new Game().period(period).round(round).rivalA(rivalB).rivalB(rivalA).tournament(tournament);
-                    Game saved = gameRepository.save(match);
-                    tournament.addMatches(saved);
+                    match = new Game().period(period).round(round).rivalA(rivalB).rivalB(rivalA).tournament(tournament);
                 }else{
-                    Game match = new Game().period(period).round(round).rivalA(rivalA).rivalB(rivalB).tournament(tournament);
-                    Game saved = gameRepository.save(match);
-                    tournament.addMatches(saved);
+                    match = new Game().period(period).round(round).rivalA(rivalA).rivalB(rivalB).tournament(tournament);
                 }
+                Game saved = gameService.createGame(match);
+                tournament.addMatches(saved);
             }
         }
     }

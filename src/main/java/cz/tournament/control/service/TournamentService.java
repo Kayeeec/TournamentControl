@@ -42,10 +42,23 @@ public class TournamentService {
         
         Tournament result = tournamentRepository.save(tournament);
         log.debug("TOUTNAMENT_SERVICE: Created Tournament: {}", result);
-        return result;
-        
-        
+        return result;   
     }
+    
+    /**
+     *  Get one game by id.
+     *
+     *  @param id the id of the entity
+     *  @return the entity
+     */
+    @Transactional(readOnly = true)
+    public Tournament findOne(Long id) {
+        log.debug("Request to get Tournament : {}", id);
+        Tournament tournament = tournamentRepository.findOne(id);
+        return tournament;
+    }
+    
+    
     
     
 }

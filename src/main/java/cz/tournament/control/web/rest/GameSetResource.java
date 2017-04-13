@@ -1,7 +1,9 @@
 package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
+import cz.tournament.control.service.GameService;
 import cz.tournament.control.service.GameSetService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -27,10 +29,14 @@ public class GameSetResource {
     private static final String ENTITY_NAME = "gameSet";
         
     private final GameSetService gameSetService;
+    private final GameService gameService;
 
-    public GameSetResource(GameSetService gameSetService) {
+    public GameSetResource(GameSetService gameSetService, GameService gameService) {
         this.gameSetService = gameSetService;
+        this.gameService = gameService;
     }
+
+    
 
     /**
      * POST  /game-sets : Create a new gameSet.
@@ -84,6 +90,19 @@ public class GameSetResource {
     public List<GameSet> getAllGameSets() {
         log.debug("REST request to get all GameSets");
         return gameSetService.findAll();
+    }
+    
+    /**
+     * GET  /game-sets : get all the gameSets for given game.
+     *
+     * @return the ResponseEntity with status 200 (OK) and the list of gameSets in body
+     */
+    @GetMapping("/game-sets-for-game/{gameId}")
+    @Timed
+    public List<GameSet> getGameSetsForGame(@PathVariable Long gameId) {
+        log.debug("REST request to get all GameSets");
+        Game game = gameService.findOne(gameId);
+        return gameSetService.findGameSetsByGame(game);
     }
 
     /**

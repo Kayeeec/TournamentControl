@@ -48,8 +48,7 @@ public class Game implements Serializable, Comparable<Game> {
     @ManyToOne
     private Participant rivalB;
 
-    @OneToMany(mappedBy = "game")
-    @JsonIgnore
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<GameSet> sets = new HashSet<>();
 
@@ -222,12 +221,13 @@ public class Game implements Serializable, Comparable<Game> {
         return this.round.compareTo(o.round);
 
     }
-    
+
     /**
      * Sums up all scores of rivalA from sets.
+     *
      * @return int, sum of all rivalA scores from all sets
      */
-    public int getAllScoresA(){
+    public int getAllScoresA() {
         int result = 0;
         for (GameSet set : sets) {
            Integer a = set.getScoreA();
@@ -240,15 +240,18 @@ public class Game implements Serializable, Comparable<Game> {
 
     /**
      * Sums up all scores of rivalB from sets.
+     *
      * @return int, sum of all rivalB scores from all sets
      */
-    public int getAllScoresB(){
+    public int getAllScoresB() {
         int result = 0;
-        for (GameSet set : sets) {
-           Integer b = set.getScoreB();
-           if(b != null){
-               result += b;
-           }
+        if (!this.getSets().isEmpty()) {
+            for (GameSet set : this.getSets()) {
+                Integer b = set.getScoreB();
+                if (b != null) {
+                    result += b;
+                }
+            }
         }
         return result;
     }
