@@ -22,10 +22,10 @@ public class GameSet implements Serializable {
     private Long id;
 
     @Column(name = "score_a")
-    private Integer scoreA;
+    private Integer scoreA = 0;
 
     @Column(name = "score_b")
-    private Integer scoreB;
+    private Integer scoreB = 0;
 
     @Column(name = "finished")
     private Boolean finished = false;

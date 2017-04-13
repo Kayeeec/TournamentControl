@@ -112,31 +112,31 @@ public class FileGeneratorService {
             for (Game match : tournament.getMatches()) {
                 if (match.isFinished()) {
                     if (match.getRivalA().equals(participantList.get(i))) {
-                        if (match.getScoreA() > match.getScoreB()) {
+                        if (match.getAllScoresA() > match.getAllScoresB()) {
                             eval.wins += 1;
                         }
-                        if (match.getScoreA() < match.getScoreB()) {
+                        if (match.getAllScoresA() < match.getAllScoresB()) {
                             eval.loses += 1;
                         }
-                        if (match.getScoreA() == match.getScoreB()) {
+                        if (match.getAllScoresA() == match.getAllScoresB()) {
                             eval.ties += 1;
                         }
-                        eval.scoreHis += match.getScoreA();
-                        eval.scoreRival += match.getScoreB();
+                        eval.scoreHis += match.getAllScoresA();
+                        eval.scoreRival += match.getAllScoresB();
                         eval.matches += 1;
                     }
                     if (match.getRivalB().equals(participantList.get(i))) {
-                        if (match.getScoreA() > match.getScoreB()) {
+                        if (match.getAllScoresA() > match.getAllScoresB()) {
                             eval.loses += 1;
                         }
-                        if (match.getScoreA() < match.getScoreB()) {
+                        if (match.getAllScoresA() < match.getAllScoresB()) {
                             eval.wins += 1;
                         }
-                        if (match.getScoreA() == match.getScoreB()) {
+                        if (match.getAllScoresA() == match.getAllScoresB()) {
                             eval.ties += 1;
                         }
-                        eval.scoreHis += match.getScoreB();
-                        eval.scoreRival += match.getScoreA();
+                        eval.scoreHis += match.getAllScoresB();
+                        eval.scoreRival += match.getAllScoresA();
                         eval.matches += 1;
                     }
                 }
@@ -204,7 +204,7 @@ public class FileGeneratorService {
             Object[][] data = new Object[rows][7];
             for (int r = 0; r < rows; r++) {
                 Game m = matches.get(position);
-                data[r] = new Object[]{m.getRound(), m.getRivalA().getName(), ":", m.getRivalB().getName(), m.getScoreA(), ":", m.getScoreB()};
+                data[r] = new Object[]{m.getRound(), m.getRivalA().getName(), ":", m.getRivalB().getName(), m.getAllScoresA(), ":", m.getAllScoresB()};
                 position += 1;
             }
             period[p] = new DefaultTableModel(data, matchesColumns);

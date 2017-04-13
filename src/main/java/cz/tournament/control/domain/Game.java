@@ -223,11 +223,33 @@ public class Game implements Serializable, Comparable<Game> {
 
     }
     
-//    TODO
-    public int getScoreA(){
-        return 1;
+    /**
+     * Sums up all scores of rivalA from sets.
+     * @return int, sum of all rivalA scores from all sets
+     */
+    public int getAllScoresA(){
+        int result = 0;
+        for (GameSet set : sets) {
+           Integer a = set.getScoreA();
+           if(a != null){
+               result += a;
+           }
+        }
+        return result;
     }
-    public int getScoreB(){
-        return 1;
+
+    /**
+     * Sums up all scores of rivalB from sets.
+     * @return int, sum of all rivalB scores from all sets
+     */
+    public int getAllScoresB(){
+        int result = 0;
+        for (GameSet set : sets) {
+           Integer b = set.getScoreB();
+           if(b != null){
+               result += b;
+           }
+        }
+        return result;
     }
 }
