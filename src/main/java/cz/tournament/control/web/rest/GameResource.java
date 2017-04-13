@@ -5,6 +5,8 @@ import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Tournament;
 
 import cz.tournament.control.repository.GameRepository;
+import cz.tournament.control.service.GameService;
+import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -29,12 +31,15 @@ public class GameResource {
 
     private static final String ENTITY_NAME = "game";
         
-    private final GameRepository gameRepository;
+    private final GameService gameService;
+    private final TournamentService tournamentService;
 
-    public GameResource(GameRepository gameRepository) {
-        this.gameRepository = gameRepository;
+    public GameResource(GameService gameService, TournamentService tournamentService) {
+        this.gameService = gameService;
+        this.tournamentService = tournamentService;
     }
 
+    
     /**
      * POST  /games : Create a new game.
      *
@@ -49,7 +54,8 @@ public class GameResource {
         if (game.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new game cannot already have an ID")).body(null);
         }
-        Game result = gameRepository.save(game);
+        Game result = gameService.createGame(game);
+        
         return ResponseEntity.created(new URI("/api/games/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -71,12 +77,9 @@ public class GameResource {
         if (game.getId() == null) {
             return createGame(game);
         }
-        //ensure tournament
-        Tournament oldTournament = gameRepository.findOne(game.getId()).getTournament();
-        game.setTournament(oldTournament);
-        log.debug("old tournament: {}", oldTournament);
         
-        Game result = gameRepository.save(game);
+        Game result = gameService.updateGame(game);
+        
         log.debug("REST request to update SAVED result : {}", result);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, game.getId().toString()))
@@ -92,7 +95,22 @@ public class GameResource {
     @Timed
     public List<Game> getAllGames() {
         log.debug("REST request to get all Games");
-        List<Game> games = gameRepository.findAll();
+        List<Game> games = gameService.findAll();
+        return games;
+    }
+    
+    /**
+     * GET  /games : get all the games.
+     *
+     * @param tournamentId 
+     * @return the ResponseEntity with status 200 (OK) and the list of games in body
+     */
+    @GetMapping("/games-by-tournament/{tournamentId}")
+    @Timed
+    public List<Game> getGamesByTournament(@PathVariable Long tournamentId) {
+        log.debug("REST request to get all Games by tournament with id: {}", tournamentId);
+        Tournament tournament = tournamentService.findOne(tournamentId);
+        List<Game> games = gameService.findGamesByTournament(tournament);
         return games;
     }
 
@@ -106,7 +124,7 @@ public class GameResource {
     @Timed
     public ResponseEntity<Game> getGame(@PathVariable Long id) {
         log.debug("REST request to get Game : {}", id);
-        Game game = gameRepository.findOne(id);
+        Game game = gameService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
     }
 
@@ -120,7 +138,7 @@ public class GameResource {
     @Timed
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         log.debug("REST request to delete Game : {}", id);
-        gameRepository.delete(id);
+        gameService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
