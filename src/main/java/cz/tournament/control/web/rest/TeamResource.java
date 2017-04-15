@@ -2,11 +2,6 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Team;
-import cz.tournament.control.domain.User;
-
-import cz.tournament.control.repository.TeamRepository;
-import cz.tournament.control.repository.UserRepository;
-import cz.tournament.control.security.SecurityUtils;
 import cz.tournament.control.service.TeamService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -31,14 +26,14 @@ public class TeamResource {
     private final Logger log = LoggerFactory.getLogger(TeamResource.class);
 
     private static final String ENTITY_NAME = "team";
-        
-    private final TeamRepository teamRepository;
+    
     private final TeamService teamService;
 
-    public TeamResource(TeamRepository teamRepository, TeamService teamService) {
-        this.teamRepository = teamRepository;
+    public TeamResource(TeamService teamService) {
         this.teamService = teamService;
     }
+
+    
     
     /**
      * POST  /teams : Create a new team.
@@ -78,7 +73,7 @@ public class TeamResource {
         if (team.getId() == null) {
             return createTeam(team);
         }
-        Team result = teamRepository.save(team);
+        Team result = teamService.updateTeam(team);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, team.getId().toString()))
             .body(result);
@@ -93,7 +88,7 @@ public class TeamResource {
     @Timed
     public List<Team> getAllTeams() {
         log.debug("REST request to get all Teams");
-        List<Team> teams = teamRepository.findByUserIsCurrentUser();
+        List<Team> teams = teamService.findAll();
         return teams;
     }
 
@@ -107,7 +102,7 @@ public class TeamResource {
     @Timed
     public ResponseEntity<Team> getTeam(@PathVariable Long id) {
         log.debug("REST request to get Team : {}", id);
-        Team team = teamRepository.findOneWithEagerRelationships(id);
+        Team team = teamService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(team));
     }
 
@@ -121,7 +116,7 @@ public class TeamResource {
     @Timed
     public ResponseEntity<Void> deleteTeam(@PathVariable Long id) {
         log.debug("REST request to delete Team : {}", id);
-        teamRepository.delete(id);
+        teamService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

@@ -1,6 +1,8 @@
 package cz.tournament.control.repository;
 
 import cz.tournament.control.domain.Participant;
+import cz.tournament.control.domain.Player;
+import cz.tournament.control.domain.Team;
 
 import org.springframework.data.jpa.repository.*;
 
@@ -14,5 +16,8 @@ public interface ParticipantRepository extends JpaRepository<Participant,Long> {
 
     @Query("select participant from Participant participant where participant.user.login = ?#{principal.username}")
     List<Participant> findByUserIsCurrentUser();
+    
+    Participant findByPlayer(Player player);
+    Participant findByTeam(Team team);
 
 }
