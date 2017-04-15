@@ -9,6 +9,7 @@ import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.repository.GameRepository;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,6 +120,8 @@ public class GameService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Game : {}", id);
+        Game game = gameRepository.findOne(id);
+        gameSetService.delete(new ArrayList<>(game.getSets()));
         gameRepository.delete(id);
     }
     
@@ -130,6 +133,9 @@ public class GameService {
      */
     public void delete(List<Game> games) {
         log.debug("Request to delete list of games : {}", games.toString());
+        for (Game game : games) {
+            gameSetService.delete(new ArrayList<>(game.getSets()));
+        }
         gameRepository.delete(games);
     }
     

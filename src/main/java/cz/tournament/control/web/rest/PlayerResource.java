@@ -2,11 +2,6 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Player;
-import cz.tournament.control.domain.User;
-
-import cz.tournament.control.repository.PlayerRepository;
-import cz.tournament.control.repository.UserRepository;
-import cz.tournament.control.security.SecurityUtils;
 import cz.tournament.control.service.PlayerService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -31,14 +26,14 @@ public class PlayerResource {
     private final Logger log = LoggerFactory.getLogger(PlayerResource.class);
 
     private static final String ENTITY_NAME = "player";
-        
-    private final PlayerRepository playerRepository;
+    
     private final PlayerService playerService;
 
-    public PlayerResource(PlayerRepository playerRepository, PlayerService playerService) {
-        this.playerRepository = playerRepository;
+    public PlayerResource(PlayerService playerService) {
         this.playerService = playerService;
     }
+
+    
 
     /**
      * POST  /players : Create a new player.
@@ -78,7 +73,7 @@ public class PlayerResource {
         if (player.getId() == null) {
             return createPlayer(player);
         }
-        Player result = playerRepository.save(player);
+        Player result = playerService.updatePlayer(player);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, player.getId().toString()))
             .body(result);
@@ -93,7 +88,7 @@ public class PlayerResource {
     @Timed
     public List<Player> getAllPlayers() {
         log.debug("REST request to get all Players");
-        List<Player> players = playerRepository.findByUserIsCurrentUser();
+        List<Player> players = playerService.findAll();
         return players;
     }
 
@@ -107,7 +102,7 @@ public class PlayerResource {
     @Timed
     public ResponseEntity<Player> getPlayer(@PathVariable Long id) {
         log.debug("REST request to get Player : {}", id);
-        Player player = playerRepository.findOne(id);
+        Player player = playerService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(player));
     }
 
@@ -121,7 +116,7 @@ public class PlayerResource {
     @Timed
     public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {
         log.debug("REST request to delete Player : {}", id);
-        playerRepository.delete(id);
+        playerService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

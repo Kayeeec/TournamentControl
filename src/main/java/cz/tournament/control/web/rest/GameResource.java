@@ -4,7 +4,6 @@ import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Tournament;
 
-import cz.tournament.control.repository.GameRepository;
 import cz.tournament.control.service.GameService;
 import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.util.HeaderUtil;

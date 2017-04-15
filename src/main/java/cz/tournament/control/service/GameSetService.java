@@ -85,4 +85,9 @@ public class GameSetService {
         log.debug("Request to delete GameSet : {}", id);
         gameSetRepository.delete(id);
     }
+    
+    public void delete(List<GameSet> gameSets){
+        log.debug("Request to delete GameSets : {}", gameSets.toString());
+        gameSetRepository.delete(gameSets);
+    }
 }

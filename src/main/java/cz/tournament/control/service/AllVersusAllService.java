@@ -5,7 +5,6 @@ import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.repository.AllVersusAllRepository;
-import cz.tournament.control.repository.GameRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import java.time.ZonedDateTime;
@@ -30,13 +29,11 @@ public class AllVersusAllService {
     
     private final AllVersusAllRepository allVersusAllRepository;
     private final UserRepository userRepository;
-    private final GameRepository gameRepository;
     private final GameService gameService;
 
-    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository, GameRepository gameRepository, GameService gameService) {
+    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository, GameService gameService) {
         this.allVersusAllRepository = allVersusAllRepository;
         this.userRepository = userRepository;
-        this.gameRepository = gameRepository;
         this.gameService = gameService;
     }
 
@@ -54,6 +51,14 @@ public class AllVersusAllService {
         return result;
     }
     
+    /**
+     * Updates allVersusAll entity. 
+     * If participants or number of mutual matches has been changed, 
+     * generates matches from scratch (old matches are deleted). 
+     * 
+     * @param allVersusAll entity to be updated
+     * @return the updated/persisted entity 
+     */
     public AllVersusAll updateAllVersusAll(AllVersusAll allVersusAll){
         log.debug("Request to update AllVersusAll : {}", allVersusAll);
         
@@ -71,6 +76,13 @@ public class AllVersusAllService {
         
     }
     
+    /**
+     * Creates new allVersusAll entity. 
+     * Sets creation date, user and generates matches. 
+     * 
+     * @param allVersusAll entity to be created.    
+     * @return created/persisted entity
+     */
     public AllVersusAll createAllVersusAll(AllVersusAll allVersusAll){
         //set creator as user
         User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
@@ -93,7 +105,7 @@ public class AllVersusAllService {
     }
 
     /**
-     *  Get all the allVersusAlls.
+     *  Get all curent user's allVersusAll entities.
      *  
      *  @return the list of entities
      */
@@ -151,6 +163,7 @@ public class AllVersusAllService {
          return result;
     }
     
+    //generates match, rivals are on special positions in array, 
     private void generateMatches(int period, int round, List<Participant> participant, AllVersusAll tournament){
         int n = participant.size();
         Participant rivalA, rivalB;
@@ -170,7 +183,7 @@ public class AllVersusAllService {
         }
     }
     
-    
+    //shifts array of rivals, first is fixed
     private List<Participant> shift(List<Participant> participant){
         int n = participant.size();
         Participant[] result = new Participant[n];
@@ -182,6 +195,7 @@ public class AllVersusAllService {
         return Arrays.asList(result);
     }
     
+    //generates Round-robin assignment for given tournament
     public void generateAssignment(AllVersusAll tournament){
          List<Participant> participant = initCorrectListOfParticipants(tournament);
          int roundCount = participant.size() - 1;
@@ -196,29 +210,4 @@ public class AllVersusAllService {
          }
          
     }
-    
-//    public static List<String> shiftStrings(List<String> participant){
-//        int n = participant.size();
-//        String[] result = new String[n];
-//        result[0] = participant.get(0);
-//        result[1] = participant.get(n-1);
-//        for (int i = 1; i < n-1; i++){
-//            result[i+1] = participant.get(i);
-//        }
-//        return Arrays.asList(result);
-//    }
-//    
-//    public static void main(String[] args) {
-//        System.out.println("Hello");
-//        List<String> list = new ArrayList<>();
-//        list.add(new String("Dana"));
-//        list.add(new String("Bety"));
-//        System.out.println(list);
-//        System.out.println("size = " + list.size());
-//        System.out.println("list after shift:");
-//        list = shiftStrings(list);
-//        System.out.println(list);
-//        
-//        
-//    }
 }
