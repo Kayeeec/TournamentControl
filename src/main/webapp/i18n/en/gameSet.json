@@ -3,8 +3,8 @@
         "gameSet" : {
             "home": {
                 "title": "Game Sets",
-                "createLabel": "Create a new Game Set",
-                "createOrEditLabel": "Create or edit a Game Set"
+                "createLabel": "Create new Set",
+                "createOrEditLabel": "Create or edit a Set"
             },
             "created": "A new Game Set is created with identifier {{ param }}",
             "updated": "A Game Set is updated with identifier {{ param }}",

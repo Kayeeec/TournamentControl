@@ -7,7 +7,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -200,11 +202,18 @@ public class Game implements Serializable, Comparable<Game> {
     public String toString() {
         return "Game{"
                 + "id=" + id
-                + ", finished='" + finished + "'"
-                + ", round='" + round + "'"
-                + ", period='" + period + "'"
-                + ", note='" + note + "'"
+                + ", rivalA='" + rivalA.getName() + "'"
+                + ", rivalB='" + rivalB.getName() + "'"
+                + ", tournament='" + tournament.getName() + "'"
                 + '}';
+    }
+    
+    public String setsToString(){
+        List<Long> setIDs = new ArrayList<>();
+        for (GameSet set : this.getSets()) {
+            setIDs.add(set.getId());
+        }
+        return setIDs.toString();
     }
 
     @Override

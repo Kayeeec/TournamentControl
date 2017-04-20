@@ -84,6 +84,29 @@ public class GameResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, game.getId().toString()))
             .body(result);
     }
+    
+    /**
+     * PUT  /games : Adds a new Set an existing game.
+     *
+     * @param game the game to add set to
+     * @return the ResponseEntity with status 200 (OK) and with body the updated game,
+     * or with status 400 (Bad Request) if the game is not valid,
+     * or with status 500 (Internal Server Error) if the game couldnt be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/games/{gameId}/sets")
+    @Timed
+    public ResponseEntity<Game> addSet(@PathVariable Long gameId) throws URISyntaxException {
+        log.debug("REST request to ADD SET to a Game with id: {}", gameId);
+        Game game = gameService.findOne(gameId);
+        Game result = gameService.addNewSet(game);
+        
+        log.debug("REST request to add set - SAVED result : {}", result);
+//        return ResponseEntity.ok()
+//            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, game.getId().toString()))
+//            .body(result);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
+    }
 
     /**
      * GET  /games : get all the games.

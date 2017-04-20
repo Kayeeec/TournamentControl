@@ -19,6 +19,10 @@ My styles
 .myTextCenter{
     text-align: center;
 }
+.myPaqddingBottom{
+    padding-bottom: 10px;
+}
+
 
 /* ==========================================================================
 Hide ng-cloak on page load, https://docs.angularjs.org/api/ng/directive/ngCloak

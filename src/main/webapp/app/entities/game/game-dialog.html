@@ -9,38 +9,62 @@
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
         
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.game.finished" for="field_finished">Finished</label>
-                <input type="checkbox" name="finished" id="field_finished"
-                          ng-model="vm.game.finished"/>
-        </div>
-        
-        <div class="">
-            <div class="form-inline" ng-repeat="set in vm.game.sets">
-                <label class="form-group control-label" data-translate=""> 
-                    <span ng-if="vm.game.rivalA.player">{{vm.game.rivalA.player.name}}</span>
-                    <span ng-if="vm.game.rivalA.team">{{vm.game.rivalA.team.name}}</span>
-                    <input type="number" class="form-control" name="scoreA" id="field_scoreA"
+        <table border="0" class="table table-responsive">
+            <thead>
+                <tr>
+                    <th class="myTextCenter">
+                        <span ng-if="vm.game.rivalA.player">{{vm.game.rivalA.player.name}}</span>
+                        <span ng-if="vm.game.rivalA.team">{{vm.game.rivalA.team.name}}</span>
+                    </th>
+                    <th class="myTextCenter"> vs. </th>
+                    <th class="myTextCenter">
+                        <span ng-if="vm.game.rivalB.player">{{vm.game.rivalB.player.name}}</span>
+                        <span ng-if="vm.game.rivalB.team">{{vm.game.rivalB.team.name}}</span>
+                    </th>
+                    <th class="myTextCenter">Finished set</th>
+                </tr>
+            </thead>
+            <tbody ng-repeat="set in vm.game.sets" >
+                <tr>
+                    <td>
+                        <input type="number" class="form-control" name="scoreA" id="field_scoreA"
                            ng-model="set.scoreA"
                            />
-                </label>
-                <div class="form-group"> : </div>
-                <label class="form-group control-label" data-translate=""> 
-                    <span ng-if="vm.game.rivalB.player">{{vm.game.rivalB.player.name}}</span>
-                    <span ng-if="vm.game.rivalB.team">{{vm.game.rivalB.team.name}}</span>
-                    <input type="number" class="form-control" name="scoreB" id="field_scoreB"
+                    </td>
+                    <td class="myTextCenter"> : </td>
+                    <td>
+                        <input type="number" class="form-control" name="scoreB" id="field_scoreB"
                            ng-model="set.scoreB"
                            />
-                </label>
-            </div>
-        </div>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="game_set_finished"
+                          ng-model="set.finished"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         
+        <div class="myPaqddingBottom">
+            <a class="btn btn-success" ng-click="vm.addSet()">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span  data-translate="tournamentControlApp.gameSet.home.createLabel">
+                    Create new Set
+                </span>
+            </a>
+        </div>
         
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.game.note" for="field_note">Note</label>
             <textarea type="text" class="form-control" name="note" id="field_note"
                     ng-model="vm.game.note"
                     ></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.game.finished" for="field_finished">Finished</label>
+                <input type="checkbox" name="finished" id="field_finished"
+                          ng-model="vm.game.finished"/>
         </div>
         
     </div>

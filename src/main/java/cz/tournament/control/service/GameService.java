@@ -67,12 +67,11 @@ public class GameService {
     }
     
     public Game addNewSet(Game game){
-        log.debug("Request to add new set to a Game : {}", game);
-        
         GameSet set = gameSetService.save(new GameSet().game(game));
+        log.debug("GAME_SERVICE..........added set: {}, game= {}",set.getId(), game.toString());
         game.addSets(set);
-        
         Game result = gameRepository.save(game);
+        log.debug("GAME_SERVICE: saved game: {} with sets {}", game.toString(), game.setsToString());
         return result;
     }
     
