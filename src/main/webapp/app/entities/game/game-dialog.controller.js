@@ -52,6 +52,13 @@
                 vm.game = result;
             });
         }
+        
+        vm.removeSet = function (setId){
+            console.log("im here " + setId);
+            Game.removeSet({id: setId}, function(result) {
+                vm.game = result;
+            });
+        };
 
 
     }
