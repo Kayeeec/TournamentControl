@@ -99,7 +99,7 @@ public class GameSetResource {
      *
      * @return the ResponseEntity with status 200 (OK) and the list of gameSets in body
      */
-    @GetMapping("/game-sets-for-game/{gameId}")
+    @GetMapping("/game/{gameId}/game-sets")
     @Timed
     public List<GameSet> getGameSetsForGame(@PathVariable Long gameId) {
         log.debug("REST request to get all GameSets");
@@ -129,10 +129,10 @@ public class GameSetResource {
      */
     @DeleteMapping("/game-sets/{id}")
     @Timed
-    public ResponseEntity<Void> deleteGameSet(@PathVariable Long id) {
+    public ResponseEntity<Game> deleteGameSet(@PathVariable Long id) {
         log.debug("REST request to delete GameSet : {}", id);
-        gameSetService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        Game game = gameSetService.delete(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
     }
 
 }

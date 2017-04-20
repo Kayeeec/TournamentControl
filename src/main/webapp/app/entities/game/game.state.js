@@ -144,31 +144,6 @@
                 });
             }]
         })
-        .state('game.addNewSet', {
-            parent: 'game.edit',
-            url: '/game-addNewSet/{id}',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/entities/game/game-dialog.html',
-                    controller: 'GameDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['Game', function(Game) {
-                            return Game.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('game.edit', null, { reload: 'game.edit' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
         .state('game.delete', {
             parent: 'game',
             url: '/{id}/delete',

@@ -30,7 +30,18 @@
                     }
                     return data;
                 }
+            },
+            'removeSet': {method: 'DELETE',
+                params: {id: '@id'},
+                url: 'api/game-sets/:id',
+                transformResponse: function (data) {
+                    if (data) {
+                        data = angular.fromJson(data);
+                    }
+                    return data;
+                }
             }
+            
             
         });
     }
