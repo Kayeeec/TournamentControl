@@ -13,6 +13,7 @@
         vm.game = entity;
         vm.clear = clear;
         vm.save = save;
+        vm.addSet = addSet;
         vm.tournaments = Tournament.query();
         vm.participants = Participant.query();
         vm.gamesets = GameSet.query();
@@ -26,6 +27,7 @@
         }
 
         function save () {
+            console.log("it calls save");
             vm.isSaving = true;
             if (vm.game.id !== null) {
                 Game.update(vm.game, onSaveSuccess, onSaveError);
@@ -42,6 +44,13 @@
 
         function onSaveError () {
             vm.isSaving = false;
+        }
+        
+        function addSet(){
+            console.log("im here " + vm.game.id);
+            Game.addSet({id: vm.game.id}, function(result) {
+                vm.game = result;
+            });
         }
 
 
