@@ -27,6 +27,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('allVersusAll');
                     $translatePartialLoader.addPart('game');
+                    $translatePartialLoader.addPart('gameSet');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]

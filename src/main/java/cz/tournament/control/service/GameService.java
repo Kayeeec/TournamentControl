@@ -57,7 +57,7 @@ public class GameService {
     public Game updateGame(Game game){
         log.debug("Request to update Game : {}", game);
         
-        //ensure tournament
+        //ensure tournament - never changes
         Tournament oldTournament = gameRepository.findOne(game.getId()).getTournament();
         game.setTournament(oldTournament);
         log.debug("old tournament: {}", oldTournament);

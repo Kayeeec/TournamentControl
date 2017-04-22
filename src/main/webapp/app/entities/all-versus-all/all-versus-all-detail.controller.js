@@ -30,6 +30,17 @@
             });
             return r;
         }
+        
+        var getScoreSum = function (match) {
+            var result = {A: 0, B: 0};
+            for (var set in match.sets) {
+                result.A += set.scoreA;
+                result.B += set.scoreB;
+            }
+            return result;
+        };
+        
+        
 
         $scope.pointCount = function pointCount(participantID) {
             var hisFinishedMatches = participantsFinishedMatches(participantID);
@@ -37,39 +48,32 @@
             var points = {rival: "rival",wins: 0, loses: 0, ties: 0, total: 0, score: 0, scoreRival: 0};
 
             hisFinishedMatches.forEach(function (match) {
+                var scoreSum = getScoreSum(match);
+//                classic - score bigger or even
                 if(match.rivalA.id === participantID){
-                    if(match.scoreA > match.scoreB){
+                    points.score += scoreSum.A;
+                    points.scoreRival += scoreSum.B;
+                    if(scoreSum.A > scoreSum.B){
                         points.wins += 1;
-                        points.score += match.scoreA;
-                        points.scoreRival += match.scoreB;
                     }
-                    if(match.scoreA < match.scoreB){
+                    if(scoreSum.A < scoreSum.B){
                         points.loses += 1;
-                        points.score += match.scoreA;
-                        points.scoreRival += match.scoreB;
                     }
-                    if (match.scoreA === match.scoreB) {
+                    if (scoreSum.A === scoreSum.B) {
                         points.ties += 1;
-                        points.score += match.scoreA;
-                        points.scoreRival += match.scoreA;
-                    }
-                    
+                    }   
                 }
                 if(match.rivalB.id === participantID){
-                    if(match.scoreB > match.scoreA){
+                    points.score += scoreSum.B;
+                    points.scoreRival += scoreSum.A;
+                    if(scoreSum.B > scoreSum.A){
                         points.wins += 1;
-                        points.score += match.scoreB;
-                        points.scoreRival += match.scoreA;
                     }
-                    if(match.scoreB < match.scoreA){
+                    if(scoreSum.B < scoreSum.A){
                         points.loses += 1;
-                        points.score += match.scoreB;
-                        points.scoreRival += match.scoreA;
                     }
-                    if (match.scoreB === match.scoreA) {
+                    if (scoreSum.B === scoreSum.A) {
                         points.ties += 1;
-                        points.score += match.scoreB;
-                        points.scoreRival += match.scoreA;
                     }
                 }
             });

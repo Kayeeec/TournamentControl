@@ -145,7 +145,7 @@
                         <th>ID</th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.round">Round</span></th>
                         <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
-                        <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.score">Score</span></th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.gameSet.score">Score</span></th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.finished">Finished</span></th>
                         <th></th>
                     </tr>
@@ -164,20 +164,26 @@
                             <a ng-if="game.rivalB.team" ui-sref="team-detail({id:game.rivalB.team.id})">{{game.rivalB.team.name}}</a>
                         </td>
 
-                        <td style="text-align: right">{{game.scoreA}}</td>
+<!--                        <td style="text-align: right">{{game.scoreA}}</td>
                         <td style="text-align: center; padding: 0px">:</td>
-                        <td style="text-align: left">{{game.scoreB}}</td>
+                        <td style="text-align: left">{{game.scoreB}}</td>-->
+                        <td>
+                            <span ng-repeat="set in game.sets">
+                                {{set.scoreA}} : {{set.scoreB}}{{$last ? '' : ' | '}}
+                            </span>
+                        </td>
+                        
                         <td style="text-align: center">{{game.finished}}</td>
                         <td class="text-right">
                             <div class="btn-group flex-btn-group-container">
                                 <button type="submit"
-                                        ui-sref="game-detail({gameid:game.id, id:vm.allVersusAll.id})"
+                                        ui-sref="game-detail({gameId:game.id, id:vm.allVersusAll.id})"
                                         class="btn btn-info btn-sm">
                                     <span class="glyphicon glyphicon-eye-open"></span>
                                     <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                                 </button>
                                 <button type="submit"
-                                        ui-sref="game.edit({gameid:game.id, id:vm.allVersusAll.id})"
+                                        ui-sref="game.edit({gameId:game.id, id:vm.allVersusAll.id})"
                                         class="btn btn-primary btn-sm">
                                     <span class="glyphicon glyphicon-pencil"></span>
                                     <span class="hidden-sm-down" data-translate="entity.action.edit"></span>

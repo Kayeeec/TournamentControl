@@ -40,6 +40,16 @@ public class GameSetService {
         GameSet result = gameSetRepository.save(gameSet);
         return result;
     }
+    
+    public GameSet updateGameSet(GameSet gameSet){
+        log.debug("Request to update GameSet : {}", gameSet);
+        //ensure game
+        Game oldGame = gameSetRepository.findOne(gameSet.getId()).getGame();
+        gameSet.game(oldGame);
+        
+        GameSet result = gameSetRepository.save(gameSet);
+        return result;
+    }
 
     /**
      *  Get all the gameSets.
