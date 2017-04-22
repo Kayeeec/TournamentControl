@@ -20,6 +20,7 @@
             "period": "Period",
             "note": "Note",
             "tournament": "Tournament",
+            "rivals":"Rivals",
             "rivalA": "Rival A",
             "rivalB": "Rival B",
             "sets": "Sets"

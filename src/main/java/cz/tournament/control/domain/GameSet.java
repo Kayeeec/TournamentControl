@@ -119,7 +119,9 @@ public class GameSet implements Serializable {
     public String toString() {
         return "GameSet{" +
             "id=" + id +
-            ", game ='" + game.toString()+ "'" +
+            ", scoreA ='" + scoreA + "'" +
+            ", scoreB ='" + scoreB + "'" +
+            ", finished ='" + finished + "'" +
             '}';
     }
 }

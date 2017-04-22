@@ -1,6 +1,7 @@
 package cz.tournament.control.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -40,7 +41,8 @@ public class Game implements Serializable, Comparable<Game> {
 
     @Column(name = "note")
     private String note;
-
+    
+    @JsonIgnoreProperties({"matches"})
     @ManyToOne(fetch = FetchType.LAZY)
     private Tournament tournament;
 

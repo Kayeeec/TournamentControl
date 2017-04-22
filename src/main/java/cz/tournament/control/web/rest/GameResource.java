@@ -108,18 +108,18 @@ public class GameResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
     }
 
-    /**
-     * GET  /games : get all the games.
-     *
-     * @return the ResponseEntity with status 200 (OK) and the list of games in body
-     */
-    @GetMapping("/games")
-    @Timed
-    public List<Game> getAllGames() {
-        log.debug("REST request to get all Games");
-        List<Game> games = gameService.findAll();
-        return games;
-    }
+//    /**
+//     * GET  /games : get all the games.
+//     *
+//     * @return the ResponseEntity with status 200 (OK) and the list of games in body
+//     */
+//    @GetMapping("/games")
+//    @Timed
+//    public List<Game> getAllGames() {
+//        log.debug("REST request to get all Games");
+//        List<Game> games = gameService.findAll();
+//        return games;
+//    }
     
     /**
      * GET  /games : get all the games.
@@ -136,6 +136,7 @@ public class GameResource {
         return games;
     }
 
+    
     /**
      * GET  /games/:id : get the "id" game.
      *

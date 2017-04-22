@@ -38,28 +38,37 @@
                            ng-model="set.scoreB"
                            />
                     </td>
-                    <td>
+                    <td class="myTextCenter">
                         <input type="checkbox" name="game_set_finished"
                           ng-model="set.finished"/>
                     </td>
                     <td>
-                        <a class="btn btn-danger btn-xs" ng-click="vm.removeSet(set.id)">
-                            <span class="glyphicon glyphicon-remove"></span>
-                            <span  data-translate=""> <!--TODO: -->
-                            </span>
-                        </a>
+                        <div ng-if="vm.game.sets.length === 1"> 
+                            <button disabled type="button" name="remove_set_btn" class="btn btn-danger btn-xs" ng-click="vm.removeSet(set.id)">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                <span  data-translate=""> <!--TODO: -->
+                                </span>
+                            </button>
+                        </div>
+                        <div ng-if="vm.game.sets.length > 1"> 
+                            <button type="button" name="remove_set_btn" class="btn btn-danger btn-xs" ng-click="vm.removeSet(set.id)">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                <span  data-translate=""> <!--TODO: -->
+                                </span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             </tbody>
         </table>
         
         <div class="myPaqddingBottom">
-            <a class="btn btn-success" ng-click="vm.addSet()">
+            <button type="button" name="add_set_btn" class="btn btn-success" ng-click="vm.addSet()">
                 <span class="glyphicon glyphicon-plus"></span>
                 <span  data-translate="tournamentControlApp.gameSet.home.createLabel">
                     Create new Set
                 </span>
-            </a>
+            </button>
         </div>
         
         <div class="form-group">

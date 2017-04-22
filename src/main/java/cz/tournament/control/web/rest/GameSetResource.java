@@ -76,7 +76,7 @@ public class GameSetResource {
         if (gameSet.getId() == null) {
             return createGameSet(gameSet);
         }
-        GameSet result = gameSetService.save(gameSet);
+        GameSet result = gameSetService.updateGameSet(gameSet);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, gameSet.getId().toString()))
             .body(result);

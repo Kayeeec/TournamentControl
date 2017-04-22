@@ -21,6 +21,7 @@
         }
         vm.allVersusAll.participants = vm.allVersusAll.participants || [];
         vm.allVersusAll.numberOfMutualMatches = vm.allVersusAll.numberOfMutualMatches || 1;
+        vm.allVersusAll.numberOfSets = vm.allVersusAll.numberOfSets || 1;
         vm.selectedPlayers = filterFilter(vm.allVersusAll.participants, {team : null});
         vm.selectedTeams = filterFilter(vm.allVersusAll.participants, {player : null});
         $scope.chosen = 1;
