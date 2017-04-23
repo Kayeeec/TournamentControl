@@ -179,6 +179,13 @@ public class Game implements Serializable, Comparable<Game> {
     public void setSets(Set<GameSet> gameSets) {
         this.sets = gameSets;
     }
+    
+    public Boolean allSetsFinished(){
+        for (GameSet set : sets) {
+            if(!set.isFinished()) return false;
+        }
+        return true;
+    }
 
     @Override
     public boolean equals(Object o) {

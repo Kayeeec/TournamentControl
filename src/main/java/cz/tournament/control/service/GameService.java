@@ -58,9 +58,15 @@ public class GameService {
         log.debug("Request to update Game : {}", game);
         
         //ensure tournament - never changes
-        Tournament oldTournament = gameRepository.findOne(game.getId()).getTournament();
-        game.setTournament(oldTournament);
-        log.debug("old tournament: {}", oldTournament);
+        if(game.getTournament() == null){
+           Tournament oldTournament = gameRepository.findOne(game.getId()).getTournament();
+            game.setTournament(oldTournament); 
+        }
+        
+        //finish the game if all sets are finished
+        if(game.allSetsFinished()){
+            game.finished(Boolean.TRUE);
+        }
         
         Game result = gameRepository.save(game);
         return result;
@@ -101,8 +107,9 @@ public class GameService {
     }
     
     /**
-     *  Get all the games.
+     *  Get all the games that have a certain tournament.
      *  
+     * @param tournament of games returned
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
