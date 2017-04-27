@@ -4,8 +4,6 @@ import cz.tournament.control.TournamentControlApp;
 
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.repository.TournamentRepository;
-import cz.tournament.control.repository.UserRepository;
-import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -62,24 +60,17 @@ public class TournamentResourceIntTest {
     private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_CREATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
-    private static final Integer DEFAULT_NUMBER_OF_SETS = 1;
-    private static final Integer UPDATED_NUMBER_OF_SETS = 2;
-
     private static final Integer DEFAULT_SETS_TO_WIN = 1;
     private static final Integer UPDATED_SETS_TO_WIN = 2;
 
     private static final Boolean DEFAULT_TIES_ALLOWED = false;
     private static final Boolean UPDATED_TIES_ALLOWED = true;
 
-    private static final Integer DEFAULT_SCORE_MAX = 1;
-    private static final Integer UPDATED_SCORE_MAX = 2;
+    private static final Integer DEFAULT_PLAYING_FIELDS = 1;
+    private static final Integer UPDATED_PLAYING_FIELDS = 2;
 
     @Autowired
     private TournamentRepository tournamentRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TournamentService tournamentService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -100,7 +91,7 @@ public class TournamentResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        TournamentResource tournamentResource = new TournamentResource(tournamentRepository, userRepository, tournamentService);
+        TournamentResource tournamentResource = new TournamentResource(tournamentRepository);
         this.restTournamentMockMvc = MockMvcBuilders.standaloneSetup(tournamentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -121,10 +112,9 @@ public class TournamentResourceIntTest {
             .pointsForLosing(DEFAULT_POINTS_FOR_LOSING)
             .pointsForTie(DEFAULT_POINTS_FOR_TIE)
             .created(DEFAULT_CREATED)
-            .numberOfSets(DEFAULT_NUMBER_OF_SETS)
             .setsToWin(DEFAULT_SETS_TO_WIN)
             .tiesAllowed(DEFAULT_TIES_ALLOWED)
-            .scoreMax(DEFAULT_SCORE_MAX);
+            .playingFields(DEFAULT_PLAYING_FIELDS);
         return tournament;
     }
 
@@ -154,10 +144,9 @@ public class TournamentResourceIntTest {
         assertThat(testTournament.getPointsForLosing()).isEqualTo(DEFAULT_POINTS_FOR_LOSING);
         assertThat(testTournament.getPointsForTie()).isEqualTo(DEFAULT_POINTS_FOR_TIE);
         assertThat(testTournament.getCreated()).isEqualTo(DEFAULT_CREATED);
-        assertThat(testTournament.getNumberOfSets()).isEqualTo(DEFAULT_NUMBER_OF_SETS);
         assertThat(testTournament.getSetsToWin()).isEqualTo(DEFAULT_SETS_TO_WIN);
         assertThat(testTournament.isTiesAllowed()).isEqualTo(DEFAULT_TIES_ALLOWED);
-        assertThat(testTournament.getScoreMax()).isEqualTo(DEFAULT_SCORE_MAX);
+        assertThat(testTournament.getPlayingFields()).isEqualTo(DEFAULT_PLAYING_FIELDS);
     }
 
     @Test
@@ -232,10 +221,9 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.[*].pointsForLosing").value(hasItem(DEFAULT_POINTS_FOR_LOSING)))
             .andExpect(jsonPath("$.[*].pointsForTie").value(hasItem(DEFAULT_POINTS_FOR_TIE)))
             .andExpect(jsonPath("$.[*].created").value(hasItem(sameInstant(DEFAULT_CREATED))))
-            .andExpect(jsonPath("$.[*].numberOfSets").value(hasItem(DEFAULT_NUMBER_OF_SETS)))
             .andExpect(jsonPath("$.[*].setsToWin").value(hasItem(DEFAULT_SETS_TO_WIN)))
             .andExpect(jsonPath("$.[*].tiesAllowed").value(hasItem(DEFAULT_TIES_ALLOWED.booleanValue())))
-            .andExpect(jsonPath("$.[*].scoreMax").value(hasItem(DEFAULT_SCORE_MAX)));
+            .andExpect(jsonPath("$.[*].playingFields").value(hasItem(DEFAULT_PLAYING_FIELDS)));
     }
 
     @Test
@@ -255,10 +243,9 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.pointsForLosing").value(DEFAULT_POINTS_FOR_LOSING))
             .andExpect(jsonPath("$.pointsForTie").value(DEFAULT_POINTS_FOR_TIE))
             .andExpect(jsonPath("$.created").value(sameInstant(DEFAULT_CREATED)))
-            .andExpect(jsonPath("$.numberOfSets").value(DEFAULT_NUMBER_OF_SETS))
             .andExpect(jsonPath("$.setsToWin").value(DEFAULT_SETS_TO_WIN))
             .andExpect(jsonPath("$.tiesAllowed").value(DEFAULT_TIES_ALLOWED.booleanValue()))
-            .andExpect(jsonPath("$.scoreMax").value(DEFAULT_SCORE_MAX));
+            .andExpect(jsonPath("$.playingFields").value(DEFAULT_PLAYING_FIELDS));
     }
 
     @Test
@@ -285,10 +272,9 @@ public class TournamentResourceIntTest {
             .pointsForLosing(UPDATED_POINTS_FOR_LOSING)
             .pointsForTie(UPDATED_POINTS_FOR_TIE)
             .created(UPDATED_CREATED)
-            .numberOfSets(UPDATED_NUMBER_OF_SETS)
             .setsToWin(UPDATED_SETS_TO_WIN)
             .tiesAllowed(UPDATED_TIES_ALLOWED)
-            .scoreMax(UPDATED_SCORE_MAX);
+            .playingFields(UPDATED_PLAYING_FIELDS);
 
         restTournamentMockMvc.perform(put("/api/tournaments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -305,10 +291,9 @@ public class TournamentResourceIntTest {
         assertThat(testTournament.getPointsForLosing()).isEqualTo(UPDATED_POINTS_FOR_LOSING);
         assertThat(testTournament.getPointsForTie()).isEqualTo(UPDATED_POINTS_FOR_TIE);
         assertThat(testTournament.getCreated()).isEqualTo(UPDATED_CREATED);
-        assertThat(testTournament.getNumberOfSets()).isEqualTo(UPDATED_NUMBER_OF_SETS);
         assertThat(testTournament.getSetsToWin()).isEqualTo(UPDATED_SETS_TO_WIN);
         assertThat(testTournament.isTiesAllowed()).isEqualTo(UPDATED_TIES_ALLOWED);
-        assertThat(testTournament.getScoreMax()).isEqualTo(UPDATED_SCORE_MAX);
+        assertThat(testTournament.getPlayingFields()).isEqualTo(UPDATED_PLAYING_FIELDS);
     }
 
     @Test

@@ -38,6 +38,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="playing_field" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
             <column name="tournament_id" type="bigint">
                 <constraints nullable="true" />
             </column>

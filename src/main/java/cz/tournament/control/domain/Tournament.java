@@ -1,6 +1,6 @@
 package cz.tournament.control.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -18,13 +18,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "tournament")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Inheritance(strategy=InheritanceType.JOINED)
 public class Tournament implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -44,11 +42,9 @@ public class Tournament implements Serializable {
     @Column(name = "points_for_tie")
     private Integer pointsForTie;
 
-    @Column(name = "created")
+    @NotNull
+    @Column(name = "created", nullable = false)
     private ZonedDateTime created;
-
-    @Column(name = "number_of_sets")
-    private Integer numberOfSets;
 
     @Column(name = "sets_to_win")
     private Integer setsToWin;
@@ -56,23 +52,27 @@ public class Tournament implements Serializable {
     @Column(name = "ties_allowed")
     private Boolean tiesAllowed;
 
-    @Column(name = "score_max")
-    private Integer scoreMax;
+    @Column(name = "playing_fields")
+    private Integer playingFields;
 
-    @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tournament")
+    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JsonIgnoreProperties({"tournament"})
     private Set<Game> matches = new HashSet<>();
 
     @ManyToOne
     private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "tournament_participants",
                joinColumns = @JoinColumn(name="tournaments_id", referencedColumnName="id"),
                inverseJoinColumns = @JoinColumn(name="participants_id", referencedColumnName="id"))
     private Set<Participant> participants = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private SetSettings setSettings;
 
     public Long getId() {
         return id;
@@ -160,19 +160,6 @@ public class Tournament implements Serializable {
         this.created = created;
     }
 
-    public Integer getNumberOfSets() {
-        return numberOfSets;
-    }
-
-    public Tournament numberOfSets(Integer numberOfSets) {
-        this.numberOfSets = numberOfSets;
-        return this;
-    }
-
-    public void setNumberOfSets(Integer numberOfSets) {
-        this.numberOfSets = numberOfSets;
-    }
-
     public Integer getSetsToWin() {
         return setsToWin;
     }
@@ -199,17 +186,17 @@ public class Tournament implements Serializable {
         this.tiesAllowed = tiesAllowed;
     }
 
-    public Integer getScoreMax() {
-        return scoreMax;
+    public Integer getPlayingFields() {
+        return playingFields;
     }
 
-    public Tournament scoreMax(Integer scoreMax) {
-        this.scoreMax = scoreMax;
+    public Tournament playingFields(Integer playingFields) {
+        this.playingFields = playingFields;
         return this;
     }
 
-    public void setScoreMax(Integer scoreMax) {
-        this.scoreMax = scoreMax;
+    public void setPlayingFields(Integer playingFields) {
+        this.playingFields = playingFields;
     }
 
     public Set<Game> getMatches() {
@@ -273,6 +260,19 @@ public class Tournament implements Serializable {
         this.participants = participants;
     }
 
+    public SetSettings getSetSettings() {
+        return setSettings;
+    }
+
+    public Tournament setSettings(SetSettings setSettings) {
+        this.setSettings = setSettings;
+        return this;
+    }
+
+    public void setSetSettings(SetSettings setSettings) {
+        this.setSettings = setSettings;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -303,10 +303,9 @@ public class Tournament implements Serializable {
             ", pointsForLosing='" + pointsForLosing + "'" +
             ", pointsForTie='" + pointsForTie + "'" +
             ", created='" + created + "'" +
-            ", numberOfSets='" + numberOfSets + "'" +
             ", setsToWin='" + setsToWin + "'" +
             ", tiesAllowed='" + tiesAllowed + "'" +
-            ", scoreMax='" + scoreMax + "'" +
+            ", playingFields='" + playingFields + "'" +
             '}';
     }
 }

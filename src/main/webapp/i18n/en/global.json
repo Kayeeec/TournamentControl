@@ -15,6 +15,7 @@
                 "allVersusAll": "All Versus All",
                 "elimination": "Elimination",
                 "gameSet": "Game Set",
+                "setSettings": "Set Settings",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

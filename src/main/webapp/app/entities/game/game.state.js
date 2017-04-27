@@ -108,6 +108,7 @@
                                 round: null,
                                 period: null,
                                 note: null,
+                                playingField: null,
                                 id: null
                             };
                         }

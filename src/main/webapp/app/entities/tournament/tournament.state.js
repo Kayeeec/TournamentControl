@@ -114,10 +114,9 @@
                                 pointsForLosing: null,
                                 pointsForTie: null,
                                 created: null,
-                                numberOfSets: null,
                                 setsToWin: null,
                                 tiesAllowed: null,
-                                scoreMax: null,
+                                playingFields: null,
                                 id: null
                             };
                         }

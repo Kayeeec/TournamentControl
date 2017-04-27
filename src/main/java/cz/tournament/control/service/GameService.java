@@ -42,7 +42,7 @@ public class GameService {
         //prepare sets - one or basic number of sets 
         GameSet set = gameSetService.save(new GameSet().game(tmp));
         tmp.addSets(set);
-        Integer sets = tmp.getTournament().getNumberOfSets();
+        Integer sets = tmp.getTournament().getSetsToWin();
         if(sets != null && sets > 1){
             for (int i = 1; i < sets; i++) {
                 set = gameSetService.save(new GameSet().game(tmp));
