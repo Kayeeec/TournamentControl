@@ -1,0 +1,74 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="mySetSettingsLabel" data-translate="tournamentControlApp.setSettings.home.createOrEditLabel">Create or edit a Set Settings</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.setSettings.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.setSettings.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.setSettings.maxScore" for="field_maxScore">Max Score</label>
+            <input type="number" class="form-control" name="maxScore" id="field_maxScore"
+                    ng-model="vm.setSettings.maxScore"
+                    min="1"/>
+            <div ng-show="editForm.maxScore.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                    This field should be at least 1.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.maxScore.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.setSettings.minReachedScore" for="field_minReachedScore">Min Reached Score</label>
+            <input type="number" class="form-control" name="minReachedScore" id="field_minReachedScore"
+                    ng-model="vm.setSettings.minReachedScore"
+                    min="0"/>
+            <div ng-show="editForm.minReachedScore.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.minReachedScore.$error.min" data-translate="entity.validation.min" translate-value-min="0">
+                    This field should be at least 0.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.minReachedScore.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.setSettings.leadByPoints" for="field_leadByPoints">Lead By Points</label>
+            <input type="number" class="form-control" name="leadByPoints" id="field_leadByPoints"
+                    ng-model="vm.setSettings.leadByPoints"
+                    min="1"/>
+            <div ng-show="editForm.leadByPoints.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.leadByPoints.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                    This field should be at least 1.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.leadByPoints.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>
