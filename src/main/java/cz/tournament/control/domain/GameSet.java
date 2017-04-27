@@ -30,7 +30,7 @@ public class GameSet implements Serializable {
 
     @Column(name = "finished")
     private Boolean finished = false;
-    
+
     @JsonIgnore
     @ManyToOne
     private Game game;
@@ -119,9 +119,9 @@ public class GameSet implements Serializable {
     public String toString() {
         return "GameSet{" +
             "id=" + id +
-            ", scoreA ='" + scoreA + "'" +
-            ", scoreB ='" + scoreB + "'" +
-            ", finished ='" + finished + "'" +
+            ", scoreA='" + scoreA + "'" +
+            ", scoreB='" + scoreB + "'" +
+            ", finished='" + finished + "'" +
             '}';
     }
 }

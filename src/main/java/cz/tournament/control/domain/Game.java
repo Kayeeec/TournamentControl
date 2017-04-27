@@ -1,6 +1,5 @@
 package cz.tournament.control.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -41,7 +40,11 @@ public class Game implements Serializable, Comparable<Game> {
 
     @Column(name = "note")
     private String note;
+
+    @Column(name = "playing_field")
+    private String playingField;
     
+
     @JsonIgnoreProperties({"matches"})
     @ManyToOne(fetch = FetchType.LAZY)
     private Tournament tournament;
@@ -116,6 +119,19 @@ public class Game implements Serializable, Comparable<Game> {
         this.note = note;
     }
 
+    public String getPlayingField() {
+        return playingField;
+    }
+
+    public Game playingField(String playingField) {
+        this.playingField = playingField;
+        return this;
+    }
+
+    public void setPlayingField(String playingField) {
+        this.playingField = playingField;
+    }
+
     public Tournament getTournament() {
         return tournament;
     }
@@ -179,7 +195,7 @@ public class Game implements Serializable, Comparable<Game> {
     public void setSets(Set<GameSet> gameSets) {
         this.sets = gameSets;
     }
-    
+
     public Boolean allSetsFinished(){
         for (GameSet set : sets) {
             if(!set.isFinished()) return false;
@@ -209,12 +225,14 @@ public class Game implements Serializable, Comparable<Game> {
 
     @Override
     public String toString() {
-        return "Game{"
-                + "id=" + id
-                + ", rivalA='" + rivalA.getName() + "'"
-                + ", rivalB='" + rivalB.getName() + "'"
-                + ", tournament='" + tournament.getName() + "'"
-                + '}';
+        return "Game{" +
+            "id=" + id +
+            ", finished='" + finished + "'" +
+            ", round='" + round + "'" +
+            ", period='" + period + "'" +
+            ", note='" + note + "'" +
+            ", playingField='" + playingField + "'" +
+            '}';
     }
     
     public String setsToString(){

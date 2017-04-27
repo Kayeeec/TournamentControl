@@ -28,10 +28,6 @@
         <dd>
             <span>{{vm.tournament.created | date:'medium'}}</span>
         </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.numberOfSets">Number Of Sets</span></dt>
-        <dd>
-            <span>{{vm.tournament.numberOfSets}}</span>
-        </dd>
         <dt><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></dt>
         <dd>
             <span>{{vm.tournament.setsToWin}}</span>
@@ -40,9 +36,9 @@
         <dd>
             <span>{{vm.tournament.tiesAllowed}}</span>
         </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.scoreMax">Score Max</span></dt>
+        <dt><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></dt>
         <dd>
-            <span>{{vm.tournament.scoreMax}}</span>
+            <span>{{vm.tournament.playingFields}}</span>
         </dd>
         <dt><span data-translate="tournamentControlApp.tournament.user">User</span></dt>
         <dd>
@@ -53,6 +49,10 @@
             <span ng-repeat="participants in vm.tournament.participants">
                 <a ui-sref="participant-detail({id: participants.id})">{{participants.id}}</a>{{$last ? '' : ', '}}
             </span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.setSettings">Set Settings</span></dt>
+        <dd>
+            <a ui-sref="set-settings-detail({id:vm.tournament.setSettings.id})">{{vm.tournament.setSettings.id}}</a>
         </dd>
     </dl>
 

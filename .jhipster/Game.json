@@ -51,6 +51,10 @@
         {
             "fieldName": "note",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "playingField",
+            "fieldType": "String"
         }
     ],
     "changelogDate": "20170320075825",

@@ -49,6 +49,9 @@ public class GameResourceIntTest {
     private static final String DEFAULT_NOTE = "AAAAAAAAAA";
     private static final String UPDATED_NOTE = "BBBBBBBBBB";
 
+    private static final String DEFAULT_PLAYING_FIELD = "AAAAAAAAAA";
+    private static final String UPDATED_PLAYING_FIELD = "BBBBBBBBBB";
+
     @Autowired
     private GameRepository gameRepository;
 
@@ -89,7 +92,8 @@ public class GameResourceIntTest {
             .finished(DEFAULT_FINISHED)
             .round(DEFAULT_ROUND)
             .period(DEFAULT_PERIOD)
-            .note(DEFAULT_NOTE);
+            .note(DEFAULT_NOTE)
+            .playingField(DEFAULT_PLAYING_FIELD);
         return game;
     }
 
@@ -117,6 +121,7 @@ public class GameResourceIntTest {
         assertThat(testGame.getRound()).isEqualTo(DEFAULT_ROUND);
         assertThat(testGame.getPeriod()).isEqualTo(DEFAULT_PERIOD);
         assertThat(testGame.getNote()).isEqualTo(DEFAULT_NOTE);
+        assertThat(testGame.getPlayingField()).isEqualTo(DEFAULT_PLAYING_FIELD);
     }
 
     @Test
@@ -152,7 +157,8 @@ public class GameResourceIntTest {
             .andExpect(jsonPath("$.[*].finished").value(hasItem(DEFAULT_FINISHED.booleanValue())))
             .andExpect(jsonPath("$.[*].round").value(hasItem(DEFAULT_ROUND)))
             .andExpect(jsonPath("$.[*].period").value(hasItem(DEFAULT_PERIOD)))
-            .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())));
+            .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
+            .andExpect(jsonPath("$.[*].playingField").value(hasItem(DEFAULT_PLAYING_FIELD.toString())));
     }
 
     @Test
@@ -169,7 +175,8 @@ public class GameResourceIntTest {
             .andExpect(jsonPath("$.finished").value(DEFAULT_FINISHED.booleanValue()))
             .andExpect(jsonPath("$.round").value(DEFAULT_ROUND))
             .andExpect(jsonPath("$.period").value(DEFAULT_PERIOD))
-            .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()));
+            .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()))
+            .andExpect(jsonPath("$.playingField").value(DEFAULT_PLAYING_FIELD.toString()));
     }
 
     @Test
@@ -193,7 +200,8 @@ public class GameResourceIntTest {
             .finished(UPDATED_FINISHED)
             .round(UPDATED_ROUND)
             .period(UPDATED_PERIOD)
-            .note(UPDATED_NOTE);
+            .note(UPDATED_NOTE)
+            .playingField(UPDATED_PLAYING_FIELD);
 
         restGameMockMvc.perform(put("/api/games")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -208,6 +216,7 @@ public class GameResourceIntTest {
         assertThat(testGame.getRound()).isEqualTo(UPDATED_ROUND);
         assertThat(testGame.getPeriod()).isEqualTo(UPDATED_PERIOD);
         assertThat(testGame.getNote()).isEqualTo(UPDATED_NOTE);
+        assertThat(testGame.getPlayingField()).isEqualTo(UPDATED_PLAYING_FIELD);
     }
 
     @Test
