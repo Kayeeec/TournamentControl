@@ -5,15 +5,16 @@
         .module('tournamentControlApp')
         .controller('GameSetDialogController', GameSetDialogController);
 
-    GameSetDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'GameSet', 'Game'];
+    GameSetDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'GameSet', 'Game', 'SetSettings'];
 
-    function GameSetDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, GameSet, Game) {
+    function GameSetDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, GameSet, Game, SetSettings) {
         var vm = this;
 
         vm.gameSet = entity;
         vm.clear = clear;
         vm.save = save;
         vm.games = Game.query();
+        vm.setsettings = SetSettings.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

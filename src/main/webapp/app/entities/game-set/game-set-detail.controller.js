@@ -5,9 +5,9 @@
         .module('tournamentControlApp')
         .controller('GameSetDetailController', GameSetDetailController);
 
-    GameSetDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'GameSet', 'Game'];
+    GameSetDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'GameSet', 'Game', 'SetSettings'];
 
-    function GameSetDetailController($scope, $rootScope, $stateParams, previousState, entity, GameSet, Game) {
+    function GameSetDetailController($scope, $rootScope, $stateParams, previousState, entity, GameSet, Game, SetSettings) {
         var vm = this;
 
         vm.gameSet = entity;

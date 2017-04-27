@@ -6,6 +6,12 @@
             "otherEntityName": "game",
             "relationshipType": "many-to-one",
             "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "setSettings",
+            "otherEntityName": "setSettings",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
         }
     ],
     "fields": [

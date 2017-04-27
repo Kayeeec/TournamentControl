@@ -18,7 +18,8 @@
             "scoreA": "Score A",
             "scoreB": "Score B",
             "finished": "Finished",
-            "game": "Game"
+            "game": "Game",
+            "setSettings": "Set Settings"
         }
     }
 }

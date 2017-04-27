@@ -35,6 +35,9 @@ public class GameSet implements Serializable {
     @ManyToOne
     private Game game;
 
+    @ManyToOne
+    private SetSettings setSettings;
+
     public Long getId() {
         return id;
     }
@@ -93,6 +96,19 @@ public class GameSet implements Serializable {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public SetSettings getSetSettings() {
+        return setSettings;
+    }
+
+    public GameSet setSettings(SetSettings setSettings) {
+        this.setSettings = setSettings;
+        return this;
+    }
+
+    public void setSetSettings(SetSettings setSettings) {
+        this.setSettings = setSettings;
     }
 
     @Override

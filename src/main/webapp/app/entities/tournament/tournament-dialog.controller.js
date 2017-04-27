@@ -18,6 +18,8 @@
         vm.games = Game.query();
         vm.users = User.query();
         vm.participants = Participant.query();
+        $scope.player = 1;
+        
         vm.setsettings = SetSettings.query({filter: 'tournament-is-null'});
         $q.all([vm.tournament.$promise, vm.setsettings.$promise]).then(function() {
             if (!vm.tournament.setSettings || !vm.tournament.setSettings.id) {
