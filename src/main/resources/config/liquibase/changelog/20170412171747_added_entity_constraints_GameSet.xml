@@ -14,5 +14,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="game"/>
 
+        <addForeignKeyConstraint baseColumnNames="set_settings_id"
+                                 baseTableName="game_set"
+                                 constraintName="fk_game_set_set_settings_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="set_settings"/>
+
     </changeSet>
 </databaseChangeLog>

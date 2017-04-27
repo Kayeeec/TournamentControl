@@ -1,6 +1,6 @@
 package cz.tournament.control.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -18,11 +18,13 @@ import java.util.Objects;
 @Entity
 @Table(name = "tournament")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Tournament implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -42,8 +44,7 @@ public class Tournament implements Serializable {
     @Column(name = "points_for_tie")
     private Integer pointsForTie;
 
-    @NotNull
-    @Column(name = "created", nullable = false)
+    @Column(name = "created")
     private ZonedDateTime created;
 
     @Column(name = "sets_to_win")
@@ -55,15 +56,15 @@ public class Tournament implements Serializable {
     @Column(name = "playing_fields")
     private Integer playingFields;
 
-    @OneToMany(mappedBy = "tournament")
-    @JsonIgnore
+    @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnoreProperties({"tournament"})
     private Set<Game> matches = new HashSet<>();
 
     @ManyToOne
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "tournament_participants",
                joinColumns = @JoinColumn(name="tournaments_id", referencedColumnName="id"),
