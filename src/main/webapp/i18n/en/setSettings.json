@@ -1,0 +1,23 @@
+{
+    "tournamentControlApp": {
+        "setSettings" : {
+            "home": {
+                "title": "Set Settings",
+                "createLabel": "Create a new Set Settings",
+                "createOrEditLabel": "Create or edit a Set Settings"
+            },
+            "created": "A new Set Settings is created with identifier {{ param }}",
+            "updated": "A Set Settings is updated with identifier {{ param }}",
+            "deleted": "A Set Settings is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Set Settings {{ id }}?"
+            },
+            "detail": {
+                "title": "Set Settings"
+            },
+            "maxScore": "Max Score",
+            "minReachedScore": "Min Reached Score",
+            "leadByPoints": "Lead By Points"
+        }
+    }
+}
