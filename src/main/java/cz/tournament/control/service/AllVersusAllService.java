@@ -64,7 +64,8 @@ public class AllVersusAllService {
         
         AllVersusAll old = allVersusAllRepository.findOne(allVersusAll.getId());
         if(!old.getParticipants().equals(allVersusAll.getParticipants()) 
-                || old.getNumberOfMutualMatches() != allVersusAll.getNumberOfMutualMatches()){
+                || old.getNumberOfMutualMatches() != allVersusAll.getNumberOfMutualMatches()
+                || old.getPlayingFields() != allVersusAll.getPlayingFields()){
             if(!allVersusAll.getMatches().isEmpty()) deleteAllMatches(allVersusAll);
             if(allVersusAll.getParticipants().size() >= 2) generateAssignment(allVersusAll);
         }
@@ -164,19 +165,22 @@ public class AllVersusAllService {
     }
     
     //generates match, rivals are on special positions in array, 
-    private void generateMatches(int period, int round, List<Participant> participant, AllVersusAll tournament){
+    private void generateMatches(int period, int r, List<Participant> participant, AllVersusAll tournament){
         int n = participant.size();
         Participant rivalA, rivalB;
+        
         for (int i = 0; i < n/2; i++){
             rivalA = participant.get(i);
             rivalB = participant.get(n-1-i);
             if(rivalA != null && rivalB != null){
-                Game match;
+                Game match = new Game().period(period).tournament(tournament);
                 if(period % 2 == 0){
-                    match = new Game().period(period).round(round).rivalA(rivalB).rivalB(rivalA).tournament(tournament);
+                    match.rivalA(rivalB).rivalB(rivalA);
                 }else{
-                    match = new Game().period(period).round(round).rivalA(rivalA).rivalB(rivalB).tournament(tournament);
+                    match.rivalA(rivalA).rivalB(rivalB);
                 }
+                
+                
                 Game saved = gameService.createGame(match);
                 tournament.addMatches(saved);
             }
@@ -198,16 +202,43 @@ public class AllVersusAllService {
     //generates Round-robin assignment for given tournament
     public void generateAssignment(AllVersusAll tournament){
          List<Participant> participant = initCorrectListOfParticipants(tournament);
-         int roundCount = participant.size() - 1;
+         int n = participant.size();
+         int shiftCount = n - 1;
          int periodCount = tournament.getNumberOfMutualMatches(); //readability
          
-         for(int p = 1; p <= periodCount; p++){
-             for (int r = 1; r <= roundCount; r++){
-                 log.debug("p: {}, r: {}, working list: {}", p,r,participant);
-                 generateMatches(p, r, participant, tournament);
-                 participant = shift(participant);
+         for(int period = 1; period <= periodCount; period++){
+             int round = 1, field = 1;
+             for (int s = 1; s <= shiftCount; s++){
+                Participant rivalA, rivalB;
+                for (int i = 0; i < n/2; i++){
+                    rivalA = participant.get(i);
+                    rivalB = participant.get(n-1-i);
+                    if(rivalA != null && rivalB != null){
+                        Game match = new Game().period(period).tournament(tournament);
+                        //switch rivals on different periods
+                        if(period % 2 == 0){
+                            match.rivalA(rivalB).rivalB(rivalA);
+                        }else{
+                            match.rivalA(rivalA).rivalB(rivalB);
+                        }
+                        //set field and round
+                        if(tournament.getPlayingFields() != null && tournament.getPlayingFields() > 1){
+                            match.round(round).playingField(field);
+                            field += 1;
+                            if(field > tournament.getPlayingFields() ){
+                                field = 1;
+                                round += 1;
+                            }
+                        }else { match.round(s).playingField(field);}
+
+                        Game saved = gameService.createGame(match);
+                        tournament.addMatches(saved);
+                    }
+                }   
+                participant = shift(participant);
              }
          }
          
     }
+    
 }

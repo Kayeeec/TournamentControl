@@ -18,8 +18,4 @@
         });
         $scope.$on('$destroy', unsubscribe);
     }
-    
-    
-        
-        
 })();

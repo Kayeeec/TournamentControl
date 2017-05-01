@@ -5,9 +5,9 @@
             .module('tournamentControlApp')
             .controller('AllVersusAllDialogController', AllVersusAllDialogController);
 
-    AllVersusAllDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'AllVersusAll', 'Participant', 'filterFilter'];
+    AllVersusAllDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'AllVersusAll', 'Participant', 'filterFilter', 'SetSettings'];
 
-    function AllVersusAllDialogController($timeout, $scope, $stateParams, $uibModalInstance, entity, AllVersusAll, Participant, filterFilter) {
+    function AllVersusAllDialogController($timeout, $scope, $stateParams, $uibModalInstance, entity, AllVersusAll, Participant, filterFilter, SetSettings) {
         var vm = this;
 
         vm.allVersusAll = entity;
@@ -16,15 +16,13 @@
         vm.participants = Participant.query();
         
 //        initiating default values 
-        if(vm.allVersusAll.tiesAllowed === null){
-            vm.allVersusAll.tiesAllowed = true;
-        }
+        if(vm.allVersusAll.tiesAllowed === null){ vm.allVersusAll.tiesAllowed = true; }
         vm.allVersusAll.participants = vm.allVersusAll.participants || [];
         vm.allVersusAll.numberOfMutualMatches = vm.allVersusAll.numberOfMutualMatches || 1;
-        vm.allVersusAll.numberOfSets = vm.allVersusAll.numberOfSets || 1;
         vm.selectedPlayers = filterFilter(vm.allVersusAll.participants, {team : null});
         vm.selectedTeams = filterFilter(vm.allVersusAll.participants, {player : null});
         $scope.chosen = 1;
+        vm.setSettings = {id: null, maxScore: null, minReachedScore: null, leadByPoints: null} || vm.allVersusAll.setSettings;
 
         $timeout(function () {
             angular.element('.form-group:eq(1)>input').focus();
@@ -64,6 +62,15 @@
             
             selectParticipants();
             
+//            if ((vm.setSettings.maxScore || vm.setSettings.minReachedScore || vm.setSettings.leadByPoints) !== null ){
+//                if (vm.setSettings.id !== null) {
+//                    SetSettings.update(vm.setSettings);
+//                } else {
+//                    SetSettings.save(vm.setSettings);
+//                }
+//                
+//            }
+            
             if (vm.allVersusAll.id !== null) {
                 AllVersusAll.update(vm.allVersusAll, onSaveSuccess, onSaveError);
             } else {
@@ -80,6 +87,13 @@
         function onSaveError() {
             vm.isSaving = false;
         }
+        
+        $scope.maxPlayingFields = function () {
+            if($scope.chosen === 1){
+                return Math.floor(vm.selectedPlayers.length/2);
+            }
+            return Math.floor(vm.selectedTeams.length/2);
+        };
 
 
 

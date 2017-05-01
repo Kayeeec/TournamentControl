@@ -78,32 +78,94 @@
         <div style="clear: both"></div>
         <div class="row">
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.numberOfSets" for="field_numberOfSets">Number Of Sets</label>
-                <input type="number" min="1" class="form-control" name="numberOfSets" id="field_numberOfSets"
-                       ng-model="vm.allVersusAll.numberOfSets"
+                <label class="control-label" data-translate="tournamentControlApp.tournament.playingFields" for="field_playingFields">Playing Fields</label>
+                <input type="number" class="form-control" name="playingFields" id="field_playingFields"
+                       ng-model="vm.allVersusAll.playingFields" min="1" max="{{maxPlayingFields()}}"
                        />
+                <div ng-show="editForm.playingFields.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.playingFields.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.playingFields.$error.max" data-translate="entity.validation.max" translate-value-max="{{maxPlayingFields()}}">
+                        This field should be at most {{maxPlayingFields()}}.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.playingFields.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
             </div>
+
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3" >
                 <label class="control-label" data-translate="tournamentControlApp.tournament.setsToWin" for="field_setsToWin">Sets To Win</label>
                 <input type="number" min="1" max='{{vm.allVersusAll.numberOfSets}}' class="form-control" name="setsToWin" id="field_setsToWin"
                        ng-model="vm.allVersusAll.setsToWin"
                        />
             </div>
-
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.scoreMax" for="field_scoreMax">Score Max</label>
-                <input type="number" min="0" class="form-control" name="scoreMax" id="field_scoreMax"
-                       ng-model="vm.allVersusAll.scoreMax"
-                       />
-            </div>
-
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
                 <label class="control-label" data-translate="tournamentControlApp.tournament.tiesAllowed" for="field_tiesAllowed">Ties Allowed</label>
                 <select name="tiesAllowed" id="field_tiesAllowed" ng-model="vm.allVersusAll.tiesAllowed"  class="form-control"
-                    ng-options="bool.value as bool.display for bool in [{ display: 'No', value: false }, { display: 'Yes', value: true }]"> 
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, {display: 'Yes', value: true}]"> 
                 </select>
             </div>
         </div>
+
+        <!--Set settings-->
+        <div class="row">
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <label class="control-label" data-translate="tournamentControlApp.setSettings.maxScore" for="field_maxScore">Max Score</label>
+                <input type="number" class="form-control" name="maxScore" id="field_maxScore"
+                       ng-model="vm.setSettings.maxScore"
+                       min="1"/>
+                <div ng-show="editForm.maxScore.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.maxScore.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+            </div>
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <label class="control-label" data-translate="tournamentControlApp.setSettings.minReachedScore" for="field_minReachedScore">Min Reached Score</label>
+                <input type="number" class="form-control" name="minReachedScore" id="field_minReachedScore"
+                       ng-model="vm.setSettings.minReachedScore"
+                       min="0"/>
+                <div ng-show="editForm.minReachedScore.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.minReachedScore.$error.min" data-translate="entity.validation.min" translate-value-min="0">
+                        This field should be at least 0.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.minReachedScore.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+            </div>
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <label class="control-label" data-translate="tournamentControlApp.setSettings.leadByPoints" for="field_leadByPoints">Lead By Points</label>
+                <input type="number" class="form-control" name="leadByPoints" id="field_leadByPoints"
+                       ng-model="vm.setSettings.leadByPoints"
+                       min="1"/>
+                <div ng-show="editForm.leadByPoints.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.leadByPoints.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.leadByPoints.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!--Set settings--> 
+
+        
         <div style="clear: both"></div>
         <!--PARTICIPANTS ======================================================-->
         <div class="well well-sm">

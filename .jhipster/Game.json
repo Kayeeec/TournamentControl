@@ -54,7 +54,7 @@
         },
         {
             "fieldName": "playingField",
-            "fieldType": "String"
+            "fieldType": "Integer"
         }
     ],
     "changelogDate": "20170320075825",

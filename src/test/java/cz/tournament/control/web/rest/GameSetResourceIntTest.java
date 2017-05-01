@@ -4,6 +4,7 @@ import cz.tournament.control.TournamentControlApp;
 
 import cz.tournament.control.domain.GameSet;
 import cz.tournament.control.repository.GameSetRepository;
+import cz.tournament.control.service.GameService;
 import cz.tournament.control.service.GameSetService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
 
@@ -52,6 +53,9 @@ public class GameSetResourceIntTest {
 
     @Autowired
     private GameSetService gameSetService;
+    
+    @Autowired
+    private GameService gameService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -72,7 +76,7 @@ public class GameSetResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        GameSetResource gameSetResource = new GameSetResource(gameSetService);
+        GameSetResource gameSetResource = new GameSetResource(gameSetService, gameService);
         this.restGameSetMockMvc = MockMvcBuilders.standaloneSetup(gameSetResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

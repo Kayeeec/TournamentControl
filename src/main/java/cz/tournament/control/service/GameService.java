@@ -7,6 +7,7 @@ package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
+import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.repository.GameRepository;
 import java.util.ArrayList;
@@ -38,14 +39,15 @@ public class GameService {
         log.debug("Request to create Game : {}", game);
         
         Game tmp = gameRepository.save(game);
+        SetSettings defaultSetSettings = game.getTournament().getSetSettings();
         
-        //prepare sets - one or basic number of sets 
-        GameSet set = gameSetService.save(new GameSet().game(tmp));
+        //prepare sets - one or number of sets to win
+        GameSet set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
         tmp.addSets(set);
         Integer sets = tmp.getTournament().getSetsToWin();
         if(sets != null && sets > 1){
             for (int i = 1; i < sets; i++) {
-                set = gameSetService.save(new GameSet().game(tmp));
+                set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
                 tmp.addSets(set);
             }
         }

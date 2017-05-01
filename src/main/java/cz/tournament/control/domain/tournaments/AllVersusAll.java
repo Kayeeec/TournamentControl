@@ -64,11 +64,15 @@ public class AllVersusAll extends Tournament implements Serializable  {
     public String toString() {
         return "AllVersusAll{" +
             "id=" + this.getId() +
-            ", name=" + this.getName() +
-            ", note=" + this.getNote() + 
-            ", ptsForLosing=" + this.getPointsForLosing()+
-            ", ptsForTie=" + this.getPointsForTie() +
-            ", ptsForWinning=" + this.getPointsForWinning()+
+            ", name='" + this.getName() + "'" +
+            ", note='" + this.getNote()+ "'" +
+            ", pointsForWinning='" + this.getPointsForWinning()+ "'" +
+            ", pointsForLosing='" + this.getPointsForLosing()+ "'" +
+            ", pointsForTie='" + this.getPointsForTie()+ "'" +
+            ", created='" + this.getCreated()+ "'" +
+            ", setsToWin='" + this.getSetsToWin()+ "'" +
+            ", tiesAllowed='" + this.isTiesAllowed()+ "'" +
+            ", playingFields='" + this.getPlayingFields()+ "'" +
             ", numberOfMutualMatches='" + numberOfMutualMatches + "'" +
             '}';
     }

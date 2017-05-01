@@ -42,8 +42,8 @@ public class Game implements Serializable, Comparable<Game> {
     private String note;
 
     @Column(name = "playing_field")
-    private String playingField;
-    
+    private Integer playingField;
+
 
     @JsonIgnoreProperties({"matches"})
     @ManyToOne(fetch = FetchType.LAZY)
@@ -119,16 +119,16 @@ public class Game implements Serializable, Comparable<Game> {
         this.note = note;
     }
 
-    public String getPlayingField() {
+    public Integer getPlayingField() {
         return playingField;
     }
 
-    public Game playingField(String playingField) {
+    public Game playingField(Integer playingField) {
         this.playingField = playingField;
         return this;
     }
 
-    public void setPlayingField(String playingField) {
+    public void setPlayingField(Integer playingField) {
         this.playingField = playingField;
     }
 
@@ -239,7 +239,7 @@ public class Game implements Serializable, Comparable<Game> {
         List<Long> setIDs = new ArrayList<>();
         for (GameSet set : this.getSets()) {
             setIDs.add(set.getId());
-        }
+}
         return setIDs.toString();
     }
 
