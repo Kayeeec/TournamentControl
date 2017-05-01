@@ -38,7 +38,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="playing_field" type="varchar(255)">
+            <column name="playing_field" type="integer">
                 <constraints nullable="true" />
             </column>
 

@@ -15,6 +15,7 @@
             "detail": {
                 "title": "Game Set"
             },
+            "score": "Score",
             "scoreA": "Score A",
             "scoreB": "Score B",
             "finished": "Finished",

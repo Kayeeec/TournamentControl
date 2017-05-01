@@ -4,6 +4,8 @@ import cz.tournament.control.TournamentControlApp;
 
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.repository.GameRepository;
+import cz.tournament.control.service.GameService;
+import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -49,11 +51,17 @@ public class GameResourceIntTest {
     private static final String DEFAULT_NOTE = "AAAAAAAAAA";
     private static final String UPDATED_NOTE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_PLAYING_FIELD = "AAAAAAAAAA";
-    private static final String UPDATED_PLAYING_FIELD = "BBBBBBBBBB";
+    private static final Integer DEFAULT_PLAYING_FIELD = 1;
+    private static final Integer UPDATED_PLAYING_FIELD = 2;
 
     @Autowired
     private GameRepository gameRepository;
+    
+    @Autowired
+    private GameService gameService;
+    
+    @Autowired
+    private TournamentService tournamentService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -74,7 +82,7 @@ public class GameResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        GameResource gameResource = new GameResource(gameRepository);
+        GameResource gameResource = new GameResource(gameService, tournamentService);
         this.restGameMockMvc = MockMvcBuilders.standaloneSetup(gameResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -158,7 +166,7 @@ public class GameResourceIntTest {
             .andExpect(jsonPath("$.[*].round").value(hasItem(DEFAULT_ROUND)))
             .andExpect(jsonPath("$.[*].period").value(hasItem(DEFAULT_PERIOD)))
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
-            .andExpect(jsonPath("$.[*].playingField").value(hasItem(DEFAULT_PLAYING_FIELD.toString())));
+            .andExpect(jsonPath("$.[*].playingField").value(hasItem(DEFAULT_PLAYING_FIELD)));
     }
 
     @Test
@@ -176,7 +184,7 @@ public class GameResourceIntTest {
             .andExpect(jsonPath("$.round").value(DEFAULT_ROUND))
             .andExpect(jsonPath("$.period").value(DEFAULT_PERIOD))
             .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()))
-            .andExpect(jsonPath("$.playingField").value(DEFAULT_PLAYING_FIELD.toString()));
+            .andExpect(jsonPath("$.playingField").value(DEFAULT_PLAYING_FIELD));
     }
 
     @Test

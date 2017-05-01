@@ -30,29 +30,24 @@
             <span>{{vm.allVersusAll.created| date:'medium'}}</span>
         </dd>
         
-        <dt><span data-translate="tournamentControlApp.tournament.numberOfSets">Number Of Sets</span></dt>
-        <dd>
-            <span>{{vm.allVersusAll.numberOfSets}}</span>
-        </dd>
+        
         <dt><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></dt>
         <dd>
             <span>{{vm.allVersusAll.setsToWin}}</span>
         </dd>
         <dt><span data-translate="tournamentControlApp.tournament.tiesAllowed">Ties Allowed</span></dt>
         <dd>
-            <span>{{vm.allVersusAll.tiesAllowed}}</span>
+            <span ng-if="vm.allVersusAll.tiesAllowed">Yes</span>
+            <span ng-if="!vm.allVersusAll.tiesAllowed">No</span>
         </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.scoreMax">Score Max</span></dt>
+        <dt><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></dt>
         <dd>
-            <span>{{vm.allVersusAll.scoreMax}}</span>
+            <span>{{vm.allVersusAll.playingFields}}</span>
         </dd>
+        
         
         <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
         <dd>
-            <!--            <span ng-repeat="participant in vm.allVersusAll.participants">
-                            <a ui-sref="participant-detail({id: participant.id})">{{participant.id}}</a>{{$last ? '' : ', '}}
-                        </span>-->
-
             <span ng-repeat="participant in vm.allVersusAll.participants">
                 <a ng-if="participant.player" ui-sref="player-detail({id: participant.player.id})">{{participant.player.name}}</a>
                 <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>{{$last ? '' : ', '}}
@@ -144,6 +139,7 @@
                     <tr >
                         <th>ID</th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.round">Round</span></th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.playingField">Playing Field</span></th>
                         <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.gameSet.score">Score</span></th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.finished">Finished</span></th>
@@ -153,7 +149,8 @@
                 <tbody>
                     <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:'round' track by game.id">
                         <td>{{game.id}}</td>
-                        <td style="text-align: center">{{game.round}}</td>
+                        <td style="text-align: center; font-weight: bolder">{{game.round}}</td>
+                        <td style="text-align: center">{{game.playingField}}</td>
                         <td style="text-align: right">
                             <a ng-if="game.rivalA.player" ui-sref="player-detail({id:game.rivalA.player.id})">{{game.rivalA.player.name}}</a>
                             <a ng-if="game.rivalA.team" ui-sref="team-detail({id:game.rivalA.team.id})">{{game.rivalA.team.name}}</a>
@@ -163,10 +160,6 @@
                             <a ng-if="game.rivalB.player" ui-sref="player-detail({id:game.rivalB.player.id})">{{game.rivalB.player.name}}</a>
                             <a ng-if="game.rivalB.team" ui-sref="team-detail({id:game.rivalB.team.id})">{{game.rivalB.team.name}}</a>
                         </td>
-
-<!--                        <td style="text-align: right">{{game.scoreA}}</td>
-                        <td style="text-align: center; padding: 0px">:</td>
-                        <td style="text-align: left">{{game.scoreB}}</td>-->
                         <td>
                             <span ng-repeat="set in game.sets">
                                 {{set.scoreA}} : {{set.scoreB}}{{$last ? '' : ' | '}}

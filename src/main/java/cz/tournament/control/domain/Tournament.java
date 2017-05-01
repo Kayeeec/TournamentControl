@@ -51,7 +51,7 @@ public class Tournament implements Serializable {
     private Integer setsToWin;
 
     @Column(name = "ties_allowed")
-    private Boolean tiesAllowed;
+    private Boolean tiesAllowed = true;
 
     @Column(name = "playing_fields")
     private Integer playingFields;
@@ -192,6 +192,15 @@ public class Tournament implements Serializable {
     }
 
     public Tournament playingFields(Integer playingFields) {
+        if(playingFields<1){
+            throw new IllegalArgumentException("Tournament.playingFields cannot "
+                    + "be smaller than 1. Given argument: "+playingFields);
+        }
+        if(!participants.isEmpty() && playingFields > (participants.size()/2)){
+            throw new IllegalArgumentException("Tournament.playingFields cannot "
+                    + "be greater than number of participants divided by 2. Given argument = "+playingFields
+                    +", number of participants = "+participants.size());
+        }
         this.playingFields = playingFields;
         return this;
     }

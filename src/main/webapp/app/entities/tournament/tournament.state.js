@@ -26,6 +26,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('tournament');
+                    $translatePartialLoader.addPart('setSettings');
                     $translatePartialLoader.addPart('allVersusAll');
                     $translatePartialLoader.addPart('elimination');
                     $translatePartialLoader.addPart('game');
