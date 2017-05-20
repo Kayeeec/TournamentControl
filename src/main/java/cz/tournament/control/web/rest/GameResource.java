@@ -2,6 +2,7 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Game;
+import cz.tournament.control.domain.GameSet;
 import cz.tournament.control.domain.Tournament;
 
 import cz.tournament.control.service.GameService;
@@ -38,6 +39,7 @@ public class GameResource {
         this.tournamentService = tournamentService;
     }
 
+   
     
     /**
      * POST  /games : Create a new game.
@@ -105,9 +107,9 @@ public class GameResource {
 //        return ResponseEntity.ok()
 //            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, game.getId().toString()))
 //            .body(result);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
-
+    
 //    /**
 //     * GET  /games : get all the games.
 //     *

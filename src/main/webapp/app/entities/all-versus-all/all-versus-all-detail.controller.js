@@ -33,10 +33,10 @@
         
         var getScoreSum = function (match) {
             var result = {A: 0, B: 0};
-            for (var set in match.sets) {
+            match.sets.forEach(function (set){
                 result.A += set.scoreA;
                 result.B += set.scoreB;
-            }
+            });
             return result;
         };
         
@@ -44,7 +44,6 @@
 
         $scope.pointCount = function pointCount(participantID) {
             var hisFinishedMatches = participantsFinishedMatches(participantID);
-//            console.log('hisFinishedMatches: ' + hisFinishedMatches);
             var points = {rival: "rival",wins: 0, loses: 0, ties: 0, total: 0, score: 0, scoreRival: 0};
 
             hisFinishedMatches.forEach(function (match) {

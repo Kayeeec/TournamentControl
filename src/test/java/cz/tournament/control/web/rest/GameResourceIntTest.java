@@ -62,6 +62,7 @@ public class GameResourceIntTest {
     
     @Autowired
     private TournamentService tournamentService;
+    
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;

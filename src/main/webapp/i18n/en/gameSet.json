@@ -4,7 +4,9 @@
             "home": {
                 "title": "Game Sets",
                 "createLabel": "Create a new Game Set",
-                "createOrEditLabel": "Create or edit a Game Set"
+                "createOrEditLabel": "Create or edit a Game Set",
+                "add":"Add Set"
+                
             },
             "created": "A new Game Set is created with identifier {{ param }}",
             "updated": "A Game Set is updated with identifier {{ param }}",

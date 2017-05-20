@@ -112,60 +112,85 @@
             </div>
         </div>
 
-        <!--Set settings-->
-        <div class="row">
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.setSettings.maxScore" for="field_maxScore">Max Score</label>
-                <input type="number" class="form-control" name="maxScore" id="field_maxScore"
-                       ng-model="vm.setSettings.maxScore"
-                       min="1"/>
-                <div ng-show="editForm.maxScore.$invalid">
-                    <p class="help-block"
-                       ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" translate-value-min="1">
-                        This field should be at least 1.
-                    </p>
-                    <p class="help-block"
-                       ng-show="editForm.maxScore.$error.number" data-translate="entity.validation.number">
-                        This field should be a number.
-                    </p>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="advancedSetSettings_heading">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" data-target="#advancedSetSettings" 
+                           aria-expanded="false" aria-controls="advancedSetSettings">
+                            Advanced Set Settings [optional]
+                        </a>
+                    </h4>
                 </div>
-            </div>
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.setSettings.minReachedScore" for="field_minReachedScore">Min Reached Score</label>
-                <input type="number" class="form-control" name="minReachedScore" id="field_minReachedScore"
-                       ng-model="vm.setSettings.minReachedScore"
-                       min="0"/>
-                <div ng-show="editForm.minReachedScore.$invalid">
-                    <p class="help-block"
-                       ng-show="editForm.minReachedScore.$error.min" data-translate="entity.validation.min" translate-value-min="0">
-                        This field should be at least 0.
-                    </p>
-                    <p class="help-block"
-                       ng-show="editForm.minReachedScore.$error.number" data-translate="entity.validation.number">
-                        This field should be a number.
-                    </p>
-                </div>
-            </div>
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.setSettings.leadByPoints" for="field_leadByPoints">Lead By Points</label>
-                <input type="number" class="form-control" name="leadByPoints" id="field_leadByPoints"
-                       ng-model="vm.setSettings.leadByPoints"
-                       min="1"/>
-                <div ng-show="editForm.leadByPoints.$invalid">
-                    <p class="help-block"
-                       ng-show="editForm.leadByPoints.$error.min" data-translate="entity.validation.min" translate-value-min="1">
-                        This field should be at least 1.
-                    </p>
-                    <p class="help-block"
-                       ng-show="editForm.leadByPoints.$error.number" data-translate="entity.validation.number">
-                        This field should be a number.
-                    </p>
+                <div id="advancedSetSettings" class="panel-collapse collapse" ng-class="{'in': vm.setSettingsChosen}" role="tabpanel" aria-labelledby="advancedSetSettings_heading">
+                    <div class="panel-body">
+                        
+                        <!--Set settings-->
+                        <div class=" form-inline myPaqddingBottom">
+                            <div class=" form-group">
+                                <label class="control-label" for="field_maxScore">
+                                    <input type="radio" ng-model="vm.setSettingsChosen" value="maxScore" checked> Max Score
+                                </label>
+                                <input ng-disabled="vm.setSettingsChosen !== 'maxScore'" type="number" class="form-control" name="maxScore" id="field_maxScore"
+                                           ng-model="vm.preparedSettings.maxScore"
+                                           min="1"/>
+
+                                <div ng-show="editForm.maxScore.$invalid">
+                                    <p class="help-block"
+                                       ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                                        This field should be at least 1.
+                                    </p>
+                                    <p class="help-block"
+                                       ng-show="editForm.maxScore.$error.number" data-translate="entity.validation.number">
+                                        This field should be a number.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label class="control-label" for="field_leadByPoints">
+                                    <input type="radio" ng-model="vm.setSettingsChosen" value="leadByPoints"> Lead-by points
+                                </label>
+                                <input ng-disabled="vm.setSettingsChosen !== 'leadByPoints'" type="number" class="form-control" name="leadByPoints" id="field_leadByPoints"
+                                       ng-model="vm.preparedSettings.leadByPoints"
+                                       min="1"/>
+                                <div ng-show="editForm.leadByPoints.$invalid">
+                                    <p class="help-block"
+                                       ng-show="editForm.leadByPoints.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                                        This field should be at least 1.
+                                    </p>
+                                    <p class="help-block"
+                                       ng-show="editForm.leadByPoints.$error.number" data-translate="entity.validation.number">
+                                        This field should be a number.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" data-translate="tournamentControlApp.setSettings.minReachedScore" for="field_minReachedScore">Min Reached Score</label>
+                                <input ng-disabled="vm.setSettingsChosen !== 'leadByPoints'" type="number" class="form-control" name="minReachedScore" id="field_minReachedScore"
+                                       ng-model="vm.preparedSettings.minReachedScore"
+                                       min="0"/>
+                                <div ng-show="editForm.minReachedScore.$invalid">
+                                    <p class="help-block"
+                                       ng-show="editForm.minReachedScore.$error.min" data-translate="entity.validation.min" translate-value-min="0">
+                                        This field should be at least 0.
+                                    </p>
+                                    <p class="help-block"
+                                       ng-show="editForm.minReachedScore.$error.number" data-translate="entity.validation.number">
+                                        This field should be a number.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!--Set settings--> 
+                    </div>
                 </div>
             </div>
         </div>
-        <!--Set settings--> 
 
-        
         <div style="clear: both"></div>
         <!--PARTICIPANTS ======================================================-->
         <div class="well well-sm">

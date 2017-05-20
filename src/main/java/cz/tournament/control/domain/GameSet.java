@@ -1,6 +1,5 @@
 package cz.tournament.control.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -31,11 +30,10 @@ public class GameSet implements Serializable {
     @Column(name = "finished")
     private Boolean finished = false;
 
-    @JsonIgnore
     @ManyToOne
     private Game game;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private SetSettings setSettings;
 
     public Long getId() {

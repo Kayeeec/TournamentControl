@@ -44,8 +44,6 @@
         <dd>
             <span>{{vm.allVersusAll.playingFields}}</span>
         </dd>
-        
-        
         <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
         <dd>
             <span ng-repeat="participant in vm.allVersusAll.participants">
@@ -57,6 +55,19 @@
         <dt><span data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches">Number Of Mutual Matches</span></dt>
         <dd>
             <span>{{vm.allVersusAll.numberOfMutualMatches}}</span>
+        </dd>
+        
+        <dt><span data-translate="">Max Score</span></dt>
+        <dd>
+            <span>{{vm.allVersusAll.setSettings.maxScore}}</span>
+        </dd>
+        <dt><span data-translate="">Min Reached Score</span></dt>
+        <dd>
+            <span>{{vm.allVersusAll.setSettings.minReachedScore}}</span>
+        </dd>
+        <dt><span data-translate="">Lead By Points</span></dt>
+        <dd>
+            <span>{{vm.allVersusAll.setSettings.leadByPoints}}</span>
         </dd>
     </dl>
     
@@ -106,7 +117,7 @@
                     <div ng-if="participant.player" ng-init="temp = pointCount(participant.id);temp.rival = participant.player.name; counts.push(temp)"></div>
                     <div ng-if="participant.team" ng-init="temp = pointCount(participant.id);temp.rival = participant.team.name; counts.push(temp)"></div>
                 </div>
-                <tr ng-repeat="count in counts| orderBy:'-total'">
+                <tr ng-repeat="count in counts| orderBy:['-total', '-wins', '-score']">
                     <td >{{$index + 1}}</td>
                     <td id="participant">{{count.rival}}</td>
                     <td id="wins" class="myWins">{{count.wins}}</td>
@@ -161,7 +172,7 @@
                             <a ng-if="game.rivalB.team" ui-sref="team-detail({id:game.rivalB.team.id})">{{game.rivalB.team.name}}</a>
                         </td>
                         <td>
-                            <span ng-repeat="set in game.sets">
+                            <span ng-repeat="set in game.sets | orderBy:'id'">
                                 {{set.scoreA}} : {{set.scoreB}}{{$last ? '' : ' | '}}
                             </span>
                         </td>

@@ -4,7 +4,7 @@
             "home": {
                 "title": "Games",
                 "createLabel": "Create a new Game",
-                "createOrEditLabel": "Create or edit a Game"
+                "editLabel": "Edit game #{{ id }}"
             },
             "created": "A new Game is created with identifier {{ param }}",
             "updated": "A Game is updated with identifier {{ param }}",

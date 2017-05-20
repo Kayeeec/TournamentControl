@@ -2,14 +2,21 @@ package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
+import cz.tournament.control.domain.SetSettings;
+import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.repository.GameRepository;
 import cz.tournament.control.repository.GameSetRepository;
+import cz.tournament.control.repository.SetSettingsRepository;
+import cz.tournament.control.repository.TournamentRepository;
+import java.util.Collections;
+import java.util.Comparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service Implementation for managing GameSet.
@@ -22,12 +29,15 @@ public class GameSetService {
     
     private final GameSetRepository gameSetRepository;
     private final GameRepository gameRepository;
+    private final TournamentRepository tournamentRepository;
+    private final SetSettingsRepository setSettingsRepository;
 
-    public GameSetService(GameSetRepository gameSetRepository, GameRepository gameRepository) {
+    public GameSetService(GameSetRepository gameSetRepository, GameRepository gameRepository, TournamentRepository tournamentRepository, SetSettingsRepository setSettingsRepository) {
         this.gameSetRepository = gameSetRepository;
         this.gameRepository = gameRepository;
+        this.tournamentRepository = tournamentRepository;
+        this.setSettingsRepository = setSettingsRepository;
     }
-    
     
     /**
      * Save a gameSet.
@@ -50,6 +60,22 @@ public class GameSetService {
         GameSet result = gameSetRepository.save(gameSet);
         return result;
     }
+    
+    public Game changeSetSettings(GameSet gameSet){
+        GameSet set = gameSetRepository.findOne(gameSet.getId());
+        
+        SetSettings defaultSettings = set.getGame().getTournament().getSetSettings();
+        SetSettings newSettings = gameSet.getSetSettings();
+        if(Objects.equals(defaultSettings.getId(), newSettings.getId())){
+            newSettings.setId(null);
+        }
+        
+        SetSettings savedSettings = setSettingsRepository.save(newSettings);
+        set.setSetSettings(savedSettings);
+        GameSet saved = gameSetRepository.save(set);
+        Game game = saved.getGame();
+        return game; 
+    }
 
     /**
      *  Get all the gameSets.
@@ -67,13 +93,14 @@ public class GameSetService {
     /**
      *  Get all gameSets for given game.
      *  
+     * @param game
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
     public List<GameSet> findGameSetsByGame(Game game) {
         log.debug("Request to get all GameSets for game: {}", game);
         List<GameSet> result = gameSetRepository.findByGame(game);
-
+        Collections.sort(result, Comparator.comparingLong(h -> h.getId()));
         return result;
     }
 
@@ -98,10 +125,20 @@ public class GameSetService {
     public Game delete(Long id) {
         log.debug("Request to delete GameSet : {}", id);
         GameSet set = gameSetRepository.findOne(id);
+        
+        //delete its setSettings if they are not the default one (tournament.setSettings) 
+        //  sets have either the default settings or their own
+        SetSettings setSettings = set.getSetSettings();
+        if(!set.getGame().getTournament().getSetSettings().equals(setSettings)){
+            setSettingsRepository.delete(setSettings.getId());
+        }
+        
+        //remove set from its game
         Game game = set.getGame();
         game.removeSets(set);
         Game savedGame = gameRepository.save(game);
-        log.debug("Game after deleting set: {}", savedGame);
+        
+        //delete set
         gameSetRepository.delete(id);
         return savedGame;
     }

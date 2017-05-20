@@ -71,7 +71,7 @@ public class AllVersusAll extends Tournament implements Serializable  {
             ", pointsForTie='" + this.getPointsForTie()+ "'" +
             ", created='" + this.getCreated()+ "'" +
             ", setsToWin='" + this.getSetsToWin()+ "'" +
-            ", tiesAllowed='" + this.isTiesAllowed()+ "'" +
+            ", tiesAllowed='" + this.getTiesAllowed()+ "'" +
             ", playingFields='" + this.getPlayingFields()+ "'" +
             ", numberOfMutualMatches='" + numberOfMutualMatches + "'" +
             '}';

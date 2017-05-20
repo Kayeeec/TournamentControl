@@ -71,7 +71,7 @@ public class Tournament implements Serializable {
                inverseJoinColumns = @JoinColumn(name="participants_id", referencedColumnName="id"))
     private Set<Participant> participants = new HashSet<>();
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(unique = true)
     private SetSettings setSettings;
 
@@ -174,7 +174,7 @@ public class Tournament implements Serializable {
         this.setsToWin = setsToWin;
     }
 
-    public Boolean isTiesAllowed() {
+    public Boolean getTiesAllowed() {
         return tiesAllowed;
     }
 

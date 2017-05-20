@@ -117,7 +117,6 @@
                                 numberOfSets: null,
                                 setsToWin: null,
                                 tiesAllowed: null,
-                                scoreMax: null,
                                 id: null
                             };
                         }

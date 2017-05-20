@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
 
 /**
  * REST controller for managing GameSet.
@@ -49,6 +50,7 @@ public class GameSetResource {
     @Timed
     public ResponseEntity<GameSet> createGameSet(@RequestBody GameSet gameSet) throws URISyntaxException {
         log.debug("REST request to save GameSet : {}", gameSet);
+        log.debug("sent game: {}", gameSet.getGame());
         if (gameSet.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new gameSet cannot already have an ID")).body(null);
         }
@@ -80,6 +82,16 @@ public class GameSetResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, gameSet.getId().toString()))
             .body(result);
+    }
+    
+    @PostMapping("/game-sets/set-settings/update")
+    @Timed
+    public ResponseEntity<Game> updateGameSetSettings(@Valid @RequestBody GameSet gameSet) throws URISyntaxException {
+        log.debug("REST request to update GameSet Settings of a GameSet with id: {}", gameSet.getId());
+        Game result = gameSetService.changeSetSettings(gameSet);
+        
+        log.debug("REST request to update set settings - SAVED result : {}", result);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(result));
     }
 
     /**
