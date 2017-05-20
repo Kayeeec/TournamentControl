@@ -22,7 +22,24 @@
         vm.selectedPlayers = filterFilter(vm.allVersusAll.participants, {team : null});
         vm.selectedTeams = filterFilter(vm.allVersusAll.participants, {player : null});
         $scope.chosen = 1;
-        vm.setSettings = {id: null, maxScore: null, minReachedScore: null, leadByPoints: null} || vm.allVersusAll.setSettings;
+        vm.setSettingsChosen = initSetSettingsChosen();
+//        vm.allVersusAll.setSettings = vm.allVersusAll.setSettings 
+//                || {id: null, maxScore: null, leadByPoints: null, minReachedPoints: null};
+        vm.preparedSettings = vm.allVersusAll.setSettings 
+                || {id: null, maxScore: null, leadByPoints: null, minReachedPoints: null};
+        
+        function initSetSettingsChosen() {
+            if (vm.allVersusAll.id !== null && vm.allVersusAll.setSettings !== null) {
+                if(vm.allVersusAll.setSettings.leadByPoints !== null 
+                    || vm.allVersusAll.setSettings.minReachedScore !== null){
+                    return 'leadByPoints';
+                }
+                return 'maxScore';
+            }
+            return null;
+        }
+        
+        
 
         $timeout(function () {
             angular.element('.form-group:eq(1)>input').focus();
@@ -55,21 +72,31 @@
         function clear() {
             $uibModalInstance.dismiss('cancel');
         }
+        
+        function resolveSetSettings() {
+            if (vm.setSettingsChosen === 'maxScore') {
+                vm.preparedSettings.leadByPoints = null;
+                vm.preparedSettings.minReachedScore = null;
+            }
+            if (vm.setSettingsChosen === 'leadByPoints') {
+                vm.preparedSettings.maxScore = null;
+            }
+            if (vm.preparedSettings.id !== null ||
+                vm.preparedSettings.maxScore !== null ||
+                vm.preparedSettings.leadByPoints !== null ||
+                vm.preparedSettings.minReachedScore !== null){
+                    vm.allVersusAll.setSettings = vm.preparedSettings;
+                    console.log(vm.allVersusAll.setSettings);
+            }
+        }
 
         function save() {
             
             vm.isSaving = true;
             
             selectParticipants();
+            resolveSetSettings();
             
-//            if ((vm.setSettings.maxScore || vm.setSettings.minReachedScore || vm.setSettings.leadByPoints) !== null ){
-//                if (vm.setSettings.id !== null) {
-//                    SetSettings.update(vm.setSettings);
-//                } else {
-//                    SetSettings.save(vm.setSettings);
-//                }
-//                
-//            }
             
             if (vm.allVersusAll.id !== null) {
                 AllVersusAll.update(vm.allVersusAll, onSaveSuccess, onSaveError);
@@ -94,6 +121,9 @@
             }
             return Math.floor(vm.selectedTeams.length/2);
         };
+        
+        $('.collapse').collapse();
+
 
 
 

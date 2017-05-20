@@ -46,7 +46,7 @@ public class Game implements Serializable, Comparable<Game> {
 
 
     @JsonIgnoreProperties({"matches"})
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     private Tournament tournament;
 
     @ManyToOne
@@ -57,6 +57,7 @@ public class Game implements Serializable, Comparable<Game> {
 
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnoreProperties({"game"})
     private Set<GameSet> sets = new HashSet<>();
 
     public Long getId() {
@@ -290,5 +291,39 @@ public class Game implements Serializable, Comparable<Game> {
             }
         }
         return result;
+    }
+    
+    /**
+     *  Determines winner of the game. 
+     * @return Participant if all sets are finished and it is not a tie, 
+     * null if there is an unfinished set or game is a tie. 
+     */
+    public Participant getWinner(){
+        int wonSetsA = 0;
+        int wonSetsB = 0;
+        
+        if (!this.getSets().isEmpty()) {
+            for (GameSet set : this.getSets()) {
+                if(set.isFinished()==false){
+                    return null;
+                }
+                if(set.getScoreA() > set.getScoreB()){
+                    wonSetsA += 1;
+                }
+                if(set.getScoreA() < set.getScoreB()){
+                    wonSetsB += 1;
+                }
+            }
+        }
+        Integer setsToWin = this.getTournament().getSetsToWin();
+        if (setsToWin != null) {
+            if(wonSetsA == setsToWin) return this.rivalA;
+            if(wonSetsB == setsToWin) return this.rivalB;
+            return null;
+        } else {
+            if(wonSetsA > wonSetsB) return this.rivalA;
+            if(wonSetsB > wonSetsA) return this.rivalB;
+            return null;
+        }
     }
 }

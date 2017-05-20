@@ -14,9 +14,21 @@
         vm.clear = clear;
         vm.save = save;
         vm.addSet = addSet;
-//        vm.tournaments = Tournament.query();
-//        vm.participants = Participant.query();
-        vm.gamesets = GameSet.query();
+        vm.changed = false;
+        
+        vm.chosenMap = new Map(); //determines which setSettings are used
+        vm.oldSettings = new Map();
+        vm.finishGameDisabledCause = null;
+        
+        //initialize chosenMap
+        for (var i = 0; i < vm.game.sets.length; i++) {
+            var set = vm.game.sets[i];
+            if(set.setSettings.maxScore !== null){
+                vm.chosenMap[set.id]="maxScore";
+            }else {
+                vm.chosenMap[set.id]="leadByPoints";
+            }
+        }
 
         $timeout(function () {
             angular.element('.form-group:eq(1)>input').focus();
@@ -29,7 +41,7 @@
         function save() {
             console.log("it calls save");
             vm.isSaving = true;
-            
+
             if (vm.game.id !== null) {
                 //update all sets
                 console.log(vm.game.sets);
@@ -42,8 +54,6 @@
                         GameSet.save(set);
                     }
                 }
-                
-                
                 Game.update(vm.game, onSaveSuccess, onSaveError);
             } else {
                 Game.save(vm.game, onSaveSuccess, onSaveError);
@@ -60,18 +70,123 @@
             vm.isSaving = false;
         }
 
+        /* ************* Functionality ************* */
+
         function addSet() {
-            console.log("im here " + vm.game.id);
+            vm.changed = true;
             Game.addSet({id: vm.game.id}, function (result) {
                 vm.game = result;
             });
         }
 
+        vm.updateSetSettings = function (set) {
+            vm.changed = true;
+            delete vm.oldSettings[set.id];
+
+            if (vm.chosenMap[set.id] === "maxScore") {
+                set.setSettings.leadByPoints = null;
+                set.setSettings.minReachedScore = null;
+            }
+            if (vm.chosenMap[set.id] === "leadByPoints") {
+                set.setSettings.maxScore = null;
+            }
+
+            Game.updateSetSettings(set, function (result) {
+                vm.game = result;
+            });
+        };
+        
+        vm.cancelSetSettings = function (updatedSet, index) {
+            vm.game.sets[index].setSettings = angular.copy(vm.oldSettings[updatedSet.id]);
+        };
+        
+        vm.copyToOldSettings = function (set) {
+            vm.oldSettings[set.id] = angular.copy(set.setSettings);
+        };
+
         vm.removeSet = function (setId) {
-            console.log("im here " + setId);
+            vm.changed = true;
             Game.removeSet({id: setId}, function (result) {
                 vm.game = result;
             });
+        };
+
+        $('.collapse').collapse();
+
+        /* ************* Logic ************* */
+
+        function saveSet(set) {
+            console.log("saveSet() called");
+            vm.changed = true;
+            GameSet.update(set);
+        }
+        
+        function allSetsFinished_and_setsToWin_notReached() {
+            var winCounter = {A: 0, B: 0};
+            for (var i = 0; i < vm.game.sets.length; i++) {
+                if (vm.game.sets[i].finished === false) {
+                    return false;
+                }
+                if (vm.game.sets[i].scoreA > vm.game.sets[i].scoreB) {
+                    winCounter.A += 1;
+                }
+                if (vm.game.sets[i].scoreB > vm.game.sets[i].scoreA) {
+                    winCounter.B += 1;
+                }
+            }
+
+            if (winCounter.A < vm.game.tournament.setsToWin && winCounter.B < vm.game.tournament.setsToWin) {
+                return true;
+            }
+            return false;
+        }
+
+        vm.save_CheckForSetToBeAdded = function (set) {
+            saveSet(set);
+            if (set.finished && !vm.game.tournament.tiesAllowed) {
+                if (allSetsFinished_and_setsToWin_notReached()) {
+                    addSet();
+                }
+            }
+        };
+
+        vm.save_shouldFinishSetCheck = function (set, changedScore, otherScore) {
+            saveSet(set);
+            if (set.setSettings.maxScore !== null) {
+                if (set[changedScore] >= set.setSettings.maxScore) {
+                    set.finished = true;
+                    vm.save_CheckForSetToBeAdded(set);
+                }
+            } else {
+                if (set[changedScore] >= set.setSettings.minReachedScore
+                        && set[changedScore] >= set[otherScore] + set.setSettings.leadByPoints) {
+                    set.finished = true;
+                    vm.save_CheckForSetToBeAdded(set);
+                }
+            }
+        };
+        
+        vm.unfinishedSetPresent_orGameIsTie = function () {
+            var winsA = 0;
+            var winsB = 0;
+            
+            for (var i = 0; i < vm.game.sets.length; i++) {
+                var set = vm.game.sets[i];
+                if(!set.finished){ vm.finishGameDisabledCause = "unfinished"; return true;}
+                if(set.scoreA > set.scoreB) {winsA += 1;}
+                if(set.scoreB > set.scoreA) {winsB += 1;}
+            }
+            
+            if(!vm.game.tournament.tiesAllowed){
+                if((vm.game.tournament.setsToWin !== null 
+                    && winsA < vm.game.tournament.setsToWin 
+                    && winsB < vm.game.tournament.setsToWin)
+                    || winsA === winsB){
+                        vm.finishGameDisabledCause = "tie";
+                        return true;
+                }
+            }
+            return false;
         };
 
 

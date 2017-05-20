@@ -31,6 +31,15 @@
                     return data;
                 }
             },
+            'updateSetSettings': {method: 'POST',
+                url: 'api/game-sets/set-settings/update',
+                transformResponse: function (data) {
+                    if (data) {
+                        data = angular.fromJson(data);
+                    }
+                    return data;
+                }
+            },
             'removeSet': {method: 'DELETE',
                 params: {id: '@id'},
                 url: 'api/game-sets/:id',

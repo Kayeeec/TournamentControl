@@ -6,6 +6,7 @@
 package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Game;
+import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.repository.TournamentRepository;
@@ -75,6 +76,20 @@ public class TournamentService {
         Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
         return tournament;
     }
+    
+    /**
+     *  Get all tournaments with given SetSettings entity.
+     *
+     *  @param setSettings entity
+     *  @return list of Tournament entities
+     */
+    @Transactional(readOnly = true)
+    public List<Tournament> findBySetSettings(SetSettings setSettings) {
+        log.debug("Request to get Tournaments with setSettings : {}", setSettings);
+        List<Tournament> tournaments = tournamentRepository.findBySetSettings(setSettings);
+        return tournaments;
+    }
+    
     
     public void delete(Long id){
         Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);

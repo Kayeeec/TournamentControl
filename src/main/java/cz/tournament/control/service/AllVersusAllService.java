@@ -30,14 +30,14 @@ public class AllVersusAllService {
     private final AllVersusAllRepository allVersusAllRepository;
     private final UserRepository userRepository;
     private final GameService gameService;
+    private final SetSettingsService setSettingsService;
 
-    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository, GameService gameService) {
+    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository, GameService gameService, SetSettingsService setSettingsService) {
         this.allVersusAllRepository = allVersusAllRepository;
         this.userRepository = userRepository;
         this.gameService = gameService;
+        this.setSettingsService = setSettingsService;
     }
-
-    
 
     /**
      * Save a allVersusAll.
@@ -61,11 +61,15 @@ public class AllVersusAllService {
      */
     public AllVersusAll updateAllVersusAll(AllVersusAll allVersusAll){
         log.debug("Request to update AllVersusAll : {}", allVersusAll);
-        
+                
         AllVersusAll old = allVersusAllRepository.findOne(allVersusAll.getId());
+        if (old.getSetSettings() != allVersusAll.getSetSettings()) {
+            allVersusAll.setSetSettings(setSettingsService.save(allVersusAll.getSetSettings()));
+        }
         if(!old.getParticipants().equals(allVersusAll.getParticipants()) 
                 || old.getNumberOfMutualMatches() != allVersusAll.getNumberOfMutualMatches()
-                || old.getPlayingFields() != allVersusAll.getPlayingFields()){
+                || old.getPlayingFields() != allVersusAll.getPlayingFields()
+                || old.getSetsToWin() != allVersusAll.getSetsToWin()){
             if(!allVersusAll.getMatches().isEmpty()) deleteAllMatches(allVersusAll);
             if(allVersusAll.getParticipants().size() >= 2) generateAssignment(allVersusAll);
         }
@@ -92,6 +96,7 @@ public class AllVersusAllService {
         allVersusAll.setCreated(ZonedDateTime.now());
         
         AllVersusAll tmp = allVersusAllRepository.save(allVersusAll); //has to be in db before generating games
+        
         //generate assignment if it has participants
         if(tmp.getParticipants().size() >= 2){
             generateAssignment(tmp);

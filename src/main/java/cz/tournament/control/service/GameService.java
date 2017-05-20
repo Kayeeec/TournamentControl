@@ -32,9 +32,7 @@ public class GameService {
         this.gameRepository = gameRepository;
         this.gameSetService = gameSetService;
     }
-
     
-    //TODO : implement creating default sets and adding sets?
     public Game createGame(Game game){
         log.debug("Request to create Game : {}", game);
         
@@ -65,17 +63,29 @@ public class GameService {
             game.setTournament(oldTournament); 
         }
         
-        //finish the game if all sets are finished
-        if(game.allSetsFinished()){
-            game.finished(Boolean.TRUE);
+        //finish the game if all sets are finished and is not an unallowed tie 
+        if(game.getTournament().getTiesAllowed()){
+            if(game.allSetsFinished()){
+                game.setFinished(true);
+            } 
+        }else{
+           if(game.getWinner() != null){
+               game.setFinished(true);   
+           } 
         }
         
         Game result = gameRepository.save(game);
         return result;
     }
     
+    /**
+     * Creates a new set for game with tournaments setSettings.
+     * @param game
+     * @return
+     */
     public Game addNewSet(Game game){
-        GameSet set = gameSetService.save(new GameSet().game(game));
+        SetSettings setSettings = gameRepository.findOne(game.getId()).getTournament().getSetSettings();
+        GameSet set = gameSetService.save(new GameSet().game(game).setSettings(setSettings));
         log.debug("GAME_SERVICE..........added set: {}, game= {}",set.getId(), game.toString());
         game.addSets(set);
         Game result = gameRepository.save(game);

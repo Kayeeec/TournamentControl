@@ -149,7 +149,7 @@ public class TournamentResourceIntTest {
         assertThat(testTournament.getPointsForTie()).isEqualTo(DEFAULT_POINTS_FOR_TIE);
         assertThat(testTournament.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testTournament.getSetsToWin()).isEqualTo(DEFAULT_SETS_TO_WIN);
-        assertThat(testTournament.isTiesAllowed()).isEqualTo(DEFAULT_TIES_ALLOWED);
+        assertThat(testTournament.getTiesAllowed()).isEqualTo(DEFAULT_TIES_ALLOWED);
         assertThat(testTournament.getPlayingFields()).isEqualTo(DEFAULT_PLAYING_FIELDS);
     }
 
@@ -296,7 +296,7 @@ public class TournamentResourceIntTest {
         assertThat(testTournament.getPointsForTie()).isEqualTo(UPDATED_POINTS_FOR_TIE);
         assertThat(testTournament.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testTournament.getSetsToWin()).isEqualTo(UPDATED_SETS_TO_WIN);
-        assertThat(testTournament.isTiesAllowed()).isEqualTo(UPDATED_TIES_ALLOWED);
+        assertThat(testTournament.getTiesAllowed()).isEqualTo(UPDATED_TIES_ALLOWED);
         assertThat(testTournament.getPlayingFields()).isEqualTo(UPDATED_PLAYING_FIELDS);
     }
 
