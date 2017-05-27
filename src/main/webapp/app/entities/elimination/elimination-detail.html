@@ -1,12 +1,16 @@
 
 <div>
     <h2><small>Tournament:</small> {{vm.elimination.name}}</h2> <!--TODO: -->
-    <hr>
+    <hr/>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
         <dt><span data-translate="global.field.id">Id</span></dt>
         <dd>
             <span>{{vm.elimination.id}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.elimination.type">Type</span></dt>
+        <dd>
+            <span>{{vm.elimination.type}}</span>
         </dd>
         <dt><span data-translate="tournamentControlApp.tournament.note">Note</span></dt>
         <dd>
@@ -35,26 +39,8 @@
                 <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>{{$last ? '' : ', '}}
             </span>
         </dd>
-<!--        <dd>
-            <div class="btn-group myPadding">
-                <label>
-                    <input type="radio" ng-model="singleElim" value='true'>
-                    Single elimination
-                </label>
-                <label>
-                    <input type="radio" ng-model="singleElim" value='false'>
-                    Double elimination
-                </label>
-            </div>
-            {{singleElim}}
-        </dd>-->
-        <dd>
-            <div id="save"></div> 
-        </dd>
     </dl>
-
-
-
+    
     <div style="padding-top: 20px">
         <button type="submit"
                 ui-sref="{{ vm.previousState}}"
@@ -67,4 +53,26 @@
             <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
         </button>
     </div>
+    
+    <div ng-repeat="match in vm.elimination.matches" ng-hide="true">
+        <a id="match_{{match.id}}" class="bracket-link" ui-sref="game.elimination-edit({gameId: match.id, id:vm.elimination.id})"> 
+            <table class="bracket-table">
+                <tr>
+                    <td rowspan="2" class="bracket-period-td">{{match.period}}</td>
+                    <td class="bracket-name-td">{{vm.getName(match.rivalA, match.round)}}</td>
+                    <td ng-repeat="set in match.sets" class="bracket-scores-td">{{set.scoreA}}</td>    
+                </tr> 
+                <tr> 
+                    <td class="bracket-name-td">{{vm.getName(match.rivalB, match.round)}}</td>
+                    <td ng-repeat="set in match.sets" class="bracket-scores-td">{{set.scoreB}}</td>
+                </tr>
+            </table>
+        </a>
+    </div>
+    
+    
+    <div id="winner-tree" > </div>
+
+
+    
 </div>

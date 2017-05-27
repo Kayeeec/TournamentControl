@@ -5,111 +5,87 @@
         .module('tournamentControlApp')
         .controller('EliminationDetailController', EliminationDetailController);
 
-    EliminationDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Elimination'];
+    EliminationDetailController.$inject = ['$timeout','$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Elimination'];
 
-    function EliminationDetailController($scope, $rootScope, $stateParams, previousState, entity, Elimination) {
+    function EliminationDetailController($timeout, $scope, $rootScope, $stateParams, previousState, entity, Elimination) {
         var vm = this;
 
         vm.elimination = entity;
         vm.previousState = previousState.name;
+                
+        vm.getName = function (rival, round) {
+            if(rival !== null){
+                if(rival.player !== null){
+                    return rival.player.name;
+                }
+                return rival.team.name;
+            }
+            if(round === 1){
+                return 'BYE';
+            }
+            return '-';
+        };
+        
+        function getRootIndex() {
+            if(vm.elimination.bronzeMatch){
+                return vm.elimination.matches.length - 2;
+            }else {
+                return vm.elimination.matches.length - 1;  
+            }
+        }
 
+        function getElementId(match) {
+            var result = '#match_'+match.id.toString();
+            console.log(result);
+            return result;
+        }
+        
+        vm.generateNodeStructure = function () {
+            var config = {container: '#winner-tree', rootOrientation: "EAST", 
+                connectors: {type: 'step'} };
+            var matches = vm.elimination.matches;
+            matches.sort(function(a, b){return a.period - b.period;});
+                        
+            var rootIndex = getRootIndex();
+            var root = {innerHTML: getElementId(matches[rootIndex])};
+            var result = [config];
+            
+            //create nodes in the right order and push them into temporary array 
+            var tmpArray = [];
+            for (var i = 0; i < rootIndex; i++) {
+                var match = matches[i];
+                var node = {parent: null, innerHTML: getElementId(match)};
+                tmpArray.push(node);
+            }
+            tmpArray.push(root);
+            //define parent of each node in a temporary array, exept for the root
+            for (var i = 0; i < tmpArray.length - 1; i++) {
+                var node = tmpArray[i];
+                var parentIndex = Math.floor((i + rootIndex)/2)+1;
+                node.parent = tmpArray[parentIndex];
+            }
+            //push nodes from temporary array to result in reversed order
+            while (tmpArray.length > 0) {
+                result.push(tmpArray.pop());
+            }
+            return result;
+        };
+        
+        $scope.$on('$viewContentLoaded', function (event)
+        {
+            $timeout(function () { //has to be called after the DOM is rendered
+                if (vm.elimination.matches.length > 0) {
+                    vm.winnerTree = new Treant(vm.generateNodeStructure());
+                }
+            });
+
+        });
+        
         var unsubscribe = $rootScope.$on('tournamentControlApp:eliminationUpdate', function(event, result) {
             vm.elimination = result;
         });
         $scope.$on('$destroy', unsubscribe);
         
-        /* brackets ================================================================== */
-        $scope.chooseElimination = function () {
-            var single = [];
-            var double = [[[[]]], [], []];
-            console.log(vm.elimination.eliminationType);
-             if(vm.elimination.eliminationType === "SINGLE"){
-                 return single;
-             }else {
-                return double;
-            }
-
-        };
         
-        function getName(p) {
-            if(p.player !== null){
-                return p.player.name;
-            }else {
-                return p.team.name;
-            }
-
-        }
- 
-        $scope.randomAssign = function () {
-            var teams = [];
-            var n;
-            if(vm.elimination.participants.length % 2 === 1){
-                n = (vm.elimination.participants.length + 1)/2;
-            }else {
-                 n = (vm.elimination.participants.length)/2;
-            }
-//            init
-            for (var i = 0, max = n; i < n; i++) {
-                teams.push([null,null]);
-            }
-            
-            var participantStack = [];
-            angular.copy(vm.elimination.participants, participantStack);
-            
-//            eval firsts
-            teams.forEach(function(pair) {
-                if(participantStack.length !== 0) {
-                    var p = participantStack.pop();
-                    pair[0] = getName(p);
-                }
-                
-            });
-//            eval seconds
-            teams.forEach(function(pair) {
-                if(participantStack.length !== 0) {
-                    var p = participantStack.pop();
-                    pair[1] = getName(p);
-                }
-                
-            });
-            return teams;
-        };
- 
-        var saveData = {
-            teams: $scope.randomAssign(),
-            results: []
-        };
-
-        /* Called whenever bracket is modified
-         *
-         * data:     changed bracket object in format given to init
-         * userData: optional data given when bracket is created.
-         */
-        function saveFn(data, userData) {
-            var json = JSON.stringify(data);
-            $('#saveOutput').text('POST ' + userData + ' ' + json);
-            /* You probably want to do something like this
-             jQuery.ajax("rest/"+userData, {contentType: 'application/json',
-             dataType: 'json',
-             type: 'post',
-             data: json})
-             */
-            console.log("usrData = "+userData);
-            console.log("data = "+JSON.stringify(data));
-        }
-
-        $(function () {
-            var container = $('div#save');
-            container.bracket({
-                centerConnectors: true,
-                init: saveData,
-                save: saveFn,
-                userData: "http://myapi"});
-
-            /* You can also inquiry the current data */
-            var data = container.bracket('data');
-            $('#dataOutput').text(JSON.stringify(data));
-        });
- /* brackets ================================================================== */
     }
 })();

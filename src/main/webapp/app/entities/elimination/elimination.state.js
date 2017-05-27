@@ -114,6 +114,8 @@
                                 setsToWin: null,
                                 tiesAllowed: null,
                                 scoreMax: null,
+                                type: null,
+                                bronzeMatch: null,
                                 id: null
                             };
                         }

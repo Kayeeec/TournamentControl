@@ -11,12 +11,15 @@
         var vm = this;
 
         vm.elimination = entity;
+        
         vm.clear = clear;
         vm.save = save;
         
          vm.participants = Participant.query();
         
 //        initiating default values 
+        vm.elimination.bronzeMatch = vm.elimination.bronzeMatch || false;
+        vm.elimination.type = vm.elimination.type || "SINGLE";
         vm.elimination.participants = vm.elimination.participants || [];
         vm.selectedPlayers = filterFilter(vm.elimination.participants, {team : null});
         vm.selectedTeams = filterFilter(vm.elimination.participants, {player : null});

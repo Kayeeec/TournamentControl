@@ -1,6 +1,6 @@
 package cz.tournament.control.repository;
 
-import cz.tournament.control.domain.tournaments.Elimination;
+import cz.tournament.control.domain.Elimination;
 
 import org.springframework.data.jpa.repository.*;
 

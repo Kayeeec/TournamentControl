@@ -227,12 +227,10 @@ public class Game implements Serializable, Comparable<Game> {
     @Override
     public String toString() {
         return "Game{" +
-            "id=" + id +
-            ", finished='" + finished + "'" +
-            ", round='" + round + "'" +
-            ", period='" + period + "'" +
-            ", note='" + note + "'" +
-            ", playingField='" + playingField + "'" +
+            "id=" + this.getId() +
+            ", finished='" + this.isFinished() + "'" +
+            ", round='" + this.getRound() + "'" +
+            ", period='" + this.getPeriod() + "'" +
             '}';
     }
     
@@ -264,7 +262,7 @@ public class Game implements Serializable, Comparable<Game> {
      *
      * @return int, sum of all rivalA scores from all sets
      */
-    public int getAllScoresA() {
+    public int getSumOfScoresA() {
         int result = 0;
         for (GameSet set : sets) {
            Integer a = set.getScoreA();
@@ -280,7 +278,7 @@ public class Game implements Serializable, Comparable<Game> {
      *
      * @return int, sum of all rivalB scores from all sets
      */
-    public int getAllScoresB() {
+    public int getSumOfScoresB() {
         int result = 0;
         if (!this.getSets().isEmpty()) {
             for (GameSet set : this.getSets()) {
@@ -296,9 +294,13 @@ public class Game implements Serializable, Comparable<Game> {
     /**
      *  Determines winner of the game. 
      * @return Participant if all sets are finished and it is not a tie, 
-     * null if there is an unfinished set or game is a tie. 
+     * null if there is an unfinished set, game is a tie or both rivals are null.
      */
     public Participant getWinner(){
+        if(rivalA != null && rivalB == null) return rivalA;
+        if(rivalB != null && rivalA == null) return rivalB;
+        if(rivalA == null && rivalB == null) return null;
+        
         int wonSetsA = 0;
         int wonSetsB = 0;
         

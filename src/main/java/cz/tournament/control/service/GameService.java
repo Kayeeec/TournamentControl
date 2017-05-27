@@ -55,7 +55,7 @@ public class GameService {
     }
     
     public Game updateGame(Game game){
-        log.debug("Request to update Game : {}", game);
+//        log.debug("Request to update Game : {}", game);
         
         //ensure tournament - never changes
         if(game.getTournament() == null){

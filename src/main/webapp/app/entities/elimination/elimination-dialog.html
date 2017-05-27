@@ -25,6 +25,21 @@
                 </p>
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.elimination.type" for="field_type">Type</label>
+            <select class="form-control" name="type" ng-model="vm.elimination.type" id="field_type">
+                <option value="SINGLE" data-translate="tournamentControlApp.EliminationType.SINGLE">SINGLE</option>
+                <option value="DOUBLE" data-translate="tournamentControlApp.EliminationType.DOUBLE">DOUBLE</option>
+            </select>
+        </div>
+        <div class="form-group">
+                <label class="control-label" data-translate="tournamentControlApp.elimination.bronzeMatch" 
+                       for="field_bronzeMatch">Add match for bronze</label>
+            <input type="checkbox" class="form-control" name="bronzeMatch" id="field_bronzeMatch"
+                       ng-model="vm.elimination.bronzeMatch"
+                       />
+            </div>
+        
 
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.tournament.note" for="field_note">Note</label>
@@ -34,27 +49,26 @@
         </div>
         <div class="myDistributeHorizontally">
             <div class="form-group myFields">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" for="field_pointsForWinning">Points For Winning</label>
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" 
+                       for="field_pointsForWinning">Points For Winning</label>
                 <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
                        ng-model="vm.elimination.pointsForWinning"
                        />
             </div>
-
             <div class="form-group myFields">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" for="field_pointsForLosing">Points For Losing</label>
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" 
+                       for="field_pointsForLosing">Points For Losing</label>
                 <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
                        ng-model="vm.elimination.pointsForLosing"
                        />
             </div>
-
             <div class="form-group myFields">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" for="field_pointsForTie">Points For Tie</label>
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" 
+                       for="field_pointsForTie">Points For Tie</label>
                 <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
                        ng-model="vm.elimination.pointsForTie"
                        />
             </div>
-
-            
         </div>
         <div style="clear: both"></div>
 
