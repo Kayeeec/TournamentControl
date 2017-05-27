@@ -1,0 +1,9 @@
+{
+    "tournamentControlApp": {
+        "EliminationType" : {
+            "null": "",
+            "SINGLE": "SINGLE",
+            "DOUBLE": "DOUBLE"
+        }
+    }
+}
