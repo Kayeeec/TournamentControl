@@ -29,6 +29,7 @@
                     $translatePartialLoader.addPart('setSettings');
                     $translatePartialLoader.addPart('allVersusAll');
                     $translatePartialLoader.addPart('elimination');
+                    $translatePartialLoader.addPart('eliminationType');
                     $translatePartialLoader.addPart('game');
                     $translatePartialLoader.addPart('gameSet');
                     $translatePartialLoader.addPart('global');

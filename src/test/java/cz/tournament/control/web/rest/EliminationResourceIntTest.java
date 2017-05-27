@@ -2,7 +2,7 @@ package cz.tournament.control.web.rest;
 
 import cz.tournament.control.TournamentControlApp;
 
-import cz.tournament.control.domain.tournaments.Elimination;
+import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.repository.EliminationRepository;
 import cz.tournament.control.service.EliminationService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
@@ -29,6 +29,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import cz.tournament.control.domain.enumeration.EliminationType;
 /**
  * Test class for the EliminationResource REST controller.
  *
@@ -37,6 +38,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TournamentControlApp.class)
 public class EliminationResourceIntTest {
+
+    private static final EliminationType DEFAULT_TYPE = EliminationType.SINGLE;
+    private static final EliminationType UPDATED_TYPE = EliminationType.DOUBLE;
+
+    private static final Boolean DEFAULT_BRONZE_MATCH = false;
+    private static final Boolean UPDATED_BRONZE_MATCH = true;
 
     @Autowired
     private EliminationRepository eliminationRepository;
@@ -77,7 +84,9 @@ public class EliminationResourceIntTest {
      * if they test an entity which requires the current entity.
      */
     public static Elimination createEntity(EntityManager em) {
-        Elimination elimination = new Elimination();
+        Elimination elimination = new Elimination()
+            .type(DEFAULT_TYPE)
+            .bronzeMatch(DEFAULT_BRONZE_MATCH);
         return elimination;
     }
 
@@ -101,6 +110,8 @@ public class EliminationResourceIntTest {
         List<Elimination> eliminationList = eliminationRepository.findAll();
         assertThat(eliminationList).hasSize(databaseSizeBeforeCreate + 1);
         Elimination testElimination = eliminationList.get(eliminationList.size() - 1);
+        assertThat(testElimination.getType()).isEqualTo(DEFAULT_TYPE);
+        assertThat(testElimination.getBronzeMatch()).isEqualTo(DEFAULT_BRONZE_MATCH);
     }
 
     @Test
@@ -132,7 +143,9 @@ public class EliminationResourceIntTest {
         restEliminationMockMvc.perform(get("/api/eliminations?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(elimination.getId().intValue())));
+            .andExpect(jsonPath("$.[*].id").value(hasItem(elimination.getId().intValue())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].bronzeMatch").value(hasItem(DEFAULT_BRONZE_MATCH.booleanValue())));
     }
 
     @Test
@@ -145,7 +158,9 @@ public class EliminationResourceIntTest {
         restEliminationMockMvc.perform(get("/api/eliminations/{id}", elimination.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(elimination.getId().intValue()));
+            .andExpect(jsonPath("$.id").value(elimination.getId().intValue()))
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
+            .andExpect(jsonPath("$.bronzeMatch").value(DEFAULT_BRONZE_MATCH.booleanValue()));
     }
 
     @Test
@@ -166,6 +181,9 @@ public class EliminationResourceIntTest {
 
         // Update the elimination
         Elimination updatedElimination = eliminationRepository.findOne(elimination.getId());
+        updatedElimination
+            .type(UPDATED_TYPE)
+            .bronzeMatch(UPDATED_BRONZE_MATCH);
 
         restEliminationMockMvc.perform(put("/api/eliminations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -176,6 +194,8 @@ public class EliminationResourceIntTest {
         List<Elimination> eliminationList = eliminationRepository.findAll();
         assertThat(eliminationList).hasSize(databaseSizeBeforeUpdate);
         Elimination testElimination = eliminationList.get(eliminationList.size() - 1);
+        assertThat(testElimination.getType()).isEqualTo(UPDATED_TYPE);
+        assertThat(testElimination.getBronzeMatch()).isEqualTo(UPDATED_BRONZE_MATCH);
     }
 
     @Test

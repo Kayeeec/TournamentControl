@@ -19,12 +19,14 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="type"><span data-translate="tournamentControlApp.elimination.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
                 <tr ng-repeat="elimination in vm.eliminations track by elimination.id">
                     <td><a ui-sref="elimination-detail({id:elimination.id})">{{elimination.id}}</a></td>
+                    <td data-translate="{{'tournamentControlApp.EliminationType.' + elimination.type}}">{{elimination.type}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

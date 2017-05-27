@@ -1,12 +1,13 @@
-package cz.tournament.control.domain.tournaments;
+package cz.tournament.control.domain;
 
-import cz.tournament.control.domain.Tournament;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
+
+import cz.tournament.control.domain.enumeration.EliminationType;
 
 /**
  * A Elimination.
@@ -18,6 +19,40 @@ import java.util.Objects;
 public class Elimination extends Tournament implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private EliminationType type = EliminationType.SINGLE;
+
+    @Column(name = "bronze_match")
+    private Boolean bronzeMatch = true;
+
+
+    public EliminationType getType() {
+        return type;
+    }
+
+    public Elimination type(EliminationType type) {
+        this.type = type;
+        return this;
+    }
+
+    public void setType(EliminationType type) {
+        this.type = type;
+    }
+
+    public Boolean getBronzeMatch() {
+        return bronzeMatch;
+    }
+
+    public Elimination bronzeMatch(Boolean bronzeMatch) {
+        this.bronzeMatch = bronzeMatch;
+        return this;
+    }
+
+    public void setBronzeMatch(Boolean bronzeMatch) {
+        this.bronzeMatch = bronzeMatch;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -44,6 +79,7 @@ public class Elimination extends Tournament implements Serializable {
         return "Elimination{" +
             "id=" + this.getId() +
             "name=" + this.getName()+
+            "type=" + this.getType()+
             '}';
     }
 }

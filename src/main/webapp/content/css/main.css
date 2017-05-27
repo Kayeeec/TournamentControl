@@ -22,7 +22,31 @@ My styles
 .myPaqddingBottom{
     padding-bottom: 10px;
 }
+.bracket-table{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 200;
+    width: 100px;
+    
+}
+.bracket-table, .bracket-table td {
+    border: 1px solid dimgray;
+    padding: 3px;
+}
 
+.bracket-period-td {
+    vertical-align: middle;
+    text-align: center;
+}
+.bracket-name-td{
+    width: 70px;
+}
+.bracket-scores-td{
+    text-align: center;
+}
+.bracket-link{
+    
+}
 
 /* ==========================================================================
 Hide ng-cloak on page load, https://docs.angularjs.org/api/ng/directive/ngCloak

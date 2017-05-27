@@ -22,6 +22,14 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="bronze_match" type="bit">
+                <constraints nullable="true" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         

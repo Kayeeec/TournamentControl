@@ -14,7 +14,9 @@
             },
             "detail": {
                 "title": "Elimination"
-            }
+            },
+            "type": "Type",
+            "bronzeMatch": "Bronze Match"
         }
     }
 }

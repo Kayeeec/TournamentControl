@@ -1,7 +1,7 @@
 package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import cz.tournament.control.domain.tournaments.Elimination;
+import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.service.EliminationService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import cz.tournament.control.web.rest.util.PaginationUtil;
