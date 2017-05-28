@@ -13,10 +13,9 @@
         vm.game = entity;
         vm.clear = clear;
         vm.save = save;
-        vm.addSet = addSet;
         vm.changed = false;
         
-        vm.chosenMap = new Map(); //determines which setSettings are used
+        vm.chosenMap = new Map(); //determines which setSettings are used (radio 'MaxScore 'or 'Lead-by points')
         vm.oldSettings = new Map();
         vm.finishGameDisabledCause = null;
         
@@ -25,7 +24,8 @@
             var set = vm.game.sets[i];
             if(set.setSettings.maxScore !== null){
                 vm.chosenMap[set.id]="maxScore";
-            }else {
+            }
+            if(set.setSettings.leadByPoints !== null) {
                 vm.chosenMap[set.id]="leadByPoints";
             }
         }
@@ -54,6 +54,7 @@
                         GameSet.save(set);
                     }
                 }
+                
                 Game.update(vm.game, onSaveSuccess, onSaveError);
             } else {
                 Game.save(vm.game, onSaveSuccess, onSaveError);
@@ -72,12 +73,12 @@
 
         /* ************* Functionality ************* */
 
-        function addSet() {
+        vm.addSet = function () {
             vm.changed = true;
             Game.addSet({id: vm.game.id}, function (result) {
                 vm.game = result;
             });
-        }
+        };
 
         vm.updateSetSettings = function (set) {
             vm.changed = true;
@@ -157,7 +158,8 @@
                     set.finished = true;
                     vm.save_CheckForSetToBeAdded(set);
                 }
-            } else {
+            } 
+            if(set.setSettings.leadByPoints !== null){
                 if (set[changedScore] >= set.setSettings.minReachedScore
                         && set[changedScore] >= set[otherScore] + set.setSettings.leadByPoints) {
                     set.finished = true;

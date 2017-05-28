@@ -3,7 +3,9 @@
         "allVersusAll" : {
             "home": {
                 "title": "All-play-All tournaments",
-                "createLabel": "new All-play-All",
+                "createBtnLabel":"new All-Versus-All",
+                "createLabel": "Create All-Versus-All tournament",
+                "editLabel":"Edit All-Versus-All tournament #{{ id }}",
                 "createOrEditLabel": "Create or edit a All-play-All tournament"
             },
             "created": "A new All-play-All tournament is created with identifier {{ param }}",

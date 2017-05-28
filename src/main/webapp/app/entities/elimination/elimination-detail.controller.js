@@ -36,7 +36,6 @@
 
         function getElementId(match) {
             var result = '#match_'+match.id.toString();
-            console.log(result);
             return result;
         }
         
@@ -71,18 +70,36 @@
             return result;
         };
         
-        $scope.$on('$viewContentLoaded', function (event)
-        {
+        vm.generateBronzeNodeStructure = function () {
+            var matches = vm.elimination.matches;
+            matches.sort(function(a, b){return a.period - b.period;});
+            
+            var config = {container: '#bronze-tree', rootOrientation: "EAST", 
+                connectors: {type: 'step'} };
+            var bronzeNode = {innerHTML: getElementId(matches[getRootIndex() + 1])};
+            
+            return [config, bronzeNode];
+            
+        };
+        
+        function loadTrees() {
             $timeout(function () { //has to be called after the DOM is rendered
                 if (vm.elimination.matches.length > 0) {
                     vm.winnerTree = new Treant(vm.generateNodeStructure());
+                    if(vm.elimination.bronzeMatch){
+                        vm.bronzeTree = new Treant(vm.generateBronzeNodeStructure());
+                    }
                 }
             });
-
+        }
+        
+        $scope.$on('$viewContentLoaded', function () {
+            loadTrees();
         });
         
         var unsubscribe = $rootScope.$on('tournamentControlApp:eliminationUpdate', function(event, result) {
             vm.elimination = result;
+            loadTrees();
         });
         $scope.$on('$destroy', unsubscribe);
         

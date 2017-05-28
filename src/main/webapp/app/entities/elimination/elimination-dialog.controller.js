@@ -20,23 +20,13 @@
 //        initiating default values 
         vm.elimination.bronzeMatch = vm.elimination.bronzeMatch || false;
         vm.elimination.type = vm.elimination.type || "SINGLE";
+        vm.elimination.tiesAllowed = false;
+        
+        /* participants stuff */
         vm.elimination.participants = vm.elimination.participants || [];
         vm.selectedPlayers = filterFilter(vm.elimination.participants, {team : null});
         vm.selectedTeams = filterFilter(vm.elimination.participants, {player : null});
         $scope.chosen = 1;
-
-        $timeout(function (){
-            angular.element('.form-group:eq(1)>input').focus();
-        });
-        
-        $('#myTab a[href="#players"]').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-        $('#myTab a[href="#teams"]').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
         
         function selectParticipants() {
             console.log("Selecting participants");
@@ -51,14 +41,67 @@
                 console.log("vm.elimination.participants: " + vm.elimination.participants);
             }
         }
-
+        /* END - participants stuff */
+        
+         /* setSettings stuff */
+        vm.setSettingsChosen = initSetSettingsChosen();
+        vm.preparedSettings = vm.elimination.setSettings 
+                || {id: null, maxScore: null, leadByPoints: null, minReachedPoints: null};
+        
+        function initSetSettingsChosen() {
+            if (vm.elimination.id !== null && vm.elimination.setSettings !== null) {
+                if(vm.elimination.setSettings.leadByPoints !== null 
+                    || vm.elimination.setSettings.minReachedScore !== null){
+                    return 'leadByPoints';
+                }
+                return 'maxScore';
+            }
+            return null;
+        }
+        
+        function resolveSetSettings() {
+            if (vm.setSettingsChosen === 'maxScore') {
+                vm.preparedSettings.leadByPoints = null;
+                vm.preparedSettings.minReachedScore = null;
+            }
+            if (vm.setSettingsChosen === 'leadByPoints') {
+                vm.preparedSettings.maxScore = null;
+            }
+            if (vm.preparedSettings.id !== null ||
+                vm.preparedSettings.maxScore !== null ||
+                vm.preparedSettings.leadByPoints !== null ||
+                vm.preparedSettings.minReachedScore !== null){
+                    vm.elimination.setSettings = vm.preparedSettings;
+                    console.log(vm.elimination.setSettings);
+            }
+        }
+        /* END - setSettings stuff */
+        
+        $('#myTab a[href="#players"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        $('#myTab a[href="#teams"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        
+        $('.collapse').collapse();
+        
+        $timeout(function (){
+            angular.element('.form-group:eq(1)>input').focus();
+        });
+        
         function clear () {
             $uibModalInstance.dismiss('cancel');
         }
 
         function save () {
             vm.isSaving = true;
+            
             selectParticipants();
+            resolveSetSettings();
+            
             if (vm.elimination.id !== null) {
                 Elimination.update(vm.elimination, onSaveSuccess, onSaveError);
             } else {

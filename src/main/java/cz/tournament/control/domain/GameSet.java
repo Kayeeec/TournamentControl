@@ -1,5 +1,7 @@
 package cz.tournament.control.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -31,9 +33,10 @@ public class GameSet implements Serializable {
     private Boolean finished = false;
 
     @ManyToOne
+    @JsonIgnoreProperties({"sets"})
     private Game game;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private SetSettings setSettings;
 
     public Long getId() {
