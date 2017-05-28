@@ -27,17 +27,21 @@ public class GameService {
     private final Logger log = LoggerFactory.getLogger(GameService.class);
     private final GameRepository gameRepository;
     private final GameSetService gameSetService;
+    private final SetSettingsService setSettingsService;
 
-    public GameService(GameRepository gameRepository, GameSetService gameSetService) {
+    public GameService(GameRepository gameRepository, GameSetService gameSetService, SetSettingsService setSettingsService) {
         this.gameRepository = gameRepository;
         this.gameSetService = gameSetService;
+        this.setSettingsService = setSettingsService;
     }
+
+    
     
     public Game createGame(Game game){
         log.debug("Request to create Game : {}", game);
         
         Game tmp = gameRepository.save(game);
-        SetSettings defaultSetSettings = game.getTournament().getSetSettings();
+        SetSettings defaultSetSettings = setSettingsService.findOne(game.getTournament().getSetSettings().getId()) ;
         
         //prepare sets - one or number of sets to win
         GameSet set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));

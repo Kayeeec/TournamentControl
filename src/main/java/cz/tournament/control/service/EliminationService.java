@@ -11,7 +11,9 @@ import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,16 +46,36 @@ public class EliminationService {
 
     
     
-    public Elimination updateElimination(Elimination elimination){
+    public Elimination updateElimination(Elimination elimination) {
         log.debug("Request to update Elimination : {}", elimination);
-        
-        /* TODO: Detect change and regenerate */
-        
+
+        /* Detect change and regenerate */
+        Elimination old = eliminationRepository.findOne(elimination.getId());
+        if (!Objects.equals(old.getType(), elimination.getType())
+                || !Objects.equals(old.getBronzeMatch(), elimination.getBronzeMatch())
+                || !Objects.equals(old.getSetsToWin(), elimination.getSetsToWin())
+                || !Objects.equals(old.getParticipants(), elimination.getParticipants()) ) {
+            
+            if (!elimination.getMatches().isEmpty()) {
+                deleteAllMatches(elimination);
+            }
+            if (elimination.getParticipants().size() >= 2) {
+                generateAssignment(elimination);
+            }
+        }
+
         Elimination result = eliminationRepository.save(elimination);
         log.debug("Elimination SERVICE: updated Elimination tournament: {}", result);
 
         return result;
-        
+
+    }
+    
+    //delete all tournaments matches from tournament and database
+    private void deleteAllMatches(Elimination elimination){
+        List<Game> matches = new ArrayList<>(elimination.getMatches());
+        elimination.setMatches(new HashSet<>());
+        gameService.delete(matches);
     }
     
     public Elimination createElimination(Elimination elimination){

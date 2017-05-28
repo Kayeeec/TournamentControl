@@ -177,10 +177,12 @@
                       ></textarea>
         </div>
 
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.game.finished" for="field_finished">Finished</label>
+        <div class="checkbox">
+            <label class="control-label" for="field_finished">
             <input type="checkbox" name="finished" id="field_finished" ng-disabled="vm.unfinishedSetPresent_orGameIsTie()"
                    ng-model="vm.game.finished"/>
+            <span data-translate="tournamentControlApp.game.finished">Finished</span>
+            </label>
             <div ng-show="vm.unfinishedSetPresent_orGameIsTie()">
                 <p class="help-block"
                    ng-show="vm.finishGameDisabledCause === 'unfinished'" data-translate=""> <!-- todo: translation -->

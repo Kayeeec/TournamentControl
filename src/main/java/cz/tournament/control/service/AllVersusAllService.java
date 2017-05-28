@@ -61,11 +61,10 @@ public class AllVersusAllService {
      */
     public AllVersusAll updateAllVersusAll(AllVersusAll allVersusAll){
         log.debug("Request to update AllVersusAll : {}", allVersusAll);
-                
+        
+        //detect change for new assignment generation       
         AllVersusAll old = allVersusAllRepository.findOne(allVersusAll.getId());
-        if (old.getSetSettings() != allVersusAll.getSetSettings()) {
-            allVersusAll.setSetSettings(setSettingsService.save(allVersusAll.getSetSettings()));
-        }
+        
         if(!old.getParticipants().equals(allVersusAll.getParticipants()) 
                 || old.getNumberOfMutualMatches() != allVersusAll.getNumberOfMutualMatches()
                 || old.getPlayingFields() != allVersusAll.getPlayingFields()
@@ -143,10 +142,6 @@ public class AllVersusAllService {
      */
     public void delete(Long id) {
         log.debug("Request to delete AllVersusAll : {}", id);
-        
-        //delete all tournaments matches from tournament and database
-        deleteAllMatches(allVersusAllRepository.findOne(id));
-        
         allVersusAllRepository.delete(id);
     }
     

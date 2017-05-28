@@ -3,7 +3,9 @@
         "elimination" : {
             "home": {
                 "title": "Eliminations",
-                "createLabel": "Create a new Elimination",
+                "createBtnLabel":"new Elimination",
+                "createLabel": "Create Elimination tournament",
+                "editLabel":"Edit Elimination tournament #{{id}}",
                 "createOrEditLabel": "Create or edit a Elimination"
             },
             "created": "A new Elimination is created with identifier {{ param }}",

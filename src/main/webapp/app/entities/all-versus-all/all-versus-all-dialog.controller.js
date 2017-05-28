@@ -17,42 +17,13 @@
         
 //        initiating default values 
         if(vm.allVersusAll.tiesAllowed === null){ vm.allVersusAll.tiesAllowed = true; }
-        vm.allVersusAll.participants = vm.allVersusAll.participants || [];
         vm.allVersusAll.numberOfMutualMatches = vm.allVersusAll.numberOfMutualMatches || 1;
+        
+        /* participants stuff */
+        vm.allVersusAll.participants = vm.allVersusAll.participants || [];
         vm.selectedPlayers = filterFilter(vm.allVersusAll.participants, {team : null});
         vm.selectedTeams = filterFilter(vm.allVersusAll.participants, {player : null});
         $scope.chosen = 1;
-        vm.setSettingsChosen = initSetSettingsChosen();
-//        vm.allVersusAll.setSettings = vm.allVersusAll.setSettings 
-//                || {id: null, maxScore: null, leadByPoints: null, minReachedPoints: null};
-        vm.preparedSettings = vm.allVersusAll.setSettings 
-                || {id: null, maxScore: null, leadByPoints: null, minReachedPoints: null};
-        
-        function initSetSettingsChosen() {
-            if (vm.allVersusAll.id !== null && vm.allVersusAll.setSettings !== null) {
-                if(vm.allVersusAll.setSettings.leadByPoints !== null 
-                    || vm.allVersusAll.setSettings.minReachedScore !== null){
-                    return 'leadByPoints';
-                }
-                return 'maxScore';
-            }
-            return null;
-        }
-        
-        
-
-        $timeout(function () {
-            angular.element('.form-group:eq(1)>input').focus();
-        });
-
-        $('#myTab a[href="#players"]').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-        $('#myTab a[href="#teams"]').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
         
         function selectParticipants() {
             console.log("Selecting participants");
@@ -67,10 +38,22 @@
                 console.log("vm.allVersusAll.participants: " + vm.allVersusAll.participants);
             }
         }
+        /* END - participants stuff */
         
-
-        function clear() {
-            $uibModalInstance.dismiss('cancel');
+        /* setSettings stuff */
+        vm.setSettingsChosen = initSetSettingsChosen();
+        vm.preparedSettings = vm.allVersusAll.setSettings 
+                || {id: null, maxScore: null, leadByPoints: null, minReachedPoints: null};
+        
+        function initSetSettingsChosen() {
+            if (vm.allVersusAll.id !== null && vm.allVersusAll.setSettings !== null) {
+                if(vm.allVersusAll.setSettings.leadByPoints !== null 
+                    || vm.allVersusAll.setSettings.minReachedScore !== null){
+                    return 'leadByPoints';
+                }
+                return 'maxScore';
+            }
+            return null;
         }
         
         function resolveSetSettings() {
@@ -89,7 +72,25 @@
                     console.log(vm.allVersusAll.setSettings);
             }
         }
+        /* END - setSettings stuff */
 
+        $timeout(function () {
+            angular.element('.form-group:eq(1)>input').focus();
+        });
+
+        $('#myTab a[href="#players"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        $('#myTab a[href="#teams"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        
+        function clear() {
+            $uibModalInstance.dismiss('cancel');
+        }
+        
         function save() {
             
             vm.isSaving = true;
@@ -123,10 +124,6 @@
         };
         
         $('.collapse').collapse();
-
-
-
-
 
     }
 })();

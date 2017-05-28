@@ -56,7 +56,7 @@ public class Tournament implements Serializable {
     @Column(name = "playing_fields")
     private Integer playingFields;
 
-    @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnoreProperties({"tournament"})
     private Set<Game> matches = new HashSet<>();

@@ -55,7 +55,7 @@ public class Game implements Serializable, Comparable<Game> {
     @ManyToOne
     private Participant rivalB;
 
-    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnoreProperties({"game"})
     private Set<GameSet> sets = new HashSet<>();
