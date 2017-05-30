@@ -45,9 +45,10 @@
         </dd>
     </dl>
     
+    <!-- buttons -->
     <div style="padding-top: 20px">
         <button type="submit"
-                ui-sref="{{ vm.previousState}}"
+                ui-sref="{{vm.previousState}}"
                 class="btn btn-info">
             <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
         </button>
@@ -57,14 +58,21 @@
             <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
         </button>
     </div>
+    <!-- buttons -->
     
+    <!-- tree node templates -->
     <div ng-repeat="match in vm.elimination.matches" ng-hide="true">
-        <a id="match_{{match.id}}" class="bracket-link" ui-sref="game.elimination-edit({gameId: match.id, id:vm.elimination.id})"> 
+        <a ui-sref="game.elimination-edit({gameId: match.id, id:vm.elimination.id})" 
+           id="match_{{match.id}}" class="bracket-link" ng-class="vm.disabledIfBYE(match)" > 
             <table class="bracket-table">
                 <tr>
-                    <td rowspan="2" class="bracket-period-td">{{match.period}}</td>
+                    <td rowspan="2" class="bracket-period-td">{{match.period - 1}}</td>
                     <td class="bracket-name-td">{{vm.getName(match.rivalA, match.round)}}</td>
-                    <td ng-repeat="set in match.sets" class="bracket-scores-td">{{set.scoreA}}</td>    
+                    <td ng-repeat="set in match.sets" class="bracket-scores-td">{{set.scoreA}}</td>
+                    <td rowspan="2" class="bracket-period-td">
+                        <span ng-if="match.finished" class="glyphicon glyphicon-ok"></span>
+                        <span ng-if="!match.finished" class="glyphicon glyphicon-refresh"></span>
+                    </td>
                 </tr> 
                 <tr> 
                     <td class="bracket-name-td">{{vm.getName(match.rivalB, match.round)}}</td>
@@ -73,6 +81,7 @@
             </table>
         </a>
     </div>
+    <!-- tree node templates -->
     
     <div class=" right">
         <div id="winner-tree"> </div>

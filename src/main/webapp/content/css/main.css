@@ -44,6 +44,12 @@ My styles
 .bracket-scores-td{
     text-align: center;
 }
+.mylinkDisabled {
+  cursor: not-allowed;
+  pointer-events: none;
+/*  color: grey;*/
+  opacity: .5;
+}
 .bracket-link{
     
 }

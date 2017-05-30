@@ -41,7 +41,9 @@ public class GameService {
         log.debug("Request to create Game : {}", game);
         
         Game tmp = gameRepository.save(game);
-        SetSettings defaultSetSettings = setSettingsService.findOne(game.getTournament().getSetSettings().getId()) ;
+//        SetSettings defaultSetSettings = setSettingsService.findOne(game.getTournament().getSetSettings().getId()) ;
+        SetSettings defaultSetSettings = setSettingsService.save(game.getTournament().getSetSettings()) ;
+
         
         //prepare sets - one or number of sets to win
         GameSet set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
