@@ -257,7 +257,103 @@ public class EliminationService {
         
     }
     
+    /**
+     * Lets talk numbers:
+     * ~~~~~~~~~~~~~~~~~~
+     * n - number of participants
+     * N - effective number of participants (includes BYE)
+     *     N = the closest power of two bigger or equal n
+     * #BYE = N - n
+     * #winnerRounds = log_2(N)
+     * #rounds = log_2(N) + 1
+     *  
+     * numbering rounds in loser bracket: 15..log_2(N), incremented by 5
+     * #loserBracketMatches = N - 2
+     * #total matches = (N - 1) + (N - 2) + 1 {final} [+ 1 {if bronze}] [+1 {if another final}]
+     * 
+     * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     * Orientation in an array of matches ordered by round -> period 
+     *      (or id depending on implementation)
+     * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     * root - index of a match deciding the winner
+     *      root = 2N - 3
+     * additional root - index of a possible next root
+     *      additionalRoot = 2N-1 [if bronze] or 2N-2 
+     * bronze - index of a match deciding the 3rd place 
+     *      bronze = 2N - 2
+     * loserSegmentSize(round) = N/{2^[ceiling(R/10)]}
+     * loserInSegmentIndex(index, round) = {index [+1 if odd] % loserSegmentSize(round)}/2
+     * loserNextMatchIndex(index, round) = index [-1 if even] + loserSegmentSize(round) - loserInSegmentIndex(index, round);
+     * 
+     * nextMatchIndex(index) = floor((index + root)/2)+1
+     *      - index - of a match we look for next match to
+     *      - floor - rounding down the division
+     */
     public void generateDouble(Elimination tournament){
-        //Todo
+        //generate winner bracket matches and populate first round
+        int N = getNextPowerOfTwo(tournament.getParticipants().size());
+        int winnerRounds = (int) (Math.log(N) / Math.log(2));
+        List<Game> roundOne = new ArrayList<>();
+        
+        //generate all winner matches, set round and period (period for ordering)
+        int period = 1;
+        for (int round = 1; round <= winnerRounds; round++) {
+            for (int i = 0; i < (N/(Math.pow(2, round))); i++) {
+                Game saved = gameService.createGame(new Game().tournament(tournament).round(round).period(period));
+                tournament.addMatches(saved);
+                period += 1;
+                if(round == 1){
+                    roundOne.add(saved);
+                }
+            }
+        }
+        //populate first round, set BYE matches as finished 
+        //random
+        List<Participant> participants = initParticipants(tournament.getParticipants(), N);
+        int first = 0;
+        int last = participants.size() - 1;
+        for (Game match : roundOne) {
+            match.rivalA(participants.get(first)).rivalB(participants.get(last));
+            first += 1;
+            last -= 1;
+            if(match.getRivalA() == null || match.getRivalB() == null){
+                match.setFinished(Boolean.TRUE);
+            }
+            
+            gameService.updateGame(match);
+        }
+        
+        //generate loser bracket matches
+        for(int round = 15; round <= winnerRounds*10; round += 5){
+            for (int i = 0; i < loserSegmentSize(round, N); i++) {
+                Game saved = gameService.createGame(new Game().tournament(tournament).round(round).period(period));
+                tournament.addMatches(saved);
+                period += 1;
+            }
+        }
+        
+        //generate final match and bronze match
+        Game finalMatch = gameService.createGame(new Game().tournament(tournament).round(winnerRounds + 1).period(period));
+        tournament.addMatches(finalMatch);
+        period += 1;
+        
+        if(tournament.getBronzeMatch()==true){
+            Game bronzeMatch = gameService.createGame(new Game().tournament(tournament).round(winnerRounds + 1).period(period));
+            tournament.addMatches(bronzeMatch);  
+        }
     }
+
+    /**
+     * loserSegmentSize(round) = N/{2^[ceiling(R/10)]}
+     * 
+     * @param round
+     * @param N
+     * @return 
+     */
+    private int loserSegmentSize(int round, int N) {
+        int loserSegmentSize = (int) (N/(Math.pow(2, Math.ceil((double)round/10))));
+        return loserSegmentSize;
+    }
+
+    
 }
