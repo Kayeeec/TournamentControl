@@ -36,7 +36,8 @@
         <dd>
             <span ng-repeat="participant in vm.elimination.participants">
                 <a ng-if="participant.player" ui-sref="player-detail({id: participant.player.id})">{{participant.player.name}}</a>
-                <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>{{$last ? '' : ', '}}
+                <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>
+                {{$last ? '' : ', '}}
             </span>
         </dd>
         <dt><span data-translate="">Set Settings</span></dt>
@@ -67,7 +68,7 @@
             <table class="bracket-table">
                 <tr>
                     <td rowspan="2" class="bracket-period-td">{{match.period - 1}}</td>
-                    <td class="bracket-name-td">{{vm.getName(match.rivalA, match.round)}}</td>
+                    <td class="bracket-name-td">{{vm.getName(match.rivalA)}}</td>
                     <td ng-repeat="set in match.sets" class="bracket-scores-td">{{set.scoreA}}</td>
                     <td rowspan="2" class="bracket-period-td">
                         <span ng-if="match.finished" class="glyphicon glyphicon-ok"></span>
@@ -75,7 +76,7 @@
                     </td>
                 </tr> 
                 <tr> 
-                    <td class="bracket-name-td">{{vm.getName(match.rivalB, match.round)}}</td>
+                    <td class="bracket-name-td">{{vm.getName(match.rivalB)}}</td>
                     <td ng-repeat="set in match.sets" class="bracket-scores-td">{{set.scoreB}}</td>
                 </tr>
             </table>
@@ -83,8 +84,14 @@
     </div>
     <!-- tree node templates -->
     
-    <div class=" right">
-        <div id="winner-tree"> </div>
-        <div ng-if="vm.elimination.bronzeMatch" id="bronze-tree"> </div>
-    </div>
+    
+        <div>
+            <div id="winner-tree"></div>
+        </div>
+        <div>
+            <h3>Bronze match</h3> <!--TODO: translate-->
+            <div ng-if="vm.elimination.bronzeMatch" id="bronze-tree"></div>
+                
+        </div>
+    
 </div>

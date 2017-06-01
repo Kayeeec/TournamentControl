@@ -82,4 +82,27 @@ public class Elimination extends Tournament implements Serializable {
             "type=" + this.getType()+
             '}';
     }
+    
+    /**
+     * Algorithm from wiki: https://en.wikipedia.org/wiki/Power_of_two#Fast_algorithm_to_check_if_a_positive_number_is_a_power_of_two
+     * @param n int, positive, number of participants
+     * @return nearest power of two bigger or equal to n
+     */
+    private int getNextPowerOfTwo(int n){
+        if ((n & (n - 1)) == 0) {
+            return n;
+        }
+
+        while ((n & (n - 1)) != 0) {
+            n = n & (n - 1);
+        }
+
+        n = n << 1;
+        return n;
+    }
+    
+    
+    public int getN(){
+        return getNextPowerOfTwo(this.getParticipants().size());
+    }
 }

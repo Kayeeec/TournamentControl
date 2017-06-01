@@ -1,5 +1,6 @@
 package cz.tournament.control.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -8,8 +9,10 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Objects;
 
@@ -256,12 +259,31 @@ public class Game implements Serializable, Comparable<Game> {
         return this.round.compareTo(o.round);
 
     }
+    
+    @JsonIgnore
+    public boolean allSetsFinished_And_NotATie(){
+        int wonSetsA = 0;
+        int wonSetsB = 0;
+        
+        for (GameSet set : sets) {
+            if(!set.isFinished()) return false;
+            if(set.getScoreA() > set.getScoreB()) wonSetsA += 1;
+            if(set.getScoreA() < set.getScoreB()) wonSetsB += 1;
+        }
+        Integer setsToWin = this.getTournament().getSetsToWin();
+        if (setsToWin != null) {
+            return wonSetsA >= setsToWin || wonSetsB >= setsToWin;
+        } else {
+            return wonSetsA != wonSetsB;
+        }
+    }
 
     /**
      * Sums up all scores of rivalA from sets.
      *
      * @return int, sum of all rivalA scores from all sets
      */
+    @JsonIgnore
     public int getSumOfScoresA() {
         int result = 0;
         for (GameSet set : sets) {
@@ -278,6 +300,7 @@ public class Game implements Serializable, Comparable<Game> {
      *
      * @return int, sum of all rivalB scores from all sets
      */
+    @JsonIgnore
     public int getSumOfScoresB() {
         int result = 0;
         if (!this.getSets().isEmpty()) {
@@ -293,20 +316,29 @@ public class Game implements Serializable, Comparable<Game> {
     
     /**
      *  Determines winner of the game. 
-     * @return Participant if all sets are finished and it is not a tie, 
-     * null if there is an unfinished set, game is a tie or both rivals are null.
+     * @return Participant if all sets are finished and it is not a tie, or one of rivals is BYE
+     *         null if there is an unfinished set, game is a tie or one or both rivals are null.
      */
+    @JsonIgnore
     public Participant getWinner(){
-        if(rivalA != null && rivalB == null) return rivalA;
-        if(rivalB != null && rivalA == null) return rivalB;
-        if(rivalA == null && rivalB == null) return null;
+        if(rivalA == null || rivalB == null){
+            return null;
+        }
         
+        if(rivalA.isBye()){
+            if(rivalB.isBye()) return rivalA;
+            return rivalB;
+        }
+        if(rivalB.isBye()){
+            return rivalA;
+        }
+    
         int wonSetsA = 0;
         int wonSetsB = 0;
         
         if (!this.getSets().isEmpty()) {
             for (GameSet set : this.getSets()) {
-                if(set.isFinished()==false){
+                if(!set.isFinished()){
                     return null;
                 }
                 if(set.getScoreA() > set.getScoreB()){
@@ -315,16 +347,92 @@ public class Game implements Serializable, Comparable<Game> {
                 if(set.getScoreA() < set.getScoreB()){
                     wonSetsB += 1;
                 }
+                //else is tie
             }
         }
         Integer setsToWin = this.getTournament().getSetsToWin();
         if (setsToWin != null) {
-            if(wonSetsA == setsToWin) return this.rivalA;
-            if(wonSetsB == setsToWin) return this.rivalB;
+            if(wonSetsA >= setsToWin) return this.rivalA;
+            if(wonSetsB >= setsToWin) return this.rivalB;
             return null;
         } else {
             if(wonSetsA > wonSetsB) return this.rivalA;
             if(wonSetsB > wonSetsA) return this.rivalB;
+            return null;
+        }
+    }
+    
+    /**
+     *  Determines winner of the game. 
+     * @return Participant if all sets are finished and it is not a tie, or one of rivals is BYE
+     *         null if there is an unfinished set, game is a tie or one or both rivals are null.
+     */
+    @JsonIgnore
+    public Map<String,Participant> getWinnerAndLoser(){
+        Map result = new HashMap();
+        if(!finished){
+            return null;
+        }
+        if(rivalA == null || rivalB == null){
+            return null;
+        }
+        if(rivalA.isBye()){
+            if(rivalB.isBye()){
+                result.put("winner", rivalA);
+                result.put("loser", rivalB);
+                return result;
+            }
+            result.put("winner", rivalB);
+            result.put("loser", rivalA);
+            return result;
+        }
+        if(rivalB.isBye()){
+            result.put("winner", rivalA);
+            result.put("loser", rivalB);
+            return result;
+        }
+        
+        int wonSetsA = 0;
+        int wonSetsB = 0;
+        
+        if (!this.getSets().isEmpty()) {
+            for (GameSet set : this.getSets()) {
+                if(!set.isFinished()){
+                    return null;
+                }
+                if(set.getScoreA() > set.getScoreB()){
+                    wonSetsA += 1;
+                }
+                if(set.getScoreA() < set.getScoreB()){
+                    wonSetsB += 1;
+                }
+                //else is tie
+            }
+        }
+        Integer setsToWin = this.getTournament().getSetsToWin();
+        if (setsToWin != null) {
+            if(wonSetsA >= setsToWin){
+                result.put("winner", rivalA);
+                result.put("loser", rivalB);
+                return result;
+            }
+            if(wonSetsB >= setsToWin){
+                result.put("winner", rivalB);
+                result.put("loser", rivalA);
+                return result;
+            }
+            return null;
+        } else {
+            if(wonSetsA > wonSetsB){
+                result.put("winner", rivalA);
+                result.put("loser", rivalB);
+                return result;
+            }
+            if(wonSetsB > wonSetsA){
+                result.put("winner", rivalB);
+                result.put("loser", rivalA);
+                return result;
+            }
             return null;
         }
     }

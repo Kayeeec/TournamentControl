@@ -49,6 +49,12 @@
                     }
                     return data;
                 }
+            },
+            'getGamesByTournament':{
+                method: 'GET', 
+                isArray: true,
+                params: {tournamentId: '@tournamentId'},
+                url: 'api/games-by-tournament/:tournamentId'
             }
             
             

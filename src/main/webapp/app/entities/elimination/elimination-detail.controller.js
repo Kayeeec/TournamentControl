@@ -5,38 +5,29 @@
         .module('tournamentControlApp')
         .controller('EliminationDetailController', EliminationDetailController);
 
-    EliminationDetailController.$inject = ['$timeout','$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Elimination'];
+    EliminationDetailController.$inject = ['$timeout','$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Elimination', 'Game'];
 
-    function EliminationDetailController($timeout, $scope, $rootScope, $stateParams, previousState, entity, Elimination) {
+    function EliminationDetailController($timeout, $scope, $rootScope, $stateParams, previousState, entity, Elimination, Game) {
         var vm = this;
 
         vm.elimination = entity;
         vm.previousState = previousState.name;
+
+        vm.N = vm.elimination.n;
         
-        
-        function getNextPowerOfTwo(n) {
-            if ((n & (n - 1)) === 0) {
-                return n;
-            }
-            while ((n & (n - 1)) !== 0) {
-                n = n & (n - 1);
-            }
-            n = n << 1;
-            console.log("N = " + n);
-            return n;
+        function getMatches() {
+            console.log("Game.getGamesByTournament called");
+            return Game.getGamesByTournament({tournamentId: vm.elimination.id});
         }
         
-        vm.N = getNextPowerOfTwo(vm.elimination.participants.length);
-        console.log("N: "+vm.N);
-                
         vm.getName = function (rival, round) {
             if(rival !== null){
                 if(rival.player !== null){
                     return rival.player.name;
                 }
-                return rival.team.name;
-            }
-            if(round === 1){
+                if(rival.team !== null){
+                    return rival.team.name;
+                }
                 return 'BYE';
             }
             return '-';
@@ -159,10 +150,9 @@
         $scope.$on('$destroy', unsubscribe);
         
         vm.disabledIfBYE = function (match) {
-            if(match.round === 1){
-                if(match.rivalA === null || match.rivalB === null){
-                    return 'mylinkDisabled';
-                }
+            if(match !== null) return '';
+            if(match.rivalA.bye || match.rivalB.bye ){
+                return 'mylinkDisabled';
             }
             return '';
         };

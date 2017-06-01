@@ -5,17 +5,16 @@
  */
 package cz.tournament.control.service;
 
-import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.User;
+import cz.tournament.control.repository.AllVersusAllRepository;
+import cz.tournament.control.repository.EliminationRepository;
 import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -32,15 +31,15 @@ public class TournamentService {
 
     private final UserRepository userRepository;
     private final TournamentRepository tournamentRepository;
-    private final GameService gameService;
+    private final EliminationRepository eliminationRepository;
+    private final AllVersusAllRepository allVersusAllRepository;
 
-    public TournamentService(UserRepository userRepository, TournamentRepository tournamentRepository, GameService gameService) {
+    public TournamentService(UserRepository userRepository, TournamentRepository tournamentRepository, EliminationRepository eliminationRepository, AllVersusAllRepository allVersusAllRepository) {
         this.userRepository = userRepository;
         this.tournamentRepository = tournamentRepository;
-        this.gameService = gameService;
+        this.eliminationRepository = eliminationRepository;
+        this.allVersusAllRepository = allVersusAllRepository;
     }
-
-    
     
     public Tournament createTournament(Tournament tournament){
         //set creator as user
@@ -72,9 +71,15 @@ public class TournamentService {
      */
     @Transactional(readOnly = true)
     public Tournament findOne(Long id) {
-        log.debug("Request to get Tournament : {}", id);
-        Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
-        return tournament;
+//        log.debug("Request to get Tournament : {}", id);
+//        Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
+
+        Tournament tournament = eliminationRepository.findOne(id);
+        if(tournament != null) return tournament;
+        tournament = allVersusAllRepository.findOne(id);
+        if(tournament != null) return tournament;
+        //none of the above
+        return tournamentRepository.findOneWithEagerRelationships(id);
     }
     
     /**
@@ -92,9 +97,10 @@ public class TournamentService {
     
     
     public void delete(Long id){
-        Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
-        List<Game> games = new ArrayList<>(tournament.getMatches());
-        gameService.delete(games);
+        /* *** no need becaus Tournament.matches has cascadeType.Remove *** */
+//        Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
+//        List<Game> games = new ArrayList<>(tournament.getMatches());
+//        gameService.delete(games);
         tournamentRepository.delete(id);
     }
     

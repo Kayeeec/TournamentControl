@@ -19,5 +19,8 @@ public interface ParticipantRepository extends JpaRepository<Participant,Long> {
     
     Participant findByPlayer(Player player);
     Participant findByTeam(Team team);
+    
+    @Query("select participant from Participant participant where participant.user.login = ?#{principal.username} and participant.player is null and participant.team is null")
+    List<Participant> findByTeamIsNullAndPlayerIsNullAndUserIsCurrentUser();
 
 }
