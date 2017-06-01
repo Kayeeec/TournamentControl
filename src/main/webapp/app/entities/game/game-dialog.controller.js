@@ -29,6 +29,19 @@
                 vm.chosenMap[set.id]="leadByPoints";
             }
         }
+        
+        vm.getName = function (rival) {
+            if(rival !== null){
+                if(rival.player !== null){
+                    return rival.player.name;
+                }
+                if(rival.team !== null){
+                    return rival.team.name;
+                }
+                return 'BYE';
+            }
+            return '-';
+        };
 
         $timeout(function () {
             angular.element('.form-group:eq(1)>input').focus();
@@ -144,6 +157,9 @@
 
         vm.save_CheckForSetToBeAdded = function (set) {
             saveSet(set);
+            if(!set.finished){
+                vm.game.finished = false;
+            }
             if (set.finished && !vm.game.tournament.tiesAllowed) {
                 if (allSetsFinished_and_setsToWin_notReached()) {
                     addSet();

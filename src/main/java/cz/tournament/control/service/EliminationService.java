@@ -36,15 +36,16 @@ public class EliminationService {
     private final UserRepository userRepository;
     private final GameService gameService;
     private final SetSettingsService setSettingsService;
+    private final ParticipantService participantService;
 
-    public EliminationService(EliminationRepository eliminationRepository, UserRepository userRepository, GameService gameService, SetSettingsService setSettingsService) {
+    public EliminationService(EliminationRepository eliminationRepository, UserRepository userRepository, GameService gameService, SetSettingsService setSettingsService, ParticipantService participantService) {
         this.eliminationRepository = eliminationRepository;
         this.userRepository = userRepository;
         this.gameService = gameService;
         this.setSettingsService = setSettingsService;
+        this.participantService = participantService;
     }
 
-    
     
     public Elimination updateElimination(Elimination elimination) {
         log.debug("Request to update Elimination : {}", elimination);
@@ -91,7 +92,7 @@ public class EliminationService {
         Elimination tmp = eliminationRepository.save(elimination); //has to be in db before generating games
         if(tmp.getParticipants().size() >= 2){
             generateAssignment(tmp);
-            log.debug("Elimination SERVICE: generated matches: {}", tmp.getMatches());
+            //log.debug("Elimination SERVICE: generated matches: {}", tmp.getMatches());
         }
         
         Elimination result = eliminationRepository.save(elimination);
@@ -150,8 +151,33 @@ public class EliminationService {
         eliminationRepository.delete(id);
     }
     
+    
+    public void generateAssignment(Elimination tournament){
+        if(tournament.getType().equals(EliminationType.SINGLE)){
+            generateSingle(tournament);
+        }
+        if(tournament.getType().equals(EliminationType.DOUBLE)){
+            generateDouble(tournament);
+        }
+    }
+    
+    private List<Participant> initParticipants(Set<Participant> participants, int N){
+        int n = participants.size();
+        if(n == N){
+            return new ArrayList<>(participants);
+        }
+        int byes = N - n;
+        Participant bye = participantService.getByeParticipant();
+        
+        List<Participant> result = new ArrayList<>(participants);
+        for (int i = 0; i < byes; i++) {
+            result.add(bye);
+        }
+        return result;
+    }
+    
     /**
-     * Lets talk numbers:
+     * Lets talk numbers: SINGLE
      * ~~~~~~~~~~~~~~~~~~
      * n - number of participants
      * N - effective number of participants (includes BYE) and matches
@@ -171,52 +197,12 @@ public class EliminationService {
      *      - floor - rounding down the division
      */
     
-    public void generateAssignment(Elimination tournament){
-        if(tournament.getType().equals(EliminationType.SINGLE)){
-            generateSingle(tournament);
-        }
-        if(tournament.getType().equals(EliminationType.DOUBLE)){
-            generateDouble(tournament);
-        }
-    }
-    
     /**
-     * Algorithm from wiki: https://en.wikipedia.org/wiki/Power_of_two#Fast_algorithm_to_check_if_a_positive_number_is_a_power_of_two
-     * @param n int, positive, number of participants
-     * @return nearest power of two bigger or equal to n
-     */
-    private int getNextPowerOfTwo(int n){
-        if ((n & (n - 1)) == 0) {
-            return n;
-        }
-
-        while ((n & (n - 1)) != 0) {
-            n = n & (n - 1);
-        }
-
-        n = n << 1;
-        return n;
-    }
-    
-    private List<Participant> initParticipants(Set<Participant> participants, int N){
-        int n = participants.size();
-        if(n == N){
-            return new ArrayList<>(participants);
-        }
-        int byes = N - n;
-        List<Participant> result = new ArrayList<>(participants);
-        for (int i = 0; i < byes; i++) {
-            result.add(null);
-        }
-        return result;
-    }
-    
-    /**
-     * Ad hoc implementation, will need to be looked at again
+     * "Populate first round" part might need to be loodek at.
      * @param tournament 
      */
     public void generateSingle(Elimination tournament){
-        int N = getNextPowerOfTwo(tournament.getParticipants().size());
+        int N = tournament.getN();
         int rounds = (int) (Math.log(N) / Math.log(2));
         List<Game> roundOne = new ArrayList<>();
         
@@ -237,8 +223,6 @@ public class EliminationService {
             Game bronzeMatch = gameService.createGame(new Game().tournament(tournament).round(rounds).period(period));
             tournament.addMatches(bronzeMatch);  
         }
-        
-        
         //populate first round, set BYE matches as finished 
         //random
         List<Participant> participants = initParticipants(tournament.getParticipants(), N);
@@ -248,7 +232,7 @@ public class EliminationService {
             match.rivalA(participants.get(first)).rivalB(participants.get(last));
             first += 1;
             last -= 1;
-            if(match.getRivalA() == null || match.getRivalB() == null){
+            if(match.getRivalA().isBye() || match.getRivalB().isBye()){
                 match.setFinished(Boolean.TRUE);
             }
             
@@ -258,7 +242,7 @@ public class EliminationService {
     }
     
     /**
-     * Lets talk numbers:
+     * Lets talk numbers: DOUBLE
      * ~~~~~~~~~~~~~~~~~~
      * n - number of participants
      * N - effective number of participants (includes BYE)
@@ -289,9 +273,14 @@ public class EliminationService {
      *      - index - of a match we look for next match to
      *      - floor - rounding down the division
      */
+    
+    /**
+     * "Populate first round" part might need to be loodek at.
+     * @param tournament 
+     */
     public void generateDouble(Elimination tournament){
         //generate winner bracket matches and populate first round
-        int N = getNextPowerOfTwo(tournament.getParticipants().size());
+        int N = tournament.getN();
         int winnerRounds = (int) (Math.log(N) / Math.log(2));
         List<Game> roundOne = new ArrayList<>();
         
@@ -307,6 +296,22 @@ public class EliminationService {
                 }
             }
         }
+        //generate loser bracket matches
+        for(int round = 15; round <= winnerRounds*10; round += 5){
+            for (int i = 0; i < loserSegmentSize(round, N); i++) {
+                Game saved = gameService.createGame(new Game().tournament(tournament).round(round).period(period));
+                tournament.addMatches(saved);
+                period += 1;
+            }
+        }
+        //generate final match and bronze match
+        Game finalMatch = gameService.createGame(new Game().tournament(tournament).round(winnerRounds + 1).period(period));
+        tournament.addMatches(finalMatch);
+        period += 1;
+        if(tournament.getBronzeMatch()==true){
+            Game bronzeMatch = gameService.createGame(new Game().tournament(tournament).round(winnerRounds + 1).period(period));
+            tournament.addMatches(bronzeMatch);  
+        }
         //populate first round, set BYE matches as finished 
         //random
         List<Participant> participants = initParticipants(tournament.getParticipants(), N);
@@ -316,30 +321,11 @@ public class EliminationService {
             match.rivalA(participants.get(first)).rivalB(participants.get(last));
             first += 1;
             last -= 1;
-            if(match.getRivalA() == null || match.getRivalB() == null){
+            if(match.getRivalA().isBye() || match.getRivalB().isBye()){ 
                 match.setFinished(Boolean.TRUE);
             }
             
             gameService.updateGame(match);
-        }
-        
-        //generate loser bracket matches
-        for(int round = 15; round <= winnerRounds*10; round += 5){
-            for (int i = 0; i < loserSegmentSize(round, N); i++) {
-                Game saved = gameService.createGame(new Game().tournament(tournament).round(round).period(period));
-                tournament.addMatches(saved);
-                period += 1;
-            }
-        }
-        
-        //generate final match and bronze match
-        Game finalMatch = gameService.createGame(new Game().tournament(tournament).round(winnerRounds + 1).period(period));
-        tournament.addMatches(finalMatch);
-        period += 1;
-        
-        if(tournament.getBronzeMatch()==true){
-            Game bronzeMatch = gameService.createGame(new Game().tournament(tournament).round(winnerRounds + 1).period(period));
-            tournament.addMatches(bronzeMatch);  
         }
     }
 

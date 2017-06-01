@@ -49,7 +49,8 @@ public class Participant implements Serializable {
     
     public String getName(){
         if(this.player != null) return player.getName();
-        return team.getName();
+        if(this.team != null) return team.getName();
+        return "BYE";
     }
 
     public Long getId() {
@@ -125,4 +126,15 @@ public class Participant implements Serializable {
             "id=" + id +
             '}';
     }
+    
+    public boolean isBye(){
+        return Objects.equals(this.team, null) && Objects.equals(this.player, null);
+    }
+    
+//    public boolean getBye(){
+//        return Objects.equals(this.team, null) && Objects.equals(this.player, null);
+//    }
+//    public void setBye(){
+//        
+//    }
 }

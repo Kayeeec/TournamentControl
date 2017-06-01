@@ -5,13 +5,18 @@
  */
 package cz.tournament.control.service;
 
+import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
+import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
+import cz.tournament.control.domain.enumeration.EliminationType;
 import cz.tournament.control.repository.GameRepository;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,14 +33,14 @@ public class GameService {
     private final GameRepository gameRepository;
     private final GameSetService gameSetService;
     private final SetSettingsService setSettingsService;
+    private final TournamentService tournamentService;
 
-    public GameService(GameRepository gameRepository, GameSetService gameSetService, SetSettingsService setSettingsService) {
+    public GameService(GameRepository gameRepository, GameSetService gameSetService, SetSettingsService setSettingsService, TournamentService tournamentService) {
         this.gameRepository = gameRepository;
         this.gameSetService = gameSetService;
         this.setSettingsService = setSettingsService;
+        this.tournamentService = tournamentService;
     }
-
-    
     
     public Game createGame(Game game){
         log.debug("Request to create Game : {}", game);
@@ -44,7 +49,6 @@ public class GameService {
 //        SetSettings defaultSetSettings = setSettingsService.findOne(game.getTournament().getSetSettings().getId()) ;
         SetSettings defaultSetSettings = setSettingsService.save(game.getTournament().getSetSettings()) ;
 
-        
         //prepare sets - one or number of sets to win
         GameSet set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
         tmp.addSets(set);
@@ -70,15 +74,24 @@ public class GameService {
         }
         
         //finish the game if all sets are finished and is not an unallowed tie 
-        if(game.getTournament().getTiesAllowed()){
-            if(game.allSetsFinished()){
+        if(game.getRivalA() != null && game.getRivalB() != null){
+            if(game.getRivalA().isBye() || game.getRivalB().isBye()){
                 game.setFinished(true);
-            } 
-        }else{
-           if(game.getWinner() != null){
-               game.setFinished(true);   
-           } 
+            }
+            if(game.getTournament().getTiesAllowed()){
+                if(game.allSetsFinished()){
+                    game.setFinished(true);
+                } 
+            }else{
+               if(game.allSetsFinished_And_NotATie()){
+                   game.setFinished(true);   
+               } 
+            }
+            
         }
+        
+        //for Elimination update next games 
+        eliminationNextGameUpdate(game);
         
         Game result = gameRepository.save(game);
         return result;
@@ -163,4 +176,136 @@ public class GameService {
         gameRepository.delete(games);
     }
     
+    /*****************************/
+    /*     update game logic     */
+    /*****************************/
+    
+    private int getRootIndex(int N, Elimination tournament) {
+        if (tournament.getType().equals(EliminationType.SINGLE)) {
+            return (N - 2);
+        } else { //(tournament.getType().equals(EliminationType.DOUBLE))
+            return ((2 * N) - 3);
+        }
+    }
+    
+    private int getParentIndex(int index, int round, int N, Elimination tournament){
+        int rootIndex = getRootIndex(N, tournament);
+        
+        if(tournament.getType().equals(EliminationType.SINGLE)){
+            return (int) Math.floor((index + rootIndex)/2) + 1;
+        }
+        else{//DOUBLE
+            int winnerRoot = (N - 2);
+            int loserRoot = ((2*N)-4);
+            
+            if(index == winnerRoot || index == loserRoot ){
+                return rootIndex;
+            }
+            if(index < winnerRoot){
+                return (int) Math.floor((index + winnerRoot)/2)+1;
+            }
+            if(index < loserRoot){
+                int segmentSize = N/((int)Math.pow(2, Math.ceil(((double)round)/10)));
+                if(round % 10 != 0){ //15, 25, 35...
+                    return (index + segmentSize);   
+                }
+                //else 20,30,40...
+                int inSegmentIndex;
+                if(index % 2 == 1){ 
+                    inSegmentIndex = ((index + 1) % segmentSize)/2;
+                    return index + segmentSize - inSegmentIndex;
+                }else{
+                    inSegmentIndex = ((index) % segmentSize)/2;
+                    return (index-1) + segmentSize - inSegmentIndex;
+                }
+            }
+            if(index == rootIndex){
+                if(tournament.getBronzeMatch()){
+                    return ((2*N)-1);
+                }
+                return ((2*N)-2);
+            }
+            return -1;
+        }
+    }
+    
+    private Game progresRival(Game game, Participant rival){
+        if(game.getRivalA() == null){
+            game.rivalA(rival);
+            return this.updateGame(game);
+        }
+        if(game.getRivalB() == null){
+            game.rivalB(rival);
+            return this.updateGame(game);
+        }
+        return null;
+    }
+    
+    private int getLoserRound(int round){
+        if(round == 1){
+            return 15;
+        }
+        return round*10;
+    }
+    private List<Game> getGamesForRound(int loserRound, List<Game> matches, int N){
+        List<Game> games = new ArrayList<>();
+        for (int i = N-1; i <= 2*N-4; i++) {
+            Game game = matches.get(i);
+            if(game.getRound()>loserRound){
+                break;
+            }
+            if(game.getRound()==loserRound){
+                games.add(game);
+            }       
+        }
+        return games;
+    }
+    
+    private Game progresLoserIntoFirstAvailableLoserGame(List<Game> gamesForRound, Participant loser){
+        for (Game game : gamesForRound) {
+            if(game.getRivalA() == null){
+                game.rivalA(loser);
+                return this.updateGame(game);
+            }
+            if(game.getRivalB() == null){
+                game.rivalB(loser);
+                return this.updateGame(game);
+            }
+        }
+        return null;
+    }
+    
+
+    private void eliminationNextGameUpdate(Game game) {
+        log.debug("eliminationNextGameUpdate: called");
+        Tournament tournament = tournamentService.findOne(game.getTournament().getId());
+        if(tournament instanceof Elimination && game.isFinished()){
+            Elimination elimination = (Elimination) tournament;
+            log.debug("eliminationNextGameUpdate proceeded");
+            
+            List<Game> matches = new ArrayList<>(elimination.getMatches());
+            Collections.sort(matches);
+            
+            int N = elimination.getN();
+            int index = matches.indexOf(game);
+            Map<String, Participant> winnerAndLoser = game.getWinnerAndLoser();
+            
+            //put winner into the next game and save it 
+            int winnerGameIndex = getParentIndex(index, game.getRound(), N, elimination);
+            log.debug("eliminationNextGameUpdate: winnerGameIndex = {}", winnerGameIndex);
+            if(winnerGameIndex != -1){
+                Game savedWinnerGame = progresRival(matches.get(winnerGameIndex), winnerAndLoser.get("winner"));
+                log.debug("eliminationNextGameUpdate: winner game with id = {} updated ", savedWinnerGame.getId());
+            }
+            
+            //if Double - put loser into apropriate loser game 
+            if(elimination.getType().equals(EliminationType.DOUBLE)){
+                int loserRound = getLoserRound(game.getRound());
+                Game savedLooserGame = progresLoserIntoFirstAvailableLoserGame(
+                        getGamesForRound(loserRound, matches, N), 
+                        winnerAndLoser.get("loser")
+                ); 
+            }
+        }     
+    }
 }

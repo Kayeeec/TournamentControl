@@ -11,7 +11,7 @@
 
         var vm = this;
 
-        vm.tournaments = [];
+        //vm.tournaments = [];
         vm.allVersusAlls = [];
         
 // BEGIN elimination ============================================
@@ -30,10 +30,10 @@
         loadAll();
 
         function loadAll() {
-            Tournament.query(function(result) {
-                vm.tournaments = result;
-                vm.searchQuery = null;
-            });
+//            Tournament.query(function(result) {
+//                vm.tournaments = result;
+//                vm.searchQuery = null;
+//            });
             AllVersusAll.query(function(result) {
                 vm.allVersusAlls = result;
                 vm.searchQuery = null;
