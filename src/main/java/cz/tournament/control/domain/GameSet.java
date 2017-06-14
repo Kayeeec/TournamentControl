@@ -36,7 +36,7 @@ public class GameSet implements Serializable {
     @JsonIgnoreProperties({"sets"})
     private Game game;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     private SetSettings setSettings;
 
     public Long getId() {

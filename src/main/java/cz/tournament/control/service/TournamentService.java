@@ -71,15 +71,16 @@ public class TournamentService {
      */
     @Transactional(readOnly = true)
     public Tournament findOne(Long id) {
-//        log.debug("Request to get Tournament : {}", id);
-//        Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
+        log.debug("Request to get Tournament : {}", id);
+        Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
+        return tournament;
 
-        Tournament tournament = eliminationRepository.findOne(id);
-        if(tournament != null) return tournament;
-        tournament = allVersusAllRepository.findOne(id);
-        if(tournament != null) return tournament;
-        //none of the above
-        return tournamentRepository.findOneWithEagerRelationships(id);
+//        Tournament tournament = eliminationRepository.findOne(id);
+//        if(tournament != null) return tournament;
+//        tournament = allVersusAllRepository.findOne(id);
+//        if(tournament != null) return tournament;
+//        //none of the above
+//        return tournamentRepository.findOneWithEagerRelationships(id);
     }
     
     /**
@@ -101,6 +102,7 @@ public class TournamentService {
 //        Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
 //        List<Game> games = new ArrayList<>(tournament.getMatches());
 //        gameService.delete(games);
+        
         tournamentRepository.delete(id);
     }
     

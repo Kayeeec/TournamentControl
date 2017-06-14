@@ -2,6 +2,12 @@ package cz.tournament.control;
 
 import cz.tournament.control.config.ApplicationProperties;
 import cz.tournament.control.config.DefaultProfileUtil;
+import cz.tournament.control.domain.Participant;
+import cz.tournament.control.domain.Player;
+import cz.tournament.control.domain.User;
+import cz.tournament.control.repository.ParticipantRepository;
+import cz.tournament.control.repository.PlayerRepository;
+import cz.tournament.control.repository.UserRepository;
 
 import io.github.jhipster.config.JHipsterConstants;
 
@@ -29,11 +35,20 @@ public class TournamentControlApp {
     private static final Logger log = LoggerFactory.getLogger(TournamentControlApp.class);
 
     private final Environment env;
+    
+    private final UserRepository userRepository;
+    
+    private final PlayerRepository playerRepository;
+    
+    private final ParticipantRepository participantRepository;
 
-    public TournamentControlApp(Environment env) {
+    public TournamentControlApp(Environment env, UserRepository userRepository, PlayerRepository playerRepository, ParticipantRepository participantRepository) {
         this.env = env;
+        this.userRepository = userRepository;
+        this.playerRepository = playerRepository;
+        this.participantRepository = participantRepository;
     }
-
+    
     /**
      * Initializes TournamentControl.
      * <p>
@@ -52,6 +67,7 @@ public class TournamentControlApp {
             log.error("You have misconfigured your application! It should not" +
                 "run with both the 'dev' and 'cloud' profiles at the same time.");
         }
+        generateUsersPlayersIfNone();
     }
 
     /**
@@ -81,4 +97,17 @@ public class TournamentControlApp {
             env.getProperty("server.port"),
             env.getActiveProfiles());
     }
+    
+    private void generateUsersPlayersIfNone(){
+        User user = userRepository.findOneByLogin("user").get();
+        if(playerRepository.findByUser(user).isEmpty()){
+            log.info("No existing players for 'User', creating players.");
+            String[] names = {"Ursula", "Utrecht", "Uher", "Uma", "Ulman", "Ulisses", "Xaver", "Xena", "Oxer"};
+            for (String name : names) {
+                Player player = playerRepository.save(new Player().name(name).user(user));
+                Participant participant = participantRepository.save(new Participant(player, user));
+            }
+        }  
+    }
+    
 }

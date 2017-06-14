@@ -162,7 +162,7 @@
             }
             if (set.finished && !vm.game.tournament.tiesAllowed) {
                 if (allSetsFinished_and_setsToWin_notReached()) {
-                    addSet();
+                    vm.addSet();
                 }
             }
         };

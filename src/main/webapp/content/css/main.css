@@ -32,6 +32,8 @@ My styles
 .bracket-table, .bracket-table td {
     border: 1px solid dimgray;
     padding: 3px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .bracket-period-td {
@@ -50,8 +52,8 @@ My styles
 /*  color: grey;*/
   opacity: .5;
 }
-.bracket-link{
-    
+.bracket-match-finished{
+    color: #4cae4c;
 }
 
 /* ==========================================================================

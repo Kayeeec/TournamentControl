@@ -71,4 +71,11 @@ public class SetSettingsService {
         log.debug("Request to delete SetSettings : {}", id);
         setSettingsRepository.delete(id);
     }
+    
+    public void delete(Iterable<SetSettings> setSettingsList){
+        log.debug("Request to bulk delete SetSettings : {}", setSettingsList);
+        setSettingsRepository.delete(setSettingsList);
+    }
+    
+    
 }

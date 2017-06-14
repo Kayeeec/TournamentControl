@@ -58,7 +58,8 @@ public class Game implements Serializable, Comparable<Game> {
     @ManyToOne
     private Participant rivalB;
 
-    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "game", 
+            fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnoreProperties({"game"})
     private Set<GameSet> sets = new HashSet<>();
@@ -229,12 +230,25 @@ public class Game implements Serializable, Comparable<Game> {
 
     @Override
     public String toString() {
-        return "Game{" +
+        String base = "Game{" +
             "id=" + this.getId() +
             ", finished='" + this.isFinished() + "'" +
             ", round='" + this.getRound() + "'" +
-            ", period='" + this.getPeriod() + "'" +
-            '}';
+            ", period='" + this.getPeriod() + "'";
+        String concatA;
+        if(this.rivalA != null){
+            concatA = base.concat(", rivalA: " + rivalA.toString());
+        }else{
+            concatA = base.concat(", rivalA: 'null'");
+        }
+        String concatB;
+        if(this.rivalB != null){
+            concatB = concatA.concat(", rivalB: " + rivalB.toString());
+        }else{
+            concatB = concatA.concat(", rivalB: 'null'");
+        }
+        String result = concatB.concat("}");
+        return result;
     }
     
     public String setsToString(){
@@ -315,52 +329,34 @@ public class Game implements Serializable, Comparable<Game> {
     }
     
     /**
-     *  Determines winner of the game. 
-     * @return Participant if all sets are finished and it is not a tie, or one of rivals is BYE
-     *         null if there is an unfinished set, game is a tie or one or both rivals are null.
+     * Sums up all scores of rivalA and rivalB from sets.
+     *
+     * @return Map<String,Integer>, keys are "A" and "B"
      */
     @JsonIgnore
-    public Participant getWinner(){
-        if(rivalA == null || rivalB == null){
-            return null;
-        }
-        
-        if(rivalA.isBye()){
-            if(rivalB.isBye()) return rivalA;
-            return rivalB;
-        }
-        if(rivalB.isBye()){
-            return rivalA;
-        }
-    
-        int wonSetsA = 0;
-        int wonSetsB = 0;
+    public Map<String,Integer> getSumsOfScores() {
+        Map<String,Integer> result = new HashMap();
+        result.put("A", 0 );
+        result.put("B", 0 );
         
         if (!this.getSets().isEmpty()) {
             for (GameSet set : this.getSets()) {
-                if(!set.isFinished()){
-                    return null;
+                Integer a = set.getScoreA();
+                Integer b = set.getScoreB();
+                if(a != null){
+                    int tmpA = result.get("A") + a;
+                    result.put("A", tmpA);
                 }
-                if(set.getScoreA() > set.getScoreB()){
-                    wonSetsA += 1;
+                if (b != null) {
+                    int tmpB = result.get("B") + b;
+                    result.put("B", tmpB);
                 }
-                if(set.getScoreA() < set.getScoreB()){
-                    wonSetsB += 1;
-                }
-                //else is tie
             }
         }
-        Integer setsToWin = this.getTournament().getSetsToWin();
-        if (setsToWin != null) {
-            if(wonSetsA >= setsToWin) return this.rivalA;
-            if(wonSetsB >= setsToWin) return this.rivalB;
-            return null;
-        } else {
-            if(wonSetsA > wonSetsB) return this.rivalA;
-            if(wonSetsB > wonSetsA) return this.rivalB;
-            return null;
-        }
+        return result;
     }
+    
+    
     
     /**
      *  Determines winner of the game. 
@@ -369,12 +365,16 @@ public class Game implements Serializable, Comparable<Game> {
      */
     @JsonIgnore
     public Map<String,Participant> getWinnerAndLoser(){
-        Map result = new HashMap();
+        Map<String,Participant> result = new HashMap();
         if(!finished){
-            return null;
+            result.put("winner", null);
+            result.put("loser", null);
+            return result;
         }
         if(rivalA == null || rivalB == null){
-            return null;
+            result.put("winner", null);
+            result.put("loser", null);
+            return result;
         }
         if(rivalA.isBye()){
             if(rivalB.isBye()){
@@ -382,6 +382,7 @@ public class Game implements Serializable, Comparable<Game> {
                 result.put("loser", rivalB);
                 return result;
             }
+            //B not BYE and not null
             result.put("winner", rivalB);
             result.put("loser", rivalA);
             return result;
@@ -398,7 +399,9 @@ public class Game implements Serializable, Comparable<Game> {
         if (!this.getSets().isEmpty()) {
             for (GameSet set : this.getSets()) {
                 if(!set.isFinished()){
-                    return null;
+                    result.put("winner", null);
+                    result.put("loser", null);
+                    return result;
                 }
                 if(set.getScoreA() > set.getScoreB()){
                     wonSetsA += 1;
@@ -421,7 +424,9 @@ public class Game implements Serializable, Comparable<Game> {
                 result.put("loser", rivalA);
                 return result;
             }
-            return null;
+            result.put("winner", null);
+            result.put("loser", null);
+            return result;
         } else {
             if(wonSetsA > wonSetsB){
                 result.put("winner", rivalA);
@@ -433,7 +438,9 @@ public class Game implements Serializable, Comparable<Game> {
                 result.put("loser", rivalA);
                 return result;
             }
-            return null;
+            result.put("winner", null);
+            result.put("loser", null);
+            return result;
         }
     }
 }

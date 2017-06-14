@@ -59,6 +59,7 @@ public class EliminationService {
             
             if (!elimination.getMatches().isEmpty()) {
                 deleteAllMatches(elimination);
+                elimination = eliminationRepository.save(elimination);
             }
             if (elimination.getParticipants().size() >= 2) {
                 generateAssignment(elimination);
@@ -95,7 +96,7 @@ public class EliminationService {
             //log.debug("Elimination SERVICE: generated matches: {}", tmp.getMatches());
         }
         
-        Elimination result = eliminationRepository.save(elimination);
+        Elimination result = eliminationRepository.save(tmp);
         log.debug("Elimination SERVICE: created Elimination tournament: {}", result);
         return result;
         
@@ -235,7 +236,6 @@ public class EliminationService {
             if(match.getRivalA().isBye() || match.getRivalB().isBye()){
                 match.setFinished(Boolean.TRUE);
             }
-            
             gameService.updateGame(match);
         }
         
@@ -312,6 +312,7 @@ public class EliminationService {
             Game bronzeMatch = gameService.createGame(new Game().tournament(tournament).round(winnerRounds + 1).period(period));
             tournament.addMatches(bronzeMatch);  
         }
+        
         //populate first round, set BYE matches as finished 
         //random
         List<Participant> participants = initParticipants(tournament.getParticipants(), N);
@@ -324,7 +325,6 @@ public class EliminationService {
             if(match.getRivalA().isBye() || match.getRivalB().isBye()){ 
                 match.setFinished(Boolean.TRUE);
             }
-            
             gameService.updateGame(match);
         }
     }

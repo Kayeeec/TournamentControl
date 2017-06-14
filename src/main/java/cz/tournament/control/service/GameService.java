@@ -5,6 +5,7 @@
  */
 package cz.tournament.control.service;
 
+import com.google.common.base.Objects;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
@@ -12,9 +13,12 @@ import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.EliminationType;
+import cz.tournament.control.domain.tournaments.AllVersusAll;
+import cz.tournament.control.repository.EliminationRepository;
 import cz.tournament.control.repository.GameRepository;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -34,26 +38,48 @@ public class GameService {
     private final GameSetService gameSetService;
     private final SetSettingsService setSettingsService;
     private final TournamentService tournamentService;
+    private final EliminationRepository eliminationRepository;
 
-    public GameService(GameRepository gameRepository, GameSetService gameSetService, SetSettingsService setSettingsService, TournamentService tournamentService) {
+    public GameService(GameRepository gameRepository, GameSetService gameSetService, SetSettingsService setSettingsService, TournamentService tournamentService, EliminationRepository eliminationRepository) {
         this.gameRepository = gameRepository;
         this.gameSetService = gameSetService;
         this.setSettingsService = setSettingsService;
         this.tournamentService = tournamentService;
+        this.eliminationRepository = eliminationRepository;
     }
+
+    
+
+    
+    
+    /**
+     * 
+     * @param game
+     * @return 
+     */
+    public Game save(Game game) {
+        log.debug("Request to save Game : {}", game);
+        Game result = gameRepository.save(game);
+        return result;
+    }
+    
+    private boolean isBye(Participant rival){
+        if(rival == null) return false;
+        return rival.isBye();
+    }
+
     
     public Game createGame(Game game){
         log.debug("Request to create Game : {}", game);
+        Game tmp = gameRepository.save(game); 
         
-        Game tmp = gameRepository.save(game);
-//        SetSettings defaultSetSettings = setSettingsService.findOne(game.getTournament().getSetSettings().getId()) ;
         SetSettings defaultSetSettings = setSettingsService.save(game.getTournament().getSetSettings()) ;
-
+        
         //prepare sets - one or number of sets to win
         GameSet set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
         tmp.addSets(set);
         Integer sets = tmp.getTournament().getSetsToWin();
-        if(sets != null && sets > 1){
+        if (sets != null && sets > 1) {
             for (int i = 1; i < sets; i++) {
                 set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
                 tmp.addSets(set);
@@ -65,7 +91,7 @@ public class GameService {
     }
     
     public Game updateGame(Game game){
-//        log.debug("Request to update Game : {}", game);
+        String debug = "Request to update Game : " + game;
         
         //ensure tournament - never changes
         if(game.getTournament() == null){
@@ -74,26 +100,41 @@ public class GameService {
         }
         
         //finish the game if all sets are finished and is not an unallowed tie 
+        game.setFinished(Boolean.FALSE);
         if(game.getRivalA() != null && game.getRivalB() != null){
             if(game.getRivalA().isBye() || game.getRivalB().isBye()){
-                game.setFinished(true);
+                game.setFinished(Boolean.TRUE);
             }
             if(game.getTournament().getTiesAllowed()){
                 if(game.allSetsFinished()){
-                    game.setFinished(true);
+                    game.setFinished(Boolean.TRUE);
                 } 
             }else{
                if(game.allSetsFinished_And_NotATie()){
-                   game.setFinished(true);   
+                   game.setFinished(Boolean.TRUE);   
                } 
             }
+        }
+        
+        //if tournament is elimination update next games
+        Tournament tournament = tournamentService.findOne(game.getTournament().getId());
+        if(tournament instanceof Elimination){
+            log.debug("Tournament is instance of Elimination, calling nextGameUpdate().");
+            elimination_nextGameUpdate(game, tournament);
+        }
+        
+        //delete sets if one rival is BYE - maybe could be better algorithm
+        if( isBye(game.getRivalA()) || isBye(game.getRivalB()) ){
+            List<GameSet> sets = new ArrayList<>(game.getSets());
+            for (GameSet set : sets) {
+                game.removeSets(set);
+            }
+            gameSetService.delete(sets);
             
         }
         
-        //for Elimination update next games 
-        eliminationNextGameUpdate(game);
-        
         Game result = gameRepository.save(game);
+        log.debug(debug + ", with result: {}", result);
         return result;
     }
     
@@ -180,7 +221,8 @@ public class GameService {
     /*     update game logic     */
     /*****************************/
     
-    private int getRootIndex(int N, Elimination tournament) {
+    private int getRootIndex(Elimination tournament) {
+        int N = tournament.getN();
         if (tournament.getType().equals(EliminationType.SINGLE)) {
             return (N - 2);
         } else { //(tournament.getType().equals(EliminationType.DOUBLE))
@@ -189,9 +231,10 @@ public class GameService {
     }
     
     private int getParentIndex(int index, int round, int N, Elimination tournament){
-        int rootIndex = getRootIndex(N, tournament);
+        int rootIndex = getRootIndex(tournament);
         
         if(tournament.getType().equals(EliminationType.SINGLE)){
+            if(index == N-2) return -1;
             return (int) Math.floor((index + rootIndex)/2) + 1;
         }
         else{//DOUBLE
@@ -221,25 +264,17 @@ public class GameService {
             }
             if(index == rootIndex){
                 if(tournament.getBronzeMatch()){
-                    return ((2*N)-1);
+                    return 2*N-1;
                 }
-                return ((2*N)-2);
+                return 2*N-2;
             }
+            /* if index >= rootindex 
+                    index == rootindex solved before, 
+                    index > rootindex - has no next match */
             return -1;
         }
     }
-    
-    private Game progresRival(Game game, Participant rival){
-        if(game.getRivalA() == null){
-            game.rivalA(rival);
-            return this.updateGame(game);
-        }
-        if(game.getRivalB() == null){
-            game.rivalB(rival);
-            return this.updateGame(game);
-        }
-        return null;
-    }
+
     
     private int getLoserRound(int round){
         if(round == 1){
@@ -247,65 +282,402 @@ public class GameService {
         }
         return round*10;
     }
-    private List<Game> getGamesForRound(int loserRound, List<Game> matches, int N){
-        List<Game> games = new ArrayList<>();
+    
+    private List<Game> getLoserGamesForGame(Game game, List<Game> matches, int N){
+        List<Game> loserGames = new ArrayList<>();
+        int loserRound = getLoserRound(game.getRound());
+        
         for (int i = N-1; i <= 2*N-4; i++) {
-            Game game = matches.get(i);
-            if(game.getRound()>loserRound){
+            Game loserGame = findOne(matches.get(i).getId());
+            if(loserGame.getRound()>loserRound){
                 break;
             }
-            if(game.getRound()==loserRound){
-                games.add(game);
+            if(loserGame.getRound()==loserRound){
+                loserGames.add(loserGame);
             }       
         }
-        return games;
+        return loserGames;
+    }
+
+    
+    /**
+     * Returns index of a next final match in double elimination tournament with regards to possibility of bronze match.
+     * @param N     next power of two bigger or equal to number of participants
+     * @param matchesSize   number of created matches (length of matches array)
+     * @param elimination   double elimination tournament
+     * @return -1 if next final match does not exist, number bigger than it otherwise
+     */
+    private int nextFinalIndex(int N, int matchesSize, Elimination elimination){
+        int nextFinalIndex = 2*N-2;
+        if(elimination.getBronzeMatch()){
+            nextFinalIndex += 1;
+        }
+        if(matchesSize-1 == nextFinalIndex){
+            return nextFinalIndex;
+        }
+        return -1;
     }
     
-    private Game progresLoserIntoFirstAvailableLoserGame(List<Game> gamesForRound, Participant loser){
-        for (Game game : gamesForRound) {
-            if(game.getRivalA() == null){
-                game.rivalA(loser);
-                return this.updateGame(game);
+    
+    /**
+     * Number of winner tree (or single elimination tournament) rounds
+     * @param N next power of two bigger or equal to number of participants
+     * @return Number of winner tree (or sindle elimination tournament) rounds.
+     */
+    private int numberOfRounds(int N) {
+        return (int) (Math.log(N) / Math.log(2));
+    }
+    
+    /**
+     * Sets winner into given game according to rules.
+     * Can be used for single elimination but make sure comesFrom is not root. (Use up to root)
+     * Does not solve absolute root - newFinalGame
+     * RULES: comes from...
+     * 1] winner root: winner to A
+     * 2] loser root:  winner to B
+     * 3] round is 1..number_of_rounds OR 20, 30, 40 ...
+     *      index = even: winner to A
+     *      index = odd:  winner to B
+     * 4] round is 15, 25, 35 ...
+     *      winner to A
+     * @param progressInto  next game to progress into  
+     * @param winner    winner of game (comesFrom)
+     * @param comesFrom game from which the winner came
+     * @param N     next power of two bigger or equal to number of participants
+     * @return modified next game, with winner in proper place
+     */
+    private Game progressWinner_returnGame(Game progressInto, Participant winner, Game comesFrom, int N){
+        int round = comesFrom.getRound();
+        int index = comesFrom.getPeriod() - 1;
+        if(index == N-2){//winner root
+            progressInto.setRivalA(winner);
+            return progressInto;
+        }
+        if(index == 2*N-4){//loser root
+            progressInto.setRivalB(winner);
+            return progressInto;
+        }
+        if( round < numberOfRounds(N) || round % 10 == 0){ //from winner or round is 20, 30, 40 ...
+            if(index % 2 == 0){
+                progressInto.setRivalA(winner);
+                return progressInto;
             }
-            if(game.getRivalB() == null){
-                game.rivalB(loser);
-                return this.updateGame(game);
+            progressInto.setRivalB(winner);
+            return progressInto;
+        }
+        //round 15,25,35...
+        progressInto.setRivalA(winner);
+        return progressInto;
+        
+    }
+    
+    /**
+     * Prefers A.
+     * @param properRoundLoserMatches
+     * @param loser
+     * @return 
+     */
+    private Game seedAByeLoserIntoFirstLoserRound(List<Game> properRoundLoserMatches, Participant loser){
+        Game firstEmptyB = null;
+        for (Game possibleLoserGame : properRoundLoserMatches) {
+            if(possibleLoserGame.getRivalA() == null){
+                possibleLoserGame.setRivalA(loser);
+                return possibleLoserGame;
+            }
+            if(firstEmptyB == null && possibleLoserGame.getRivalB() == null){
+                firstEmptyB = possibleLoserGame;
+            }
+        }//no empty A
+        if(firstEmptyB == null) throw new IllegalStateException("Seeding into loser bracket round 1: no empty space for loser found.");
+        firstEmptyB.setRivalB(loser);
+        return firstEmptyB;
+    }
+    
+    /**
+     * Pics a looser bracket or bronze game to put loser into according to rules. 
+     * Only for double elimination tournament.
+     * RULES: 
+     * 1] tournament has bronze match 
+     *      comesFrom.index == 2*N-5 : loser to bronze match : A
+     *      comesFrom.index == 2*N-4 : loser to bronze match : B
+     * 2] comes from winner tree (index up to N-2)
+     *      round = 1: seeds into either place previously occupied by comesFrom rival OR first available place (A,B)
+     *      round > 1: puts loser into either B previously occupied by comesFrom rival OR first empty B place 
+     * 
+     * @param matches all tournament matches, loser matches extracted inside
+     * @param loser loser of the comesFrom game 
+     * @param comesFrom the game from wich loser came 
+     * @param N next power of two bigger or equal to number of participants
+     * @param elimination this tournament
+     * @return modified loserGame, with loser put in proper place, or null - indicates weird state
+     */
+    private Game progressLoser_returnGame(List<Game> matches, Participant loser, Game comesFrom, int N, Elimination elimination){
+        int index = comesFrom.getPeriod() - 1;
+        //bronze
+        if(elimination.getBronzeMatch()){
+            Game bronze = findOne(matches.get(matches.size()-1).getId());
+            if(index == 2*N-5){
+                bronze.setRivalA(loser);
+                return bronze;
+            }
+            if(index == 2*N-4){
+                bronze.setRivalB(loser);
+                return bronze;
             }
         }
-        return null;
+        if(index <= N-2){
+            int round = comesFrom.getRound();
+            List<Game> possibleLoserGames = getLoserGamesForGame(comesFrom, matches, N);
+            if(round == 1){
+                //here seeding into loser bracket happens
+                if(loser != null && loser.isBye()){//these only into null and prefer A
+                    return seedAByeLoserIntoFirstLoserRound(possibleLoserGames, loser);
+                }else{
+                    Game firstEmpty = null;
+                    for (Game loserMatch : possibleLoserGames) {
+                        if(firstEmpty == null && (loserMatch.getRivalA() == null || loserMatch.getRivalB() == null) ){
+                            firstEmpty = loserMatch;
+                        }
+                        if(Objects.equal(loserMatch.getRivalA(), comesFrom.getRivalA())
+                                || Objects.equal(loserMatch.getRivalA(), comesFrom.getRivalB()) ){
+                            loserMatch.setRivalA(loser);
+                            return loserMatch;
+                        }
+                        if(Objects.equal(loserMatch.getRivalB(), comesFrom.getRivalA())
+                                || Objects.equal(loserMatch.getRivalB(), comesFrom.getRivalB()) ){
+                            loserMatch.setRivalB(loser);
+                            return loserMatch;
+                        }
+                    }
+                    if(firstEmpty == null) throw new IllegalStateException("Seeding into loser bracket round 1: no empty space for loser found.");
+                    if(firstEmpty.getRivalA() == null){
+                        firstEmpty.setRivalA(loser);
+                        return firstEmpty;
+                    }
+                    firstEmpty.setRivalB(loser);
+                    return firstEmpty;
+                }
+            }else{
+                //in case of modification first look for itself or winner but remember a first null 
+                Game firstEmpty = null;
+                for (Game loserMatch : possibleLoserGames) {
+                    if(firstEmpty == null && loserMatch.getRivalB() == null){
+                        firstEmpty = loserMatch;
+                    }
+                    //only on B
+                    if(Objects.equal(loserMatch.getRivalB(), comesFrom.getRivalA())
+                            || Objects.equal(loserMatch.getRivalB(), comesFrom.getRivalB()) ){
+                        loserMatch.setRivalB(loser);
+                        return loserMatch;
+                    }
+                    //comparison problems
+                    if(loserMatch.getRivalB() == comesFrom.getRivalA() 
+                            || loserMatch.getRivalB() == comesFrom.getRivalB() ){
+                        loserMatch.setRivalB(loser);
+                        return loserMatch;
+                    }
+                    log.debug("***");
+                    log.debug("loser on B: {}", loserMatch.getRivalB());
+                    log.debug("comesFrom on A: {}", comesFrom.getRivalA());
+                    log.debug("comesFrom on B: {}", comesFrom.getRivalB());
+                }
+                //not a modification => put on first available null
+                log.debug("****firstEmpty: {}, loser: {}", firstEmpty, loser);
+                firstEmpty.setRivalB(loser);
+                return firstEmpty;
+            }
+        }
+        return null; //nothing happened
     }
     
+    private void singleElimination_nextGameUpdate(Game game, Elimination elimination) {
+        List<Game> matches = new ArrayList<>(elimination.getMatches());
+        Collections.sort(matches);
+        int N = elimination.getN();
+        int index = game.getPeriod() - 1;
+        int rootIndex = N-2, bronzeIndex = N-1;
+        if(index == rootIndex || index == bronzeIndex) return;
+        
+        Map<String, Participant> winnerAndLoser = game.getWinnerAndLoser();
+        int winnerGameIndex = getParentIndex(index, game.getRound(), N, elimination);
+        log.debug("*** single> index: {}, winner = {}, loser = {}, winnerGameIndex = {}", 
+                index, winnerAndLoser.get("winner"), winnerAndLoser.get("loser"), winnerGameIndex);
+        if(winnerGameIndex != -1){
+            Game nextGame_modified = progressWinner_returnGame(matches.get(winnerGameIndex), 
+                    winnerAndLoser.get("winner"), game, N);
+            log.debug("***** nextGame_modified> {}", nextGame_modified);
+            Game updatedWinnerGame = updateGame(nextGame_modified);
+            log.debug("***** updatedWinnerGame> {}", updatedWinnerGame);
+        }
+        //bronze
+        if(elimination.getBronzeMatch()){
+            if(index == N-4){
+                Game bronze = findOne(matches.get(bronzeIndex).getId());
+                bronze.setRivalA(winnerAndLoser.get("loser"));
+                updateGame(bronze);
+            }
+            if(index == N-3){
+                Game bronze = findOne(matches.get(bronzeIndex).getId());
+                bronze.setRivalB(winnerAndLoser.get("loser"));
+                updateGame(bronze);
+            }
+        } 
+    }
+    
+    private void doubleElimination_nextGameUpdate(Game game, Elimination elimination){
+        List<Game> matches = new ArrayList<>(elimination.getMatches());
+        Collections.sort(matches);
+        int N = elimination.getN();
+        int index = matches.indexOf(game);
+        int newFinalIndex = nextFinalIndex(N, matches.size(), elimination);
+        if(newFinalIndex == index) return ;
+        int root = 2*N - 3;
+        Map<String, Participant> winnerAndLoser = game.getWinnerAndLoser();
+        
+        if(index == root){
+            //special case if game is final AND the one who lost once won
+            Game previousLoserGame = matches.get(index-1);
+            log.info("$$$ previousLoserGame: A= {}, B= {}", previousLoserGame.getRivalA(), previousLoserGame.getRivalB());
+            log.info("this winner: {}", winnerAndLoser.get("winner"));
+            log.info("comparing loser rivals with winner: {}", 
+                    Objects.equal(winnerAndLoser.get("winner"), previousLoserGame.getRivalA())
+                    || Objects.equal(winnerAndLoser.get("winner"), previousLoserGame.getRivalB()) );
+            if(Objects.equal(winnerAndLoser.get("winner"), previousLoserGame.getRivalA())
+                    || Objects.equal(winnerAndLoser.get("winner"), previousLoserGame.getRivalB()) ){
+                int period = game.getPeriod()+1;
+                if(elimination.getBronzeMatch()){
+                    period += 1;
+                }
+                log.debug("**** creating newFinal. trigerring game index {} root {}", index, root);
+                Game nextFinal = new Game().tournament(elimination).period(period).round(game.getRound()+1)
+                        .rivalA(game.getRivalB()).rivalB(game.getRivalA());
+                Game savedNextFinal = createGame(nextFinal);
+                elimination.addMatches(savedNextFinal);
+                eliminationRepository.save(elimination);
+                return;
+            }
+            //game got changed, rival from winner bracket won => delete next final if it exists
+            if(newFinalIndex != -1){
+                Game nextFinal = matches.get(newFinalIndex);
+                elimination.removeMatches(nextFinal);
+                eliminationRepository.save(elimination);
+                this.delete(nextFinal.getId());
+                return; 
+            }  
+        }if(index < root){
+            int winnerGameIndex = getParentIndex(index, game.getRound(), N, elimination);
+            Game winnerGame = findOne(matches.get(winnerGameIndex).getId());
+            log.debug("*** game before progress winner: id: {}, A: {}, B: {}", game.getId(), game.getRivalA(), game.getRivalB());
+            if(winnerGameIndex != -1){
+                Game winnerGame_modified = progressWinner_returnGame(winnerGame, winnerAndLoser.get("winner"), game, N);
+                this.updateGame(winnerGame_modified);
+            }
+            log.debug("*** game after progress winner: id: {}, A: {}, B: {}", game.getId(), game.getRivalA(), game.getRivalB());
+            Game loserGame_modified = progressLoser_returnGame(matches, winnerAndLoser.get("loser"), game, N, elimination);
+            if(loserGame_modified != null){
+                this.updateGame(loserGame_modified);
+            }else {
+                log.debug("***doubleElimination_nextGameUpdate: loserGame_modified was null: round {} index {} rivalA {} rivalB {} loser {}",
+                        game.getRound(), index, game.getRivalA(), game.getRivalB(), winnerAndLoser.get("loser"));
+            }
+        } 
+    }
+    
+    private void elimination_nextGameUpdate(Game game, Tournament tournament) {
+        Elimination elimination = (Elimination) tournament;
+        if (game.isFinished()) {
+            if (elimination.getType().equals(EliminationType.SINGLE)) {
+                singleElimination_nextGameUpdate(game, elimination);
+            } else {
+                doubleElimination_nextGameUpdate(game, elimination);
+            }
+        }
 
-    private void eliminationNextGameUpdate(Game game) {
-        log.debug("eliminationNextGameUpdate: called");
-        Tournament tournament = tournamentService.findOne(game.getTournament().getId());
-        if(tournament instanceof Elimination && game.isFinished()){
-            Elimination elimination = (Elimination) tournament;
-            log.debug("eliminationNextGameUpdate proceeded");
-            
+        //game got unfinished
+        Game old = this.findOne(game.getId());
+        if (old.isFinished() && !game.isFinished()) {
             List<Game> matches = new ArrayList<>(elimination.getMatches());
             Collections.sort(matches);
             
-            int N = elimination.getN();
-            int index = matches.indexOf(game);
-            Map<String, Participant> winnerAndLoser = game.getWinnerAndLoser();
-            
-            //put winner into the next game and save it 
-            int winnerGameIndex = getParentIndex(index, game.getRound(), N, elimination);
-            log.debug("eliminationNextGameUpdate: winnerGameIndex = {}", winnerGameIndex);
-            if(winnerGameIndex != -1){
-                Game savedWinnerGame = progresRival(matches.get(winnerGameIndex), winnerAndLoser.get("winner"));
-                log.debug("eliminationNextGameUpdate: winner game with id = {} updated ", savedWinnerGame.getId());
-            }
-            
-            //if Double - put loser into apropriate loser game 
-            if(elimination.getType().equals(EliminationType.DOUBLE)){
-                int loserRound = getLoserRound(game.getRound());
-                Game savedLooserGame = progresLoserIntoFirstAvailableLoserGame(
-                        getGamesForRound(loserRound, matches, N), 
-                        winnerAndLoser.get("loser")
-                ); 
-            }
-        }     
+            propagateRivalsRemoval(game, matches, elimination);
+        }
     }
+    
+    private void propagateRivalsRemoval(Game game, List<Game> matches, Elimination elimination){
+        int index = matches.indexOf(game);
+        
+        List<Game> gamesToRemoveFrom = new ArrayList<>();
+        for (int i = index + 1; i < matches.size(); i++) {
+            Game match = matches.get(i);
+            if(Objects.equal(match.getRivalA(), game.getRivalA()) 
+                    || Objects.equal(match.getRivalB(), game.getRivalA())
+                    || Objects.equal(match.getRivalA(), game.getRivalB())
+                    || Objects.equal(match.getRivalB(), game.getRivalB())
+                    ){
+                if( !isBye(match.getRivalA()) || !isBye(match.getRivalB()) ){
+                    gamesToRemoveFrom.add(match);
+                }
+            }
+        }
+        log.debug("rivals removal: index= {}, game= {}, games= {}", index,game, gamesToRemoveFrom);
+        if(gamesToRemoveFrom.isEmpty()) return;
+                
+        for(int i = gamesToRemoveFrom.size() - 1; i >= 0; i--){
+            Game toRemoveFrom = gamesToRemoveFrom.get(i);
+            propagateRivalsRemoval(toRemoveFrom, matches, elimination);
+            if(!isBye(toRemoveFrom.getRivalA()) &&
+                    ( Objects.equal(toRemoveFrom.getRivalA(), game.getRivalA())
+                    || Objects.equal(toRemoveFrom.getRivalA(), game.getRivalB()) ) 
+                    ){
+                toRemoveFrom.setRivalA(null);
+            }
+            if(!isBye(toRemoveFrom.getRivalB()) && 
+                    ( Objects.equal(toRemoveFrom.getRivalB(), game.getRivalA())
+                    || Objects.equal(toRemoveFrom.getRivalB(), game.getRivalB()) )
+                    ){
+                toRemoveFrom.setRivalB(null);
+            }
+            if(!isBye(toRemoveFrom.getRivalA()) && !isBye(toRemoveFrom.getRivalB())){
+                toRemoveFrom.setFinished(Boolean.FALSE); 
+            }
+            if(toRemoveFrom.getPeriod() - 1 == getRootIndex(elimination) ){
+                updateGame(toRemoveFrom);
+            }else{
+                save(toRemoveFrom);
+            }
+        }
+    }
+    
+    private void propagateRivalRemoval(Participant rival, Game oldGame, Elimination elimination){
+        
+        List<Game> matches = new ArrayList<>(elimination.getMatches());
+        Collections.sort(matches);
+        int index = matches.indexOf(oldGame);
+        log.debug("****** rival removal: index= {}, rival= {}, oldGame= {}", index, rival, oldGame);
+        List<Game> gamesToRemoveFrom = new ArrayList<>();
+        for (int i = index + 1; i < matches.size(); i++) {
+            Game match = matches.get(i);
+            if(Objects.equal(match.getRivalA(), rival) 
+                    || Objects.equal(match.getRivalB(), rival)){
+                gamesToRemoveFrom.add(match);
+            }
+        }
+        log.debug("     gamesToRemoveFrom: {}", gamesToRemoveFrom);
+        if(gamesToRemoveFrom.isEmpty()) return;
+        
+        for (int i = gamesToRemoveFrom.size()-1; i >= 0; i--) {
+            Game toRemoveFrom = gamesToRemoveFrom.get(i);
+            if(Objects.equal(toRemoveFrom.getRivalA(), rival)){
+                toRemoveFrom.setRivalA(null);
+                toRemoveFrom.setFinished(Boolean.FALSE);
+                updateGame(toRemoveFrom);
+            }
+            if(Objects.equal(toRemoveFrom.getRivalB(), rival)){
+                toRemoveFrom.setRivalB(null);
+                toRemoveFrom.setFinished(Boolean.FALSE);
+                updateGame(toRemoveFrom);
+            }
+        }
+    } 
+    
 }

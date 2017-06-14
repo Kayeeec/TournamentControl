@@ -143,7 +143,7 @@ public class GameSetService {
         return savedGame;
     }
     
-    public void delete(List<GameSet> gameSets){
+    public void delete(Iterable<GameSet> gameSets){
         log.debug("Request to delete GameSets : {}", gameSets.toString());
         gameSetRepository.delete(gameSets);
     }

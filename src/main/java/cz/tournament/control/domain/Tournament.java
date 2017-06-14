@@ -55,6 +55,10 @@ public class Tournament implements Serializable {
 
     @Column(name = "playing_fields")
     private Integer playingFields;
+    
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(unique = true)
+    private SetSettings setSettings;
 
     @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -70,10 +74,6 @@ public class Tournament implements Serializable {
                joinColumns = @JoinColumn(name="tournaments_id", referencedColumnName="id"),
                inverseJoinColumns = @JoinColumn(name="participants_id", referencedColumnName="id"))
     private Set<Participant> participants = new HashSet<>();
-
-    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    @JoinColumn(unique = true)
-    private SetSettings setSettings;
 
     public Long getId() {
         return id;

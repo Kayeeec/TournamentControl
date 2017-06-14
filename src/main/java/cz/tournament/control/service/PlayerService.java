@@ -70,6 +70,12 @@ public class PlayerService {
         return player;
     }
     
+    public List<Player> findByUser(User user){
+        List<Player> players = playerRepository.findByUser(user);
+        return players;
+    }
+    
+    
     /**
      * Deletes a player entity and its associated participant entity.
      * 
