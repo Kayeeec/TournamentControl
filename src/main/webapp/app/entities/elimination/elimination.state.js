@@ -26,13 +26,15 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('elimination');
+                    $translatePartialLoader.addPart('tournament');
+                    $translatePartialLoader.addPart('eliminationType');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
         })
         .state('elimination-detail', {
-            parent: 'tournament',
+            parent: '',
             url: '/elimination/{id}',
             data: {
                 authorities: ['ROLE_USER'],
@@ -55,7 +57,7 @@
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'tournament',
+                        name: $state.current.name || 'elimination',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -65,7 +67,7 @@
         })
         .state('elimination-detail.edit', {
             parent: 'elimination-detail',
-            url: '/elimination/detail/edit',
+            url: '/detail/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -89,8 +91,8 @@
             }]
         })
         .state('elimination.new', {
-            parent: 'tournament',
-            url: '/elimination-new',
+            parent: 'elimination',
+            url: '/create/new',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -121,15 +123,15 @@
                         }
                     }
                 }).result.then(function() {
-                    $state.go('tournament', null, { reload: 'tournament' });
+                    $state.go('elimination', null, { reload: 'elimination' });
                 }, function() {
-                    $state.go('tournament');
+                    $state.go('elimination');
                 });
             }]
         })
         .state('elimination.edit', {
-            parent: 'tournament',
-            url: '/elimination/{id}/edit',
+            parent: 'elimination',
+            url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -146,15 +148,15 @@
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('tournament', null, { reload: 'tournament' });
+                    $state.go('elimination', null, { reload: 'elimination' });
                 }, function() {
                     $state.go('^');
                 });
             }]
         })
         .state('elimination.delete', {
-            parent: 'tournament',
-            url: '/elimination/{id}/delete',
+            parent: 'elimination',
+            url: '/{id}/delete',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -170,7 +172,7 @@
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('tournament', null, { reload: 'tournament' });
+                    $state.go('elimination', null, { reload: 'elimination' });
                 }, function() {
                     $state.go('^');
                 });

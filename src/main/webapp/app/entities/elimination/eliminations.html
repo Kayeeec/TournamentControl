@@ -19,14 +19,22 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span data-translate="tournamentControlApp.tournament.name">Name</span><span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="note"><span data-translate="tournamentControlApp.tournament.note">Note</span><span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="type"><span data-translate="tournamentControlApp.elimination.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th data-sort="int"><span data-translate="">Number of Participants</span><span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="created"><span data-translate="tournamentControlApp.tournament.created">Created</span><span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
                 <tr ng-repeat="elimination in vm.eliminations track by elimination.id">
                     <td><a ui-sref="elimination-detail({id:elimination.id})">{{elimination.id}}</a></td>
+                    <td>{{elimination.name}}</td>
+                    <td>{{elimination.note}}</td>
                     <td data-translate="{{'tournamentControlApp.EliminationType.' + elimination.type}}">{{elimination.type}}</td>
+                    <td>{{elimination.participants.length}}</td>
+                    <td>{{elimination.created | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

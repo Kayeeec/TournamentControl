@@ -5,9 +5,9 @@
         .module('tournamentControlApp')
         .controller('EliminationDetailController', EliminationDetailController);
 
-    EliminationDetailController.$inject = ['$timeout','$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Elimination', 'Game'];
+    EliminationDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Elimination', 'Game', '$timeout'];
 
-    function EliminationDetailController($timeout, $scope, $rootScope, $stateParams, previousState, entity, Elimination, Game) {
+    function EliminationDetailController($scope, $rootScope, $stateParams, previousState, entity, Elimination, Game, $timeout) {
         var vm = this;
 
         vm.elimination = entity;
@@ -109,12 +109,26 @@
                 var parentIndex = getParentIndex((i), matches[i].round);
                 node.parent = tmpArray[parentIndex];
             }
+            //give root a parent if there is one
+            if(isNextFinal(matches.length)){
+                console.log("next final is there");
+                var nextFinalNode = {innerHTML: getElementId(matches[matches.length-1])};
+                root.parent = nextFinalNode;
+                tmpArray.push(nextFinalNode);
+            }
             //push nodes from temporary array to result in reversed order (Treant.js takes them like that)
             while (tmpArray.length > 0) {
                 result.push(tmpArray.pop());
             }
             return result;
         };
+        
+        function isNextFinal(matchesLength) {
+            if(vm.elimination.bronzeMatch){
+                return (matchesLength === 2 * vm.N);
+            }
+            return (matchesLength === (2*vm.N - 1));
+        }
         
         vm.generateBronzeNodeStructure = function () {
             var matches = vm.elimination.matches;
@@ -150,11 +164,18 @@
         $scope.$on('$destroy', unsubscribe);
         
         vm.disabledIfBYE = function (match) {
-            if(match !== null) return '';
-            if(match.rivalA.bye || match.rivalB.bye ){
+            if((match.rivalA !== null && match.rivalA.bye) || (match.rivalB !== null && match.rivalB.bye)){
                 return 'mylinkDisabled';
             }
             return '';
+        };
+        
+        vm.greenIfFinished = function (match) {
+            if(match.finished){
+                return 'bracket-match-finished';
+            }
+            return '';
+            
         };
         
         

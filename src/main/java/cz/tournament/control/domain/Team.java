@@ -141,7 +141,7 @@ public class Team implements Serializable {
         return "Team{" +
             "id=" + id +
             ", name='" + name + "'" +
-            ", note='" + note + "'" +
+//            ", note='" + note + "'" +
             '}';
     }
 }
