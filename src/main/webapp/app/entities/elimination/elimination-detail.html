@@ -44,10 +44,14 @@
         <dd>
             <span>{{vm.elimination.setSettings}}</span>
         </dd>
+<!--        <dt><span data-translate="">Public URL</span></dt>
+        <dd>
+            <span>{{vm.publicURL}}</span>
+        </dd>-->
     </dl>
     
     <!-- buttons -->
-    <div style="padding-top: 20px">
+    <div style="padding-top: 20px; padding-bottom: 20px">
         <button type="submit"
                 ui-sref="{{vm.previousState}}"
                 class="btn btn-info">
@@ -58,8 +62,56 @@
             <span class="glyphicon glyphicon-pencil"></span>
             <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
         </button>
+        
+        <button disabled type="button" class="btn btn-success" ng-href="/generateFile/elimination/{{vm.elimination.id}}">
+            <span class="glyphicon glyphicon-download-alt"></span>
+            <span class="hidden-sm-down" data-translate=""> Generate .ods spreadsheet </span>
+        </button>
     </div>
     <!-- buttons -->
+    
+    <!--evaluation able ============================--> 
+    <div class="panel panel-default panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <h3 class="panel-title">Evaluation table</h3><!--TODO: data-translate-->
+        </div>
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="jh-table table table-striped myTextCenter">
+                <thead>
+                    <tr>
+                        <th class="myTextCenter">Rank</th>
+                        <th class="myTextCenter">Participant</th>
+                        <th class="myWins myTextCenter">Wins</th>
+                        <th class="myTextCenter myLoses">Loses</th>
+                        <th class="myTextCenter">Ties</th>
+                        <th class="myTextCenter" colspan="3">Score</th>
+                        <th class="myTextCenter">Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <div ng-repeat="participant in vm.elimination.participants">
+                    <div ng-if="participant.player" ng-init="temp = pointCount(participant.id);temp.rival = participant.player.name; counts.push(temp)"></div>
+                    <div ng-if="participant.team" ng-init="temp = pointCount(participant.id);temp.rival = participant.team.name; counts.push(temp)"></div>
+                </div>
+                <tr ng-repeat="count in counts| orderBy:['-total', '-wins', '-score']">
+                    <td >{{$index + 1}}</td>
+                    <td id="participant">{{count.rival}}</td>
+                    <td id="wins" class="myWins">{{count.wins}}</td>
+                    <td id="loses" class="myLoses">{{count.loses}}</td>
+                    <td id="ties">{{count.ties}}</td>    
+                    <td id="score" style="text-align: right">{{count.score}}</td>
+                    <td id="colon" style="text-align: center; padding: 0px">:</td>
+                    <td id="scoreRival" style="text-align: left">{{count.scoreRival}}</td>
+                    <td id="points" class="myTotal">{{count.total}}</td>
+                </tr>
+                <div ng-init="emptyCounts()"></div> 
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--END evaluation able ====================--> 
     
     <!-- tree node templates -->
     <div ng-repeat="match in vm.elimination.matches" ng-hide="true">
@@ -85,13 +137,12 @@
     <!-- tree node templates -->
     
     
-        <div>
-            <div id="winner-tree"></div>
-        </div>
-        <div>
-            <h3>Bronze match</h3> <!--TODO: translate-->
-            <div ng-if="vm.elimination.bronzeMatch" id="bronze-tree"></div>
-                
-        </div>
+    <div name="winner">
+        <div id="winner-tree"></div>
+    </div>
+    <div name="bronze">
+        <h3>Bronze match</h3> <!--TODO: translate-->
+        <div ng-if="vm.elimination.bronzeMatch" id="bronze-tree"></div>
+    </div>
     
 </div>

@@ -1,5 +1,6 @@
 package cz.tournament.control.domain;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
@@ -363,17 +364,15 @@ public class Game implements Serializable, Comparable<Game> {
      * @return Participant if all sets are finished and it is not a tie, or one of rivals is BYE
      *         null if there is an unfinished set, game is a tie or one or both rivals are null.
      */
-    @JsonIgnore
+    @JsonAnyGetter
     public Map<String,Participant> getWinnerAndLoser(){
         Map<String,Participant> result = new HashMap();
+        result.put("winner", null);
+        result.put("loser", null);
         if(!finished){
-            result.put("winner", null);
-            result.put("loser", null);
             return result;
         }
         if(rivalA == null || rivalB == null){
-            result.put("winner", null);
-            result.put("loser", null);
             return result;
         }
         if(rivalA.isBye()){
@@ -399,8 +398,6 @@ public class Game implements Serializable, Comparable<Game> {
         if (!this.getSets().isEmpty()) {
             for (GameSet set : this.getSets()) {
                 if(!set.isFinished()){
-                    result.put("winner", null);
-                    result.put("loser", null);
                     return result;
                 }
                 if(set.getScoreA() > set.getScoreB()){
@@ -424,8 +421,6 @@ public class Game implements Serializable, Comparable<Game> {
                 result.put("loser", rivalA);
                 return result;
             }
-            result.put("winner", null);
-            result.put("loser", null);
             return result;
         } else {
             if(wonSetsA > wonSetsB){
@@ -438,8 +433,6 @@ public class Game implements Serializable, Comparable<Game> {
                 result.put("loser", rivalA);
                 return result;
             }
-            result.put("winner", null);
-            result.put("loser", null);
             return result;
         }
     }

@@ -13,13 +13,12 @@
         vm.allVersusAll = entity;
         vm.previousState = previousState.name;
         
+/* ****** evaluation table ****** */
         $scope.temp;
         $scope.counts = new Array();
-        
-
-        function participantsFinishedMatches(participantID) {
+        function participantsFinishedMatches(participantID, tournament) {
             var r = [];
-            vm.allVersusAll.matches.forEach(function (match)
+            tournament.matches.forEach(function (match)
             {
                 if(match.finished){
                   if (match.rivalA.id === participantID || match.rivalB.id === participantID) {
@@ -40,10 +39,9 @@
             return result;
         };
         
-        
-
         $scope.pointCount = function pointCount(participantID) {
-            var hisFinishedMatches = participantsFinishedMatches(participantID);
+            var tournament = vm.allVersusAll;
+            var hisFinishedMatches = participantsFinishedMatches(participantID, tournament);
             var points = {rival: "rival",wins: 0, loses: 0, ties: 0, total: 0, score: 0, scoreRival: 0};
 
             hisFinishedMatches.forEach(function (match) {
@@ -52,32 +50,36 @@
                 if(match.rivalA.id === participantID){
                     points.score += scoreSum.A;
                     points.scoreRival += scoreSum.B;
-                    if(scoreSum.A > scoreSum.B){
-                        points.wins += 1;
-                    }
-                    if(scoreSum.A < scoreSum.B){
-                        points.loses += 1;
-                    }
-                    if (scoreSum.A === scoreSum.B) {
+                    
+                    if (match.winner === null) {
                         points.ties += 1;
-                    }   
+                    } else {
+                        if (match.winner.id === match.rivalA.id) {
+                            points.wins += 1;
+                        }
+                        if (match.loser.id === match.rivalA.id) {
+                            points.loses += 1;
+                        }
+                    }
                 }
                 if(match.rivalB.id === participantID){
                     points.score += scoreSum.B;
                     points.scoreRival += scoreSum.A;
-                    if(scoreSum.B > scoreSum.A){
-                        points.wins += 1;
-                    }
-                    if(scoreSum.B < scoreSum.A){
-                        points.loses += 1;
-                    }
-                    if (scoreSum.B === scoreSum.A) {
+                    
+                    if (match.winner === null) {
                         points.ties += 1;
-                    }
+                    } else {
+                        if (match.winner.id === match.rivalB.id) {
+                            points.wins += 1;
+                        }
+                        if (match.loser.id === match.rivalB.id) {
+                            points.loses += 1;
+                        }
+                    } 
                 }
             });
-            points.total = (points.wins * vm.allVersusAll.pointsForWinning) + (points.ties * vm.allVersusAll.pointsForTie)
-                    - (points.loses * vm.allVersusAll.pointsForLosing);
+            points.total = (points.wins * tournament.pointsForWinning) + (points.ties * tournament.pointsForTie)
+                    - (points.loses * tournament.pointsForLosing);
 
             return points;
         };
@@ -85,6 +87,7 @@
         $scope.emptyCounts = function(){
             $scope.counts = [];
         };
+/* ****** evaluation table ****** */
         
 
         var unsubscribe = $rootScope.$on('tournamentControlApp:allVersusAllUpdate', function (event, result) {
