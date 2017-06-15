@@ -91,13 +91,12 @@
     </div>
     <!-- END - buttons -->
 
-    <!--evaluation able ==========================================================================================--> 
+    <!--evaluation able ============================--> 
     <div class="panel panel-default panel-info">
         <!-- Default panel contents -->
         <div class="panel-heading">
             <h3 class="panel-title">Evaluation table</h3><!--TODO: data-translate-->
         </div>
-
         <!-- Table -->
         <div class="table-responsive">
             <table class="jh-table table table-striped myTextCenter">
@@ -132,9 +131,8 @@
                 </tbody>
             </table>
         </div>
-
     </div>
-    <!--END evaluation able ==========================================================================================--> 
+    <!--END evaluation able ====================--> 
 
     <!--tables for matches and editing scores =================================================================== -->
     <div class="panel panel-primary" ng-repeat="(period,games) in vm.allVersusAll.matches | groupBy: 'period'">

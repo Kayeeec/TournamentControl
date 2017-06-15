@@ -12,7 +12,7 @@
         var vm = this;
 
         vm.allVersusAlls = [];
-
+        
         loadAll();
 
         function loadAll() {

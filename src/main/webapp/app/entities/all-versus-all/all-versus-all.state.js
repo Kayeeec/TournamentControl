@@ -36,7 +36,7 @@
             }
         })
         .state('all-versus-all-detail', {
-            parent: '', //wtf?
+            parent: 'tournament', //wtf?
             url: '/all-versus-all/{id}',
             data: {
                 authorities: ['ROLE_USER'],
