@@ -251,7 +251,7 @@ public class EliminationService {
      * #winnerRounds = log_2(N)
      * #rounds = log_2(N) + 1
      *  
-     * numbering rounds in loser bracket: 15..log_2(N), incremented by 5
+     * numbering rounds in loser bracket: 15..log_2(N), incremented by 5, NEGATIVE!!!
      * #loserBracketMatches = N - 2
      * #total matches = (N - 1) + (N - 2) + 1 {final} [+ 1 {if bronze}] [+1 {if another final}]
      * 
@@ -297,7 +297,7 @@ public class EliminationService {
             }
         }
         //generate loser bracket matches
-        for(int round = 15; round <= winnerRounds*10; round += 5){
+        for(int round = -15; round >= winnerRounds*(-10); round -= 5){
             for (int i = 0; i < loserSegmentSize(round, N); i++) {
                 Game saved = gameService.createGame(new Game().tournament(tournament).round(round).period(period));
                 tournament.addMatches(saved);
@@ -337,7 +337,7 @@ public class EliminationService {
      * @return 
      */
     private int loserSegmentSize(int round, int N) {
-        int loserSegmentSize = (int) (N/(Math.pow(2, Math.ceil((double)round/10))));
+        int loserSegmentSize = (int) (N/(Math.pow(2, Math.ceil((double)(-1)*round/10))));
         return loserSegmentSize;
     }
 

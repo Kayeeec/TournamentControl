@@ -47,10 +47,6 @@ public class GameService {
         this.tournamentService = tournamentService;
         this.eliminationRepository = eliminationRepository;
     }
-
-    
-
-    
     
     /**
      * 
@@ -248,7 +244,7 @@ public class GameService {
                 return (int) Math.floor((index + winnerRoot)/2)+1;
             }
             if(index < loserRoot){
-                int segmentSize = N/((int)Math.pow(2, Math.ceil(((double)round)/10)));
+                int segmentSize = N/((int)Math.pow(2, Math.ceil(((double)(-1)*round)/10)));
                 if(round % 10 != 0){ //15, 25, 35...
                     return (index + segmentSize);   
                 }
@@ -278,9 +274,9 @@ public class GameService {
     
     private int getLoserRound(int round){
         if(round == 1){
-            return 15;
+            return -15;
         }
-        return round*10;
+        return round*10*(-1);
     }
     
     private List<Game> getLoserGamesForGame(Game game, List<Game> matches, int N){
@@ -289,7 +285,7 @@ public class GameService {
         
         for (int i = N-1; i <= 2*N-4; i++) {
             Game loserGame = findOne(matches.get(i).getId());
-            if(loserGame.getRound()>loserRound){
+            if(loserGame.getRound()<loserRound){
                 break;
             }
             if(loserGame.getRound()==loserRound){
@@ -357,7 +353,7 @@ public class GameService {
             progressInto.setRivalB(winner);
             return progressInto;
         }
-        if( round < numberOfRounds(N) || round % 10 == 0){ //from winner or round is 20, 30, 40 ...
+        if( (0 < round && round < numberOfRounds(N)) || (round < 0 && round % 10 == 0)){ //from winner or round is -20, -30, -40 ...
             if(index % 2 == 0){
                 progressInto.setRivalA(winner);
                 return progressInto;
@@ -365,7 +361,7 @@ public class GameService {
             progressInto.setRivalB(winner);
             return progressInto;
         }
-        //round 15,25,35...
+        //round -15,-25,-35...
         progressInto.setRivalA(winner);
         return progressInto;
         
@@ -401,7 +397,7 @@ public class GameService {
      *      comesFrom.index == 2*N-5 : loser to bronze match : A
      *      comesFrom.index == 2*N-4 : loser to bronze match : B
      * 2] comes from winner tree (index up to N-2)
-     *      round = 1: seeds into either place previously occupied by comesFrom rival OR first available place (A,B)
+     *      round = 1: seeds into either place previously occupied by comesFrom rival OR first available place 
      *      round > 1: puts loser into either B previously occupied by comesFrom rival OR first empty B place 
      * 
      * @param matches all tournament matches, loser matches extracted inside
@@ -425,7 +421,8 @@ public class GameService {
                 return bronze;
             }
         }
-        if(index <= N-2){
+        int winnerIndex = N-2;
+        if(index <= winnerIndex){
             int round = comesFrom.getRound();
             List<Game> possibleLoserGames = getLoserGamesForGame(comesFrom, matches, N);
             if(round == 1){
@@ -537,11 +534,7 @@ public class GameService {
         if(index == root){
             //special case if game is final AND the one who lost once won
             Game previousLoserGame = matches.get(index-1);
-            log.info("$$$ previousLoserGame: A= {}, B= {}", previousLoserGame.getRivalA(), previousLoserGame.getRivalB());
-            log.info("this winner: {}", winnerAndLoser.get("winner"));
-            log.info("comparing loser rivals with winner: {}", 
-                    Objects.equal(winnerAndLoser.get("winner"), previousLoserGame.getRivalA())
-                    || Objects.equal(winnerAndLoser.get("winner"), previousLoserGame.getRivalB()) );
+            
             if(Objects.equal(winnerAndLoser.get("winner"), previousLoserGame.getRivalA())
                     || Objects.equal(winnerAndLoser.get("winner"), previousLoserGame.getRivalB()) ){
                 int period = game.getPeriod()+1;
@@ -647,37 +640,5 @@ public class GameService {
             }
         }
     }
-    
-    private void propagateRivalRemoval(Participant rival, Game oldGame, Elimination elimination){
-        
-        List<Game> matches = new ArrayList<>(elimination.getMatches());
-        Collections.sort(matches);
-        int index = matches.indexOf(oldGame);
-        log.debug("****** rival removal: index= {}, rival= {}, oldGame= {}", index, rival, oldGame);
-        List<Game> gamesToRemoveFrom = new ArrayList<>();
-        for (int i = index + 1; i < matches.size(); i++) {
-            Game match = matches.get(i);
-            if(Objects.equal(match.getRivalA(), rival) 
-                    || Objects.equal(match.getRivalB(), rival)){
-                gamesToRemoveFrom.add(match);
-            }
-        }
-        log.debug("     gamesToRemoveFrom: {}", gamesToRemoveFrom);
-        if(gamesToRemoveFrom.isEmpty()) return;
-        
-        for (int i = gamesToRemoveFrom.size()-1; i >= 0; i--) {
-            Game toRemoveFrom = gamesToRemoveFrom.get(i);
-            if(Objects.equal(toRemoveFrom.getRivalA(), rival)){
-                toRemoveFrom.setRivalA(null);
-                toRemoveFrom.setFinished(Boolean.FALSE);
-                updateGame(toRemoveFrom);
-            }
-            if(Objects.equal(toRemoveFrom.getRivalB(), rival)){
-                toRemoveFrom.setRivalB(null);
-                toRemoveFrom.setFinished(Boolean.FALSE);
-                updateGame(toRemoveFrom);
-            }
-        }
-    } 
     
 }

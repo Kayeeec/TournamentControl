@@ -41,7 +41,23 @@
                 console.log("vm.elimination.participants: " + vm.elimination.participants);
             }
         }
+        $scope.isPlayer = function (participant) {
+            if(participant.player !== null) return true;
+            return false;
+        };
+        $scope.isTeam = function (participant) {
+            if(participant.team !== null) return true;
+            return false;
+        };
         /* END - participants stuff */
+        
+        /* *** participant seeding stuff *** */
+        $scope.seedRandomly = true;
+        vm.myToogle = function (boolValue) {
+            $scope.seedRandomly = boolValue;
+        };
+        
+        /* *** participant seeding stuff END *** */
         
          /* setSettings stuff */
         vm.setSettingsChosen = initSetSettingsChosen();
