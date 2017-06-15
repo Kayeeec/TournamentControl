@@ -97,7 +97,7 @@
             return Game.getGamesByTournament({tournamentId: vm.elimination.id});
         }
         
-        vm.getName = function (rival, round) {
+        vm.getName = function (rival) {
             if(rival !== null){
                 if(rival.player !== null){
                     return rival.player.name;
@@ -134,8 +134,8 @@
                     return Math.floor((index + winnerRoot)/2)+1;
                 }
                 if(index < loserRoot){
-                    var segmentSize = vm.N/(Math.pow(2, Math.ceil(round/10)));
-                    if(round % 10 !== 0){ //15, 25, 35...
+                    var segmentSize = vm.N/(Math.pow(2, Math.ceil(Math.abs(round)/10)));
+                    if(Math.abs(round) % 10 !== 0){ //15, 25, 35...
                         return (index + segmentSize);   
                     }
                     //else 20,30,40...

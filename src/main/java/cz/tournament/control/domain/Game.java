@@ -34,7 +34,7 @@ public class Game implements Serializable, Comparable<Game> {
     @Column(name = "finished")
     private Boolean finished = false;
 
-    @Min(value = 1)
+    
     @Column(name = "round")
     private Integer round;
 
