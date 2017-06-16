@@ -9,7 +9,6 @@
 
     function EliminationDetailController($scope, $rootScope, $stateParams, previousState, entity, Elimination, Game, $timeout, $location) {
         var vm = this;
-
         vm.elimination = entity;
         vm.previousState = previousState.name;
         vm.publicURL = 'http://localhost:8080/#' + $location.url().toString() + '/public';
