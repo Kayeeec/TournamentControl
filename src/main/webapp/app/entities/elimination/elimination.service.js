@@ -20,7 +20,15 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'sendDTO':{ method: 'POST',
+                url: 'api/eliminations/recieveDTO'
+            },
+            'getSeeding':{
+                method: 'GET',
+                url: 'api/eliminations/seeding/:id',
+                isArray: true
+            }
         });
     }
     

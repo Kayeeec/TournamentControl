@@ -20,28 +20,17 @@
                     return data;
                 }
             },
-            'update': {method: 'PUT'}
+            'update': {method: 'PUT'},
+            'getBye': {
+                method: 'GET',
+                url: 'api/participants/bye',
+                transformResponse: function (data) {
+                    if (data) {
+                        data = angular.fromJson(data);
+                    }
+                    return data;
+                }
+            }
         });
     }
-
-//    function Participant() {
-//        return {
-//            'getName': function (participant) {
-//                if (participant !== null) {
-//                    if (participant.player !== null) {
-//                        return participant.player.name;
-//                    }
-//                    if (participant.team !== null) {
-//                        return participant.team.name;
-//                    }
-//                    return 'BYE';
-//                }
-//                return '-';
-//            },
-//            'isBYE': function (rival) {
-//                return (rival !== null && rival.player === null && rival.team === null);
-//            }
-//            
-//        };
-//    }
 })();

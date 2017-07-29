@@ -56,6 +56,39 @@ My styles
     color: #4cae4c;
 }
 
+.tree-node-table{
+    width: 150px;
+    background-color:#eee;
+    border:1px solid #666666;
+}
+.tree-node-table-A{
+    width: auto;
+    height: 36px;
+    padding: auto;
+    border: 1px solid #666666;
+    text-align: center;
+    line-height: 36px;
+}
+.my-wrap{
+    position: relative;
+}
+.this-is-under{
+    z-index: 0;
+    opacity: 0;
+}
+.this-is-over{
+    position: absolute; 
+    z-index: 1;
+}
+.my-dropzones-container{
+    position: absolute; 
+    top: 0px; 
+    left: 0px;
+}
+.clear-both{
+    clear: both;
+}
+
 /* ==========================================================================
 Hide ng-cloak on page load, https://docs.angularjs.org/api/ng/directive/ngCloak
 ========================================================================== */

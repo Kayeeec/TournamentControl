@@ -47,6 +47,11 @@
                     templateUrl: 'app/entities/all-versus-all/all-versus-all-detail.html',
                     controller: 'AllVersusAllDetailController',
                     controllerAs: 'vm'
+                },
+                'evaluation-table@all-versus-all-detail':{
+                    templateUrl: 'my_components/evaluation-table/evaluation-table.html',
+                    controller: 'EvaluationTableController',
+                    controllerAs: 'vm'
                 }
             },
             resolve: {
