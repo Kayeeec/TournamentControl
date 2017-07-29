@@ -55,7 +55,7 @@
                                     data-toggle="collapse" data-target="#setSettingsForm_{{set.id}}" aria-expanded="false" 
                                     ng-click="vm.copyToOldSettings(set)">
                                 <span class="glyphicon glyphicon-cog"></span>
-                                <span  data-translate=""> <!--TODO: -->
+                                <span  data-translate=""> <!--TODO: data-translate -->
                                 </span>
                             </button>
                         </div>
@@ -65,7 +65,7 @@
                         <button ng-disabled="vm.game.sets.length === 1" type="button" name="remove_set_btn" 
                                 class="btn btn-danger btn-xs" ng-click="vm.removeSet(set.id)">
                             <span class="glyphicon glyphicon-remove"></span>
-                            <span  data-translate=""> <!--TODO: -->
+                            <span  data-translate=""> <!--TODO: data-translate -->
                             </span>
                         </button>
                     </td>
@@ -149,7 +149,7 @@
                                     ng-click="vm.cancelSetSettings(set, vm.game.sets.indexOf(set))"
                                     ng-disabled="set.finished || vm.game.finished">
                                 <span class="glyphicon glyphicon-ban-circle"></span>
-                                <span  data-translate=""> <!-- todo -->
+                                <span  data-translate=""> <!--TODO: data-translate -->
                                     Reset
                                 </span>
                             </button>

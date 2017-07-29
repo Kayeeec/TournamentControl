@@ -11,6 +11,8 @@ import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +49,7 @@ public class EliminationService {
     }
 
     
-    public Elimination updateElimination(Elimination elimination) {
+    public Elimination updateElimination(Elimination elimination, List<Participant> seeding) {
         log.debug("Request to update Elimination : {}", elimination);
 
         /* Detect change and regenerate */
@@ -62,7 +64,7 @@ public class EliminationService {
                 elimination = eliminationRepository.save(elimination);
             }
             if (elimination.getParticipants().size() >= 2) {
-                generateAssignment(elimination);
+                generateAssignment(elimination, seeding);
             }
         }
 
@@ -80,7 +82,7 @@ public class EliminationService {
         gameService.delete(matches);
     }
     
-    public Elimination createElimination(Elimination elimination){
+    public Elimination createElimination(Elimination elimination, List<Participant> seeding){
         //set creator as user
         User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
         elimination.setUser(creator);
@@ -92,7 +94,7 @@ public class EliminationService {
         //generate assignment if it has participants        
         Elimination tmp = eliminationRepository.save(elimination); //has to be in db before generating games
         if(tmp.getParticipants().size() >= 2){
-            generateAssignment(tmp);
+            generateAssignment(tmp, seeding);
             //log.debug("Elimination SERVICE: generated matches: {}", tmp.getMatches());
         }
         
@@ -114,6 +116,30 @@ public class EliminationService {
         log.debug("Request to save Elimination : {}", elimination);
         Elimination result = eliminationRepository.save(elimination);
         return result;
+    }
+    
+    public List<Participant> getEliminationSeeding(Long id){
+        if(id == null){ return null; }
+        Elimination elimination = findOne(id);
+        if(elimination == null){return null;}
+        int N = elimination.getN();
+        List<Game> matches = new ArrayList<>(elimination.getMatches());
+        
+        //sort matches by period
+        Collections.sort(matches);
+        
+        Participant[] seeding = new Participant[N];
+        int a = 0;
+        for (Game match : matches) {
+            if(match.getRound() != 1){
+                break;
+            }            
+            seeding[a]=match.getRivalA();
+            seeding[N - 1 - a] = match.getRivalB();
+            a += 1;
+        }
+        
+        return Arrays.asList(seeding);  
     }
 
     /**
@@ -153,16 +179,19 @@ public class EliminationService {
     }
     
     
-    public void generateAssignment(Elimination tournament){
+    public void generateAssignment(Elimination tournament, List<Participant> seeding){
         if(tournament.getType().equals(EliminationType.SINGLE)){
-            generateSingle(tournament);
+            generateSingle(tournament, seeding);
         }
         if(tournament.getType().equals(EliminationType.DOUBLE)){
-            generateDouble(tournament);
+            generateDouble(tournament, seeding);
         }
     }
     
-    private List<Participant> initParticipants(Set<Participant> participants, int N){
+    private List<Participant> initParticipants(Set<Participant> participants, int N, List<Participant> seeding){
+        if(seeding != null && !seeding.contains(null) && seeding.size() == N){
+            return seeding;
+        }
         int n = participants.size();
         if(n == N){
             return new ArrayList<>(participants);
@@ -202,7 +231,7 @@ public class EliminationService {
      * "Populate first round" part might need to be loodek at.
      * @param tournament 
      */
-    public void generateSingle(Elimination tournament){
+    public void generateSingle(Elimination tournament, List<Participant> seeding){
         int N = tournament.getN();
         int rounds = (int) (Math.log(N) / Math.log(2));
         List<Game> roundOne = new ArrayList<>();
@@ -226,7 +255,7 @@ public class EliminationService {
         }
         //populate first round, set BYE matches as finished 
         //random
-        List<Participant> participants = initParticipants(tournament.getParticipants(), N);
+        List<Participant> participants = initParticipants(tournament.getParticipants(), N, seeding);
         int first = 0;
         int last = participants.size() - 1;
         for (Game match : roundOne) {
@@ -278,7 +307,7 @@ public class EliminationService {
      * "Populate first round" part might need to be loodek at.
      * @param tournament 
      */
-    public void generateDouble(Elimination tournament){
+    public void generateDouble(Elimination tournament, List<Participant> seeding){
         //generate winner bracket matches and populate first round
         int N = tournament.getN();
         int winnerRounds = (int) (Math.log(N) / Math.log(2));
@@ -315,7 +344,7 @@ public class EliminationService {
         
         //populate first round, set BYE matches as finished 
         //random
-        List<Participant> participants = initParticipants(tournament.getParticipants(), N);
+        List<Participant> participants = initParticipants(tournament.getParticipants(), N, seeding);
         int first = 0;
         int last = participants.size() - 1;
         for (Game match : roundOne) {

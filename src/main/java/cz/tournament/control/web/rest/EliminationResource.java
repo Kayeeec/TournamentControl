@@ -2,7 +2,9 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Elimination;
+import cz.tournament.control.domain.Participant;
 import cz.tournament.control.service.EliminationService;
+import cz.tournament.control.service.dto.EliminationDTO;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import cz.tournament.control.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -38,8 +40,28 @@ public class EliminationResource {
         this.eliminationService = eliminationService;
     }
 
+//    /**
+//     * POST  /eliminations : Create a new elimination.
+//     *
+//     * @param elimination the elimination to create
+//     * @return the ResponseEntity with status 201 (Created) and with body the new elimination, or with status 400 (Bad Request) if the elimination has already an ID
+//     * @throws URISyntaxException if the Location URI syntax is incorrect
+//     */
+//    @PostMapping("/eliminations")
+//    @Timed
+//    public ResponseEntity<Elimination> createElimination(@RequestBody Elimination elimination) throws URISyntaxException {
+//        log.debug("REST request to save Elimination : {}", elimination);
+//        if (elimination.getId() != null) {
+//            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new elimination cannot already have an ID")).body(null);
+//        }
+//        Elimination result = eliminationService.createElimination(elimination);
+//        return ResponseEntity.created(new URI("/api/eliminations/" + result.getId()))
+//            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+//            .body(result);
+//    }
+    
     /**
-     * POST  /eliminations : Create a new elimination.
+     * POST  /eliminations : Create a new elimination. with DTO
      *
      * @param elimination the elimination to create
      * @return the ResponseEntity with status 201 (Created) and with body the new elimination, or with status 400 (Bad Request) if the elimination has already an ID
@@ -47,17 +69,47 @@ public class EliminationResource {
      */
     @PostMapping("/eliminations")
     @Timed
-    public ResponseEntity<Elimination> createElimination(@RequestBody Elimination elimination) throws URISyntaxException {
-        log.debug("REST request to save Elimination : {}", elimination);
+    public ResponseEntity<Elimination> createElimination(@RequestBody EliminationDTO eliminationDTO) throws URISyntaxException {
+        
+        log.debug("REST request to save EliminationDTO : {}", eliminationDTO);
+        Elimination elimination = eliminationDTO.getElimination();
         if (elimination.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new elimination cannot already have an ID")).body(null);
         }
-        Elimination result = eliminationService.createElimination(elimination);
+        Elimination result = eliminationService.createElimination(elimination, eliminationDTO.getSeeding());
         return ResponseEntity.created(new URI("/api/eliminations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+    
+    @PostMapping("/eliminations/recieveDTO")
+    public void recieveEliminationDTO(@RequestBody EliminationDTO eliminationDTO){
+        log.debug("Recieved {}, seedingIsEmpty: {}", eliminationDTO.toString(), eliminationDTO.getSeeding().isEmpty());
+        
+    }
 
+//    /**
+//     * PUT  /eliminations : Updates an existing elimination.
+//     *
+//     * @param elimination the elimination to update
+//     * @return the ResponseEntity with status 200 (OK) and with body the updated elimination,
+//     * or with status 400 (Bad Request) if the elimination is not valid,
+//     * or with status 500 (Internal Server Error) if the elimination couldnt be updated
+//     * @throws URISyntaxException if the Location URI syntax is incorrect
+//     */
+//    @PutMapping("/eliminations")
+//    @Timed
+//    public ResponseEntity<Elimination> updateElimination(@RequestBody Elimination elimination) throws URISyntaxException {
+//        log.debug("REST request to update Elimination : {}", elimination);
+//        if (elimination.getId() == null) {
+//            return createElimination(elimination);
+//        }
+//        Elimination result = eliminationService.updateElimination(elimination);
+//        return ResponseEntity.ok()
+//            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, elimination.getId().toString()))
+//            .body(result);
+//    }
+    
     /**
      * PUT  /eliminations : Updates an existing elimination.
      *
@@ -69,15 +121,24 @@ public class EliminationResource {
      */
     @PutMapping("/eliminations")
     @Timed
-    public ResponseEntity<Elimination> updateElimination(@RequestBody Elimination elimination) throws URISyntaxException {
-        log.debug("REST request to update Elimination : {}", elimination);
+    public ResponseEntity<Elimination> updateElimination(@RequestBody EliminationDTO eliminationDTO) throws URISyntaxException {
+        log.debug("REST request to update EliminationDTO : {}", eliminationDTO);
+        Elimination elimination = eliminationDTO.getElimination();
         if (elimination.getId() == null) {
-            return createElimination(elimination);
+            return createElimination(eliminationDTO);
         }
-        Elimination result = eliminationService.updateElimination(elimination);
+        Elimination result = eliminationService.updateElimination(elimination, eliminationDTO.getSeeding());
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, elimination.getId().toString()))
             .body(result);
+    }
+    
+    @GetMapping("/eliminations/seeding/{id}")
+    @Timed
+    public List<Participant> getEliminationSeeding(@PathVariable Long id) {
+        log.debug("REST request to get Elimination : {}", id);
+        List<Participant> seeding = eliminationService.getEliminationSeeding(id);
+        return seeding;
     }
 
     /**

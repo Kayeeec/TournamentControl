@@ -45,6 +45,11 @@
                     templateUrl: 'app/entities/elimination/elimination-detail.html',
                     controller: 'EliminationDetailController',
                     controllerAs: 'vm'
+                },
+                'evaluation-table@elimination-detail':{
+                    templateUrl: 'my_components/evaluation-table/evaluation-table.html',
+                    controller: 'EvaluationTableController',
+                    controllerAs: 'vm'
                 }
             },
             resolve: {
