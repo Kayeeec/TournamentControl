@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Participant;
 
 import cz.tournament.control.repository.ParticipantRepository;
+import cz.tournament.control.service.ParticipantService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -29,9 +30,11 @@ public class ParticipantResource {
     private static final String ENTITY_NAME = "participant";
         
     private final ParticipantRepository participantRepository;
+    private final ParticipantService participantService;
 
-    public ParticipantResource(ParticipantRepository participantRepository) {
+    public ParticipantResource(ParticipantRepository participantRepository, ParticipantService participantService) {
         this.participantRepository = participantRepository;
+        this.participantService = participantService;
     }
 
     /**
@@ -100,6 +103,18 @@ public class ParticipantResource {
     public ResponseEntity<Participant> getParticipant(@PathVariable Long id) {
         log.debug("REST request to get Participant : {}", id);
         Participant participant = participantRepository.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(participant));
+    }
+    
+    /**
+     * Finds or creates and returns BYE participant. Used in Elimination, for seeding.
+     * @return  BYE participant, has no team nor player, for every user only one in database.
+     */
+    @GetMapping("/participants/bye")
+    @Timed
+    public ResponseEntity<Participant> getByeParticipant() {
+        log.debug("REST request to get BYE [articipant");
+        Participant participant = participantService.getByeParticipant();
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(participant));
     }
 

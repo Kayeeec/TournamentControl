@@ -46,10 +46,24 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="user_id" type="bigint">
+            <column name="sets_to_win" type="integer">
                 <constraints nullable="true" />
             </column>
 
+            <column name="ties_allowed" type="bit">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="playing_fields" type="integer">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="user_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="set_settings_id" type="bigint">
+                <constraints unique="true" nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="tournament" columnName="created" columnDataType="datetime"/>

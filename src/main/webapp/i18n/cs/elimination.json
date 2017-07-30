@@ -1,0 +1,22 @@
+{
+    "tournamentControlApp": {
+        "elimination" : {
+            "home": {
+                "title": "Eliminations",
+                "createLabel": "Vytvořit Elimination",
+                "createOrEditLabel": "Vytvořit nebo upravit Elimination"
+            },
+            "created": "Byl vytvořen potomek entity Elimination s identifikátorem {{ param }}",
+            "updated": "Potomek entity Elimination s identifikátorem {{ param }} byl upravený.",
+            "deleted": "Potomek entity Elimination s identifikátorem {{ param }} bol smazaný.",
+            "delete": {
+                "question": "Jste si jisti, že chcete smazat Elimination {{ id }}?"
+            },
+            "detail": {
+                "title": "Elimination"
+            },
+            "type": "Type",
+            "bronzeMatch": "Bronze Match"
+        }
+    }
+}

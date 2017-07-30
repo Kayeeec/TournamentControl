@@ -1,0 +1,23 @@
+{
+    "tournamentControlApp": {
+        "setSettings" : {
+            "home": {
+                "title": "Set Settings",
+                "createLabel": "Vytvořit Set Settings",
+                "createOrEditLabel": "Vytvořit nebo upravit Set Settings"
+            },
+            "created": "Byl vytvořen potomek entity Set Settings s identifikátorem {{ param }}",
+            "updated": "Potomek entity Set Settings s identifikátorem {{ param }} byl upravený.",
+            "deleted": "Potomek entity Set Settings s identifikátorem {{ param }} bol smazaný.",
+            "delete": {
+                "question": "Jste si jisti, že chcete smazat Set Settings {{ id }}?"
+            },
+            "detail": {
+                "title": "Set Settings"
+            },
+            "maxScore": "Max Score",
+            "minReachedScore": "Min Reached Score",
+            "leadByPoints": "Lead By Points"
+        }
+    }
+}

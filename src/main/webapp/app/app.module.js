@@ -18,7 +18,8 @@
             // jhipster-needle-angularjs-add-module JHipster will add new module here
             'angular-loading-bar',
             'angular.filter',
-            'checklist-model'
+            'checklist-model',
+            'ngDragDrop'
         ])
         .run(run);
 

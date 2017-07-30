@@ -2,11 +2,6 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Tournament;
-import cz.tournament.control.domain.User;
-
-import cz.tournament.control.repository.TournamentRepository;
-import cz.tournament.control.repository.UserRepository;
-import cz.tournament.control.security.SecurityUtils;
 import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -29,22 +24,14 @@ import java.util.Optional;
 public class TournamentResource {
 
     private final Logger log = LoggerFactory.getLogger(TournamentResource.class);
-
     private static final String ENTITY_NAME = "tournament";
-        
-    private final TournamentRepository tournamentRepository;
-    private final UserRepository userRepository;
+    
     private final TournamentService tournamentService;
 
-    public TournamentResource(TournamentRepository tournamentRepository, UserRepository userRepository, TournamentService tournamentService) {
-        this.tournamentRepository = tournamentRepository;
-        this.userRepository = userRepository;
+    public TournamentResource(TournamentService tournamentService) {
         this.tournamentService = tournamentService;
     }
 
-    
-    
-    
 
     /**
      * POST  /tournaments : Create a new tournament.
@@ -83,7 +70,7 @@ public class TournamentResource {
         if (tournament.getId() == null) {
             return createTournament(tournament);
         }
-        Tournament result = tournamentRepository.save(tournament);
+        Tournament result = tournamentService.updateTournament(tournament);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, tournament.getId().toString()))
             .body(result);
@@ -98,7 +85,7 @@ public class TournamentResource {
     @Timed
     public List<Tournament> getAllTournaments() {
         log.debug("REST request to get all Tournaments");
-        List<Tournament> tournaments = tournamentRepository.findByUserIsCurrentUser();
+        List<Tournament> tournaments = tournamentService.findAll();
         return tournaments;
     }
 
@@ -112,7 +99,7 @@ public class TournamentResource {
     @Timed
     public ResponseEntity<Tournament> getTournament(@PathVariable Long id) {
         log.debug("REST request to get Tournament : {}", id);
-        Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
+        Tournament tournament = tournamentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(tournament));
     }
 
@@ -126,7 +113,7 @@ public class TournamentResource {
     @Timed
     public ResponseEntity<Void> deleteTournament(@PathVariable Long id) {
         log.debug("REST request to delete Tournament : {}", id);
-        tournamentRepository.delete(id);
+        tournamentService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

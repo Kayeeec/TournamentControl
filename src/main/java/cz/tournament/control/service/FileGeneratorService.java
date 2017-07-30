@@ -7,30 +7,24 @@ package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
-import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.repository.UserRepository;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import org.jopendocument.dom.spreadsheet.RowStyle;
 import org.jopendocument.dom.spreadsheet.Sheet;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
-import org.jopendocument.model.OpenDocument;
-import org.jopendocument.sample.SpreadSheetCreation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ResourceUtils;
 
 /**
  *
@@ -118,31 +112,31 @@ public class FileGeneratorService {
             for (Game match : tournament.getMatches()) {
                 if (match.isFinished()) {
                     if (match.getRivalA().equals(participantList.get(i))) {
-                        if (match.getScoreA() > match.getScoreB()) {
+                        if (match.getSumOfScoresA() > match.getSumOfScoresB()) {
                             eval.wins += 1;
                         }
-                        if (match.getScoreA() < match.getScoreB()) {
+                        if (match.getSumOfScoresA() < match.getSumOfScoresB()) {
                             eval.loses += 1;
                         }
-                        if (match.getScoreA() == match.getScoreB()) {
+                        if (match.getSumOfScoresA() == match.getSumOfScoresB()) {
                             eval.ties += 1;
                         }
-                        eval.scoreHis += match.getScoreA();
-                        eval.scoreRival += match.getScoreB();
+                        eval.scoreHis += match.getSumOfScoresA();
+                        eval.scoreRival += match.getSumOfScoresB();
                         eval.matches += 1;
                     }
                     if (match.getRivalB().equals(participantList.get(i))) {
-                        if (match.getScoreA() > match.getScoreB()) {
+                        if (match.getSumOfScoresA() > match.getSumOfScoresB()) {
                             eval.loses += 1;
                         }
-                        if (match.getScoreA() < match.getScoreB()) {
+                        if (match.getSumOfScoresA() < match.getSumOfScoresB()) {
                             eval.wins += 1;
                         }
-                        if (match.getScoreA() == match.getScoreB()) {
+                        if (match.getSumOfScoresA() == match.getSumOfScoresB()) {
                             eval.ties += 1;
                         }
-                        eval.scoreHis += match.getScoreB();
-                        eval.scoreRival += match.getScoreA();
+                        eval.scoreHis += match.getSumOfScoresB();
+                        eval.scoreRival += match.getSumOfScoresA();
                         eval.matches += 1;
                     }
                 }
@@ -210,7 +204,7 @@ public class FileGeneratorService {
             Object[][] data = new Object[rows][7];
             for (int r = 0; r < rows; r++) {
                 Game m = matches.get(position);
-                data[r] = new Object[]{m.getRound(), m.getRivalA().getName(), ":", m.getRivalB().getName(), m.getScoreA(), ":", m.getScoreB()};
+                data[r] = new Object[]{m.getRound(), m.getRivalA().getName(), ":", m.getRivalB().getName(), m.getSumOfScoresA(), ":", m.getSumOfScoresB()};
                 position += 1;
             }
             period[p] = new DefaultTableModel(data, matchesColumns);

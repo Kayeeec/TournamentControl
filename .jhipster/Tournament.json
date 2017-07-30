@@ -20,6 +20,14 @@
             "otherEntityName": "participant",
             "otherEntityField": "id",
             "ownerSide": true
+        },
+        {
+            "relationshipName": "setSettings",
+            "otherEntityName": "setSettings",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "tournament"
         }
     ],
     "fields": [
@@ -52,6 +60,19 @@
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "setsToWin",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "tiesAllowed",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "playingFields",
+            "fieldType": "Integer",
+            "fieldValidateRules": []
         }
     ],
     "changelogDate": "20170320075825",

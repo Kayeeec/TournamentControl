@@ -29,12 +29,23 @@
         <dd>
             <span>{{vm.allVersusAll.created| date:'medium'}}</span>
         </dd>
+        
+        
+        <dt><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></dt>
+        <dd>
+            <span>{{vm.allVersusAll.setsToWin}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.tiesAllowed">Ties Allowed</span></dt>
+        <dd>
+            <span ng-if="vm.allVersusAll.tiesAllowed">Yes</span>
+            <span ng-if="!vm.allVersusAll.tiesAllowed">No</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></dt>
+        <dd>
+            <span>{{vm.allVersusAll.playingFields}}</span>
+        </dd>
         <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
         <dd>
-            <!--            <span ng-repeat="participant in vm.allVersusAll.participants">
-                            <a ui-sref="participant-detail({id: participant.id})">{{participant.id}}</a>{{$last ? '' : ', '}}
-                        </span>-->
-
             <span ng-repeat="participant in vm.allVersusAll.participants">
                 <a ng-if="participant.player" ui-sref="player-detail({id: participant.player.id})">{{participant.player.name}}</a>
                 <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>{{$last ? '' : ', '}}
@@ -45,8 +56,22 @@
         <dd>
             <span>{{vm.allVersusAll.numberOfMutualMatches}}</span>
         </dd>
+        
+        <dt><span data-translate="">Max Score</span></dt>
+        <dd>
+            <span>{{vm.allVersusAll.setSettings.maxScore}}</span>
+        </dd>
+        <dt><span data-translate="">Min Reached Score</span></dt>
+        <dd>
+            <span>{{vm.allVersusAll.setSettings.minReachedScore}}</span>
+        </dd>
+        <dt><span data-translate="">Lead By Points</span></dt>
+        <dd>
+            <span>{{vm.allVersusAll.setSettings.leadByPoints}}</span>
+        </dd>
     </dl>
     
+    <!-- buttons -->
     <div style="padding-bottom: 20px">    
         <button type="submit"
                 ui-sref="{{ vm.previousState}}"
@@ -64,51 +89,9 @@
             <span class="hidden-sm-down" data-translate=""> Generate .ods spreadsheet </span>
         </a>
     </div>
-
-    <!--evaluation able ==========================================================================================--> 
-    <div class="panel panel-default panel-info">
-        <!-- Default panel contents -->
-        <div class="panel-heading">
-            <h3 class="panel-title">Evaluation table</h3><!--TODO: data-translate-->
-        </div>
-
-        <!-- Table -->
-        <div class="table-responsive">
-            <table class="jh-table table table-striped myTextCenter">
-                <thead>
-                    <tr>
-                        <th class="myTextCenter">Rank</th>
-                        <th class="myTextCenter">Participant</th>
-                        <th class="myWins myTextCenter">Wins</th>
-                        <th class="myTextCenter myLoses">Loses</th>
-                        <th class="myTextCenter">Ties</th>
-                        <th class="myTextCenter" colspan="3">Score</th>
-                        <th class="myTextCenter">Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <div ng-repeat="participant in vm.allVersusAll.participants">
-                    <div ng-if="participant.player" ng-init="temp = pointCount(participant.id);temp.rival = participant.player.name; counts.push(temp)"></div>
-                    <div ng-if="participant.team" ng-init="temp = pointCount(participant.id);temp.rival = participant.team.name; counts.push(temp)"></div>
-                </div>
-                <tr ng-repeat="count in counts| orderBy:'-total'">
-                    <td >{{$index + 1}}</td>
-                    <td id="participant">{{count.rival}}</td>
-                    <td id="wins" class="myWins">{{count.wins}}</td>
-                    <td id="loses" class="myLoses">{{count.loses}}</td>
-                    <td id="ties">{{count.ties}}</td>    
-                    <td id="score" style="text-align: right">{{count.score}}</td>
-                    <td id="colon" style="text-align: center; padding: 0px">:</td>
-                    <td id="scoreRival" style="text-align: left">{{count.scoreRival}}</td>
-                    <td id="points" class="myTotal">{{count.total}}</td>
-                </tr>
-                <div ng-init="emptyCounts()"></div> 
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-    <!--END evaluation able ==========================================================================================--> 
+    <!-- END - buttons -->
+    
+    <div ui-view="evaluation-table"/>
 
     <!--tables for matches and editing scores =================================================================== -->
     <div class="panel panel-primary" ng-repeat="(period,games) in vm.allVersusAll.matches | groupBy: 'period'">
@@ -124,8 +107,9 @@
                     <tr >
                         <th>ID</th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.round">Round</span></th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.playingField">Playing Field</span></th>
                         <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
-                        <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.score">Score</span></th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.gameSet.score">Score</span></th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.finished">Finished</span></th>
                         <th></th>
                     </tr>
@@ -133,7 +117,8 @@
                 <tbody>
                     <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:'round' track by game.id">
                         <td>{{game.id}}</td>
-                        <td style="text-align: center">{{game.round}}</td>
+                        <td style="text-align: center; font-weight: bolder">{{game.round}}</td>
+                        <td style="text-align: center">{{game.playingField}}</td>
                         <td style="text-align: right">
                             <a ng-if="game.rivalA.player" ui-sref="player-detail({id:game.rivalA.player.id})">{{game.rivalA.player.name}}</a>
                             <a ng-if="game.rivalA.team" ui-sref="team-detail({id:game.rivalA.team.id})">{{game.rivalA.team.name}}</a>
@@ -143,21 +128,23 @@
                             <a ng-if="game.rivalB.player" ui-sref="player-detail({id:game.rivalB.player.id})">{{game.rivalB.player.name}}</a>
                             <a ng-if="game.rivalB.team" ui-sref="team-detail({id:game.rivalB.team.id})">{{game.rivalB.team.name}}</a>
                         </td>
-
-                        <td style="text-align: right">{{game.scoreA}}</td>
-                        <td style="text-align: center; padding: 0px">:</td>
-                        <td style="text-align: left">{{game.scoreB}}</td>
+                        <td>
+                            <span ng-repeat="set in game.sets | orderBy:'id'">
+                                {{set.scoreA}} : {{set.scoreB}}{{$last ? '' : ' | '}}
+                            </span>
+                        </td>
+                        
                         <td style="text-align: center">{{game.finished}}</td>
                         <td class="text-right">
                             <div class="btn-group flex-btn-group-container">
                                 <button type="submit"
-                                        ui-sref="game-detail({gameid:game.id, id:vm.allVersusAll.id})"
+                                        ui-sref="game-detail({gameId:game.id, id:vm.allVersusAll.id})"
                                         class="btn btn-info btn-sm">
                                     <span class="glyphicon glyphicon-eye-open"></span>
                                     <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                                 </button>
                                 <button type="submit"
-                                        ui-sref="game.edit({gameid:game.id, id:vm.allVersusAll.id})"
+                                        ui-sref="game.allVersusAll-edit({gameId:game.id, id:vm.allVersusAll.id})"
                                         class="btn btn-primary btn-sm">
                                     <span class="glyphicon glyphicon-pencil"></span>
                                     <span class="hidden-sm-down" data-translate="entity.action.edit"></span>

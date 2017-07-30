@@ -26,8 +26,12 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('tournament');
+                    $translatePartialLoader.addPart('setSettings');
                     $translatePartialLoader.addPart('allVersusAll');
+                    $translatePartialLoader.addPart('elimination');
+                    $translatePartialLoader.addPart('eliminationType');
                     $translatePartialLoader.addPart('game');
+                    $translatePartialLoader.addPart('gameSet');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -112,6 +116,9 @@
                                 pointsForLosing: null,
                                 pointsForTie: null,
                                 created: null,
+                                setsToWin: null,
+                                tiesAllowed: null,
+                                playingFields: null,
                                 id: null
                             };
                         }

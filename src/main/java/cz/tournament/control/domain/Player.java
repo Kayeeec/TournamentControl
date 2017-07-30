@@ -142,7 +142,7 @@ public class Player implements Serializable {
         return "Player{" +
             "id=" + id +
             ", name='" + name + "'" +
-            ", note='" + note + "'" +
+//            ", note='" + note + "'" +
             '}';
     }
 }

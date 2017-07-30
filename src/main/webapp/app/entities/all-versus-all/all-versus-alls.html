@@ -19,14 +19,20 @@
             <thead>
                 <tr>
                     <th><span data-translate="global.field.id">ID</span></th>
-                    <th><span data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches">Number Of Mutual Matches</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.name">Name</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.note">Note</span></th>
+                    <th><span data-translate="">Number of Participants</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.created">Created</span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="allVersusAll in vm.allVersusAlls track by allVersusAll.id">
                     <td><a ui-sref="all-versus-all-detail({id:allVersusAll.id})">{{allVersusAll.id}}</a></td>
-                    <td>{{allVersusAll.numberOfMutualMatches}}</td>
+                    <td>{{allVersusAll.name}}</td>
+                    <td>{{allVersusAll.note}}</td>
+                    <td>{{allVersusAll.participants.length}}</td>
+                    <td>{{allVersusAll.created| date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

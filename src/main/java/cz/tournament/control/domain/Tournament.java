@@ -47,7 +47,20 @@ public class Tournament implements Serializable {
     @Column(name = "created")
     private ZonedDateTime created;
 
-    @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER)
+    @Column(name = "sets_to_win")
+    private Integer setsToWin;
+
+    @Column(name = "ties_allowed")
+    private Boolean tiesAllowed = true;
+
+    @Column(name = "playing_fields")
+    private Integer playingFields;
+    
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(unique = true)
+    private SetSettings setSettings;
+
+    @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnoreProperties({"tournament"})
     private Set<Game> matches = new HashSet<>();
@@ -148,6 +161,54 @@ public class Tournament implements Serializable {
         this.created = created;
     }
 
+    public Integer getSetsToWin() {
+        return setsToWin;
+    }
+
+    public Tournament setsToWin(Integer setsToWin) {
+        this.setsToWin = setsToWin;
+        return this;
+    }
+
+    public void setSetsToWin(Integer setsToWin) {
+        this.setsToWin = setsToWin;
+    }
+
+    public Boolean getTiesAllowed() {
+        return tiesAllowed;
+    }
+
+    public Tournament tiesAllowed(Boolean tiesAllowed) {
+        this.tiesAllowed = tiesAllowed;
+        return this;
+    }
+
+    public void setTiesAllowed(Boolean tiesAllowed) {
+        this.tiesAllowed = tiesAllowed;
+    }
+
+    public Integer getPlayingFields() {
+        return playingFields;
+    }
+
+    public Tournament playingFields(Integer playingFields) {
+        if(playingFields<1){
+            throw new IllegalArgumentException("Tournament.playingFields cannot "
+                    + "be smaller than 1. Given argument: "+playingFields);
+        }
+        if(!participants.isEmpty() && playingFields > (participants.size()/2)){
+            throw new IllegalArgumentException("Tournament.playingFields cannot "
+                    + "be greater than number of participants divided by 2. Given argument = "+playingFields
+                    +", number of participants = "+participants.size());
+        }
+        this.playingFields = playingFields;
+        return this;
+    }
+
+    public void setPlayingFields(Integer playingFields) {
+        this.playingFields = playingFields;
+    }
+
     public Set<Game> getMatches() {
         return matches;
     }
@@ -209,6 +270,19 @@ public class Tournament implements Serializable {
         this.participants = participants;
     }
 
+    public SetSettings getSetSettings() {
+        return setSettings;
+    }
+
+    public Tournament setSettings(SetSettings setSettings) {
+        this.setSettings = setSettings;
+        return this;
+    }
+
+    public void setSetSettings(SetSettings setSettings) {
+        this.setSettings = setSettings;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -239,6 +313,9 @@ public class Tournament implements Serializable {
             ", pointsForLosing='" + pointsForLosing + "'" +
             ", pointsForTie='" + pointsForTie + "'" +
             ", created='" + created + "'" +
+            ", setsToWin='" + setsToWin + "'" +
+            ", tiesAllowed='" + tiesAllowed + "'" +
+            ", playingFields='" + playingFields + "'" +
             '}';
     }
 }
