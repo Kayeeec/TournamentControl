@@ -1,0 +1,20 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "type",
+            "fieldType": "EliminationType",
+            "fieldValues": "SINGLE, DOUBLE"
+        },
+        {
+            "fieldName": "bronzeMatch",
+            "fieldType": "Boolean"
+        }
+    ],
+    "changelogDate": "20170404182930",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "elimination",
+    "pagination": "infinite-scroll"
+}

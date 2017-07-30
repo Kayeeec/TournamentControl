@@ -21,9 +21,13 @@
             "pointsForLosing": "Points For Losing",
             "pointsForTie": "Points For Tie",
             "created": "Created",
+            "setsToWin": "Sets To Win",
+            "tiesAllowed": "Ties Allowed",
+            "playingFields": "Playing Fields",
             "matches": "Matches",
             "user": "User",
-            "participants": "Participants"
+            "participants": "Participants",
+            "setSettings": "Set Settings"
         }
     }
 }

@@ -13,6 +13,9 @@
                 "team": "Team",
                 "tournament": "Tournament",
                 "allVersusAll": "All Versus All",
+                "elimination": "Elimination",
+                "gameSet": "Game Set",
+                "setSettings": "Set Settings",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
@@ -126,5 +129,6 @@
         "emailexists": "E-mail is already in use!",
         "idexists": "A new {{ entityName }} cannot already have an ID"
     },
-    "footer": "This is your footer"
+    "footer": "This is your footer",
+    "unspecified":"Unspecified"
 }

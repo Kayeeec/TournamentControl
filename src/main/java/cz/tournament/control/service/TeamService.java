@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Participant;
@@ -12,6 +7,7 @@ import cz.tournament.control.repository.ParticipantRepository;
 import cz.tournament.control.repository.TeamRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -50,6 +46,33 @@ public class TeamService {
         log.debug("TEAM_SERVICE: Created Participant: {}", participant);
         
         return result;
+    }
+    
+    public Team updateTeam(Team team){
+        Team result = teamRepository.save(team);
+        log.debug("TEAM_SERVICE: Updated Team: {}", result);
+        return result;
+    }
+    
+    public List<Team> findAll(){
+        List<Team> teams = teamRepository.findByUserIsCurrentUser();
+        return teams;
+    }
+    
+    public Team findOne(Long id){
+        Team team = teamRepository.findOneWithEagerRelationships(id);
+        return team;
+    }
+    
+    /**
+     * Deletes a team entity and its associated participant entity.
+     * 
+     * @param id of entity to delete
+     */
+    public void delete(Long id){
+        Participant participant = participantRepository.findByTeam(teamRepository.findOne(id));
+        teamRepository.delete(id);
+        participantRepository.delete(participant);
     }
     
 }

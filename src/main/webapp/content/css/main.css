@@ -7,15 +7,6 @@ body {
 /* ==========================================================================
 My styles
 ============================================================================= */
-.myFields
-    {
-    display: block;
-    float: left;
-    }
-.myDistributeHorizontally{
-    display: flex; 
-    justify-content: space-between;
-}
 .myWins{
     color: #060;
 }
@@ -27,6 +18,75 @@ My styles
 }
 .myTextCenter{
     text-align: center;
+}
+.myPaqddingBottom{
+    padding-bottom: 10px;
+}
+.bracket-table{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 200;
+    width: 100px;
+    
+}
+.bracket-table, .bracket-table td {
+    border: 1px solid dimgray;
+    padding: 3px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.bracket-period-td {
+    vertical-align: middle;
+    text-align: center;
+}
+.bracket-name-td{
+    width: 70px;
+}
+.bracket-scores-td{
+    text-align: center;
+}
+.mylinkDisabled {
+  cursor: not-allowed;
+  pointer-events: none;
+/*  color: grey;*/
+  opacity: .5;
+}
+.bracket-match-finished{
+    color: #4cae4c;
+}
+
+.tree-node-table{
+    width: 150px;
+    background-color:#eee;
+    border:1px solid #666666;
+}
+.tree-node-table-A{
+    width: auto;
+    height: 36px;
+    padding: auto;
+    border: 1px solid #666666;
+    text-align: center;
+    line-height: 36px;
+}
+.my-wrap{
+    position: relative;
+}
+.this-is-under{
+    z-index: 0;
+    opacity: 0;
+}
+.this-is-over{
+    position: absolute; 
+    z-index: 1;
+}
+.my-dropzones-container{
+    position: absolute; 
+    top: 0px; 
+    left: 0px;
+}
+.clear-both{
+    clear: both;
 }
 
 /* ==========================================================================

@@ -5,9 +5,9 @@
             .module('tournamentControlApp')
             .controller('AllVersusAllDialogController', AllVersusAllDialogController);
 
-    AllVersusAllDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'AllVersusAll', 'Participant', 'filterFilter'];
+    AllVersusAllDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'AllVersusAll', 'Participant', 'filterFilter', 'SetSettings'];
 
-    function AllVersusAllDialogController($timeout, $scope, $stateParams, $uibModalInstance, entity, AllVersusAll, Participant, filterFilter) {
+    function AllVersusAllDialogController($timeout, $scope, $stateParams, $uibModalInstance, entity, AllVersusAll, Participant, filterFilter, SetSettings) {
         var vm = this;
 
         vm.allVersusAll = entity;
@@ -16,11 +16,71 @@
         vm.participants = Participant.query();
         
 //        initiating default values 
-        vm.allVersusAll.participants = vm.allVersusAll.participants || [];
+        if(vm.allVersusAll.tiesAllowed === null){ vm.allVersusAll.tiesAllowed = true; }
         vm.allVersusAll.numberOfMutualMatches = vm.allVersusAll.numberOfMutualMatches || 1;
+        
+        /* participants stuff */
+        vm.allVersusAll.participants = vm.allVersusAll.participants || [];
         vm.selectedPlayers = filterFilter(vm.allVersusAll.participants, {team : null});
         vm.selectedTeams = filterFilter(vm.allVersusAll.participants, {player : null});
         $scope.chosen = 1;
+        
+        function selectParticipants() {
+            console.log("Selecting participants");
+            if($scope.chosen === 1){
+                angular.copy(vm.selectedPlayers, vm.elimination.participants);
+                console.log("vm.selectedPlayers: " + vm.selectedPlayers);
+                console.log("vm.elimination.participants: " + vm.elimination.participants);
+            }
+            if($scope.chosen === 2){
+                angular.copy(vm.selectedTeams, vm.elimination.participants);
+                console.log("vm.selectedTeams: " + vm.selectedTeams);
+                console.log("vm.elimination.participants: " + vm.elimination.participants);
+            }
+        }
+        $scope.isPlayer = function (participant) {
+            if(participant.player !== null) return true;
+            return false;
+        };
+        $scope.isTeam = function (participant) {
+            if(participant.team !== null) return true;
+            return false;
+        };
+        /* END - participants stuff */
+        
+        /* setSettings stuff */
+        vm.setSettingsChosen = initSetSettingsChosen();
+        vm.preparedSettings = vm.allVersusAll.setSettings 
+                || {id: null, maxScore: null, leadByPoints: null, minReachedPoints: null};
+        
+        function initSetSettingsChosen() {
+            if (vm.allVersusAll.id !== null && vm.allVersusAll.setSettings !== null) {
+                if(vm.allVersusAll.setSettings.leadByPoints !== null 
+                    || vm.allVersusAll.setSettings.minReachedScore !== null){
+                    return 'leadByPoints';
+                }
+                return 'maxScore';
+            }
+            return null;
+        }
+        
+        function resolveSetSettings() {
+            if (vm.setSettingsChosen === 'maxScore') {
+                vm.preparedSettings.leadByPoints = null;
+                vm.preparedSettings.minReachedScore = null;
+            }
+            if (vm.setSettingsChosen === 'leadByPoints') {
+                vm.preparedSettings.maxScore = null;
+            }
+            if (vm.preparedSettings.id !== null ||
+                vm.preparedSettings.maxScore !== null ||
+                vm.preparedSettings.leadByPoints !== null ||
+                vm.preparedSettings.minReachedScore !== null){
+                    vm.allVersusAll.setSettings = vm.preparedSettings;
+                    console.log(vm.allVersusAll.setSettings);
+            }
+        }
+        /* END - setSettings stuff */
 
         $timeout(function () {
             angular.element('.form-group:eq(1)>input').focus();
@@ -35,30 +95,17 @@
             $(this).tab('show');
         });
         
-        function selectParticipants() {
-            console.log("Selecting participants");
-            if($scope.chosen === 1){
-                angular.copy(vm.selectedPlayers, vm.allVersusAll.participants);
-                console.log("vm.selectedPlayers: " + vm.selectedPlayers);
-                console.log("vm.allVersusAll.participants: " + vm.allVersusAll.participants);
-            }
-            if($scope.chosen === 2){
-                angular.copy(vm.selectedTeams, vm.allVersusAll.participants);
-                console.log("vm.selectedTeams: " + vm.selectedTeams);
-                console.log("vm.allVersusAll.participants: " + vm.allVersusAll.participants);
-            }
-        }
-        
-
         function clear() {
             $uibModalInstance.dismiss('cancel');
         }
-
+        
         function save() {
             
             vm.isSaving = true;
             
             selectParticipants();
+            resolveSetSettings();
+            
             
             if (vm.allVersusAll.id !== null) {
                 AllVersusAll.update(vm.allVersusAll, onSaveSuccess, onSaveError);
@@ -76,9 +123,15 @@
         function onSaveError() {
             vm.isSaving = false;
         }
-
-
-
+        
+        $scope.maxPlayingFields = function () {
+            if($scope.chosen === 1){
+                return Math.floor(vm.selectedPlayers.length/2);
+            }
+            return Math.floor(vm.selectedTeams.length/2);
+        };
+        
+        $('.collapse').collapse();
 
     }
 })();

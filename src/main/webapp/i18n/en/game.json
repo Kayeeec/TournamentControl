@@ -4,7 +4,7 @@
             "home": {
                 "title": "Games",
                 "createLabel": "Create a new Game",
-                "createOrEditLabel": "Create or edit a Game"
+                "editLabel": "Edit game #{{ id }}"
             },
             "created": "A new Game is created with identifier {{ param }}",
             "updated": "A Game is updated with identifier {{ param }}",
@@ -15,17 +15,16 @@
             "detail": {
                 "title": "Game"
             },
-            "scoreA": "Score A",
-            "scoreB": "Score B",
             "finished": "Finished",
             "round": "Round",
             "period": "Period",
             "note": "Note",
+            "playingField": "Playing Field",
             "tournament": "Tournament",
+            "rivals":"Rivals",
             "rivalA": "Rival A",
             "rivalB": "Rival B",
-            "rivals": "Rivals",
-            "score":"Score"
+            "sets": "Sets"
         }
     }
 }

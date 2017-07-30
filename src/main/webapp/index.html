@@ -12,11 +12,14 @@
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css">
+
     <!-- endinject -->
     <!-- endbuild -->
     <!-- build:css content/css/main.css -->
     <link rel="stylesheet" href="content/css/main.css">
     <!-- endbuild -->
+    
+    <link rel="stylesheet" href="my_components/treant-js-master/Treant.css">
     
 </head>
 <body ng-app="tournamentControlApp" ng-strict-di>
@@ -49,6 +52,7 @@
     <!-- build:js app/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="bower_components/messageformat/messageformat.js"></script>
     <script src="bower_components/json3/lib/json3.js"></script>
     <script src="bower_components/angular/angular.js"></script>
@@ -108,6 +112,12 @@
     <script src="app/entities/team/team.state.js"></script>
     <script src="app/entities/team/team.service.js"></script>
     <script src="app/entities/team/team.controller.js"></script>
+    <script src="app/entities/set-settings/set-settings-dialog.controller.js"></script>
+    <script src="app/entities/set-settings/set-settings-detail.controller.js"></script>
+    <script src="app/entities/set-settings/set-settings-delete-dialog.controller.js"></script>
+    <script src="app/entities/set-settings/set-settings.state.js"></script>
+    <script src="app/entities/set-settings/set-settings.service.js"></script>
+    <script src="app/entities/set-settings/set-settings.controller.js"></script>
     <script src="app/entities/player/player-dialog.controller.js"></script>
     <script src="app/entities/player/player-detail.controller.js"></script>
     <script src="app/entities/player/player-delete-dialog.controller.js"></script>
@@ -120,6 +130,12 @@
     <script src="app/entities/participant/participant.state.js"></script>
     <script src="app/entities/participant/participant.service.js"></script>
     <script src="app/entities/participant/participant.controller.js"></script>
+    <script src="app/entities/game-set/game-set-dialog.controller.js"></script>
+    <script src="app/entities/game-set/game-set-detail.controller.js"></script>
+    <script src="app/entities/game-set/game-set-delete-dialog.controller.js"></script>
+    <script src="app/entities/game-set/game-set.state.js"></script>
+    <script src="app/entities/game-set/game-set.service.js"></script>
+    <script src="app/entities/game-set/game-set.controller.js"></script>
     <script src="app/entities/game/game-dialog.controller.js"></script>
     <script src="app/entities/game/game-detail.controller.js"></script>
     <script src="app/entities/game/game-delete-dialog.controller.js"></script>
@@ -127,6 +143,12 @@
     <script src="app/entities/game/game.service.js"></script>
     <script src="app/entities/game/game.controller.js"></script>
     <script src="app/entities/entity.state.js"></script>
+    <script src="app/entities/elimination/elimination-dialog.controller.js"></script>
+    <script src="app/entities/elimination/elimination-detail.controller.js"></script>
+    <script src="app/entities/elimination/elimination-delete-dialog.controller.js"></script>
+    <script src="app/entities/elimination/elimination.state.js"></script>
+    <script src="app/entities/elimination/elimination.service.js"></script>
+    <script src="app/entities/elimination/elimination.controller.js"></script>
     <script src="app/entities/all-versus-all/all-versus-all-dialog.controller.js"></script>
     <script src="app/entities/all-versus-all/all-versus-all-detail.controller.js"></script>
     <script src="app/entities/all-versus-all/all-versus-all-delete-dialog.controller.js"></script>
@@ -216,11 +238,15 @@
     <!-- endbuild -->
     
     <!--my added modules - should not be changed by jhipster-->
+    <script src="my_components/my-global-methods/my.service.js"></script>
+    <script src="my_components/evaluation-table/evaluation-table.controller.js"></script>
+    <script src="my_components/treant-js-master/vendor/raphael.js"></script>
+    <script src="my_components/treant-js-master/Treant.js"></script>
     <script src="bower_components/checklist-model/checklist-model.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="app/showtab-directive.js"></script>
     <script src="bower_components/angular-filter/dist/angular-filter.js"></script>
-    <script src="bower_components/jquery-stupid-table/stupidtable.min.js"></script>
+    <script src="bower_components/angular-dragdrop/src/angular-dragdrop.min.js"></script>
     <!--my text editor-->
     <script src="bower_components/tinymce/tinymce.min.js"></script>
     <script type="text/javascript">

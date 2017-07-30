@@ -25,5 +25,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="participant"/>
         
+        <addForeignKeyConstraint baseColumnNames="set_settings_id"
+                                 baseTableName="tournament"
+                                 constraintName="fk_tournament_set_settings_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="set_settings"/>
+
     </changeSet>
 </databaseChangeLog>

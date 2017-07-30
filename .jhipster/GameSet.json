@@ -1,0 +1,36 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "game",
+            "otherEntityName": "game",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "setSettings",
+            "otherEntityName": "setSettings",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "scoreA",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "scoreB",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "finished",
+            "fieldType": "Boolean"
+        }
+    ],
+    "changelogDate": "20170412171747",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "game_set",
+    "pagination": "no"
+}

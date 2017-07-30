@@ -1,5 +1,6 @@
 package cz.tournament.control.repository;
 
+import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
 
 import org.springframework.data.jpa.repository.*;
@@ -21,5 +22,7 @@ public interface TournamentRepository extends JpaRepository<Tournament,Long> {
 
     @Query("select tournament from Tournament tournament left join fetch tournament.participants where tournament.id =:id")
     Tournament findOneWithEagerRelationships(@Param("id") Long id);
+    
+    List<Tournament> findBySetSettings(SetSettings setSettings);
 
 }

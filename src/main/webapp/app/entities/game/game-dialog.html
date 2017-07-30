@@ -4,76 +4,199 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myGameLabel" data-translate="tournamentControlApp.game.home.createOrEditLabel">Create or edit a Game</h4>
+        <h4 class="modal-title" id="myGameLabel" data-translate="tournamentControlApp.game.home.editLabel" 
+            translate-values="{id: '{{vm.game.id}}'}" >Edit game #{{vm.game.id}}</h4>
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <table style="margin-left: auto; margin-right: auto; border: 0px">
-            <tr>
-                <td id="scoreA_input">
-                    <div class="form-group form-group-lg">
-                        <label class="control-label" for="field_scoreA">
-                            <a ng-if="vm.game.rivalA.player" ui-sref="player-detail({id:vm.game.rivalA.player.id})"><h3>{{vm.game.rivalA.player.name}}</h3></a>
-                            <a ng-if="vm.game.rivalA.team" ui-sref="team-detail({id:vm.game.rivalA.team.id})"><h3>{{vm.game.rivalA.team.name}}</h3></a>
-                        </label>
+
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th class="myTextCenter">
+                        <span ng-if="vm.game.rivalA.player">{{vm.game.rivalA.player.name}}</span>
+                        <span ng-if="vm.game.rivalA.team">{{vm.game.rivalA.team.name}}</span>
+                    </th>
+                    <th class="myTextCenter"> vs. </th>
+                    <th class="myTextCenter">
+                        <span ng-if="vm.game.rivalB.player">{{vm.game.rivalB.player.name}}</span>
+                        <span ng-if="vm.game.rivalB.team">{{vm.game.rivalB.team.name}}</span>
+                    </th>
+                    <th class="myTextCenter">Finished set</th>
+                    <th></th> <!-- advanced settings -->
+                    <th></th> <!-- delete -->
+                </tr>
+            </thead>
+            <tbody ng-repeat="set in vm.game.sets | orderBy:'id'" >
+                <tr>
+                    <td>
                         <input type="number" class="form-control" name="scoreA" id="field_scoreA"
-                               ng-model="vm.game.scoreA"
-                               min="0"/>
-                        <div ng-show="editForm.scoreA.$invalid">
-                            <p class="help-block"
-                               ng-show="editForm.scoreA.$error.min" data-translate="entity.validation.min" translate-value-min="0">
-                                This field should be at least 0.
-                            </p>
-                            <p class="help-block"
-                               ng-show="editForm.scoreA.$error.number" data-translate="entity.validation.number">
-                                This field should be a number.
-                            </p>
-                        </div>
-                    </div>
-                </td>
-                <td id="colon" style="text-align: center; padding: 10px"><h2>:</h2></td>
-                <td id="scoreB_input">
-                    <div class="form-group form-group-lg">
-                        <label class="control-label" for="field_scoreB">
-                            <a ng-if="vm.game.rivalB.player" ui-sref="player-detail({id:vm.game.rivalB.player.id})"><h3>{{vm.game.rivalB.player.name}}</h3></a>
-                            <a ng-if="vm.game.rivalB.team" ui-sref="team-detail({id:vm.game.rivalB.team.id})"><h3>{{vm.game.rivalB.team.name}}</h3></a>
-                        </label>
+                               ng-model="set.scoreA" ng-blur="vm.save_shouldFinishSetCheck(set, 'scoreA', 'scoreB')"
+                               max="{{set.setSettings.maxScore}}" min="0"
+                               ng-disabled="set.finished || vm.game.finished"
+                               />
+                    </td>
+                    <td class="myTextCenter"> : </td>
+                    <td>
                         <input type="number" class="form-control" name="scoreB" id="field_scoreB"
-                               ng-model="vm.game.scoreB"
-                               min="0"/>
-                        <div ng-show="editForm.scoreB.$invalid">
-                            <p class="help-block"
-                               ng-show="editForm.scoreB.$error.min" data-translate="entity.validation.min" translate-value-min="0">
-                                This field should be at least 0.
-                            </p>
-                            <p class="help-block"
-                               ng-show="editForm.scoreB.$error.number" data-translate="entity.validation.number">
-                                This field should be a number.
-                            </p>
+                               ng-model="set.scoreB" ng-blur="vm.save_shouldFinishSetCheck(set, 'scoreB', 'scoreA')"
+                               max="{{set.setSettings.maxScore}}" min="0"
+                               ng-disabled="set.finished || vm.game.finished"
+                               />
+                    </td>
+                    <td class="myTextCenter">
+                        <input type="checkbox" name="game_set_finished"
+                               ng-model="set.finished" ng-change="vm.save_CheckForSetToBeAdded(set)" />
+                    </td>
+                    <td>
+                        <!-- advanced set settings -->
+                        <div> 
+                            <button type="button" name="advancedSettings" class="btn btn-default btn-xs" 
+                                    data-toggle="collapse" data-target="#setSettingsForm_{{set.id}}" aria-expanded="false" 
+                                    ng-click="vm.copyToOldSettings(set)">
+                                <span class="glyphicon glyphicon-cog"></span>
+                                <span  data-translate=""> <!--TODO: data-translate -->
+                                </span>
+                            </button>
                         </div>
-                    </div>
-                </td>
-            </tr>
+                    </td>
+                    <td>
+                        <!-- delete -->
+                        <button ng-disabled="vm.game.sets.length === 1" type="button" name="remove_set_btn" 
+                                class="btn btn-danger btn-xs" ng-click="vm.removeSet(set.id)">
+                            <span class="glyphicon glyphicon-remove"></span>
+                            <span  data-translate=""> <!--TODO: data-translate -->
+                            </span>
+                        </button>
+                    </td>
+                </tr>
+                <tr id="setSettingsForm_{{set.id}}" class="collapse">
+                    <!-- collapse-able form for advanced set settings  -->
+                    <td colspan="6">
+                        <!--Set settings-->
+                        <div class=" form-inline myPaqddingBottom">
+                            <div class="form-group">
+                                <label class="control-label" for="field_maxScore">
+                                    <input type="radio" value="maxScore" ng-model="vm.chosenMap[set.id]" 
+                                           ng-disabled="set.finished || vm.game.finished"> Max Score
+                                </label>
+                                <input ng-disabled="vm.chosenMap[set.id] !== 'maxScore' || set.finished || vm.game.finished" type="number" class="form-control" 
+                                       name="maxScore" id="field_maxScore_{{set.id}}"
+                                       ng-model="set.setSettings.maxScore"
+                                       min="1"/>
+
+                                <div ng-show="editForm.maxScore.$invalid">
+                                    <p class="help-block"
+                                       ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                                        This field should be at least 1.
+                                    </p>
+                                    <p class="help-block"
+                                       ng-show="editForm.maxScore.$error.number" data-translate="entity.validation.number">
+                                        This field should be a number.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-inline myPaqddingBottom">
+                            <div class="form-group">
+                                <label class="control-label" for="field_leadByPoints">
+                                    <input type="radio" value="leadByPoints" ng-model="vm.chosenMap[set.id]"
+                                           ng-disabled="set.finished || vm.game.finished"> Lead-by points
+                                </label>
+                                <input ng-disabled="vm.chosenMap[set.id] !== 'leadByPoints' || set.finished || vm.game.finished " type="number" class="form-control" 
+                                       name="leadByPoints" id="field_leadByPoints_{{set.id}}"
+                                       ng-model="set.setSettings.leadByPoints"
+                                       min="1"/>
+                                <div ng-show="editForm.leadByPoints.$invalid">
+                                    <p class="help-block"
+                                       ng-show="editForm.leadByPoints.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                                        This field should be at least 1.
+                                    </p>
+                                    <p class="help-block"
+                                       ng-show="editForm.leadByPoints.$error.number" data-translate="entity.validation.number">
+                                        This field should be a number.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" data-translate="tournamentControlApp.setSettings.minReachedScore" for="field_minReachedScore">Min Reached Score</label>
+                                <input ng-disabled="vm.chosenMap[set.id] !== 'leadByPoints' || set.finished || vm.game.finished" type="number" class="form-control" 
+                                       name="minReachedScore" id="field_minReachedScore_{{set.id}}"
+                                       ng-model="set.setSettings.minReachedScore"
+                                       min="0"/>
+                                <div ng-show="editForm.minReachedScore.$invalid">
+                                    <p class="help-block"
+                                       ng-show="editForm.minReachedScore.$error.min" data-translate="entity.validation.min" translate-value-min="0">
+                                        This field should be at least 0.
+                                    </p>
+                                    <p class="help-block"
+                                       ng-show="editForm.minReachedScore.$error.number" data-translate="entity.validation.number">
+                                        This field should be a number.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--buttons-->
+                        <div class="form-group align-right">
+                            <button type="button" name="add_set_custom_btn" class="btn btn-success" ng-click="vm.updateSetSettings(set)"
+                                    ng-disabled="set.finished || vm.game.finished">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                <span  data-translate="entity.action.save">
+                                    Save
+                                </span>
+                            </button>
+                            <button type="button" name="cancel_set_custom_btn" class="btn btn-default" 
+                                    ng-click="vm.cancelSetSettings(set, vm.game.sets.indexOf(set))"
+                                    ng-disabled="set.finished || vm.game.finished">
+                                <span class="glyphicon glyphicon-ban-circle"></span>
+                                <span  data-translate=""> <!--TODO: data-translate -->
+                                    Reset
+                                </span>
+                            </button>
+                        </div>
+                        <!--buttons-->
+                        <!--Set settings--> 
+                    </td>
+                </tr>
+            </tbody>
         </table>
 
-
+        <div class="myPaqddingBottom pull-right">
+            <button type="button" name="add_set_default_btn" class="btn btn-success" ng-click="vm.addSet()">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span  data-translate="tournamentControlApp.gameSet.home.add">
+                    Add set
+                </span>
+            </button>
+        </div>
+        <div style="clear:both;"></div>
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.game.note" for="field_note">Note</label>
             <textarea type="text" class="form-control" name="note" id="field_note"
                       ng-model="vm.game.note"
-                      />
+                      ></textarea>
         </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.game.finished" for="field_finished">Finished</label>
-            <input type="checkbox" name="finished" id="field_finished"
+
+        <div class="checkbox">
+            <label class="control-label" for="field_finished">
+            <input type="checkbox" name="finished" id="field_finished" ng-disabled="vm.unfinishedSetPresent_orGameIsTie()"
                    ng-model="vm.game.finished"/>
+            <span data-translate="tournamentControlApp.game.finished">Finished</span>
+            </label>
+            <div ng-show="vm.unfinishedSetPresent_orGameIsTie()">
+                <p class="help-block"
+                   ng-show="vm.finishGameDisabledCause === 'unfinished'" data-translate=""> <!-- todo: translation -->
+                    At least one set remains unfinished.
+                </p>
+                <p class="help-block"
+                   ng-show="vm.finishGameDisabledCause === 'tie'" data-translate=""> <!-- todo: datatranslate -->
+                    The game is not allowed to end in tie. 
+                </p>
+            </div>
         </div>
-
-
-
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+        <button ng-disabled="vm.changed" type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
         </button>
         <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">

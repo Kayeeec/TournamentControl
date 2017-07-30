@@ -5,7 +5,6 @@ import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.repository.AllVersusAllRepository;
-import cz.tournament.control.repository.GameRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import java.time.ZonedDateTime;
@@ -30,12 +29,14 @@ public class AllVersusAllService {
     
     private final AllVersusAllRepository allVersusAllRepository;
     private final UserRepository userRepository;
-    private final GameRepository gameRepository;
+    private final GameService gameService;
+    private final SetSettingsService setSettingsService;
 
-    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository, GameRepository gameRepository) {
+    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository, GameService gameService, SetSettingsService setSettingsService) {
         this.allVersusAllRepository = allVersusAllRepository;
         this.userRepository = userRepository;
-        this.gameRepository = gameRepository;
+        this.gameService = gameService;
+        this.setSettingsService = setSettingsService;
     }
 
     /**
@@ -50,12 +51,24 @@ public class AllVersusAllService {
         return result;
     }
     
+    /**
+     * Updates allVersusAll entity. 
+     * If participants or number of mutual matches has been changed, 
+     * generates matches from scratch (old matches are deleted). 
+     * 
+     * @param allVersusAll entity to be updated
+     * @return the updated/persisted entity 
+     */
     public AllVersusAll updateAllVersusAll(AllVersusAll allVersusAll){
         log.debug("Request to update AllVersusAll : {}", allVersusAll);
         
+        //detect change for new assignment generation       
         AllVersusAll old = allVersusAllRepository.findOne(allVersusAll.getId());
+        
         if(!old.getParticipants().equals(allVersusAll.getParticipants()) 
-                || old.getNumberOfMutualMatches() != allVersusAll.getNumberOfMutualMatches()){
+                || old.getNumberOfMutualMatches() != allVersusAll.getNumberOfMutualMatches()
+                || old.getPlayingFields() != allVersusAll.getPlayingFields()
+                || old.getSetsToWin() != allVersusAll.getSetsToWin()){
             if(!allVersusAll.getMatches().isEmpty()) deleteAllMatches(allVersusAll);
             if(allVersusAll.getParticipants().size() >= 2) generateAssignment(allVersusAll);
         }
@@ -67,6 +80,13 @@ public class AllVersusAllService {
         
     }
     
+    /**
+     * Creates new allVersusAll entity. 
+     * Sets creation date, user and generates matches. 
+     * 
+     * @param allVersusAll entity to be created.    
+     * @return created/persisted entity
+     */
     public AllVersusAll createAllVersusAll(AllVersusAll allVersusAll){
         //set creator as user
         User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
@@ -75,6 +95,7 @@ public class AllVersusAllService {
         allVersusAll.setCreated(ZonedDateTime.now());
         
         AllVersusAll tmp = allVersusAllRepository.save(allVersusAll); //has to be in db before generating games
+        
         //generate assignment if it has participants
         if(tmp.getParticipants().size() >= 2){
             generateAssignment(tmp);
@@ -89,7 +110,7 @@ public class AllVersusAllService {
     }
 
     /**
-     *  Get all the allVersusAlls.
+     *  Get all curent user's allVersusAll entities.
      *  
      *  @return the list of entities
      */
@@ -121,10 +142,6 @@ public class AllVersusAllService {
      */
     public void delete(Long id) {
         log.debug("Request to delete AllVersusAll : {}", id);
-        
-        //delete all tournaments matches from tournament and database
-        deleteAllMatches(allVersusAllRepository.findOne(id));
-        
         allVersusAllRepository.delete(id);
     }
     
@@ -132,7 +149,7 @@ public class AllVersusAllService {
     private void deleteAllMatches(AllVersusAll ava){
         List<Game> matches = new ArrayList<>(ava.getMatches());
         ava.setMatches(new HashSet<>());
-        gameRepository.delete(matches);
+        gameService.delete(matches);
     }
     
     //==========================================================================
@@ -147,28 +164,30 @@ public class AllVersusAllService {
          return result;
     }
     
-    private void generateMatches(int period, int round, List<Participant> participant, AllVersusAll tournament){
+    //generates match, rivals are on special positions in array, 
+    private void generateMatches(int period, int r, List<Participant> participant, AllVersusAll tournament){
         int n = participant.size();
         Participant rivalA, rivalB;
+        
         for (int i = 0; i < n/2; i++){
             rivalA = participant.get(i);
             rivalB = participant.get(n-1-i);
             if(rivalA != null && rivalB != null){
-                
+                Game match = new Game().period(period).tournament(tournament);
                 if(period % 2 == 0){
-                    Game match = new Game().period(period).round(round).rivalA(rivalB).rivalB(rivalA).tournament(tournament);
-                    Game saved = gameRepository.save(match);
-                    tournament.addMatches(saved);
+                    match.rivalA(rivalB).rivalB(rivalA);
                 }else{
-                    Game match = new Game().period(period).round(round).rivalA(rivalA).rivalB(rivalB).tournament(tournament);
-                    Game saved = gameRepository.save(match);
-                    tournament.addMatches(saved);
+                    match.rivalA(rivalA).rivalB(rivalB);
                 }
+                
+                
+                Game saved = gameService.createGame(match);
+                tournament.addMatches(saved);
             }
         }
     }
     
-    
+    //shifts array of rivals, first is fixed
     private List<Participant> shift(List<Participant> participant){
         int n = participant.size();
         Participant[] result = new Participant[n];
@@ -180,43 +199,46 @@ public class AllVersusAllService {
         return Arrays.asList(result);
     }
     
+    //generates Round-robin assignment for given tournament
     public void generateAssignment(AllVersusAll tournament){
          List<Participant> participant = initCorrectListOfParticipants(tournament);
-         int roundCount = participant.size() - 1;
+         int n = participant.size();
+         int shiftCount = n - 1;
          int periodCount = tournament.getNumberOfMutualMatches(); //readability
          
-         for(int p = 1; p <= periodCount; p++){
-             for (int r = 1; r <= roundCount; r++){
-                 log.debug("p: {}, r: {}, working list: {}", p,r,participant);
-                 generateMatches(p, r, participant, tournament);
-                 participant = shift(participant);
+         for(int period = 1; period <= periodCount; period++){
+             int round = 1, field = 1;
+             for (int s = 1; s <= shiftCount; s++){
+                Participant rivalA, rivalB;
+                for (int i = 0; i < n/2; i++){
+                    rivalA = participant.get(i);
+                    rivalB = participant.get(n-1-i);
+                    if(rivalA != null && rivalB != null){
+                        Game match = new Game().period(period).tournament(tournament);
+                        //switch rivals on different periods
+                        if(period % 2 == 0){
+                            match.rivalA(rivalB).rivalB(rivalA);
+                        }else{
+                            match.rivalA(rivalA).rivalB(rivalB);
+                        }
+                        //set field and round
+                        if(tournament.getPlayingFields() != null && tournament.getPlayingFields() > 1){
+                            match.round(round).playingField(field);
+                            field += 1;
+                            if(field > tournament.getPlayingFields() ){
+                                field = 1;
+                                round += 1;
+                            }
+                        }else { match.round(s).playingField(field);}
+
+                        Game saved = gameService.createGame(match);
+                        tournament.addMatches(saved);
+                    }
+                }   
+                participant = shift(participant);
              }
          }
          
     }
     
-//    public static List<String> shiftStrings(List<String> participant){
-//        int n = participant.size();
-//        String[] result = new String[n];
-//        result[0] = participant.get(0);
-//        result[1] = participant.get(n-1);
-//        for (int i = 1; i < n-1; i++){
-//            result[i+1] = participant.get(i);
-//        }
-//        return Arrays.asList(result);
-//    }
-//    
-//    public static void main(String[] args) {
-//        System.out.println("Hello");
-//        List<String> list = new ArrayList<>();
-//        list.add(new String("Dana"));
-//        list.add(new String("Bety"));
-//        System.out.println(list);
-//        System.out.println("size = " + list.size());
-//        System.out.println("list after shift:");
-//        list = shiftStrings(list);
-//        System.out.println(list);
-//        
-//        
-//    }
 }
