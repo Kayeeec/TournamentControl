@@ -1,7 +1,11 @@
 package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Swiss;
+import cz.tournament.control.domain.User;
 import cz.tournament.control.repository.SwissRepository;
+import cz.tournament.control.repository.UserRepository;
+import cz.tournament.control.security.SecurityUtils;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,10 +24,16 @@ public class SwissService {
     private final Logger log = LoggerFactory.getLogger(SwissService.class);
 
     private final SwissRepository swissRepository;
+    private final UserRepository userRepository;
+    private final SetSettingsService setSettingsService;
 
-    public SwissService(SwissRepository swissRepository) {
+    public SwissService(SwissRepository swissRepository, UserRepository userRepository, SetSettingsService setSettingsService) {
         this.swissRepository = swissRepository;
+        this.userRepository = userRepository;
+        this.setSettingsService = setSettingsService;
     }
+
+   
 
     /**
      * Save a swiss.
@@ -34,6 +44,47 @@ public class SwissService {
     public Swiss save(Swiss swiss) {
         log.debug("Request to save Swiss : {}", swiss);
         return swissRepository.save(swiss);
+    }
+    
+    /**
+     *
+     * @param swiss
+     * @return
+     */
+    public Swiss createSwiss(Swiss swiss){
+        log.debug("Request to create Swiss : {}", swiss);
+        //set user
+        User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
+        swiss.setUser(creator);
+        //set creation date
+        swiss.setCreated(ZonedDateTime.now());
+        
+        Swiss tmp = swissRepository.save(swiss); //has to be in db before generating games
+        
+        /*
+        if it has more than 2 participants
+        generating games here / todo
+        */
+        
+        return tmp;
+    }
+    
+    /**
+     *
+     * @param swiss
+     * @return
+     */
+    public Swiss updateSwiss(Swiss swiss){
+        log.debug("Request to update Swiss : {}", swiss);
+        
+        //get old one from db
+        //detect change
+        /*
+        update/regenerate games if necesary 
+        */
+        
+        return swissRepository.save(swiss);
+       
     }
 
     /**

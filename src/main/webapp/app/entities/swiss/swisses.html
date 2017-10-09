@@ -19,18 +19,21 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="rounds"><span data-translate="tournamentControlApp.swiss.rounds">Rounds</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="roundsToGenerate"><span data-translate="tournamentControlApp.swiss.roundsToGenerate">Rounds To Generate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="color"><span data-translate="tournamentControlApp.swiss.color">Color</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span data-translate="tournamentControlApp.tournament.name">name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="note"><span data-translate="tournamentControlApp.tournament.note">note</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th><span data-translate="">Number of Participants</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="created"><span data-translate="tournamentControlApp.tournament.created">created</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="swiss in vm.swisses track by swiss.id">
                     <td><a ui-sref="swiss-detail({id:swiss.id})">{{swiss.id}}</a></td>
-                    <td>{{swiss.rounds}}</td>
-                    <td>{{swiss.roundsToGenerate}}</td>
-                    <td>{{swiss.color}}</td>
+                    <td>{{swiss.name}}</td>
+                    <td>{{swiss.note}}</td>
+                    <td>{{swiss.participants.length}}</td>
+                    <td>{{swiss.created | date:'medium'}}</td>
+                    
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

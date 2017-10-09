@@ -28,14 +28,14 @@
         function selectParticipants() {
             console.log("Selecting participants");
             if($scope.chosen === 1){
-                angular.copy(vm.selectedPlayers, vm.elimination.participants);
+                angular.copy(vm.selectedPlayers, vm.allVersusAll.participants);
                 console.log("vm.selectedPlayers: " + vm.selectedPlayers);
-                console.log("vm.elimination.participants: " + vm.elimination.participants);
+                console.log("vm.allVersusAll.participants: " + vm.allVersusAll.participants);
             }
             if($scope.chosen === 2){
-                angular.copy(vm.selectedTeams, vm.elimination.participants);
+                angular.copy(vm.selectedTeams, vm.allVersusAll.participants);
                 console.log("vm.selectedTeams: " + vm.selectedTeams);
-                console.log("vm.elimination.participants: " + vm.elimination.participants);
+                console.log("vm.allVersusAll.participants: " + vm.allVersusAll.participants);
             }
         }
         $scope.isPlayer = function (participant) {

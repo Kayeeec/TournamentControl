@@ -47,6 +47,8 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('swiss');
                     $translatePartialLoader.addPart('global');
+                    $translatePartialLoader.addPart('tournament');
+                    $translatePartialLoader.addPart('setSettings');
                     return $translate.refresh();
                 }]
             }
@@ -124,6 +126,17 @@
                     resolve: {
                         entity: function () {
                             return {
+                                name: null,
+                                note: null,
+                                pointsForWinning: null,
+                                pointsForLosing: null,
+                                pointsForTie: null,
+                                created: null,
+                                numberOfSets: null,
+                                setsToWin: null,
+                                tiesAllowed: null,
+                                playingFields: null,
+                                
                                 rounds: null,
                                 roundsToGenerate: null,
                                 color: null,

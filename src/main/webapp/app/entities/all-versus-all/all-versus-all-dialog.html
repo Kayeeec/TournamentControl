@@ -1,5 +1,5 @@
 
-<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" > <!-- show-validation -->
 
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
@@ -12,13 +12,16 @@
 
     </div>
     <div class="modal-body">
-        <div class="form-group" ng-show="vm.allVersusAll.id">
+<!--        <div class="form-group" ng-show="vm.allVersusAll.id">
             <label for="id" data-translate="global.field.id">ID</label>
             <input type="text" class="form-control" id="id" name="id"
                    ng-model="vm.allVersusAll.id" readonly />
-        </div>
+        </div>-->
+
         <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">Name</label>
+            <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">
+                Name
+            </label>
             <input type="text" class="form-control" name="name" id="field_name"
                    ng-model="vm.allVersusAll.name"
                    required/>
@@ -31,7 +34,9 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.note" for="field_note">Note</label>
+            <label class="control-label" data-translate="tournamentControlApp.tournament.note" for="field_note">
+                Note
+            </label>
             <textarea rows="3" type="text" class="form-control" name="note" id="field_note"
                       ng-model="vm.allVersusAll.note"
                       ></textarea>
@@ -39,28 +44,40 @@
         
         <div class="row">
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" for="field_pointsForWinning">Points For Winning</label>
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" 
+                       for="field_pointsForWinning">
+                    Points For Winning
+                </label>
                 <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
                        ng-model="vm.allVersusAll.pointsForWinning"
                        />
             </div>
 
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" for="field_pointsForLosing">Points For Losing</label>
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" 
+                       for="field_pointsForLosing">
+                    Points For Losing
+                </label>
                 <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
                        ng-model="vm.allVersusAll.pointsForLosing"
                        />
             </div>
 
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" for="field_pointsForTie">Points For Tie</label>
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" 
+                       for="field_pointsForTie">
+                    Points For Tie
+                </label>
                 <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
                        ng-model="vm.allVersusAll.pointsForTie"
                        />
             </div>
 
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" for="field_numberOfMutualMatches">Number Of Mutual Matches</label>
+                <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" 
+                       for="field_numberOfMutualMatches">
+                    Number Of Mutual Matches
+                </label>
                 <input type="number" class="form-control" name="numberOfMutualMatches" id="field_numberOfMutualMatches"
                        ng-model="vm.allVersusAll.numberOfMutualMatches"
                        required min="1"/>
@@ -70,7 +87,8 @@
                         This field is required.
                     </p>
                     <p class="help-block"
-                       ng-show="editForm.numberOfMutualMatches.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                       ng-show="editForm.numberOfMutualMatches.$error.min" data-translate="entity.validation.min" 
+                       translate-value-min="{{1}}">
                         This field should be at least 1.
                     </p>
                     <p class="help-block"
@@ -83,17 +101,22 @@
         <div style="clear: both"></div>
         <div class="row">
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.playingFields" for="field_playingFields">Playing Fields</label>
+                <label class="control-label" data-translate="tournamentControlApp.tournament.playingFields" 
+                       for="field_playingFields">
+                    Playing Fields
+                </label>
                 <input type="number" class="form-control" name="playingFields" id="field_playingFields"
                        ng-model="vm.allVersusAll.playingFields" min="1" max="{{maxPlayingFields()}}"
                        />
                 <div ng-show="editForm.playingFields.$invalid">
                     <p class="help-block"
-                       ng-show="editForm.playingFields.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                       ng-show="editForm.playingFields.$error.min" data-translate="entity.validation.min" 
+                       translate-value-min="{{1}}">
                         This field should be at least 1.
                     </p>
                     <p class="help-block"
-                       ng-show="editForm.playingFields.$error.max" data-translate="entity.validation.max" translate-value-max="{{maxPlayingFields()}}">
+                       ng-show="editForm.playingFields.$error.max" data-translate="entity.validation.max" 
+                       translate-value-max="{{maxPlayingFields()}}">
                         This field should be at most {{maxPlayingFields()}}.
                     </p>
                     <p class="help-block"
@@ -116,7 +139,8 @@
                 </select>
             </div>
         </div>
-
+        
+        <!-- ********* advanced set settings and participants  ********* -->
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="advancedSetSettings_heading">

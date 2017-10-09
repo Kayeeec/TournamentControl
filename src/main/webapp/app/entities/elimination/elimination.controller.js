@@ -22,7 +22,7 @@
         vm.predicate = 'id';
         vm.reset = reset;
         vm.reverse = true;
-
+        
         loadAll();
 
         function loadAll () {
@@ -51,7 +51,7 @@
                 AlertService.error(error.data.message);
             }
         }
-
+        
         function reset () {
             vm.page = 0;
             vm.eliminations = [];
