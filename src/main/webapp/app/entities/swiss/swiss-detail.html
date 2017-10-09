@@ -1,0 +1,31 @@
+
+<div>
+    <h2><span data-translate="tournamentControlApp.swiss.detail.title">Swiss</span> {{vm.swiss.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="tournamentControlApp.swiss.rounds">Rounds</span></dt>
+        <dd>
+            <span>{{vm.swiss.rounds}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.swiss.roundsToGenerate">Rounds To Generate</span></dt>
+        <dd>
+            <span>{{vm.swiss.roundsToGenerate}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.swiss.color">Color</span></dt>
+        <dd>
+            <span>{{vm.swiss.color}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="swiss-detail.edit({id:vm.swiss.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

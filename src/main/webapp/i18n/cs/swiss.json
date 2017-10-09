@@ -1,0 +1,23 @@
+{
+    "tournamentControlApp": {
+        "swiss" : {
+            "home": {
+                "title": "Swisses",
+                "createLabel": "Vytvořit Swiss",
+                "createOrEditLabel": "Vytvořit nebo upravit Swiss"
+            },
+            "created": "Byl vytvořen potomek entity Swiss s identifikátorem {{ param }}",
+            "updated": "Potomek entity Swiss s identifikátorem {{ param }} byl upravený.",
+            "deleted": "Potomek entity Swiss s identifikátorem {{ param }} bol smazaný.",
+            "delete": {
+                "question": "Jste si jisti, že chcete smazat Swiss {{ id }}?"
+            },
+            "detail": {
+                "title": "Swiss"
+            },
+            "rounds": "Rounds",
+            "roundsToGenerate": "Rounds To Generate",
+            "color": "Color"
+        }
+    }
+}
