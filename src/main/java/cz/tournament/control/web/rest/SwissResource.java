@@ -53,7 +53,7 @@ public class SwissResource {
         if (swiss.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new swiss cannot already have an ID")).body(null);
         }
-        Swiss result = swissService.save(swiss);
+        Swiss result = swissService.createSwiss(swiss);
         return ResponseEntity.created(new URI("/api/swisses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -75,7 +75,7 @@ public class SwissResource {
         if (swiss.getId() == null) {
             return createSwiss(swiss);
         }
-        Swiss result = swissService.save(swiss);
+        Swiss result = swissService.updateSwiss(swiss);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, swiss.getId().toString()))
             .body(result);

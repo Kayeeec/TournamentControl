@@ -56,7 +56,7 @@ public class Tournament implements Serializable {
     @Column(name = "playing_fields")
     private Integer playingFields;
     
-    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(unique = true)
     private SetSettings setSettings;
 

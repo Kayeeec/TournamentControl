@@ -11,8 +11,11 @@
             translate-values="{id: '{{vm.elimination.id}}'}">Edit Elimination tournament #{{vm.elimination.id}}</h4>
     </div>
     <div class="modal-body">
+        
         <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">Name</label>
+            <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">
+                Name
+            </label>
             <input type="text" class="form-control" name="name" id="field_name"
                    ng-model="vm.elimination.name"
                    required/>
@@ -76,7 +79,8 @@
 
 
         <div style="clear: both"></div>
-
+        
+        <!-- ********* set settings tab ********* -->
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="advancedSetSettings_heading">
@@ -165,6 +169,7 @@
                 </div>
             </div>
         </div>
+        <!-- ********* set settings tab / end ********* -->
 
         <!--PARTICIPANTS ======================================================-->
         <div class="well well-sm">
