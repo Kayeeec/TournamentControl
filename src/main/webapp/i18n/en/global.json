@@ -16,6 +16,7 @@
                 "elimination": "Elimination",
                 "gameSet": "Game Set",
                 "setSettings": "Set Settings",
+                "swiss": "Swiss",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

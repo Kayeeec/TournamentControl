@@ -5,6 +5,7 @@ import cz.tournament.control.TournamentControlApp;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.repository.ParticipantRepository;
+import cz.tournament.control.service.ParticipantService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -40,6 +41,9 @@ public class ParticipantResourceIntTest {
 
     @Autowired
     private ParticipantRepository participantRepository;
+    
+    @Autowired
+    private ParticipantService participantService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -60,7 +64,7 @@ public class ParticipantResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ParticipantResource participantResource = new ParticipantResource(participantRepository);
+        ParticipantResource participantResource = new ParticipantResource(participantRepository, participantService);
         this.restParticipantMockMvc = MockMvcBuilders.standaloneSetup(participantResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

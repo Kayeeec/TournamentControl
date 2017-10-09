@@ -1,0 +1,24 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "rounds",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "roundsToGenerate",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "color",
+            "fieldType": "Boolean"
+        }
+    ],
+    "changelogDate": "20171009110957",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "swiss",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
+}
