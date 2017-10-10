@@ -3,7 +3,7 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <property name="now" value="now()" dbms="h2"/>
@@ -30,18 +30,6 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="points_for_winning" type="integer">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="points_for_losing" type="integer">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="points_for_tie" type="integer">
-                <constraints nullable="true" />
-            </column>
-
             <column name="created" type="timestamp">
                 <constraints nullable="false" />
             </column>
@@ -55,6 +43,18 @@
             </column>
 
             <column name="playing_fields" type="integer">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="points_for_winning" type="double">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="points_for_tie" type="double">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="points_for_losing" type="double">
                 <constraints nullable="true" />
             </column>
 
@@ -80,4 +80,5 @@
         <addPrimaryKey columnNames="tournaments_id, participants_id" tableName="tournament_participants"/>
         
     </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

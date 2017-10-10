@@ -43,18 +43,6 @@
             "fieldType": "String"
         },
         {
-            "fieldName": "pointsForWinning",
-            "fieldType": "Integer"
-        },
-        {
-            "fieldName": "pointsForLosing",
-            "fieldType": "Integer"
-        },
-        {
-            "fieldName": "pointsForTie",
-            "fieldType": "Integer"
-        },
-        {
             "fieldName": "created",
             "fieldType": "ZonedDateTime",
             "fieldValidateRules": [
@@ -73,11 +61,24 @@
             "fieldName": "playingFields",
             "fieldType": "Integer",
             "fieldValidateRules": []
+        },
+        {
+            "fieldName": "pointsForWinning",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "pointsForTie",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "pointsForLosing",
+            "fieldType": "Double"
         }
     ],
     "changelogDate": "20170320075825",
     "dto": "no",
     "service": "no",
     "entityTableName": "tournament",
+    "jpaMetamodelFiltering": false,
     "pagination": "no"
 }

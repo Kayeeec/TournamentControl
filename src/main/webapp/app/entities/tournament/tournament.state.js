@@ -112,13 +112,13 @@
                             return {
                                 name: null,
                                 note: null,
-                                pointsForWinning: null,
-                                pointsForLosing: null,
-                                pointsForTie: null,
                                 created: null,
                                 setsToWin: null,
                                 tiesAllowed: null,
                                 playingFields: null,
+                                pointsForWinning: null,
+                                pointsForTie: null,
+                                pointsForLosing: null,
                                 id: null
                             };
                         }
