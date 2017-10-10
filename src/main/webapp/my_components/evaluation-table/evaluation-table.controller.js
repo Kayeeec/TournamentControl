@@ -17,20 +17,34 @@
         /* ****** evaluation table ****** */
         $scope.temp;
         $scope.counts = new Array();
+        
+        /*
+         * Returns all finished matches for given participant. 
+         * 
+         * @param {long} participantID participants id
+         * @param {Tournament} tournament 
+         * @returns {Game[]} array of finished matches 
+         */
         function participantsFinishedMatches(participantID, tournament) {
-            var r = [];
+            var finishedMatches = [];
             tournament.matches.forEach(function (match)
             {
                 if(match.finished){
                   if (match.rivalA.id === participantID || match.rivalB.id === participantID) {
-                    r.push(match);
+                    finishedMatches.push(match);
                     }  
                 }
                 
             });
-            return r;
+            return finishedMatches;
         }
         
+        /*
+         * Sums scores of both participants in all sets of a match.
+         * 
+         * @param {Game} match 
+         * @returns {tuple/object where A = sum of all participantA scores in all sets, B = same but for participantB}
+         */
         var getScoreSum = function (match) {
             var result = {A: 0, B: 0};
             match.sets.forEach(function (set){
@@ -40,6 +54,14 @@
             return result;
         };
         
+        /*
+         * Gets statistics of all finished matches for given participant.
+         *   
+         * @param {long} participantID
+         * @returns {object::   rival: string, wins: int, loses: int, ties: int, 
+         *                      total: double,  score: double, scoreRival: double }
+         *                      rival - set to participants name in view
+         */
         $scope.pointCount = function pointCount(participantID) {
             var tournament = vm.tournament;
             var hisFinishedMatches = participantsFinishedMatches(participantID, tournament);
