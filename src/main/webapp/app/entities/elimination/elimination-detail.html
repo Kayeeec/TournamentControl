@@ -75,7 +75,7 @@
     <!-- tree node templates -->
     <div ng-repeat="match in vm.elimination.matches" ng-hide="true">
         <a ui-sref="game.elimination-edit({gameId: match.id, id:vm.elimination.id})" 
-           id="match_{{match.id}}" class="bracket-link" ng-class="vm.disabledIfBYE(match)">  <!-- ng-class="vm.disabledIfBYE(match)" --> 
+           id="match_{{match.id}}" class="" ng-class="vm.disabledIfBYE(match)">  <!-- ng-class="vm.disabledIfBYE(match)" --> 
             <table class="bracket-table" ng-class="vm.greenIfFinished(match)">
                 <tr>
                     <td rowspan="2" class="bracket-period-td">{{match.period - 1}}</td>

@@ -4,7 +4,9 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myTournamentLabel" data-translate="tournamentControlApp.tournament.home.createOrEditLabel">Create or edit a Tournament</h4>
+        <h4 class="modal-title" id="myTournamentLabel" data-translate="tournamentControlApp.tournament.home.createOrEditLabel">
+            Create or edit a Tournament
+        </h4>
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
@@ -13,9 +15,6 @@
             <input type="text" class="form-control" id="id" name="id"
                     ng-model="vm.tournament.id" readonly />
         </div>
-        
-        <!-- ********* TO COPY - START ********* -->
-        
         
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">
@@ -31,6 +30,7 @@
                 </p>
             </div>
         </div>
+        
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.tournament.note" for="field_note">
                 Note
@@ -41,54 +41,41 @@
         </div>
         
         <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" 
-                   for="field_pointsForWinning">
-                Points For Winning
-            </label>
-            <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
-                    ng-model="vm.tournament.pointsForWinning"
-                    />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" 
-                   for="field_pointsForLosing">
-                Points For Losing
-            </label>
-            <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
-                    ng-model="vm.tournament.pointsForLosing"
-                    />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" 
-                   for="field_pointsForTie">
-                Points For Tie
-            </label>
-            <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
-                    ng-model="vm.tournament.pointsForTie"
-                    />
-        </div>
-        
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.setsToWin" 
-                   for="field_setsToWin">Sets To Win</label>
+            <label class="control-label" data-translate="tournamentControlApp.tournament.setsToWin" for="field_setsToWin">Sets To Win</label>
             <input type="number" class="form-control" name="setsToWin" id="field_setsToWin"
                     ng-model="vm.tournament.setsToWin"
                     />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.tiesAllowed" 
-                   for="field_tiesAllowed">Ties Allowed</label>
+            <label class="control-label" data-translate="tournamentControlApp.tournament.tiesAllowed" for="field_tiesAllowed">Ties Allowed</label>
                 <input type="checkbox" name="tiesAllowed" id="field_tiesAllowed"
                           ng-model="vm.tournament.tiesAllowed"/>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.playingFields" 
-                   for="field_playingFields">Playing Fields</label>
+            <label class="control-label" data-translate="tournamentControlApp.tournament.playingFields" for="field_playingFields">Playing Fields</label>
             <input type="number" class="form-control" name="playingFields" id="field_playingFields"
                     ng-model="vm.tournament.playingFields"
                     />
         </div>
-
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" for="field_pointsForWinning">Points For Winning</label>
+            <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
+                    ng-model="vm.tournament.pointsForWinning"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" for="field_pointsForTie">Points For Tie</label>
+            <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
+                    ng-model="vm.tournament.pointsForTie"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" for="field_pointsForLosing">Points For Losing</label>
+            <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
+                    ng-model="vm.tournament.pointsForLosing"
+                    />
+        </div>
+        
         <!-- ********* advanced set settings and participants  ********* -->
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
@@ -161,15 +148,13 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <!--Set settings--> 
                     </div>
                 </div>
             </div>
         </div>
-
         <div style="clear: both"></div>
+        
         <!--PARTICIPANTS ======================================================-->
         <div class="well well-sm">
             <ul class="nav nav-pills" id="myTab">
@@ -212,6 +197,7 @@
             </div>
         </div>
         <!--PARTICIPANTS ======================================================-->
+        <!-- ********* advanced set settings and participants  ********* -->
 
     </div>
     <div class="modal-footer">

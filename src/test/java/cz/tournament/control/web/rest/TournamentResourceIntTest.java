@@ -49,15 +49,6 @@ public class TournamentResourceIntTest {
     private static final String DEFAULT_NOTE = "AAAAAAAAAA";
     private static final String UPDATED_NOTE = "BBBBBBBBBB";
 
-    private static final Integer DEFAULT_POINTS_FOR_WINNING = 1;
-    private static final Integer UPDATED_POINTS_FOR_WINNING = 2;
-
-    private static final Integer DEFAULT_POINTS_FOR_LOSING = 1;
-    private static final Integer UPDATED_POINTS_FOR_LOSING = 2;
-
-    private static final Integer DEFAULT_POINTS_FOR_TIE = 1;
-    private static final Integer UPDATED_POINTS_FOR_TIE = 2;
-
     private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_CREATED = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
@@ -70,9 +61,18 @@ public class TournamentResourceIntTest {
     private static final Integer DEFAULT_PLAYING_FIELDS = 1;
     private static final Integer UPDATED_PLAYING_FIELDS = 2;
 
+    private static final Double DEFAULT_POINTS_FOR_WINNING = 1D;
+    private static final Double UPDATED_POINTS_FOR_WINNING = 2D;
+
+    private static final Double DEFAULT_POINTS_FOR_TIE = 1D;
+    private static final Double UPDATED_POINTS_FOR_TIE = 2D;
+
+    private static final Double DEFAULT_POINTS_FOR_LOSING = 1D;
+    private static final Double UPDATED_POINTS_FOR_LOSING = 2D;
+
     @Autowired
     private TournamentRepository tournamentRepository;
-    
+
     @Autowired
     private TournamentService tournamentService;
 
@@ -112,13 +112,13 @@ public class TournamentResourceIntTest {
         Tournament tournament = new Tournament()
             .name(DEFAULT_NAME)
             .note(DEFAULT_NOTE)
-            .pointsForWinning(DEFAULT_POINTS_FOR_WINNING)
-            .pointsForLosing(DEFAULT_POINTS_FOR_LOSING)
-            .pointsForTie(DEFAULT_POINTS_FOR_TIE)
             .created(DEFAULT_CREATED)
             .setsToWin(DEFAULT_SETS_TO_WIN)
             .tiesAllowed(DEFAULT_TIES_ALLOWED)
-            .playingFields(DEFAULT_PLAYING_FIELDS);
+            .playingFields(DEFAULT_PLAYING_FIELDS)
+            .pointsForWinning(DEFAULT_POINTS_FOR_WINNING)
+            .pointsForTie(DEFAULT_POINTS_FOR_TIE)
+            .pointsForLosing(DEFAULT_POINTS_FOR_LOSING);
         return tournament;
     }
 
@@ -144,13 +144,13 @@ public class TournamentResourceIntTest {
         Tournament testTournament = tournamentList.get(tournamentList.size() - 1);
         assertThat(testTournament.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testTournament.getNote()).isEqualTo(DEFAULT_NOTE);
-        assertThat(testTournament.getPointsForWinning()).isEqualTo(DEFAULT_POINTS_FOR_WINNING);
-        assertThat(testTournament.getPointsForLosing()).isEqualTo(DEFAULT_POINTS_FOR_LOSING);
-        assertThat(testTournament.getPointsForTie()).isEqualTo(DEFAULT_POINTS_FOR_TIE);
         assertThat(testTournament.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testTournament.getSetsToWin()).isEqualTo(DEFAULT_SETS_TO_WIN);
         assertThat(testTournament.getTiesAllowed()).isEqualTo(DEFAULT_TIES_ALLOWED);
         assertThat(testTournament.getPlayingFields()).isEqualTo(DEFAULT_PLAYING_FIELDS);
+        assertThat(testTournament.getPointsForWinning()).isEqualTo(DEFAULT_POINTS_FOR_WINNING);
+        assertThat(testTournament.getPointsForTie()).isEqualTo(DEFAULT_POINTS_FOR_TIE);
+        assertThat(testTournament.getPointsForLosing()).isEqualTo(DEFAULT_POINTS_FOR_LOSING);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class TournamentResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(tournament)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Tournament in the database
         List<Tournament> tournamentList = tournamentRepository.findAll();
         assertThat(tournamentList).hasSize(databaseSizeBeforeCreate);
     }
@@ -221,13 +221,13 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(tournament.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
-            .andExpect(jsonPath("$.[*].pointsForWinning").value(hasItem(DEFAULT_POINTS_FOR_WINNING)))
-            .andExpect(jsonPath("$.[*].pointsForLosing").value(hasItem(DEFAULT_POINTS_FOR_LOSING)))
-            .andExpect(jsonPath("$.[*].pointsForTie").value(hasItem(DEFAULT_POINTS_FOR_TIE)))
             .andExpect(jsonPath("$.[*].created").value(hasItem(sameInstant(DEFAULT_CREATED))))
             .andExpect(jsonPath("$.[*].setsToWin").value(hasItem(DEFAULT_SETS_TO_WIN)))
             .andExpect(jsonPath("$.[*].tiesAllowed").value(hasItem(DEFAULT_TIES_ALLOWED.booleanValue())))
-            .andExpect(jsonPath("$.[*].playingFields").value(hasItem(DEFAULT_PLAYING_FIELDS)));
+            .andExpect(jsonPath("$.[*].playingFields").value(hasItem(DEFAULT_PLAYING_FIELDS)))
+            .andExpect(jsonPath("$.[*].pointsForWinning").value(hasItem(DEFAULT_POINTS_FOR_WINNING.doubleValue())))
+            .andExpect(jsonPath("$.[*].pointsForTie").value(hasItem(DEFAULT_POINTS_FOR_TIE.doubleValue())))
+            .andExpect(jsonPath("$.[*].pointsForLosing").value(hasItem(DEFAULT_POINTS_FOR_LOSING.doubleValue())));
     }
 
     @Test
@@ -243,13 +243,13 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.id").value(tournament.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()))
-            .andExpect(jsonPath("$.pointsForWinning").value(DEFAULT_POINTS_FOR_WINNING))
-            .andExpect(jsonPath("$.pointsForLosing").value(DEFAULT_POINTS_FOR_LOSING))
-            .andExpect(jsonPath("$.pointsForTie").value(DEFAULT_POINTS_FOR_TIE))
             .andExpect(jsonPath("$.created").value(sameInstant(DEFAULT_CREATED)))
             .andExpect(jsonPath("$.setsToWin").value(DEFAULT_SETS_TO_WIN))
             .andExpect(jsonPath("$.tiesAllowed").value(DEFAULT_TIES_ALLOWED.booleanValue()))
-            .andExpect(jsonPath("$.playingFields").value(DEFAULT_PLAYING_FIELDS));
+            .andExpect(jsonPath("$.playingFields").value(DEFAULT_PLAYING_FIELDS))
+            .andExpect(jsonPath("$.pointsForWinning").value(DEFAULT_POINTS_FOR_WINNING.doubleValue()))
+            .andExpect(jsonPath("$.pointsForTie").value(DEFAULT_POINTS_FOR_TIE.doubleValue()))
+            .andExpect(jsonPath("$.pointsForLosing").value(DEFAULT_POINTS_FOR_LOSING.doubleValue()));
     }
 
     @Test
@@ -272,13 +272,13 @@ public class TournamentResourceIntTest {
         updatedTournament
             .name(UPDATED_NAME)
             .note(UPDATED_NOTE)
-            .pointsForWinning(UPDATED_POINTS_FOR_WINNING)
-            .pointsForLosing(UPDATED_POINTS_FOR_LOSING)
-            .pointsForTie(UPDATED_POINTS_FOR_TIE)
             .created(UPDATED_CREATED)
             .setsToWin(UPDATED_SETS_TO_WIN)
             .tiesAllowed(UPDATED_TIES_ALLOWED)
-            .playingFields(UPDATED_PLAYING_FIELDS);
+            .playingFields(UPDATED_PLAYING_FIELDS)
+            .pointsForWinning(UPDATED_POINTS_FOR_WINNING)
+            .pointsForTie(UPDATED_POINTS_FOR_TIE)
+            .pointsForLosing(UPDATED_POINTS_FOR_LOSING);
 
         restTournamentMockMvc.perform(put("/api/tournaments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -291,13 +291,13 @@ public class TournamentResourceIntTest {
         Tournament testTournament = tournamentList.get(tournamentList.size() - 1);
         assertThat(testTournament.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testTournament.getNote()).isEqualTo(UPDATED_NOTE);
-        assertThat(testTournament.getPointsForWinning()).isEqualTo(UPDATED_POINTS_FOR_WINNING);
-        assertThat(testTournament.getPointsForLosing()).isEqualTo(UPDATED_POINTS_FOR_LOSING);
-        assertThat(testTournament.getPointsForTie()).isEqualTo(UPDATED_POINTS_FOR_TIE);
         assertThat(testTournament.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testTournament.getSetsToWin()).isEqualTo(UPDATED_SETS_TO_WIN);
         assertThat(testTournament.getTiesAllowed()).isEqualTo(UPDATED_TIES_ALLOWED);
         assertThat(testTournament.getPlayingFields()).isEqualTo(UPDATED_PLAYING_FIELDS);
+        assertThat(testTournament.getPointsForWinning()).isEqualTo(UPDATED_POINTS_FOR_WINNING);
+        assertThat(testTournament.getPointsForTie()).isEqualTo(UPDATED_POINTS_FOR_TIE);
+        assertThat(testTournament.getPointsForLosing()).isEqualTo(UPDATED_POINTS_FOR_LOSING);
     }
 
     @Test
@@ -339,5 +339,14 @@ public class TournamentResourceIntTest {
     @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(Tournament.class);
+        Tournament tournament1 = new Tournament();
+        tournament1.setId(1L);
+        Tournament tournament2 = new Tournament();
+        tournament2.setId(tournament1.getId());
+        assertThat(tournament1).isEqualTo(tournament2);
+        tournament2.setId(2L);
+        assertThat(tournament1).isNotEqualTo(tournament2);
+        tournament1.setId(null);
+        assertThat(tournament1).isNotEqualTo(tournament2);
     }
 }
