@@ -43,15 +43,6 @@
             }
         }
         
-        function selectSelectedParticipants() {
-            if($scope.chosen === 1){
-                angular.copy(vm.selectedPlayers, vm.selectedParticipants);
-            }
-            if($scope.chosen === 2){
-                angular.copy(vm.selectedTeams, vm.selectedParticipants);
-            }
-        }
-        
         $scope.isPlayer = function (participant) {
             if(participant.player !== null) return true;
             return false;
@@ -70,21 +61,30 @@
             return [];
         }
         
-        function init_seedRandomly() {
+        function init_seedRandomly_radioBTN() {
             if(vm.elimination.id === null){ //new tournament
                 return true;
             }
             return false; //editing old tournament
         }
         
+        function selectSelectedParticipants() {
+            if($scope.chosen === 1){
+                angular.copy(vm.selectedPlayers, vm.selectedParticipants);
+            }
+            if($scope.chosen === 2){
+                angular.copy(vm.selectedTeams, vm.selectedParticipants);
+            }
+        }
+        
         vm.seeding = init_seeding();
         vm.selectedParticipants = angular.copy(vm.elimination.participants);
-        $scope.seedRandomly = init_seedRandomly();
+        $scope.seedRandomly = init_seedRandomly_radioBTN();
         vm.coordinates = [];
         vm.changed = false;
         
         vm.setParticipantsChanged = function () {
-            if(!vm.changed){
+            if(!vm.changed){ //if changed = false, set it to true
                 vm.changed = true;
             }
             console.log("vm.setParticipantsChanged called, vm.changed = ", vm.changed);

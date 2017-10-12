@@ -219,13 +219,13 @@
         <!--PARTICIPANTS ======================================================-->
         <div class="well well-sm">
             <ul class="nav nav-pills" id="myTab">
-                <li class="active"><a showtab href="#players" ng-click="chosen = 1">
+                <li class="active"><a showtab href="#players" ng-click="chosen = 1;vm.updateSelectedParticipants_player()">
                         <span  data-translate=""> Add Players </span> <!--TODO: data translate-->
                         <span class="badge"> {{vm.selectedPlayers.length}}</span>
                     </a>
                 </li>
                 <!--<li ng-disabled=""><p class="text-center text" style="padding-top: 10px;padding-left: 5px;padding-right: 5px" data-translate="">or</p></li>-->
-                <li><a showtab href="#teams" ng-click="chosen = 2">
+                <li><a showtab href="#teams" ng-click="chosen = 2;vm.updateSelectedParticipants_team()">
                         <span  data-translate=""> Add Teams </span> <!--TODO: data translate-->
                         <span class="badge"> {{vm.selectedTeams.length}}</span>
                     </a>
@@ -240,7 +240,8 @@
                             <span>
                                 <label>
                                     <input  type="checkbox"  id="field_participants" name="participants" 
-                                            checklist-model="vm.selectedPlayers" checklist-value="participant" > 
+                                            checklist-model="vm.selectedPlayers" checklist-value="participant" 
+                                            ng-click="vm.updateSelectedParticipants_player()"> 
                                     {{participant.player.name}}
                                 </label> 
                             </span>
@@ -252,7 +253,8 @@
                             <span>
                                 <label>
                                     <input  type="checkbox"  id="field_participants" name="participants"
-                                            checklist-model="vm.selectedTeams" checklist-value="participant" > 
+                                            checklist-model="vm.selectedTeams" checklist-value="participant"
+                                            ng-click="vm.updateSelectedParticipants_team()"> 
                                     {{participant.team.name}}
                                 </label>
                             </span>
@@ -262,13 +264,81 @@
             </div>
         </div>
         <!--PARTICIPANTS ======================================================-->
+        <pre hidden="true">
+            vm.getN() = {{vm.getN()}}<br/>
+            <br/>
+            vm.selectedPlayers = {{vm.printRivals(vm.selectedPlayers)}}<br/>
+            vm.selectedTeams = {{vm.printRivals(vm.selectedTeams)}}<br/>
+            <br/>
+            vm.selectedParticipants = {{vm.printRivals(vm.selectedParticipants)}}<br/>
+            vm.seeding = {{vm.printRivals(vm.seeding)}}<br/>
+        </pre>
+
+        
+        <!-- ********* seeding ********* -->
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="random_seeding_radio">
+                    <input type="radio" ng-model="seedRandomly" ng-value="true" id="random_seeding_radio">
+                    Random Seeding
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="custom_seeding_radio">
+                    <input type="radio" 
+                           ng-model="seedRandomly" ng-value="false" ng-click=""
+                           id="custom_seeding_radio">
+                    Custom Seeding
+                </label>
+            </div>
+        </div>
+        
+        <div ng-if="(!seedRandomly) && vm.selectedParticipants.length < 2 "
+             class="alert alert-warning">
+            For <b>custom seeding</b> at least <b>two</b>  participants need to be selected. <!--TODO: data-translate -->
+        </div>
+        
+        <div ng-if="(!seedRandomly) && vm.selectedParticipants.length >= 2 ">
+            <table class="table table-responsive">
+                <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(),1)">
+                    <td ng-if="!vm.isBye(vm.seeding[i])">
+                        <select class="form-control" 
+                            ng-options="participant.name for participant in vm.selectedParticipants track by participant.id"
+                            ng-model="vm.seeding[i]" 
+                            ng-change="vm.onParticipantSelect({{vm.seeding}}, vm.seeding[i], i); vm.changed = false">
+                            <option value=""> - </option>
+                        </select>
+                    </td>
+                    <td ng-if="vm.isBye(vm.seeding[i])">
+                        <select class="form-control" disabled="true">
+                            <option value="">BYE</option>
+                        </select>
+                    </td>
+                    <td><p class="text-center">vs.</p></td>
+                    <td ng-if="!vm.isBye(vm.seeding[vm.getN() - 1 - i])">
+                        <select class="form-control" 
+                            ng-options="participant.name for participant in vm.selectedParticipants track by participant.id"
+                            ng-model="vm.seeding[vm.getN() - 1 - i]"
+                            ng-change="vm.onParticipantSelect({{vm.seeding}}, vm.seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.changed = false">
+                            <option value=""> - </option>
+                        </select>
+                    </td>
+                    <td ng-if="vm.isBye(vm.seeding[vm.getN() - 1 - i])">
+                        <select class="form-control" disabled="true">
+                            <option value="">BYE</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- ********* end - seeding ********* -->
 
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
         </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving || vm.invalidSeeding()" class="btn btn-primary">
             <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
         </button>
     </div>

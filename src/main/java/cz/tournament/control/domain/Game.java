@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "game")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Game implements Serializable, Comparable<Game> {
+public class Game implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -259,21 +260,41 @@ public class Game implements Serializable, Comparable<Game> {
 }
         return setIDs.toString();
     }
+    
+    public static Comparator<Game> PeriodRoundComparator
+            = new Comparator<Game>() {
+        @Override
+        public int compare(Game game1, Game game2) {
+            
+            if (game1 == null || game2 == null) {
+                throw new NullPointerException("Game.compareTo(Game o) : o is null");
+            }
 
-    @Override
-    public int compareTo(Game o) {
-        if (o == null) {
-            throw new NullPointerException("Game.compareTo(Game o) : o is null");
+            Integer period1 = game1.getPeriod();
+            Integer period2 = game2.getPeriod();
+
+            //ascending order
+            int byPeriod = period1.compareTo(period2);
+            if(byPeriod != 0){
+                return byPeriod;
+            }
+            return game1.getRound().compareTo(game2.getRound());
         }
 
-        int byPeriod = this.period.compareTo(o.period);
-        if (byPeriod != 0) {
-            return byPeriod;
+    };
+    
+    public static Comparator<Game> RoundComparator
+            = new Comparator<Game>() {
+        @Override
+        public int compare(Game game1, Game game2) {
+            
+            if (game1 == null || game2 == null) {
+                throw new NullPointerException("Game.compareTo(Game o) : o is null");
+            }
+            return game1.getRound().compareTo(game2.getRound());
         }
 
-        return this.round.compareTo(o.round);
-
-    }
+    };
     
     @JsonIgnore
     public boolean allSetsFinished_And_NotATie(){

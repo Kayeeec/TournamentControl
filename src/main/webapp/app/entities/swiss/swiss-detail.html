@@ -1,9 +1,57 @@
 
 <div>
-    <h2><span data-translate="tournamentControlApp.swiss.detail.title">Swiss</span> {{vm.swiss.id}}</h2>
+    <h2><small>Swiss System Tournament:</small> {{vm.swiss.name}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
+    <!-- ********* entity details ********* -->
     <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="global.field.id">Id</span></dt>
+        <dd>
+            <span>{{vm.swiss.id}}</span>
+        </dd>
+        
+        <dt><span data-translate="tournamentControlApp.tournament.note">Note</span></dt>
+        <dd>
+            <span>{{vm.swiss.note}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
+        <dd>
+            <span>{{vm.swiss.pointsForWinning}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
+        <dd>
+            <span>{{vm.swiss.pointsForLosing}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
+        <dd>
+            <span>{{vm.swiss.pointsForTie}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.created">Created</span></dt>
+        <dd>
+            <span>{{vm.swiss.created| date:'medium'}}</span>
+        </dd>
+        
+        <dt><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></dt>
+        <dd>
+            <span>{{vm.swiss.setsToWin}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.tiesAllowed">Ties Allowed</span></dt>
+        <dd>
+            <span ng-if="vm.swiss.tiesAllowed">Yes</span>
+            <span ng-if="!vm.swiss.tiesAllowed">No</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></dt>
+        <dd>
+            <span>{{vm.swiss.playingFields}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
+        <dd>
+            <span ng-repeat="participant in vm.swiss.participants">
+                <a ng-if="participant.player" ui-sref="player-detail({id: participant.player.id})">{{participant.player.name}}</a>
+                <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
+        
         <dt><span data-translate="tournamentControlApp.swiss.rounds">Rounds</span></dt>
         <dd>
             <span>{{vm.swiss.rounds}}</span>
@@ -17,7 +65,9 @@
             <span>{{vm.swiss.color}}</span>
         </dd>
     </dl>
-
+    <!-- ********* end entity details ********* -->
+    
+    <!-- ********* Buttons ********* -->
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
@@ -28,4 +78,80 @@
         <span class="glyphicon glyphicon-pencil"></span>
         <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>
+    
+    <button disabled type="button" class="btn btn-success" ng-href="/generateFile/swiss/{{vm.swiss.id}}">
+        <span class="glyphicon glyphicon-download-alt"></span>
+        <span class="hidden-sm-down" data-translate=""> Generate .ods spreadsheet </span> <!--TODO: data-translate -->
+    </button>
+    <!-- ********* end Buttons ********* -->
+    
+    <!-- ********* evalueation table ********* -->
+    <div ui-view="evaluation-table"></div>
+    <!-- ********* end evaluation table ********* -->
+    
+    <!-- ********* game tables ********* -->
+    <div class="panel panel-primary" ng-repeat="(period,games) in vm.swiss.matches | groupBy: 'period'">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <h3 class="panel-title">Period {{period}}</h3>
+        </div> <!-- TODO data translate -->
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="jh-table table table-striped">
+                <thead>
+                    <tr >
+                        <th>ID</th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.round">Round</span></th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.playingField">Playing Field</span></th>
+                        <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.gameSet.score">Score</span></th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.finished">Finished</span></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:'round' track by game.id">
+                        <td>{{game.id}}</td>
+                        <td style="text-align: center; font-weight: bolder">{{game.round}}</td>
+                        <td style="text-align: center">{{game.playingField}}</td>
+                        <td style="text-align: right">
+                            <a ng-if="game.rivalA.player" ui-sref="player-detail({id:game.rivalA.player.id})">{{game.rivalA.player.name}}</a>
+                            <a ng-if="game.rivalA.team" ui-sref="team-detail({id:game.rivalA.team.id})">{{game.rivalA.team.name}}</a>
+                        </td>
+                        <td style="text-align: center;padding: 0px">:</td>
+                        <td style="text-align: left">
+                            <a ng-if="game.rivalB.player" ui-sref="player-detail({id:game.rivalB.player.id})">{{game.rivalB.player.name}}</a>
+                            <a ng-if="game.rivalB.team" ui-sref="team-detail({id:game.rivalB.team.id})">{{game.rivalB.team.name}}</a>
+                        </td>
+                        <td>
+                            <span ng-repeat="set in game.sets | orderBy:'id'">
+                                {{set.scoreA}} : {{set.scoreB}}{{$last ? '' : ' | '}}
+                            </span>
+                        </td>
+                        
+                        <td style="text-align: center">{{game.finished}}</td>
+                        <td class="text-right">
+                            <div class="btn-group flex-btn-group-container">
+                                <button type="submit"
+                                        ui-sref="game-detail({gameId:game.id, id:vm.swiss.id})"
+                                        class="btn btn-info btn-sm">
+                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                    <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                                </button>
+                                <button type="submit"
+                                        ui-sref="game.swiss-edit({gameId:game.id, id:vm.swiss.id})"
+                                        class="btn btn-primary btn-sm">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                    <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- ********* end game tables  ********* -->
+    
 </div>

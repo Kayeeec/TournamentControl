@@ -1,11 +1,18 @@
 package cz.tournament.control.service;
 
+import cz.tournament.control.domain.Game;
+import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.Swiss;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.repository.SwissRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
+import cz.tournament.control.service.dto.SwissDTO;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -48,11 +55,13 @@ public class SwissService {
     
     /**
      *
-     * @param swiss
+     * @param swissDTO
      * @return
      */
-    public Swiss createSwiss(Swiss swiss){
-        log.debug("Request to create Swiss : {}", swiss);
+    public Swiss createSwiss(SwissDTO swissDTO){
+        log.debug("Request to create Swiss : {}", swissDTO.getSwiss());
+        
+        Swiss swiss = swissDTO.getSwiss();
         //set user
         User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
         swiss.setUser(creator);
@@ -74,8 +83,10 @@ public class SwissService {
      * @param swiss
      * @return
      */
-    public Swiss updateSwiss(Swiss swiss){
-        log.debug("Request to update Swiss : {}", swiss);
+    public Swiss updateSwiss(SwissDTO swissDTO){
+        log.debug("Request to update SwissDTO : {}", swissDTO);
+        
+        Swiss swiss = swissDTO.getSwiss();
         
         //get old one from db
         //detect change
@@ -120,4 +131,33 @@ public class SwissService {
         log.debug("Request to delete Swiss : {}", id);
         swissRepository.delete(id);
     }
+
+    public List<Participant> getSwissSeeding(Long id) {
+        if(id == null){ return null; }
+        Swiss swiss = findOne(id);
+        if(swiss == null){return null;}
+        
+        //get matches and sort them by round
+        List<Game> matches = new ArrayList<>(swiss.getMatches());
+        if(matches.isEmpty()) return null;
+        
+        Collections.sort(matches, Game.RoundComparator);
+        
+        int N = swiss.getParticipants().size();
+        Participant[] seeding = new Participant[N];
+        
+        int a = 0;
+        for (Game match : matches) {
+            if(match.getRound() != 1){
+                break;
+            }            
+            seeding[a]=match.getRivalA();
+            seeding[N - 1 - a] = match.getRivalB();
+            a += 1;
+        }
+        
+        return Arrays.asList(seeding);
+        
+    }
+    
 }

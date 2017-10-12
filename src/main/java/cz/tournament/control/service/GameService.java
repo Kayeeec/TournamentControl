@@ -489,7 +489,7 @@ public class GameService {
     
     private void singleElimination_nextGameUpdate(Game game, Elimination elimination) {
         List<Game> matches = new ArrayList<>(elimination.getMatches());
-        Collections.sort(matches);
+        Collections.sort(matches, Game.PeriodRoundComparator);
         int N = elimination.getN();
         int index = game.getPeriod() - 1;
         int rootIndex = N-2, bronzeIndex = N-1;
@@ -523,7 +523,7 @@ public class GameService {
     
     private void doubleElimination_nextGameUpdate(Game game, Elimination elimination){
         List<Game> matches = new ArrayList<>(elimination.getMatches());
-        Collections.sort(matches);
+        Collections.sort(matches, Game.PeriodRoundComparator);
         int N = elimination.getN();
         int index = matches.indexOf(game);
         int newFinalIndex = nextFinalIndex(N, matches.size(), elimination);
@@ -590,7 +590,7 @@ public class GameService {
         Game old = this.findOne(game.getId());
         if (old.isFinished() && !game.isFinished()) {
             List<Game> matches = new ArrayList<>(elimination.getMatches());
-            Collections.sort(matches);
+            Collections.sort(matches, Game.PeriodRoundComparator);
             
             propagateRivalsRemoval(game, matches, elimination);
         }
