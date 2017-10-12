@@ -126,7 +126,7 @@ public class EliminationService {
         List<Game> matches = new ArrayList<>(elimination.getMatches());
         
         //sort matches by period
-        Collections.sort(matches);
+        Collections.sort(matches, Game.PeriodRoundComparator);
         
         Participant[] seeding = new Participant[N];
         int a = 0;

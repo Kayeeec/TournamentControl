@@ -1,8 +1,10 @@
 package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.Swiss;
 import cz.tournament.control.service.SwissService;
+import cz.tournament.control.service.dto.SwissDTO;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import cz.tournament.control.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -42,18 +44,18 @@ public class SwissResource {
     /**
      * POST  /swisses : Create a new swiss.
      *
-     * @param swiss the swiss to create
+     * @param swissDTO the swissDTO to create
      * @return the ResponseEntity with status 201 (Created) and with body the new swiss, or with status 400 (Bad Request) if the swiss has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/swisses")
     @Timed
-    public ResponseEntity<Swiss> createSwiss(@RequestBody Swiss swiss) throws URISyntaxException {
-        log.debug("REST request to save Swiss : {}", swiss);
-        if (swiss.getId() != null) {
+    public ResponseEntity<Swiss> createSwiss(@RequestBody SwissDTO swissDTO) throws URISyntaxException {
+        log.debug("REST request to save SwissDTO : {}", swissDTO.toString());
+        if (swissDTO.getSwiss().getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new swiss cannot already have an ID")).body(null);
         }
-        Swiss result = swissService.createSwiss(swiss);
+        Swiss result = swissService.createSwiss(swissDTO);
         return ResponseEntity.created(new URI("/api/swisses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -62,7 +64,7 @@ public class SwissResource {
     /**
      * PUT  /swisses : Updates an existing swiss.
      *
-     * @param swiss the swiss to update
+     * @param swissDTO the swissDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated swiss,
      * or with status 400 (Bad Request) if the swiss is not valid,
      * or with status 500 (Internal Server Error) if the swiss couldn't be updated
@@ -70,15 +72,23 @@ public class SwissResource {
      */
     @PutMapping("/swisses")
     @Timed
-    public ResponseEntity<Swiss> updateSwiss(@RequestBody Swiss swiss) throws URISyntaxException {
-        log.debug("REST request to update Swiss : {}", swiss);
-        if (swiss.getId() == null) {
-            return createSwiss(swiss);
+    public ResponseEntity<Swiss> updateSwiss(@RequestBody SwissDTO swissDTO) throws URISyntaxException {
+        log.debug("REST request to update SwissDTO : {}", swissDTO.toString());
+        if (swissDTO.getSwiss().getId() == null) {
+            return createSwiss(swissDTO);
         }
-        Swiss result = swissService.updateSwiss(swiss);
+        Swiss result = swissService.updateSwiss(swissDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, swiss.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, swissDTO.getSwiss().getId().toString()))
             .body(result);
+    }
+    
+    @GetMapping("/swisses/seeding/{id}")
+    @Timed
+    public List<Participant> getSwissSeeding(@PathVariable Long id) {
+        log.debug("REST request to get seeding of Swiss: {}", id);
+        List<Participant> seeding = swissService.getSwissSeeding(id);
+        return seeding;
     }
 
     /**

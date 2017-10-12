@@ -20,7 +20,12 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'getSeeding':{
+                method: 'GET',
+                url: 'api/swisses/seeding/:id',
+                isArray: true
+            }
         });
     }
 })();

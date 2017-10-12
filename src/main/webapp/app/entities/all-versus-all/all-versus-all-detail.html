@@ -1,6 +1,6 @@
 
 <div>
-    <h2><small>Tournament:</small> {{vm.allVersusAll.name}}</h2>
+    <h2><small>All versus All Tournament:</small> {{vm.allVersusAll.name}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
@@ -84,16 +84,21 @@
             <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
         </button>
 
-        <a type="button" class="btn btn-success" ng-href="/generateFile/allVersusAll/{{vm.allVersusAll.id}}">
+<!--        <a type="button" class="btn btn-success" ng-href="/generateFile/allVersusAll/{{vm.allVersusAll.id}}">
             <span class="glyphicon glyphicon-download-alt"></span>
             <span class="hidden-sm-down" data-translate=""> Generate .ods spreadsheet </span>
-        </a>
+        </a>-->
+        
+        <button type="button" class="btn btn-success" ng-href="/generateFile/allVersusAll/{{vm.allVersusAll.id}}">
+            <span class="glyphicon glyphicon-download-alt"></span>
+            <span class="hidden-sm-down" data-translate=""> Generate .ods spreadsheet </span>
+        </button>
     </div>
     <!-- END - buttons -->
     
-    <div ui-view="evaluation-table"/>
+    <div ui-view="evaluation-table"/></div>
 
-    <!--tables for matches and editing scores =================================================================== -->
+<!-- ********* tables for matches and editing scores ********* -->
     <div class="panel panel-primary" ng-repeat="(period,games) in vm.allVersusAll.matches | groupBy: 'period'">
         <!-- Default panel contents -->
         <div class="panel-heading">
@@ -156,5 +161,6 @@
             </table>
         </div>
     </div>
+<!-- ********* end - tables for matches and editing scores ********* -->
 
 </div>

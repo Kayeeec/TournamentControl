@@ -198,7 +198,7 @@ public class FileGeneratorService {
         int rows = matches.size()/periods;
         
         //sort matches by period, then round 
-        Collections.sort(matches);
+        Collections.sort(matches, Game.PeriodRoundComparator);
         
         int position = 0;
         TableModel[] period = new TableModel[periods];
