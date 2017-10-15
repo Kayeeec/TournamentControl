@@ -49,12 +49,14 @@
                     $translatePartialLoader.addPart('global');
                     $translatePartialLoader.addPart('tournament');
                     $translatePartialLoader.addPart('setSettings');
+                    $translatePartialLoader.addPart('game');
+                    $translatePartialLoader.addPart('gameSet');
                     return $translate.refresh();
                 }]
             }
         })
         .state('swiss-detail', {
-            parent: 'swiss',
+            parent: 'tournament',
             url: '/swiss/{id}',
             data: {
                 authorities: ['ROLE_USER'],
@@ -64,6 +66,11 @@
                 'content@': {
                     templateUrl: 'app/entities/swiss/swiss-detail.html',
                     controller: 'SwissDetailController',
+                    controllerAs: 'vm'
+                },
+                'evaluation-table@swiss-detail':{
+                    templateUrl: 'my_components/evaluation-table/evaluation-table.html',
+                    controller: 'EvaluationTableController',
                     controllerAs: 'vm'
                 }
             },

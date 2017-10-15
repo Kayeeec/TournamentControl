@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.tournament.control.service;
+package cz.tournament.control.service.util;
 
 import cz.tournament.control.domain.Participant;
 

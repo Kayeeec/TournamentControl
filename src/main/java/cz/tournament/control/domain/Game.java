@@ -454,6 +454,7 @@ public class Game implements Serializable {
                 result.put("loser", rivalA);
                 return result;
             }
+            //tie
             return result;
         }
     }

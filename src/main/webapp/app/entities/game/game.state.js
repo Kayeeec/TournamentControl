@@ -120,6 +120,32 @@
                 });
             }]
         })
+        .state('game.swiss-edit', {
+            parent: 'swiss-detail',
+            url: '/game-edit/{gameId}',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/entities/game/game-dialog.html',
+                    controller: 'GameDialogController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: ['Game', function(Game) {
+                                console.log("gameId is "+ $stateParams.gameId);
+                            return Game.get({id : $stateParams.gameId}).$promise;
+                        }]
+                    }
+                }).result.then(function() {
+                    $state.go('swiss-detail', null, { reload: 'swiss-detail' });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
         .state('game.allVersusAll-edit', {
             parent: 'all-versus-all-detail',
             url: '/game-edit/{gameId}',
