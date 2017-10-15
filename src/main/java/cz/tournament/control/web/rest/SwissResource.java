@@ -83,6 +83,30 @@ public class SwissResource {
             .body(result);
     }
     
+    /**
+     * POST /swisses/generate : generates next round of an existing swiss
+     * @param swiss - to generate next round to
+     * @return the ResponseEntity with status 200 (OK) and with body the updated swiss,
+     * or with status 400 (Bad Request) if the swiss is not valid,
+     * or with status 500 (Internal Server Error) if the swiss couldn't be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/swisses/generate")
+    @Timed
+    public ResponseEntity<Swiss> generateNextRound(@RequestBody Swiss swiss) throws URISyntaxException{
+        log.debug("REST request to generate next round Swiss : {}", swiss.toString());
+        Swiss result = swissService.generateNextRound(swiss);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, swiss.getId().toString()))
+            .body(result);  
+    }
+    
+    /**
+     * GET  /swisses/seeding/{id} : get seeding of an existing swiss
+     * @param id of an existing swiss to get seeding of
+     * @return List od Participant objects
+     * or empty list if no seeding found.
+     */
     @GetMapping("/swisses/seeding/{id}")
     @Timed
     public List<Participant> getSwissSeeding(@PathVariable Long id) {

@@ -5,6 +5,7 @@
  */
 package cz.tournament.control.service;
 
+import cz.tournament.control.service.util.EvalClassic;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.tournaments.AllVersusAll;

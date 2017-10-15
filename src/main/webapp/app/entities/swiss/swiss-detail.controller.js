@@ -17,5 +17,25 @@
             vm.swiss = result;
         });
         $scope.$on('$destroy', unsubscribe);
+        
+        function allGamesFinished() {
+            for (var i = 0; i < vm.swiss.matches.length; i++) {
+                if(!vm.swiss.matches[i].finished){
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        vm.cannotGenerateNextRound = function () {
+            if(vm.swiss.roundsToGenerate === 0){
+                return true;
+            }
+            return !allGamesFinished();
+        };
+        
+        vm.generateNextRound = function () {
+            Swiss.generateNextRound(vm.swiss);
+        };
     }
 })();
