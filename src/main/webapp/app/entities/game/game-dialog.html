@@ -10,9 +10,10 @@
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
 
-        <table class="table table-responsive">
+        <table class="table table-responsive mytab">
             <thead>
                 <tr>
+                    <th class="myTextCenter">id</th>
                     <th class="myTextCenter">
                         <span ng-if="vm.game.rivalA.player">{{vm.game.rivalA.player.name}}</span>
                         <span ng-if="vm.game.rivalA.team">{{vm.game.rivalA.team.name}}</span>
@@ -27,17 +28,31 @@
                     <th></th> <!-- delete -->
                 </tr>
             </thead>
-            <tbody ng-repeat="set in vm.game.sets | orderBy:'id'" >
-                <tr>
-                    <td>
-                        <input type="number" class="form-control" name="scoreA" id="field_scoreA"
+            <tbody ng-repeat="set in vm.preparedSets | orderBy:'id'" >
+                <tr >
+                    <td class="text text-center">{{set.id}}</td>
+                    <td class="gamePointsInput text text-center">
+                        <input type="number" class="form-control" name="scoreA" id="field_scoreA_{{$index}}"
                                ng-model="set.scoreA" ng-blur="vm.save_shouldFinishSetCheck(set, 'scoreA', 'scoreB')"
                                max="{{set.setSettings.maxScore}}" min="0"
                                ng-disabled="set.finished || vm.game.finished"
                                />
                     </td>
-                    <td class="myTextCenter"> : </td>
-                    <td>
+                    <td class="text text-center">
+                        &nbsp
+                        <i ng-if="vm.game.tournament.color" 
+                             class="glyphicon glyphicon-tower pull-left"
+                             ng-class="{'white': {{$index % 2 === 0}} }">
+                        </i>
+                         &nbsp : &nbsp
+                        <i ng-if="vm.game.tournament.color" 
+                             class="glyphicon glyphicon-tower pull-right"
+                             ng-class="{'white': {{$index % 2 !== 0}} }">
+                        </i>
+                         &nbsp
+                        <div class="clearfix"></div>
+                    </td>
+                    <td class="gamePointsInput text text-center">
                         <input type="number" class="form-control" name="scoreB" id="field_scoreB"
                                ng-model="set.scoreB" ng-blur="vm.save_shouldFinishSetCheck(set, 'scoreB', 'scoreA')"
                                max="{{set.setSettings.maxScore}}" min="0"
@@ -52,8 +67,8 @@
                         <!-- advanced set settings -->
                         <div> 
                             <button type="button" name="advancedSettings" class="btn btn-default btn-xs" 
-                                    data-toggle="collapse" data-target="#setSettingsForm_{{set.id}}" aria-expanded="false" 
-                                    ng-click="vm.copyToOldSettings(set)">
+                                    data-toggle="collapse" data-target="#setSettingsForm_{{set.id}}" 
+                                    aria-expanded="false" aria-controls="setSettingsForm_{{set.id}}">
                                 <span class="glyphicon glyphicon-cog"></span>
                                 <span  data-translate=""> <!--TODO: data-translate -->
                                 </span>
@@ -62,8 +77,8 @@
                     </td>
                     <td>
                         <!-- delete -->
-                        <button ng-disabled="vm.game.sets.length === 1" type="button" name="remove_set_btn" 
-                                class="btn btn-danger btn-xs" ng-click="vm.removeSet(set.id)">
+                        <button ng-disabled="vm.preparedSets.length === 1 || vm.game.finished" type="button" name="remove_set_btn" 
+                                class="btn btn-danger btn-xs" ng-click="vm.removeSetById(set.id)">
                             <span class="glyphicon glyphicon-remove"></span>
                             <span  data-translate=""> <!--TODO: data-translate -->
                             </span>
@@ -74,15 +89,18 @@
                     <!-- collapse-able form for advanced set settings  -->
                     <td colspan="6">
                         <!--Set settings-->
+                        nss id: {{vm.setSettingsMap.get(set.id).newSetSettings.id}}<br/>
                         <div class=" form-inline myPaqddingBottom">
                             <div class="form-group">
                                 <label class="control-label" for="field_maxScore">
-                                    <input type="radio" value="maxScore" ng-model="vm.chosenMap[set.id]" 
+                                    <input type="radio" value="maxScore" ng-model="vm.setSettingsMap.get(set.id).chosen" 
                                            ng-disabled="set.finished || vm.game.finished"> Max Score
                                 </label>
-                                <input ng-disabled="vm.chosenMap[set.id] !== 'maxScore' || set.finished || vm.game.finished" type="number" class="form-control" 
+                                <input ng-disabled="vm.setSettingsMap.get(set.id).chosen !== 'maxScore' 
+                                            || set.finished || vm.game.finished" 
+                                       type="number" class="form-control" 
                                        name="maxScore" id="field_maxScore_{{set.id}}"
-                                       ng-model="set.setSettings.maxScore"
+                                       ng-model="vm.setSettingsMap.get(set.id).newSetSettings.maxScore"
                                        min="1"/>
 
                                 <div ng-show="editForm.maxScore.$invalid">
@@ -100,12 +118,13 @@
                         <div class="form-inline myPaqddingBottom">
                             <div class="form-group">
                                 <label class="control-label" for="field_leadByPoints">
-                                    <input type="radio" value="leadByPoints" ng-model="vm.chosenMap[set.id]"
+                                    <input type="radio" value="leadByPoints" ng-model="vm.setSettingsMap.get(set.id).chosen"
                                            ng-disabled="set.finished || vm.game.finished"> Lead-by points
                                 </label>
-                                <input ng-disabled="vm.chosenMap[set.id] !== 'leadByPoints' || set.finished || vm.game.finished " type="number" class="form-control" 
+                                <input ng-disabled="vm.setSettingsMap.get(set.id).chosen !== 'leadByPoints'" 
+                                       type="number" class="form-control" 
                                        name="leadByPoints" id="field_leadByPoints_{{set.id}}"
-                                       ng-model="set.setSettings.leadByPoints"
+                                       ng-model="vm.setSettingsMap.get(set.id).newSetSettings.leadByPoints"
                                        min="1"/>
                                 <div ng-show="editForm.leadByPoints.$invalid">
                                     <p class="help-block"
@@ -119,10 +138,13 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label" data-translate="tournamentControlApp.setSettings.minReachedScore" for="field_minReachedScore">Min Reached Score</label>
-                                <input ng-disabled="vm.chosenMap[set.id] !== 'leadByPoints' || set.finished || vm.game.finished" type="number" class="form-control" 
+                                <label class="control-label" data-translate="tournamentControlApp.setSettings.minReachedScore" 
+                                       for="field_minReachedScore">Min Reached Score</label>
+                                <input ng-disabled="vm.setSettingsMap.get(set.id).chosen !== 'leadByPoints' 
+                                            || set.finished || vm.game.finished" 
+                                       type="number" class="form-control" 
                                        name="minReachedScore" id="field_minReachedScore_{{set.id}}"
-                                       ng-model="set.setSettings.minReachedScore"
+                                       ng-model="vm.setSettingsMap.get(set.id).newSetSettings.minReachedScore"
                                        min="0"/>
                                 <div ng-show="editForm.minReachedScore.$invalid">
                                     <p class="help-block"
@@ -138,19 +160,30 @@
                         </div>
                         <!--buttons-->
                         <div class="form-group align-right">
-                            <button type="button" name="add_set_custom_btn" class="btn btn-success" ng-click="vm.updateSetSettings(set)"
-                                    ng-disabled="set.finished || vm.game.finished">
+                            <button type="button" name="add_set_custom_btn" class="btn btn-success" 
+                                    ng-click="vm.updateSetSettings(set)"
+                                    ng-disabled="set.finished || vm.game.finished"
+                                    data-toggle="collapse" data-target="#setSettingsForm_{{set.id}}">
                                 <span class="glyphicon glyphicon-plus"></span>
                                 <span  data-translate="entity.action.save">
                                     Save
                                 </span>
                             </button>
                             <button type="button" name="cancel_set_custom_btn" class="btn btn-default" 
-                                    ng-click="vm.cancelSetSettings(set, vm.game.sets.indexOf(set))"
+                                    ng-click="vm.resetSetSettings(set)"
                                     ng-disabled="set.finished || vm.game.finished">
-                                <span class="glyphicon glyphicon-ban-circle"></span>
+                                <span class="glyphicon glyphicon-refresh"></span>
                                 <span  data-translate=""> <!--TODO: data-translate -->
                                     Reset
+                                </span>
+                            </button>
+                            <button type="button" name="cancel_set_custom_btn" class="btn btn-default" 
+                                    ng-click="vm.resetSetSettings(set)"
+                                    ng-disabled="set.finished || vm.game.finished"
+                                    data-toggle="collapse" data-target="#setSettingsForm_{{set.id}}">
+                                <span class="glyphicon glyphicon-ban-circle"></span>
+                                <span  data-translate=""> <!--TODO: data-translate -->
+                                    Cancel
                                 </span>
                             </button>
                         </div>
@@ -162,7 +195,7 @@
         </table>
 
         <div class="myPaqddingBottom pull-right">
-            <button type="button" name="add_set_default_btn" class="btn btn-success" ng-click="vm.addSet()">
+            <button ng-disabled="vm.game.finished" type="button" name="add_set_default_btn" class="btn btn-success" ng-click="vm.addSet()">
                 <span class="glyphicon glyphicon-plus"></span>
                 <span  data-translate="tournamentControlApp.gameSet.home.add">
                     Add set
@@ -196,7 +229,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button ng-disabled="vm.changed" type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
         </button>
         <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">

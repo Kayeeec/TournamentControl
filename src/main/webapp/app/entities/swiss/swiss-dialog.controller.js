@@ -16,6 +16,16 @@
         
         vm.printRivals = My.printRivals;
         
+        /* default values*/
+        vm.swiss.pointsForLosing = vm.swiss.pointsForLosing || 0;
+        vm.swiss.pointsForTie = vm.swiss.pointsForTie || 0.5;
+        vm.swiss.pointsForWinning = vm.swiss.pointsForWinning || 1;
+        vm.swiss.tiesAllowed = vm.swiss.tiesAllowed || true;
+        vm.swiss.playingFields = vm.swiss.playingFields || 1;
+        vm.swiss.setsToWin = vm.swiss.setsToWin || 1;
+        vm.swiss.color = vm.swiss.color || false;
+        /* end default values*/
+        
         
         /* participants stuff */
         vm.participants = Participant.query();
@@ -116,11 +126,14 @@
             }
         };
         
+        vm.bye = Participant.getBye();
         
-        vm.prepareSeeding = function () {
+        vm.prepareSeeding = function (doesNotNeedEmptying) {
             //init empty seeding[] with proper number of byes from selected participants
-            var n = vm.selectedParticipants.length;
-            vm.seeding = new Array();
+            if(!doesNotNeedEmptying || vm.changed){
+                var n = vm.selectedParticipants.length;
+                vm.seeding = new Array();
+            }
             
             //n===1 not generated 
             if(vm.selectedParticipants && n === 2){
@@ -139,8 +152,9 @@
             var byeNum = n % 2;
             //max 1 bye
             if(byeNum > 0){
-                vm.seeding.push(Participant.getBye());
+                vm.seeding.push(vm.bye);
             }
+            vm.changed = false;
             console.log("vm.prepareSeeding(), seeding:", vm.seeding);
             return;
         };
@@ -148,13 +162,18 @@
         vm.updateSelectedParticipants_player = function () {
             angular.copy(vm.selectedPlayers, vm.selectedParticipants);
             vm.changed = true;
-            vm.prepareSeeding();
+            if(!$scope.seedRandomly){
+                vm.prepareSeeding();
+            }
+            
         };
         
         vm.updateSelectedParticipants_team = function () {
             angular.copy(vm.selectedTeams, vm.selectedParticipants);
             vm.changed = true;
-            vm.prepareSeeding();
+            if(!$scope.seedRandomly){
+                vm.prepareSeeding();
+            }
         };
         
         vm.pairsNumber = function () {
@@ -166,19 +185,7 @@
             return vm.selectedParticipants.length + (vm.selectedParticipants.length%2);
         };
         
-        vm.contains = function (array, elem) {
-            for (var i = 0; i < array.length; i++) {
-                if(!elem){ // elem === null
-                    if(!array[i]){
-                        return true;
-                    }
-                }
-                else if (array[i] && array[i].id === elem.id){
-                    return true;
-                }
-            }
-            return false;
-        };
+        vm.contains = My.containsElemWithId;
         
         vm.onParticipantSelect = function (oldSeeding, newRival, i) {
             var oldRival = oldSeeding[i];
@@ -205,7 +212,28 @@
             return false; 
         };
         
+        vm.getSeedingOptionName = function (participant) {
+            return My.getSeedingOptionName(vm.seeding,participant);
+        };
+        
         /* END - seeding stuff */
+        
+        /** Playing Fields Validation **/
+        vm.participantsTouched = false;
+        
+        vm.maxPlayingFields = function () {
+            if($scope.chosen===1){//players
+                return Math.floor(vm.selectedPlayers.length/2);
+            }
+            else {//teams
+                return Math.floor(vm.selectedTeams.length/2);
+            }
+        };
+        
+        vm.playingFieldsInvalid = function () {
+            return vm.participantsTouched && vm.swiss.playingFields > vm.maxPlayingFields();
+        };
+        /** end - Playing Fields Validation **/
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -245,8 +273,9 @@
             vm.isSaving = false;
         }
         
-        
-
-
+        vm.getRoundNum = function () {
+            if(vm.selectedParticipants.length === 0)return 0;
+            return Math.ceil(Math.log2(vm.selectedParticipants.length));
+        };
     }
 })();

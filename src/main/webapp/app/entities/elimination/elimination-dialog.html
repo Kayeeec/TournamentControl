@@ -246,7 +246,7 @@
                 <div id="over_{{i}}" class="tree-node-table this-is-over" style="top: {{vm.coordinates[i].top}}; left: {{vm.coordinates[i].left}}">
                     <div ng-if="!vm.isBye(vm.seeding[i])" name="A" class="tree-node-table-A"> 
                         <select class="form-control" 
-                            ng-options="participant.name for participant in vm.selectedParticipants track by participant.id"
+                            ng-options="participant as vm.getSeedingOptionName(participant) for participant in vm.selectedParticipants track by participant.id"
                             ng-model="vm.seeding[i]" 
                             ng-change="vm.onParticipantSelect({{vm.seeding}}, vm.seeding[i], i); vm.changed = false">
                             <option value=""> - </option>
@@ -257,7 +257,7 @@
                     </div>
                     <div ng-if="!vm.isBye(vm.seeding[N - 1 - i])" name="B" class="tree-node-table-A">
                         <select class="form-control" 
-                            ng-options="participant.name for participant in vm.selectedParticipants track by participant.id"
+                            ng-options="participant as vm.getSeedingOptionName(participant) for participant in vm.selectedParticipants track by participant.id"
                             ng-model="vm.seeding[N - 1 - i]"
                             ng-change="vm.onParticipantSelect({{vm.seeding}}, vm.seeding[N - 1 - i], N - 1 - i); vm.changed = false">
                             <option value=""> - </option>

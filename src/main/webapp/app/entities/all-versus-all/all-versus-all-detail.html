@@ -99,7 +99,7 @@
     <div ui-view="evaluation-table"/></div>
 
 <!-- ********* tables for matches and editing scores ********* -->
-    <div class="panel panel-primary" ng-repeat="(period,games) in vm.allVersusAll.matches | groupBy: 'period'">
+    <div class="panel panel-primary" ng-repeat="(period,games) in vm.allVersusAll.matches | groupBy: 'period'" >
         <!-- Default panel contents -->
         <div class="panel-heading">
             <h3 class="panel-title">Period {{period}}</h3>
@@ -120,7 +120,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:'round' track by game.id">
+                    <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:['round','id'] track by game.id">
                         <td>{{game.id}}</td>
                         <td style="text-align: center; font-weight: bolder">{{game.round}}</td>
                         <td style="text-align: center">{{game.playingField}}</td>

@@ -60,8 +60,8 @@ public class Game implements Serializable {
     @ManyToOne
     private Participant rivalB;
 
-    @OneToMany(mappedBy = "game", 
-            fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "game",  fetch = FetchType.EAGER, 
+            cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnoreProperties({"game"})
     private Set<GameSet> sets = new HashSet<>();
@@ -219,16 +219,39 @@ public class Game implements Serializable {
             return false;
         }
         Game game = (Game) o;
-        if (game.id == null || id == null) {
-            return false;
-        }
-        return Objects.equals(id, game.id);
+//        if (game.id == null || id == null) {
+//            return false;
+//        }
+//        return Objects.equals(id, game.id);
+        return Objects.equals(this.id, game.getId())
+                && Objects.equals(this.finished, game.isFinished())
+                && Objects.equals(this.note, game.getNote())
+                && Objects.equals(this.period, game.getPeriod())
+                && Objects.equals(this.playingField, game.getPlayingField())
+                && Objects.equals(this.rivalA, game.getRivalA())
+                && Objects.equals(this.rivalB, game.getRivalB())
+                && Objects.equals(this.round, game.getRound())
+                && Objects.equals(this.sets, game.getSets())
+                && Objects.equals(this.tournament, game.getTournament());      
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        final int prime = 37;
+        int result = 1;
+        result = prime * result + Objects.hashCode(id);
+        result = prime * result + Objects.hashCode(finished);
+        result = prime * result + Objects.hashCode(note);
+        result = prime * result + Objects.hashCode(period);
+        result = prime * result + Objects.hashCode(playingField);
+        result = prime * result + Objects.hashCode(rivalA);
+        result = prime * result + Objects.hashCode(rivalB);
+        result = prime * result + Objects.hashCode(round);
+        result = prime * result + Objects.hashCode(tournament);
+        return result;
     }
+
+    
 
     @Override
     public String toString() {

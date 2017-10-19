@@ -294,16 +294,44 @@ public class Tournament implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Tournament tournament = (Tournament) o;
-        if (tournament.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), tournament.getId());
+        Tournament other = (Tournament) o;
+//        if (tournament.getId() == null || getId() == null) {
+//            return false;
+//        }
+//        return Objects.equals(getId(), tournament.getId());
+        return Objects.equals(getId(), other.getId())
+                && Objects.equals(created, other.getCreated())
+                && Objects.equals(matches, other.getMatches())
+                && Objects.equals(name, other.getName())
+                && Objects.equals(note, other.getNote())
+                && Objects.equals(participants, other.getParticipants())
+                && Objects.equals(playingFields, other.getPlayingFields())
+                && Objects.equals(pointsForLosing, other.getPointsForLosing())
+                && Objects.equals(pointsForTie, other.getPointsForTie())
+                && Objects.equals(pointsForWinning, other.getPointsForWinning())
+                && Objects.equals( setSettings, other.getSetSettings())
+                && Objects.equals(setsToWin, other.getSetsToWin())
+                && Objects.equals(tiesAllowed, other.getTiesAllowed())
+                && Objects.equals(user, other.getUser()); 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        final int prime = 59;
+        int result = 1;
+        result = prime * result + Objects.hashCode(id);
+        result = prime * result + Objects.hashCode(created);
+        result = prime * result + Objects.hashCode(name);
+        result = prime * result + Objects.hashCode(note);
+        result = prime * result + Objects.hashCode(playingFields);
+        result = prime * result + Objects.hashCode(pointsForLosing);
+        result = prime * result + Objects.hashCode(pointsForTie);
+        result = prime * result + Objects.hashCode(pointsForWinning);
+        result = prime * result + Objects.hashCode(setSettings);
+        result = prime * result + Objects.hashCode(setsToWin);
+        result = prime * result + Objects.hashCode(tiesAllowed);
+        result = prime * result + Objects.hashCode(user);
+        return result;
     }
 
     @Override

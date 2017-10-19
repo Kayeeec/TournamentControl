@@ -12,6 +12,8 @@
 
         vm.swiss = entity;
         vm.previousState = previousState.name;
+        
+        vm.isSwiss = true; //for game dialog
 
         var unsubscribe = $rootScope.$on('tournamentControlApp:swissUpdate', function(event, result) {
             vm.swiss = result;

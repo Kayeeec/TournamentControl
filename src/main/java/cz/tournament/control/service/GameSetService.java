@@ -53,9 +53,13 @@ public class GameSetService {
     
     public GameSet updateGameSet(GameSet gameSet){
         log.debug("Request to update GameSet : {}", gameSet);
-        //ensure game
-        Game oldGame = gameSetRepository.findOne(gameSet.getId()).getGame();
-        gameSet.game(oldGame);
+        
+//        if(gameSet.getSetSettings().getId() == null){
+//            gameSet.setSettings(setSettingsRepository.save(gameSet.getSetSettings()));
+//        }
+        if(!Objects.equals(gameSet.getSetSettings().getId(), gameSet.getGame().getTournament().getSetSettings().getId())){
+            gameSet.setSettings(setSettingsRepository.save(gameSet.getSetSettings()));
+        }
         
         GameSet result = gameSetRepository.save(gameSet);
         return result;
@@ -122,7 +126,7 @@ public class GameSetService {
      *
      *  @param id the id of the entity
      */
-    public Game delete(Long id) {
+    public void delete(Long id) {
         log.debug("Request to delete GameSet : {}", id);
         GameSet set = gameSetRepository.findOne(id);
         
@@ -133,18 +137,18 @@ public class GameSetService {
             setSettingsRepository.delete(setSettings.getId());
         }
         
-        //remove set from its game
-        Game game = set.getGame();
-        game.removeSets(set);
-        Game savedGame = gameRepository.save(game);
+//        //remove this set from its game
+//        Game game = set.getGame();
+//        game.removeSets(set);
+//        Game savedGame = gameRepository.save(game);
         
         //delete set
         gameSetRepository.delete(id);
-        return savedGame;
     }
     
     public void delete(Iterable<GameSet> gameSets){
         log.debug("Request to delete GameSets : {}", gameSets.toString());
         gameSetRepository.delete(gameSets);
+        
     }
 }

@@ -203,19 +203,7 @@
             vm.treeSize.height = t.css("height"); 
         }
         
-        vm.contains = function (array, elem) {
-            for (var i = 0; i < array.length; i++) {
-                if(!elem){ // elem === null
-                    if(!array[i]){
-                        return true;
-                    }
-                }
-                else if (array[i] && array[i].id === elem.id){
-                    return true;
-                }
-            }
-            return false;
-        };
+        vm.contains = My.containsElemWithId;
         
         vm.onParticipantSelect = function (oldSeeding, newRival, i) {
             var oldRival = oldSeeding[i];
@@ -225,6 +213,10 @@
                 //swap
                 vm.seeding[oldIndexOfNewRival] = oldRival;
             }
+        };
+        
+        vm.getSeedingOptionName = function (participant) {
+            return My.getSeedingOptionName(vm.seeding,participant);
         };
     /* *** participant seeding stuff END *** */
         
