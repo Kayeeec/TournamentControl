@@ -22,12 +22,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                <div ng-repeat="participant in vm.tournament.participants">
-                    <div ng-if="participant.player" ng-init="temp = pointCount(participant.id);temp.rival = participant.player.name; counts.push(temp)"></div>
-                    <div ng-if="participant.team" ng-init="temp = pointCount(participant.id);temp.rival = participant.team.name; counts.push(temp)"></div>
-                </div>
-                <tr ng-repeat="count in counts| orderBy:['-total', '-wins', '-(score/scoreRival)', 'loses']">
-                    <td >{{$index + 1}}</td>
+                <tr ng-repeat="count in vm.counts | orderBy:['-total', '-wins', 'loses', '-(score/scoreRival)']">
+                    <td >{{count.rank}}</td>
                     <td id="participant">{{count.rival}}</td>
                     <td id="wins" class="myWins">{{count.wins}}</td>
                     <td id="loses" class="myLoses">{{count.loses}}</td>
@@ -37,7 +33,6 @@
                     <td id="scoreRival" style="text-align: left">{{count.scoreRival}}</td>
                     <td id="points" class="myTotal">{{count.total}}</td>
                 </tr>
-                <div ng-init="emptyCounts()"></div> 
                 </tbody>
             </table>
         </div>

@@ -5,18 +5,21 @@
         .module('tournamentControlApp')
         .controller('EvaluationTableController', EvaluationTableController);
 
-    EvaluationTableController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity'];
+    EvaluationTableController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'My'];
 
-    function EvaluationTableController($scope, $rootScope, $stateParams, previousState, entity) {
+    function EvaluationTableController($scope, $rootScope, $stateParams, previousState, entity, My) {
         var vm = this;
         vm.tournament = entity;
 
         vm.previousState = previousState.name;
+        vm.getName = My.getParticipantName;
+        
+        var pointsUsed = (vm.tournament.pointsForWinning !== null || vm.tournament.pointsForWinning !== 0)
+                        || (vm.tournament.pointsForLosing !== null || vm.tournament.pointsForLosing !== 0)
+                        || (vm.tournament.pointsForTie !== null || vm.tournament.pointsForTie !== 0);
         
         
         /* ****** evaluation table ****** */
-        $scope.temp;
-        $scope.counts = new Array();
         
         /*
          * Returns all finished matches for given participant. 
@@ -62,15 +65,15 @@
          *                      total: double,  score: double, scoreRival: double }
          *                      rival - set to participants name in view
          */
-        $scope.pointCount = function pointCount(participantID) {
+        $scope.pointCount = function pointCount(participant) {
             var tournament = vm.tournament;
-            var hisFinishedMatches = participantsFinishedMatches(participantID, tournament);
-            var points = {rival: "rival",wins: 0, loses: 0, ties: 0, total: 0, score: 0, scoreRival: 0};
+            var hisFinishedMatches = participantsFinishedMatches(participant.id, tournament);
+            var points = {rival: vm.getName(participant) ,wins: 0, loses: 0, ties: 0, total: 0, score: 0, scoreRival: 0};
 
             hisFinishedMatches.forEach(function (match) {
                 var scoreSum = getScoreSum(match);
 //                classic - score bigger or even
-                if(match.rivalA.id === participantID){
+                if(match.rivalA.id === participant.id){
                     points.score += scoreSum.A;
                     points.scoreRival += scoreSum.B;
                     
@@ -85,7 +88,7 @@
                         }
                     }
                 }
-                if(match.rivalB.id === participantID){
+                if(match.rivalB.id === participant.id){
                     points.score += scoreSum.B;
                     points.scoreRival += scoreSum.A;
                     
@@ -110,6 +113,73 @@
         $scope.emptyCounts = function(){
             $scope.counts = [];
         };
+        
+        /**
+         * 
+         * @param {Object} a = {rival: string, wins: int, loses: int, ties: int, 
+         *                      total: double,  score: double, scoreRival: double }
+         * @param {type} b
+         * @returns {Number}    a, b   : 1
+         *                      b, a   :-1
+         *                      a == b : 0
+         */
+        function compare(b, a) { 
+            if(a.total > b.total) return 1;
+            if(a.total < b.total) return -1;
+            
+            if(a.wins > b.wins) return 1;
+            if(a.wins < b.wins) return -1;
+            
+            if(a.loses > b.loses) return -1;
+            if(a.loses < b.loses) return 1;
+            
+            if(a.score > b.score) return 1;
+            if(a.score < b.score) return -1;
+            
+            return 0;
+            
+        }
+        
+        /*
+         * Adds 'rank' attribute to each count object in count_array.
+         * @param Array {Object} counts_array 
+         * 
+         */
+        function determineRank(counts_array) {
+            var rank = 1;
+            counts_array[0].rank = 1;
+            for (var i = 1; i < counts_array.length; i++) {
+                if(pointsUsed){
+                    // just points 
+                    if(counts_array[i-1].total !== counts_array[i].total){
+                        rank +=1;
+                    }
+                }else{
+                    //use compare (totals will be null)
+                    if(compare(counts_array[i-1], counts_array[i]) !== 0){
+                        rank +=1;
+                    }
+                }
+                counts_array[i].rank = rank;
+            } 
+        }
+        
+        function getAllPointCounts() {
+            var counts_array = new Array();
+            for (var i = 0; i < vm.tournament.participants.length; i++) {
+                var participant = vm.tournament.participants[i];
+                var count = $scope.pointCount(participant);
+                counts_array.push(count);
+            }
+            counts_array.sort(compare);
+            console.log(counts_array);
+            
+            determineRank(counts_array);
+            return counts_array;
+        }
+        
+        vm.counts = getAllPointCounts();
+        
 /* ****** END evaluation table ****** */
         
         
