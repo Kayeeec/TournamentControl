@@ -18,20 +18,37 @@
         }
         return '-';
     }
+    
+    function contains(array, elem) {
+        for (var i = 0; i < array.length; i++) {
+            if(!elem){ // elem === null
+                if(!array[i]){
+                    return true;
+                }
+            }
+            else if (array[i] && array[i].id === elem.id){
+                return true;
+            }
+        }
+        return false;
+    }
 
     function My() {
         return {
-            'getParticipantName': function getParticipantName(participant) {
+            'getParticipantName': function (participant) {
+                return getParticipantName(participant);
+            },
+            'containsElemWithId': function (array, elem) {
+                return contains(array,elem);
+            },
+            'getSeedingOptionName': function getSeedingOptionName(seeding, participant) {
                 if(participant){
-                    if(participant.player){
-                        return participant.player.name;
+                        if(contains(seeding, participant)){
+                        return participant.name;
                     }
-                    if(participant.team){
-                        return participant.team.name;
-                    }
-                    return 'BYE';
+                    return participant.name +" (not seeded)";
                 }
-                return '-';
+                return "";
             },
             'getN': function getN(n) {
                 if ((n & (n - 1)) === 0) {

@@ -15,6 +15,8 @@
         vm.save = save;
         vm.participants = Participant.query();
         
+        vm.participantsTouched = false;
+        
 //        initiating default values 
         if(vm.allVersusAll.tiesAllowed === null){ vm.allVersusAll.tiesAllowed = true; }
         vm.allVersusAll.numberOfMutualMatches = vm.allVersusAll.numberOfMutualMatches || 1;
@@ -106,6 +108,13 @@
             selectParticipants();
             resolveSetSettings();
             
+//            if(vm.allVersusAll.playingFields 
+//                    && vm.allVersusAll.playingFields > Math.floor(vm.allVersusAll.participants.length/2)){
+//                console.log("setting fields to false");
+//                vm.isSaving = false;
+//                return $scope.editForm.playingFields.$setValidity= ("maxPlayingFields", false);
+//            }
+            
             
             if (vm.allVersusAll.id !== null) {
                 AllVersusAll.update(vm.allVersusAll, onSaveSuccess, onSaveError);
@@ -124,14 +133,19 @@
             vm.isSaving = false;
         }
         
-        $scope.maxPlayingFields = function () {
-            if($scope.chosen === 1){
+        /** Playing Fields Validation **/
+        vm.maxPlayingFields = function () {
+            if($scope.chosen===1){//players
                 return Math.floor(vm.selectedPlayers.length/2);
             }
-            return Math.floor(vm.selectedTeams.length/2);
+            else {//teams
+                return Math.floor(vm.selectedTeams.length/2);
+            }
         };
         
-        $('.collapse').collapse();
-
+        vm.playingFieldsInvalid = function () {
+            return vm.participantsTouched && vm.allVersusAll.playingFields > vm.maxPlayingFields();
+        };
+        /** end - Playing Fields Validation **/
     }
 })();

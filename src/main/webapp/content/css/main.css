@@ -7,6 +7,31 @@ body {
 /* ==========================================================================
 My styles
 ============================================================================= */
+.mytab td{
+    position: relative;
+}
+
+.mytab td input {
+  position: absolute;
+  display: block;
+  top:0;
+  left:0;
+  margin: 0;
+  height: 100% !important;
+  width: 100%;
+/*  border-radius: 5px !important;
+  border: 1px chocolate;*/
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.gamePointsInput{
+    width: 150px;
+}
+
+.white{
+    color: #ccc;
+}
 .myWins{
     color: #060;
 }

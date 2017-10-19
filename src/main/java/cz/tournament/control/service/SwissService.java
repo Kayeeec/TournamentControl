@@ -280,7 +280,7 @@ public class SwissService {
         if(matches.isEmpty()) return null;
         Collections.sort(matches, Game.RoundComparator);
         
-        int N = swiss.getParticipants().size();
+        int N = swiss.getParticipants().size() + swiss.getParticipants().size()%2;
         Participant[] seeding = new Participant[N];
         
         int a = 0;

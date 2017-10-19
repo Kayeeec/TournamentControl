@@ -141,10 +141,10 @@ public class GameSetResource {
      */
     @DeleteMapping("/game-sets/{id}")
     @Timed
-    public ResponseEntity<Game> deleteGameSet(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteGameSet(@PathVariable Long id) {
         log.debug("REST request to delete GameSet : {}", id);
-        Game game = gameSetService.delete(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(game));
+        gameSetService.delete(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
 }
