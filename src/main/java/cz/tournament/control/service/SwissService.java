@@ -431,12 +431,12 @@ public class SwissService {
                 spB.incrPoints(swiss.getPointsForTie());
             }
             //A winner
-            if(winnerAndLoser.get("winner").equals(game.getRivalA())){
+            if( Objects.equals(winnerAndLoser.get("winner"),game.getRivalA()) ){
                 spA.incrPoints(swiss.getPointsForWinning());
                 spB.incrPoints( (-1) * swiss.getPointsForLosing() );
             }
             //B winner
-            if(winnerAndLoser.get("winner").equals(game.getRivalB())){
+            if( Objects.equals(winnerAndLoser.get("winner"),game.getRivalB()) ){
                 spB.incrPoints(swiss.getPointsForWinning());
                 spA.incrPoints( (-1) * swiss.getPointsForLosing() );
             }

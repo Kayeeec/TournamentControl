@@ -72,14 +72,16 @@ public class GameService {
         
         SetSettings defaultSetSettings = setSettingsService.save(game.getTournament().getSetSettings()) ;
         
-        //prepare sets - one or number of sets to win
-        GameSet set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
-        tmp.addSets(set);
-        Integer sets = tmp.getTournament().getSetsToWin();
-        if (sets != null && sets > 1) {
-            for (int i = 1; i < sets; i++) {
-                set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
-                tmp.addSets(set);
+        if((game.getRivalA()==null || !game.getRivalA().isBye()) && (game.getRivalB()==null || !game.getRivalB().isBye())){
+            //prepare sets - one or number of sets to win
+            GameSet set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
+            tmp.addSets(set);
+            Integer sets = tmp.getTournament().getSetsToWin();
+            if (sets != null && sets > 1) {
+                for (int i = 1; i < sets; i++) {
+                    set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
+                    tmp.addSets(set);
+                }
             }
         }
         
@@ -124,9 +126,6 @@ public class GameService {
             gameSetService.updateGameSet(set);
         }
         
-        
-        
-        
         //finish the game if all sets are finished and is not an unallowed tie 
         game.setFinished(Boolean.FALSE);
         if(game.getRivalA() != null && game.getRivalB() != null){
@@ -149,16 +148,6 @@ public class GameService {
         if(tournament instanceof Elimination){
             log.debug("Tournament is instance of Elimination, calling nextGameUpdate().");
             elimination_nextGameUpdate(game, tournament);
-        }
-        
-        //delete sets if one rival is BYE - maybe could be better algorithm
-        if( isBye(game.getRivalA()) || isBye(game.getRivalB()) ){
-            List<GameSet> sets = new ArrayList<>(game.getSets());
-            for (GameSet set : sets) {
-                game.removeSets(set);
-            }
-            gameSetService.delete(sets);
-            
         }
         
         Game result = gameRepository.save(game);

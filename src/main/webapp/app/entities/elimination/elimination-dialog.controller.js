@@ -20,15 +20,20 @@
         vm.isBye = My.isBye;
         vm.myIterator = My.iterator;
         
-        vm.participants = Participant.query();
         
     /* *** initiating default values *** */
         vm.elimination.bronzeMatch = vm.elimination.bronzeMatch || false;
         vm.elimination.type = vm.elimination.type || "SINGLE";
         vm.elimination.tiesAllowed = false;
+        vm.elimination.pointsForWinning = vm.elimination.pointsForWinning || 1;
+        vm.elimination.pointsForLosing = vm.elimination.pointsForLosing || 0;
+        vm.elimination.setsToWin = vm.elimination.setsToWin || 1;
     /* *** END: initiating default values *** */
         
-    /* participants stuff */
+    /**** participants stuff ****/
+        vm.participants = Participant.query();
+        vm.participantsTouched = false; //not necessary in here
+        
         vm.elimination.participants = vm.elimination.participants || [];
         vm.selectedPlayers = filterFilter(vm.elimination.participants, {team : null});
         vm.selectedTeams = filterFilter(vm.elimination.participants, {player : null});
@@ -42,7 +47,6 @@
                 angular.copy(vm.selectedTeams, vm.elimination.participants);
             }
         }
-        
         $scope.isPlayer = function (participant) {
             if(participant.player !== null) return true;
             return false;
@@ -51,7 +55,79 @@
             if(participant.team !== null) return true;
             return false;
         };
-    /* END - participants stuff */
+        
+        /* Set implementation */
+        Set.prototype.addSet = function (set) {
+            if(set){
+                for (let item of set){
+                    this.add(item);
+                }
+            }
+        };
+        /* end set implementation */ 
+
+        
+        vm.getTeamCSS_onValidity = function (participant) {
+            if(vm.teamIsInvalid(participant)){
+                return "text text-muted";
+            }
+            return "";
+        };
+        
+        vm.teamPlayers = new Set();
+        
+        function addTeamMembers(set, participant) {
+            for (var i = 0; i < participant.team.members.length; i++) {
+                set.add(participant.team.members[i].id);
+            }
+        }
+        
+        /**
+         * Creates a set of all players from all selected teams.
+         * Used for checking which teams are valid (don't have common members)
+         * 
+         * @returns {undefined}
+         */
+        function computeTeamPlayers() {
+            vm.teamPlayers.clear();
+            for (var i = 0; i < vm.selectedTeams.length; i++) {
+                addTeamMembers(vm.teamPlayers, vm.selectedTeams[i]);
+            }
+        }
+        
+        vm.onTeamClick = function () {
+            vm.participantsTouched = true;
+            computeTeamPlayers();
+            vm.changed = true;
+            vm.prepareSeeding();
+        };
+        
+        vm.onPlayerClick = function () {
+            vm.participantsTouched = true;
+            vm.changed = true;
+            vm.prepareSeeding();
+        };
+       
+        vm.teamIsInvalid= function(participant){
+          if(!vm.contains(vm.selectedTeams, participant)){
+            var both = new Set();
+            both.addSet(vm.teamPlayers);
+            addTeamMembers(both, participant);
+            return vm.teamPlayers.size + participant.team.members.length > both.size; 
+          }
+          return false;
+        };
+        
+        $('#myTab a[href="#players"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        $('#myTab a[href="#teams"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        
+        /**** end Participant stuff ****/
         
     /* *** participant seeding stuff *** */
         function init_seeding() {
@@ -69,11 +145,12 @@
         }
         
         function selectSelectedParticipants() {
+            vm.selectedParticipants = [];
             if($scope.chosen === 1){
-                angular.copy(vm.selectedPlayers, vm.selectedParticipants);
+                vm.selectedParticipants = angular.copy(vm.selectedPlayers);
             }
             if($scope.chosen === 2){
-                angular.copy(vm.selectedTeams, vm.selectedParticipants);
+                vm.selectedParticipants = angular.copy(vm.selectedTeams);
             }
         }
         
@@ -83,26 +160,19 @@
         vm.coordinates = [];
         vm.changed = false;
         
-        vm.setParticipantsChanged = function () {
-            if(!vm.changed){ //if changed = false, set it to true
-                vm.changed = true;
-            }
-            console.log("vm.setParticipantsChanged called, vm.changed = ", vm.changed);
-        };
-        
         function nodeHTML(id,A,B) {
             return  `<div id="${id}" class="tree-node-table">
                         <div name="A" class="tree-node-table-A"> ${vm.getName(A)} </div>
-                        <div name="B" class="tree-node-table-A"> ${vm.getName(B)} </div>
+                        <div name="B" class="tree-node-table-B"> ${vm.getName(B)} </div>
                      </div>`;
         }
         
-        function under_dragNodeHTML(i, N){
-            var aName = vm.getName(vm.seeding[i]);
-            var bName = vm.getName(vm.seeding[N - 1 - i]);
-            return  `<div id="${i}" class="tree-node-table">
+        function under_dragNodeHTML(i, N, seeding){
+            var aName = vm.getName(seeding[i]);
+            var bName = vm.getName(seeding[N - 1 - i]);
+            return  `<div id="${i}" class="tree-node-table .this-is-under">
                         <div name="A" class="tree-node-table-A"> ${aName} </div>
-                        <div name="B" class="tree-node-table-A"> ${bName} </div>
+                        <div name="B" class="tree-node-table-B"> ${bName} </div>
                      </div>`;
         }
         
@@ -113,9 +183,9 @@
         
         function tree(N) {
             var config = {container: '#tree', rootOrientation: "EAST", nodeAlign: "BOTTOM",
-                connectors: {type: 'step'} };
+                connectors: {type: 'step'}};
             if(N<=2){
-                var only = {innerHTML: under_dragNodeHTML(0, N)};
+                var only = {innerHTML: under_dragNodeHTML(0, N, vm.seeding)};
                 var nodes = [config, only];
                 return nodes;
             }
@@ -133,7 +203,7 @@
                 if(i>=numberOfSelectableNodes){//parents
                     node = {parent: nodes[parentIndex(i, N)], innerHTML: nodeHTML(i, null, null)};
                 }else{//selectable
-                    node = {parent: nodes[parentIndex(i, N)], innerHTML: under_dragNodeHTML(i, N)};
+                    node = {parent: nodes[parentIndex(i, N)], innerHTML: under_dragNodeHTML(i, N, vm.seeding)};
                 }
                 nodes[i]=node;
             }
@@ -146,32 +216,32 @@
             if($scope.seedRandomly){
                 return;
             }
-            console.log("vm.prepareSeeding proceeds");
             selectSelectedParticipants();
-            if(vm.selectedParticipants && vm.selectedParticipants.length < 3){
-                $scope.seedRandomly = true;
+            console.log("prepareSeeding():selectedParticipants = ", vm.selectedParticipants);
+            if(!vm.selectedParticipants || vm.selectedParticipants.length < 3){
+//                $scope.seedRandomly = true;
                 return;
             }
             var n = vm.selectedParticipants.length;
             
-            $scope.N = My.getN(n);
-            $scope.halfN = $scope.N/2;
-            var byesNum = $scope.N - n;
+            vm.N = My.getN(n);
+            var byesNum = vm.N - n;
             if(vm.changed){
-                vm.seeding.length = $scope.N;
-                vm.seeding.fill(null,0,$scope.N);
-                console.log("changed is true, seeding = ", vm.seeding);
+                vm.seeding = new Array();
+                for (var i = 0; i < vm.N; i++) {
+                    vm.seeding.push(null);
+                }
             }
             if(byesNum > 0){
                 var BYE = Participant.getBye();
                 for (var i = 0; i < byesNum; i++) {
-                    vm.seeding[$scope.N-1-i] = BYE;
+                    vm.seeding[vm.N-1-i] = BYE;
                 }
             }
             
-            new Treant(tree($scope.N));
+            new Treant(tree(vm.N));
             
-            getCoordinatesAndSize($scope.N);
+            getCoordinatesAndSize(vm.N);
         };
         
         /**
@@ -306,7 +376,6 @@
         vm.invalidSeeding = function () {
             if(!$scope.seedRandomly){
                 if(vm.seeding){
-                    console.log(vm.contains(vm.seeding, null));
                     return vm.contains(vm.seeding, null);
                 }
                 //seeding is null > invalid

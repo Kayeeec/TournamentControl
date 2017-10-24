@@ -103,7 +103,7 @@
                 <thead>
                     <tr >
                         <th>ID</th>
-                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.playingField">Playing Field</span></th>
+                        <th ng-if="vm.swiss.playingFields && vm.swiss.playingFields > 1" style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.playingField">Playing Field</span></th>
                         <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.gameSet.score">Score</span></th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.finished">Finished</span></th>
@@ -113,7 +113,7 @@
                 <tbody>
                     <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:'id' track by game.id">
                         <td>{{game.id}}</td>
-                        <td style="text-align: center">{{game.playingField}}</td>
+                        <td ng-if="vm.swiss.playingFields && vm.swiss.playingFields > 1" style="text-align: center">{{game.playingField}}</td>
                         <td style="text-align: right">
                             <a ng-if="game.rivalA.player" ui-sref="player-detail({id:game.rivalA.player.id})">{{game.rivalA.player.name}}</a>
                             <a ng-if="game.rivalA.team" ui-sref="team-detail({id:game.rivalA.team.id})">{{game.rivalA.team.name}}</a>
@@ -133,14 +133,9 @@
                         <td class="text-right">
                             <div class="btn-group flex-btn-group-container">
                                 <button type="submit"
-                                        ui-sref="game-detail({gameId:game.id, id:vm.swiss.id})"
-                                        class="btn btn-info btn-sm">
-                                    <span class="glyphicon glyphicon-eye-open"></span>
-                                    <span class="hidden-sm-down" data-translate="entity.action.view"></span>
-                                </button>
-                                <button type="submit"
                                         ui-sref="game.swiss-edit({gameId:game.id, id:vm.swiss.id})"
-                                        class="btn btn-primary btn-sm">
+                                        class="btn btn-primary btn-sm"
+                                        ng-disabled="game.rivalA.bye || game.rivalB.bye || vm.nextRoundGenerated(game.round)">
                                     <span class="glyphicon glyphicon-pencil"></span>
                                     <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
                                 </button>
