@@ -35,7 +35,7 @@ public class Player implements Serializable {
     @ManyToOne
     private User user;
 
-    @ManyToMany(mappedBy = "members")
+    @ManyToMany(mappedBy = "members", fetch = FetchType.EAGER)
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Team> teams = new HashSet<>();
@@ -126,10 +126,11 @@ public class Player implements Serializable {
             return false;
         }
         Player player = (Player) o;
-        if (player.id == null || id == null) {
-            return false;
+        if(this.id != null && player.getId() != null){
+            return Objects.equals(this.id, player.getId());
         }
-        return Objects.equals(id, player.id);
+        return Objects.equals(this.name, player.getName())
+                && Objects.equals(this.user,player.getUser());
     }
 
     @Override

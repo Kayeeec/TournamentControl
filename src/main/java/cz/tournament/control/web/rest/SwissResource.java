@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Optional;
@@ -111,6 +112,9 @@ public class SwissResource {
     @Timed
     public List<Participant> getSwissSeeding(@PathVariable Long id) {
         log.debug("REST request to get seeding of Swiss: {}", id);
+        if(id == null){
+            return new ArrayList<>();
+        }
         List<Participant> seeding = swissService.getSwissSeeding(id);
         return seeding;
     }

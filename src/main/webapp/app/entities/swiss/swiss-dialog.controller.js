@@ -15,6 +15,7 @@
         vm.save = save;
         
         vm.printRivals = My.printRivals;
+        vm.contains = My.containsElemWithId;
         
         /* default values*/
         vm.swiss.pointsForLosing = vm.swiss.pointsForLosing || 0;
@@ -25,26 +26,23 @@
         vm.swiss.setsToWin = vm.swiss.setsToWin || 1;
         vm.swiss.color = vm.swiss.color || false;
         /* end default values*/
-        
-        
-        /* participants stuff */
+
+
+        /**** participants stuff ****/
         vm.participants = Participant.query();
+        vm.participantsTouched = false;
+        
         vm.swiss.participants = vm.swiss.participants || [];
         vm.selectedPlayers = filterFilter(vm.swiss.participants, {team : null});
         vm.selectedTeams = filterFilter(vm.swiss.participants, {player : null});
         $scope.chosen = 1;
         
         function selectParticipants() {
-            console.log("Selecting participants");
             if($scope.chosen === 1){
                 angular.copy(vm.selectedPlayers, vm.swiss.participants);
-                console.log("vm.selectedPlayers: " + vm.selectedPlayers);
-                console.log("vm.swiss.participants: " + vm.swiss.participants);
             }
             if($scope.chosen === 2){
                 angular.copy(vm.selectedTeams, vm.swiss.participants);
-                console.log("vm.selectedTeams: " + vm.selectedTeams);
-                console.log("vm.swiss.participants: " + vm.swiss.participants);
             }
         }
         $scope.isPlayer = function (participant) {
@@ -55,7 +53,86 @@
             if(participant.team !== null) return true;
             return false;
         };
-        /* END - participants stuff */
+        
+        Set.prototype.addSet = function (set) {
+            if(set){
+                for (let item of set){
+                    this.add(item);
+                }
+            }
+        };
+        
+        vm.getTeamCSS_onValidity = function (participant) {
+            if(vm.teamIsInvalid(participant)){
+                return "text text-muted";
+            }
+            return "";
+        };
+        
+        vm.teamPlayers = new Set();
+        
+        function addTeamMembers(set, participant) {
+            for (var i = 0; i < participant.team.members.length; i++) {
+                set.add(participant.team.members[i].id);
+            }
+        }
+        
+        function computeTeamPlayers() {
+            vm.teamPlayers.clear();
+            for (var i = 0; i < vm.selectedTeams.length; i++) {
+                addTeamMembers(vm.teamPlayers, vm.selectedTeams[i]);
+            }
+        }
+        
+        vm.onTeamClick = function () {
+            vm.participantsTouched = true;
+            computeTeamPlayers();
+            vm.teamsChanged = true;
+            vm.updateSelectedParticipants_team();
+            
+        };
+        
+        vm.onPlayerClick = function () {            
+            vm.participantsTouched = true;
+            vm.playersChanged = true;
+            vm.updateSelectedParticipants_player();
+        };
+       
+        vm.teamIsInvalid= function(participant){ 
+          if(!vm.contains(vm.selectedTeams, participant)){
+            var both = new Set();
+            both.addSet(vm.teamPlayers);
+            addTeamMembers(both, participant);
+            return vm.teamPlayers.size + participant.team.members.length > both.size; 
+          }
+          return false;
+        };
+        
+        $('#myTab a[href="#players"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        $('#myTab a[href="#teams"]').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        
+        /**** end Participant stuff ****/
+        
+        /** Playing Fields Validation **/
+        vm.maxPlayingFields = function () {
+            if($scope.chosen===1){//players
+                return Math.floor(vm.selectedPlayers.length/2);
+            }
+            else {//teams
+                return Math.floor(vm.selectedTeams.length/2);
+            }
+        };
+        
+        vm.playingFieldsInvalid = function () {
+            return vm.participantsTouched && vm.swiss.playingFields > vm.maxPlayingFields();
+        };
+        /** end - Playing Fields Validation **/
         
         /* setSettings stuff */
         vm.setSettingsChosen = initSetSettingsChosen();
@@ -92,18 +169,26 @@
         /* END - setSettings stuff */
         
         /* seeding stuff */
+        
         vm.selectedParticipants = angular.copy(vm.swiss.participants);
-        function init_seeding() {
+        
+        getSeeding();
+        
+        vm.player_seeding = [];
+        vm.team_seeding = [];
+        
+        function getSeeding() {
             if(vm.swiss.id){
-                //old seeding 
-                var oldSeeding = Swiss.getSeeding({id: vm.swiss.id});
-                if(oldSeeding){
-                    return oldSeeding;
+                Swiss.getSeeding({id: vm.swiss.id}, onGetSeedingSuccess, onGetSeedingError);
+                function onGetSeedingSuccess(seeding) {
+                    vm.player_seeding = filterFilter(seeding, {team : null});
+                    vm.team_seeding = filterFilter(seeding, {player : null});
+                }
+                function onGetSeedingError(error) {
+                    AlertService.error(error.data.message);
                 }
             }
-            return [];
         }
-        vm.seeding = init_seeding();
         
         function init_seedRandomly_radioBTN() {
             if(vm.swiss.id === null){ //new tournament
@@ -113,79 +198,114 @@
         }
         $scope.seedRandomly = init_seedRandomly_radioBTN();
         
-        vm.changed = false;
-        vm.iterator = My.iterator;
-        vm.isBye = My.isBye;
+        vm.playersChanged = false;
+        vm.teamsChanged = false;
         
-        vm.update_SelectedParticipants = function () {
+        vm.iterator = My.iterator;
+        vm.isBye = My.isBye; 
+        vm.bye = Participant.getBye();
+        
+        vm.prepareSeeding=function (doesNotNeedEmptying) {
             if($scope.chosen === 1){
-                angular.copy(vm.selectedPlayers, vm.selectedParticipants);
-            }
-            if($scope.chosen === 2){
-                angular.copy(vm.selectedTeams, vm.selectedParticipants);
+                vm.preparePlayerSeeding(doesNotNeedEmptying);
+            }else{
+                vm.prepareTeamSeeding(doesNotNeedEmptying);
             }
         };
         
-        vm.bye = Participant.getBye();
-        
-        vm.prepareSeeding = function (doesNotNeedEmptying) {
+        vm.preparePlayerSeeding = function (doesNotNeedEmptying) {
             //init empty seeding[] with proper number of byes from selected participants
-            if(!doesNotNeedEmptying || vm.changed){
-                var n = vm.selectedParticipants.length;
-                vm.seeding = new Array();
+            if(!doesNotNeedEmptying || vm.playersChanged){
+                var n = vm.selectedPlayers.length;
+                vm.player_seeding = new Array();
             }
             
             //n===1 not generated 
-            if(vm.selectedParticipants && n === 2){
-                //just fill the seeding with seleted participants
+            //n===2 filled with chosen players
+            if(vm.selectedPlayers && n === 2){
+                //just fill the seeding with selected participants
                 for (var i = 0; i < n; i++) {
-                    vm.seeding[i]=vm.selectedParticipants[i];
+                    vm.player_seeding[i]=vm.selectedPlayers[i];
                 }
                 return;
             }   
             
-            //init nulls
+            //n > 2 initialized with nulls
             for (var i = 0; i < n; i++) {
-                vm.seeding.push(null);
+                vm.player_seeding.push(null);
             }
             
-            var byeNum = n % 2;
             //max 1 bye
-            if(byeNum > 0){
-                vm.seeding.push(vm.bye);
+            if(n % 2 > 0){
+                vm.player_seeding.push(vm.bye);
             }
-            vm.changed = false;
-            console.log("vm.prepareSeeding(), seeding:", vm.seeding);
+            vm.playersChanged = false;
+            console.log("vm.preparePlayerSeeding(), player_seeding:", vm.player_seeding);
             return;
         };
         
-        vm.updateSelectedParticipants_player = function () {
-            angular.copy(vm.selectedPlayers, vm.selectedParticipants);
-            vm.changed = true;
-            if(!$scope.seedRandomly){
-                vm.prepareSeeding();
+        vm.prepareTeamSeeding = function (doesNotNeedEmptying) {
+            //init empty seeding[] with proper number of byes from selected participants
+            if(!doesNotNeedEmptying || vm.teamsChanged){
+                var n = vm.selectedTeams.length;
+                vm.team_seeding = new Array();
             }
             
+            //n===1 not generated 
+            //n===2 filled with chosen teams
+            if(vm.selectedTeams && n === 2){
+                //just fill the seeding with selected participants
+                for (var i = 0; i < n; i++) {
+                    vm.team_seeding[i]=vm.selectedTeams[i];
+                }
+                return;
+            }   
+            
+            //n > 2 initialized with nulls
+            for (var i = 0; i < n; i++) {
+                vm.team_seeding.push(null);
+            }
+            
+            //max 1 bye
+            if(n % 2 > 0){
+                vm.team_seeding.push(vm.bye);
+            }
+            vm.teamsChanged = false;
+            return;
         };
         
-        vm.updateSelectedParticipants_team = function () {
-            angular.copy(vm.selectedTeams, vm.selectedParticipants);
-            vm.changed = true;
+        vm.updateSelectedParticipants_player = function (doesNotNeedEmptying) {
             if(!$scope.seedRandomly){
-                vm.prepareSeeding();
+                vm.preparePlayerSeeding(doesNotNeedEmptying);
+            }
+        };
+        
+        vm.updateSelectedParticipants_team = function (doesNotNeedEmptying) {
+            if(!$scope.seedRandomly){
+                vm.prepareTeamSeeding(doesNotNeedEmptying);
             }
         };
         
         vm.pairsNumber = function () {
-            var n = vm.selectedParticipants.length/2;
-            return Math.ceil(n);
+            if($scope.chosen === 1){
+                return Math.ceil(vm.selectedPlayers.length/2);
+            }
+            return Math.ceil(vm.selectedTeams.length/2);
         };
         
         vm.getN = function () {
-            return vm.selectedParticipants.length + (vm.selectedParticipants.length%2);
+            if($scope.chosen === 1){
+                return vm.selectedPlayers.length + (vm.selectedPlayers.length%2);
+            }
+            return vm.selectedTeams.length + (vm.selectedTeams.length%2);
         };
         
-        vm.contains = My.containsElemWithId;
+        vm.getSelectedParticipants = function () {
+            if($scope.chosen === 1){
+                return vm.selectedPlayers;
+            }
+            return vm.selectedTeams;
+        };
         
         vm.onParticipantSelect = function (oldSeeding, newRival, i) {
             var oldRival = oldSeeding[i];
@@ -199,42 +319,33 @@
         
         vm.invalidSeeding = function () {
             if(!$scope.seedRandomly){//custom
-                if(vm.selectedParticipants.length<2){
-                    return true;
+                var seeding = vm.player_seeding;
+                var selectedParticipantsLength = vm.selectedPlayers.length;
+                if($scope.chosen===2){//players
+                    seeding = vm.team_seeding;
+                    selectedParticipantsLength = vm.selectedTeams.length;
                 }
-                if(vm.seeding){
-                    return vm.contains(vm.seeding, null);
-                }
-                //seeding is null > invalid
-                return true;
+                
+                if(selectedParticipantsLength < 2) return true;
+                if(seeding)return vm.contains(seeding,null);
+                return true;//seeding is null > invalid ??????   
             }
             //seeding is random > by computer so dont worry about it 
             return false; 
         };
         
         vm.getSeedingOptionName = function (participant) {
-            return My.getSeedingOptionName(vm.seeding,participant);
+            if($scope.chosen === 1){ return My.getSeedingOptionName(vm.player_seeding, participant);}
+            return My.getSeedingOptionName(vm.team_seeding, participant);
+        };
+        
+        vm.getRoundNum = function () {
+            if(vm.getSelectedParticipants.length === 0)return 0;
+            return Math.ceil(Math.log2(vm.getSelectedParticipants.length));
         };
         
         /* END - seeding stuff */
         
-        /** Playing Fields Validation **/
-        vm.participantsTouched = false;
-        
-        vm.maxPlayingFields = function () {
-            if($scope.chosen===1){//players
-                return Math.floor(vm.selectedPlayers.length/2);
-            }
-            else {//teams
-                return Math.floor(vm.selectedTeams.length/2);
-            }
-        };
-        
-        vm.playingFieldsInvalid = function () {
-            return vm.participantsTouched && vm.swiss.playingFields > vm.maxPlayingFields();
-        };
-        /** end - Playing Fields Validation **/
-
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
         });
@@ -250,12 +361,16 @@
             resolveSetSettings();
             
             vm.swissDTO = {swiss: vm.swiss};
-            if($scope.seedRandomly || vm.selectedParticipants.length < 2){
+            if($scope.seedRandomly || vm.swiss.participants.length < 2){
                 vm.swissDTO.seeding = null;
             }else {
-                vm.swissDTO.seeding = vm.seeding;
+                if($scope.chosen === 1){
+                    vm.swissDTO.seeding = vm.player_seeding;
+                }
+                if($scope.chosen === 2){
+                    vm.swissDTO.seeding = vm.team_seeding;
+                }
             }
-            
             if (vm.swiss.id !== null) {
                 Swiss.update(vm.swissDTO, onSaveSuccess, onSaveError);
             } else {
@@ -273,9 +388,6 @@
             vm.isSaving = false;
         }
         
-        vm.getRoundNum = function () {
-            if(vm.selectedParticipants.length === 0)return 0;
-            return Math.ceil(Math.log2(vm.selectedParticipants.length));
-        };
+        
     }
 })();

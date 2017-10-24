@@ -25,6 +25,7 @@
                 method: 'GET',
                 url: 'api/swisses/seeding/:id',
                 isArray: true
+                
             },
             'generateNextRound':{
                 method:'POST',

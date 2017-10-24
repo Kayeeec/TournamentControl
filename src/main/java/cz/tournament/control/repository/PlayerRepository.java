@@ -17,5 +17,7 @@ public interface PlayerRepository extends JpaRepository<Player,Long> {
     List<Player> findByUserIsCurrentUser();
     
     List<Player> findByUser(User user);
+    
+    List<Player> findByName(String name);
 
 }

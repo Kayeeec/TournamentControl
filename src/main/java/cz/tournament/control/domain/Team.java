@@ -125,10 +125,11 @@ public class Team implements Serializable {
             return false;
         }
         Team team = (Team) o;
-        if (team.id == null || id == null) {
-            return false;
+        if(this.id != null && team.getId() != null){
+            return Objects.equals(this.id,team.getId());
         }
-        return Objects.equals(id, team.id);
+        return Objects.equals(this.name,team.getName())
+                && Objects.equals(this.user,team.getUser());
     }
 
     @Override

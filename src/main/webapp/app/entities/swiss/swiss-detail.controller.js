@@ -5,9 +5,9 @@
         .module('tournamentControlApp')
         .controller('SwissDetailController', SwissDetailController);
 
-    SwissDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Swiss'];
+    SwissDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Swiss', '$window'];
 
-    function SwissDetailController($scope, $rootScope, $stateParams, previousState, entity, Swiss) {
+    function SwissDetailController($scope, $rootScope, $stateParams, previousState, entity, Swiss, $window) {
         var vm = this;
 
         vm.swiss = entity;
@@ -38,6 +38,11 @@
         
         vm.generateNextRound = function () {
             Swiss.generateNextRound(vm.swiss);
+            $window.location.reload();
+        };
+        
+        vm.nextRoundGenerated = function (round) {
+            return round < (vm.swiss.rounds - vm.swiss.roundsToGenerate);
         };
     }
 })();

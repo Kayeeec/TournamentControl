@@ -226,16 +226,16 @@
         </div>
 
         <div style="clear: both"></div>
-        <!--PARTICIPANTS ======================================================-->
+        <!-- ********* PARTICIPANTS ********* -->
         <div class="well well-sm">
             <ul class="nav nav-pills" id="myTab">
-                <li class="active"><a showtab href="#players" ng-click="chosen = 1;vm.updateSelectedParticipants_player()">
-                        <span  data-translate=""> Add Players </span> <!--TODO: data translate-->
+                <li class="active"><a showtab href="#players" ng-click="chosen = 1;vm.updateSelectedParticipants_player(true)">
+                        <span  data-translate=""> Add Players </span> <!--TODO: data-translate -->
                         <span class="badge"> {{vm.selectedPlayers.length}}</span>
                     </a>
                 </li>
                 <!--<li ng-disabled=""><p class="text-center text" style="padding-top: 10px;padding-left: 5px;padding-right: 5px" data-translate="">or</p></li>-->
-                <li><a showtab href="#teams" ng-click="chosen = 2;vm.updateSelectedParticipants_team()">
+                <li><a showtab href="#teams" ng-click="chosen = 2;vm.updateSelectedParticipants_team(true)">
                         <span  data-translate=""> Add Teams </span> <!--TODO: data translate-->
                         <span class="badge"> {{vm.selectedTeams.length}}</span>
                     </a>
@@ -248,11 +248,10 @@
                         <div class="col-md-3 col-sm-6 col-xs-12" 
                              ng-repeat="participant in vm.participants | filter: isPlayer">
                             <span>
-                                <label>
-                                    <input  type="checkbox"  id="field_participants" name="participants" 
-                                            checklist-model="vm.selectedPlayers" checklist-value="participant" 
-                                            ng-click="vm.updateSelectedParticipants_player(); vm.participantsTouched = true"> 
-                                    {{participant.player.name}}
+                                <label for="player_checkbox_{{$index}}">
+                                    <input  type="checkbox"  id="player_checkbox_{{$index}}" name="player_checkbox" 
+                                            checklist-model="vm.selectedPlayers" checklist-value="participant"
+                                            ng-click="vm.onPlayerClick()"> {{participant.player.name}}
                                 </label> 
                             </span>
                         </div>
@@ -260,12 +259,14 @@
                     <div class="tab-pane row" id="teams">
                         <div class="col-md-3 col-sm-6 col-xs-12" 
                              ng-repeat="participant in vm.participants | filter: isTeam">
-                            <span>
-                                <label>
-                                    <input  type="checkbox"  id="field_participants" name="participants"
+                            <span>  
+                                <label for="team_checkbox_{{$index}}" ng-class="vm.getTeamCSS_onValidity(participant)">
+                                    <input  type="checkbox"  id="team_checkbox_{{$index}}" name="team_checkbox"
                                             checklist-model="vm.selectedTeams" checklist-value="participant"
-                                            ng-click="vm.updateSelectedParticipants_team(); vm.participantsTouched = true"> 
-                                    {{participant.team.name}}
+                                            ng-disabled="vm.teamIsInvalid(participant)"
+                                            ng-click="vm.onTeamClick(participant.team)"> 
+                                    
+                                        {{participant.team.name}}
                                 </label>
                             </span>
                         </div>
@@ -273,7 +274,7 @@
                 
             </div>
         </div>
-        <!--PARTICIPANTS ======================================================-->
+<!-- ********* end - PARTICIPANTS ********* -->
         <div class="alert alert-info">
             Estimated number of rounds: {{vm.getRoundNum()}}
         </div>
@@ -296,43 +297,77 @@
             </div>
         </div>
         
-        <div ng-if="(!seedRandomly) && vm.selectedParticipants.length < 2 "
-             class="alert alert-warning">
-            For <b>custom seeding</b> at least <b>two</b>  participants need to be selected. <!--TODO: data-translate -->
-        </div>
-        
-        <div ng-if="(!seedRandomly) && vm.selectedParticipants.length >= 2 ">
-            <table class="table table-responsive">
-                <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(),1)">
-                    <td ng-if="!vm.isBye(vm.seeding[i])">
-                        <select class="form-control"
-                            ng-options="participant as vm.getSeedingOptionName(participant) for participant in vm.selectedParticipants track by participant.id"
-                            ng-model="vm.seeding[i]" 
-                            ng-change="vm.onParticipantSelect({{vm.seeding}}, vm.seeding[i], i); vm.changed = false">
-                            <option value=""> - </option>
-                        </select>
-                    </td>
-                    <td ng-if="vm.isBye(vm.seeding[i])">
-                        <select class="form-control" disabled="true">
-                            <option value="">BYE</option>
-                        </select>
-                    </td>
-                    <td><p class="text-center">vs.</p></td>
-                    <td ng-if="!vm.isBye(vm.seeding[vm.getN() - 1 - i])">
-                        <select class="form-control" 
-                            ng-options="participant as vm.getSeedingOptionName(participant) for participant in vm.selectedParticipants track by participant.id"
-                            ng-model="vm.seeding[vm.getN() - 1 - i]"
-                            ng-change="vm.onParticipantSelect({{vm.seeding}}, vm.seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.changed = false">
-                            <option value=""> - </option>
-                        </select>
-                    </td>
-                    <td ng-if="vm.isBye(vm.seeding[vm.getN() - 1 - i])">
-                        <select class="form-control" disabled="true">
-                            <option value="">BYE</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
+        <div ng-if="!seedRandomly" name="seeding">
+            <div ng-if="vm.getSelectedParticipants().length < 2" class="alert alert-warning" name="seeding-alert">
+               For <b>custom seeding</b> at least <b>two</b>  participants need to be selected. <!--TODO: data-translate -->
+            </div>
+            <div ng-if="vm.getSelectedParticipants().length >= 2 ">
+                <table ng-if="chosen===1" name="seeding-players" class="table table-responsive">
+                   <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(),1)">
+                       <td ng-if="!vm.isBye(vm.player_seeding[i])">
+                           <select class="form-control"
+                               ng-options="participant as vm.getSeedingOptionName(participant) for participant 
+                                                in vm.selectedPlayers track by participant.id"
+                               ng-model="vm.player_seeding[i]" 
+                               ng-change="vm.onParticipantSelect({{vm.player_seeding}}, vm.player_seeding[i], i); vm.playersChanged = false">
+                               <option value=""> - </option>
+                           </select>
+                       </td>
+                       <td ng-if="vm.isBye(vm.player_seeding[i])">
+                           <select class="form-control" disabled="true">
+                               <option value="">BYE</option>
+                           </select>
+                       </td>
+                       <td><p class="text-center">vs.</p></td>
+                       <td ng-if="!vm.isBye(vm.player_seeding[vm.getN() - 1 - i])">
+                           <select class="form-control" 
+                               ng-options="participant as vm.getSeedingOptionName(participant) for participant 
+                                                in vm.selectedPlayers track by participant.id"
+                               ng-model="vm.player_seeding[vm.getN() - 1 - i]"
+                               ng-change="vm.onParticipantSelect({{vm.player_seeding}}, vm.player_seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.playersChanged = false">
+                               <option value=""> - </option>
+                           </select>
+                       </td>
+                       <td ng-if="vm.isBye(vm.player_seeding[vm.getN() - 1 - i])">
+                           <select class="form-control" disabled="true">
+                               <option value="">BYE</option>
+                           </select>
+                       </td>
+                   </tr>
+               </table>
+                <table ng-if="chosen===2" name="seeding-teams" class="table table-responsive">
+                   <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(),1)">
+                       <td ng-if="!vm.isBye(vm.team_seeding[i])">
+                           <select class="form-control"
+                               ng-options="participant as vm.getSeedingOptionName(participant) for participant 
+                                                in vm.selectedTeams track by participant.id"
+                               ng-model="vm.team_seeding[i]" 
+                               ng-change="vm.onParticipantSelect({{vm.team_seeding}}, vm.team_seeding[i], i); vm.teamsChanged = false">
+                               <option value=""> - </option>
+                           </select>
+                       </td>
+                       <td ng-if="vm.isBye(vm.team_seeding[i])">
+                           <select class="form-control" disabled="true">
+                               <option value="">BYE</option>
+                           </select>
+                       </td>
+                       <td><p class="text-center">vs.</p></td>
+                       <td ng-if="!vm.isBye(vm.team_seeding[vm.getN() - 1 - i])">
+                           <select class="form-control" 
+                               ng-options="participant as vm.getSeedingOptionName(participant) for participant in vm.selectedTeams track by participant.id"
+                               ng-model="vm.team_seeding[vm.getN() - 1 - i]"
+                               ng-change="vm.onParticipantSelect({{vm.team_seeding}}, vm.team_seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.teamsChanged = false">
+                               <option value=""> - </option>
+                           </select>
+                       </td>
+                       <td ng-if="vm.isBye(vm.team_seeding[vm.getN() - 1 - i])">
+                           <select class="form-control" disabled="true">
+                               <option value="">BYE</option>
+                           </select>
+                       </td>
+                   </tr>
+               </table> 
+           </div>
         </div>
         <!-- ********* end - seeding ********* -->
        <jhi-alert-error></jhi-alert-error>

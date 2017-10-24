@@ -109,7 +109,7 @@
                     controller: 'AllVersusAllDialogController',
                     controllerAs: 'vm',
                     backdrop: 'static',
-                    size: 'lg',
+                    size: 'lg',  
                     resolve: {
                         entity: function () {
                             return {
