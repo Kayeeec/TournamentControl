@@ -98,14 +98,14 @@
         vm.onTeamClick = function () {
             vm.participantsTouched = true;
             computeTeamPlayers();
-            vm.changed = true;
-            vm.prepareSeeding();
+            vm.teamsChanged = true;
+            vm.prepareTeamSeeding();
         };
         
         vm.onPlayerClick = function () {
             vm.participantsTouched = true;
-            vm.changed = true;
-            vm.prepareSeeding();
+            vm.playersChanged = true;
+            vm.preparePlayerSeeding();
         };
        
         vm.teamIsInvalid= function(participant){
@@ -130,11 +130,22 @@
         /**** end Participant stuff ****/
         
     /* *** participant seeding stuff *** */
-        function init_seeding() {
+        getSeeding();
+
+        vm.player_seeding = [];
+        vm.team_seeding = [];
+
+        function getSeeding() {
             if(vm.elimination.id){
-                return Elimination.getSeeding({id: vm.elimination.id});
+                Elimination.getSeeding({id: vm.elimination.id}, onGetSeedingSuccess, onGetSeedingError);
+                function onGetSeedingSuccess(seeding) {
+                    vm.player_seeding = filterFilter(seeding, {team : null});
+                    vm.team_seeding = filterFilter(seeding, {player : null});
+                }
+                function onGetSeedingError(error) {
+                    console.log("getSeeding() - error occured: ", error.data.message);
+                }
             }
-            return [];
         }
         
         function init_seedRandomly_radioBTN() {
@@ -143,22 +154,12 @@
             }
             return false; //editing old tournament
         }
-        
-        function selectSelectedParticipants() {
-            vm.selectedParticipants = [];
-            if($scope.chosen === 1){
-                vm.selectedParticipants = angular.copy(vm.selectedPlayers);
-            }
-            if($scope.chosen === 2){
-                vm.selectedParticipants = angular.copy(vm.selectedTeams);
-            }
-        }
-        
-        vm.seeding = init_seeding();
-        vm.selectedParticipants = angular.copy(vm.elimination.participants);
         $scope.seedRandomly = init_seedRandomly_radioBTN();
+        
         vm.coordinates = [];
-        vm.changed = false;
+        
+        vm.playersChanged = false;
+        vm.teamsChanged = false;
         
         function nodeHTML(id,A,B) {
             return  `<div id="${id}" class="tree-node-table">
@@ -181,11 +182,11 @@
             return Math.floor((i + N - 2)/2)+1;
         }
         
-        function tree(N) {
-            var config = {container: '#tree', rootOrientation: "EAST", nodeAlign: "BOTTOM",
+        function player_tree(N) {
+            var config = {container: '#player_tree', rootOrientation: "EAST", nodeAlign: "BOTTOM",
                 connectors: {type: 'step'}};
             if(N<=2){
-                var only = {innerHTML: under_dragNodeHTML(0, N, vm.seeding)};
+                var only = {innerHTML: under_dragNodeHTML(0, N, vm.player_seeding)};
                 var nodes = [config, only];
                 return nodes;
             }
@@ -203,7 +204,38 @@
                 if(i>=numberOfSelectableNodes){//parents
                     node = {parent: nodes[parentIndex(i, N)], innerHTML: nodeHTML(i, null, null)};
                 }else{//selectable
-                    node = {parent: nodes[parentIndex(i, N)], innerHTML: under_dragNodeHTML(i, N, vm.seeding)};
+                    node = {parent: nodes[parentIndex(i, N)], innerHTML: under_dragNodeHTML(i, N, vm.player_seeding)};
+                }
+                nodes[i]=node;
+            }
+            nodes.push(config);
+            nodes.reverse();
+            return nodes;
+        }
+        
+        function team_tree(N) {
+            var config = {container: '#team_tree', rootOrientation: "EAST", nodeAlign: "BOTTOM",
+                connectors: {type: 'step'}};
+            if(N<=2){
+                var only = {innerHTML: under_dragNodeHTML(0, N, vm.team_seeding)};
+                var nodes = [config, only];
+                return nodes;
+            }
+            
+            var numberOfNodes = (N-1);
+            var numberOfSelectableNodes = N/2;
+            
+            var rootID = numberOfNodes-1;
+            var root = {innerHTML: nodeHTML(rootID, '', '')};
+            var nodes = [];
+            
+            nodes[rootID]=root;
+            for (var i = rootID-1 ; i >= 0; i--) {
+                var node;
+                if(i>=numberOfSelectableNodes){//parents
+                    node = {parent: nodes[parentIndex(i, N)], innerHTML: nodeHTML(i, null, null)};
+                }else{//selectable
+                    node = {parent: nodes[parentIndex(i, N)], innerHTML: under_dragNodeHTML(i, N, vm.team_seeding)};
                 }
                 nodes[i]=node;
             }
@@ -213,35 +245,70 @@
         }
         
         vm.prepareSeeding = function () {
+            if($scope.chosen === 1){
+                vm.preparePlayerSeeding();
+            }
+            if($scope.chosen === 2){
+                vm.prepareTeamSeeding();
+            }
+        };
+        
+        vm.preparePlayerSeeding = function () {
             if($scope.seedRandomly){
                 return;
             }
-            selectSelectedParticipants();
-            console.log("prepareSeeding():selectedParticipants = ", vm.selectedParticipants);
-            if(!vm.selectedParticipants || vm.selectedParticipants.length < 3){
-//                $scope.seedRandomly = true;
+            if(!vm.selectedPlayers || vm.selectedPlayers.length < 3){
                 return;
             }
-            var n = vm.selectedParticipants.length;
+            var n = vm.selectedPlayers.length;
             
             vm.N = My.getN(n);
             var byesNum = vm.N - n;
-            if(vm.changed){
-                vm.seeding = new Array();
+            if(vm.playersChanged){
+                vm.player_seeding = new Array();
                 for (var i = 0; i < vm.N; i++) {
-                    vm.seeding.push(null);
+                    vm.player_seeding.push(null);
                 }
             }
             if(byesNum > 0){
                 var BYE = Participant.getBye();
                 for (var i = 0; i < byesNum; i++) {
-                    vm.seeding[vm.N-1-i] = BYE;
+                    vm.player_seeding[vm.N-1-i] = BYE;
                 }
             }
             
-            new Treant(tree(vm.N));
+            new Treant(player_tree(vm.N));
             
-            getCoordinatesAndSize(vm.N);
+            getPlayerCoordinatesAndSize(vm.N);
+        };
+        
+        vm.prepareTeamSeeding = function () {
+            if($scope.seedRandomly){
+                return;
+            }
+            if(!vm.selectedTeams || vm.selectedTeams.length < 3){
+                return;
+            }
+            var n = vm.selectedTeams.length;
+            
+            vm.N = My.getN(n);
+            var byesNum = vm.N - n;
+            if(vm.teamsChanged){
+                vm.team_seeding = new Array();
+                for (var i = 0; i < vm.N; i++) {
+                    vm.team_seeding.push(null);
+                }
+            }
+            if(byesNum > 0){
+                var BYE = Participant.getBye();
+                for (var i = 0; i < byesNum; i++) {
+                    vm.team_seeding[vm.N-1-i] = BYE;
+                }
+            }
+            
+            new Treant(team_tree(vm.N));
+            
+            getTeamCoordinatesAndSize(vm.N);
         };
         
         /**
@@ -259,7 +326,7 @@
             vm.coordinates[i]=node;
         }
         
-        function getCoordinatesAndSize(N) {
+        function getPlayerCoordinatesAndSize(N) {
             vm.coordinates = Array.apply(null, Array(N/2)).map(function () {});
             for (var i = 0; i < N/2; i++) {
                 if(!vm.coordinates[i]){
@@ -268,25 +335,74 @@
             }
             
             vm.treeSize = {};
-            var t = angular.element(document.getElementById("tree"));
+            var t = angular.element(document.getElementById("player_tree"));
+            vm.treeSize.width = t.css("width");
+            vm.treeSize.height = t.css("height"); 
+        }
+        
+        function getTeamCoordinatesAndSize(N) {
+            vm.coordinates = Array.apply(null, Array(N/2)).map(function () {});
+            for (var i = 0; i < N/2; i++) {
+                if(!vm.coordinates[i]){
+                    getElementCoordinates(i);
+                }
+            }
+            
+            vm.treeSize = {};
+            var t = angular.element(document.getElementById("team_tree"));
             vm.treeSize.width = t.css("width");
             vm.treeSize.height = t.css("height"); 
         }
         
         vm.contains = My.containsElemWithId;
         
-        vm.onParticipantSelect = function (oldSeeding, newRival, i) {
+        vm.onPlayerSelect = function (oldSeeding, newRival, i) {
             var oldRival = oldSeeding[i];
             //if set to an already chosen value, switch it for its old
             if(newRival && vm.contains(oldSeeding, newRival)){
                 var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
                 //swap
-                vm.seeding[oldIndexOfNewRival] = oldRival;
+                vm.player_seeding[oldIndexOfNewRival] = oldRival;
+            }
+        };
+        
+        vm.onTeamSelect = function (oldSeeding, newRival, i) {
+            var oldRival = oldSeeding[i];
+            //if set to an already chosen value, switch it for its old
+            if(newRival && vm.contains(oldSeeding, newRival)){
+                var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
+                //swap
+                vm.team_seeding[oldIndexOfNewRival] = oldRival;
             }
         };
         
         vm.getSeedingOptionName = function (participant) {
-            return My.getSeedingOptionName(vm.seeding,participant);
+            if($scope.chosen===1){
+                 return My.getSeedingOptionName(vm.player_seeding,participant);
+            }
+            return My.getSeedingOptionName(vm.team_seeding,participant);
+        };
+        
+        vm.invalidSeeding = function () {
+            if(!$scope.seedRandomly){//custom
+                var seeding = vm.player_seeding;
+                var selectedParticipantsLength = vm.selectedPlayers.length;
+                if($scope.chosen===2){//teams
+                    seeding = vm.team_seeding;
+                    selectedParticipantsLength = vm.selectedTeams.length;
+                }
+                
+                if(selectedParticipantsLength < 2) return true;
+                if(seeding)return vm.contains(seeding,null);
+                return true;//seeding is null > invalid ??????   
+            }
+            //seeding is random > by computer so dont worry about it 
+            return false; 
+        };
+        
+        vm.getSelectedParticipants = function () {
+            if($scope.chosen === 1) return vm.selectedPlayers;
+            if($scope.chosen === 2) return vm.selectedTeams;
         };
     /* *** participant seeding stuff END *** */
         
@@ -321,17 +437,7 @@
                     vm.elimination.setSettings = vm.preparedSettings;
             }
         }
-        
     /* END - setSettings stuff */
-        
-        $('#myTab a[href="#players"]').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-        $('#myTab a[href="#teams"]').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
         
         $('.collapse').collapse();
         
@@ -350,10 +456,12 @@
             resolveSetSettings();
             
             vm.eliminationDTO = {elimination: vm.elimination};
-            if($scope.seedRandomly){
+            
+            if($scope.seedRandomly || vm.elimination.participants.length < 3){
                 vm.eliminationDTO.seeding = null;
             }else {
-                vm.eliminationDTO.seeding = vm.seeding;
+                if($scope.chosen === 1) vm.eliminationDTO.seeding = vm.player_seeding;
+                if($scope.chosen === 2) vm.eliminationDTO.seeding = vm.team_seeding;
             }
 
             if (vm.elimination.id !== null) {
@@ -373,16 +481,9 @@
             vm.isSaving = false;
         }
         
-        vm.invalidSeeding = function () {
-            if(!$scope.seedRandomly){
-                if(vm.seeding){
-                    return vm.contains(vm.seeding, null);
-                }
-                //seeding is null > invalid
-                return true;
-            }
-            //seeding is random > by computer so dont worry about it 
-            return false; 
+        vm.logSeeding= function () {
+            console.log('vm.player_seeding= ', vm.player_seeding );
+            console.log('vm.team_seeding= ', vm.team_seeding );
         };
 
     }

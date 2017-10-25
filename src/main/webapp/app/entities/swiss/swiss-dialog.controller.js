@@ -163,14 +163,11 @@
                 vm.preparedSettings.leadByPoints !== null ||
                 vm.preparedSettings.minReachedScore !== null){
                     vm.swiss.setSettings = vm.preparedSettings;
-                    console.log(vm.swiss.setSettings);
             }
         }
         /* END - setSettings stuff */
         
         /* seeding stuff */
-        
-        vm.selectedParticipants = angular.copy(vm.swiss.participants);
         
         getSeeding();
         
@@ -185,7 +182,7 @@
                     vm.team_seeding = filterFilter(seeding, {player : null});
                 }
                 function onGetSeedingError(error) {
-                    AlertService.error(error.data.message);
+                    console.log('getSeeding() - error occured: ', error.data.message);
                 }
             }
         }
@@ -240,7 +237,6 @@
                 vm.player_seeding.push(vm.bye);
             }
             vm.playersChanged = false;
-            console.log("vm.preparePlayerSeeding(), player_seeding:", vm.player_seeding);
             return;
         };
         
@@ -307,13 +303,23 @@
             return vm.selectedTeams;
         };
         
-        vm.onParticipantSelect = function (oldSeeding, newRival, i) {
+        vm.onPlayerSelect = function (oldSeeding, newRival, i) {
             var oldRival = oldSeeding[i];
             //if set to an already chosen value, switch it for its old
             if(newRival && vm.contains(oldSeeding, newRival)){
                 var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
                 //swap
-                vm.seeding[oldIndexOfNewRival] = oldRival;
+                vm.player_seeding[oldIndexOfNewRival] = oldRival;
+            }
+        };
+        
+        vm.onTeamSelect = function (oldSeeding, newRival, i) {
+            var oldRival = oldSeeding[i];
+            //if set to an already chosen value, switch it for its old
+            if(newRival && vm.contains(oldSeeding, newRival)){
+                var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
+                //swap
+                vm.team_seeding[oldIndexOfNewRival] = oldRival;
             }
         };
         

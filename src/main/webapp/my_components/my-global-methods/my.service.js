@@ -58,7 +58,6 @@
                     n = n & (n - 1);
                 }
                 n = n << 1;
-                console.log("N = " + n);
                 return n;
             },
             'printRivals': function printRivals(list) {

@@ -309,7 +309,7 @@
                                ng-options="participant as vm.getSeedingOptionName(participant) for participant 
                                                 in vm.selectedPlayers track by participant.id"
                                ng-model="vm.player_seeding[i]" 
-                               ng-change="vm.onParticipantSelect({{vm.player_seeding}}, vm.player_seeding[i], i); vm.playersChanged = false">
+                               ng-change="vm.onPlayerSelect({{vm.player_seeding}}, vm.player_seeding[i], i); vm.playersChanged = false">
                                <option value=""> - </option>
                            </select>
                        </td>
@@ -324,7 +324,7 @@
                                ng-options="participant as vm.getSeedingOptionName(participant) for participant 
                                                 in vm.selectedPlayers track by participant.id"
                                ng-model="vm.player_seeding[vm.getN() - 1 - i]"
-                               ng-change="vm.onParticipantSelect({{vm.player_seeding}}, vm.player_seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.playersChanged = false">
+                               ng-change="vm.onPlayerSelect({{vm.player_seeding}}, vm.player_seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.playersChanged = false">
                                <option value=""> - </option>
                            </select>
                        </td>
@@ -342,7 +342,7 @@
                                ng-options="participant as vm.getSeedingOptionName(participant) for participant 
                                                 in vm.selectedTeams track by participant.id"
                                ng-model="vm.team_seeding[i]" 
-                               ng-change="vm.onParticipantSelect({{vm.team_seeding}}, vm.team_seeding[i], i); vm.teamsChanged = false">
+                               ng-change="vm.onTeamSelect({{vm.team_seeding}}, vm.team_seeding[i], i); vm.teamsChanged = false">
                                <option value=""> - </option>
                            </select>
                        </td>
@@ -356,7 +356,7 @@
                            <select class="form-control" 
                                ng-options="participant as vm.getSeedingOptionName(participant) for participant in vm.selectedTeams track by participant.id"
                                ng-model="vm.team_seeding[vm.getN() - 1 - i]"
-                               ng-change="vm.onParticipantSelect({{vm.team_seeding}}, vm.team_seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.teamsChanged = false">
+                               ng-change="vm.onTeamSelect({{vm.team_seeding}}, vm.team_seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.teamsChanged = false">
                                <option value=""> - </option>
                            </select>
                        </td>
