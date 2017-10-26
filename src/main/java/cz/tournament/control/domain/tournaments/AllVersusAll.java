@@ -39,6 +39,11 @@ public class AllVersusAll extends Tournament implements Serializable  {
     public void setNumberOfMutualMatches(Integer numberOfMutualMatches) {
         this.numberOfMutualMatches = numberOfMutualMatches;
     }
+    
+    @Override
+    public String getTournamentType(){
+        return "allVersusAll";
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -2,6 +2,8 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Player;
+import cz.tournament.control.domain.Tournament;
+import cz.tournament.control.domain.exceptions.ParticipantInTournamentException;
 import cz.tournament.control.service.PlayerService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -13,8 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import org.springframework.http.HttpStatus;
 
 /**
  * REST controller for managing Player.
@@ -91,6 +96,15 @@ public class PlayerResource {
         List<Player> players = playerService.findAll();
         return players;
     }
+    
+    @GetMapping("/players/tournaments/{id}")
+    @Timed
+    public List<Tournament> getAllTournaments(@PathVariable Long id){
+        if(id == null){return new ArrayList<>();}
+        
+        Player player = playerService.findOne(id);
+        return playerService.findAllTournaments(player);
+    }
 
     /**
      * GET  /players/:id : get the "id" player.
@@ -116,7 +130,15 @@ public class PlayerResource {
     @Timed
     public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {
         log.debug("REST request to delete Player : {}", id);
-        playerService.delete(id);
+        
+        try {
+            playerService.delete(id);
+        } catch (ParticipantInTournamentException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).
+                    headers(HeaderUtil.
+                            createFailureAlert(ENTITY_NAME, "participantInTournament", ex.getMessage())).build();
+        }
+        
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

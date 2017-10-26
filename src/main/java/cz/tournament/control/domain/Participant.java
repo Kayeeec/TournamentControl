@@ -122,18 +122,30 @@ public class Participant implements Serializable {
 
     @Override
     public String toString() {
-        String result = "Participant { id="+id;
+        String is;
         if(this.player != null){
-            String concat = result.concat(", " + player.toString() + " }");
-            return concat;
-            
+            is = "player";
+        }else if(this.team != null){
+            is = "team";
+        }else{
+            is = "BYE";
         }
-        if(this.team != null){
-            String concat = result.concat(", " + team.toString() + " }");
-            return concat;
-        }
-        String concat = result.concat(", BYE }");
-        return concat;
+        
+        return "Participant{id: "+this.id+", name: "+this.getName()+", "+is+"}";
+        
+        
+//        String result = "Participant { id="+id;
+//        if(this.player != null){
+//            String concat = result.concat(", " + player.toString() + " }");
+//            return concat;
+//            
+//        }
+//        if(this.team != null){
+//            String concat = result.concat(", " + team.toString() + " }");
+//            return concat;
+//        }
+//        String concat = result.concat(", BYE }");
+//        return concat;
     }
     
     public boolean isBye(){

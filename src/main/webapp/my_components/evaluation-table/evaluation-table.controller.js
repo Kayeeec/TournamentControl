@@ -146,6 +146,9 @@
          * 
          */
         function determineRank(counts_array) {
+            if(!counts_array || counts_array.length === 0){
+                return;
+            }
             var rank = 1;
             counts_array[0].rank = 1;
             for (var i = 1; i < counts_array.length; i++) {

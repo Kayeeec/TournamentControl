@@ -6,6 +6,8 @@
 package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Participant;
+import cz.tournament.control.domain.Player;
+import cz.tournament.control.domain.Team;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.repository.ParticipantRepository;
 import cz.tournament.control.repository.PlayerRepository;
@@ -54,6 +56,18 @@ public class ParticipantService {
         }
         Participant result = createParticipant(new Participant());
         return result;
+    }
+    
+    @Transactional(readOnly = true)
+    public Participant findByTeam(Team team){
+        return participantRepository.findByTeam(team);
+        
+    }
+    
+    @Transactional(readOnly = true)
+    public Participant findByPlayer(Player player){
+        return participantRepository.findByPlayer(player);
+        
     }
     
     

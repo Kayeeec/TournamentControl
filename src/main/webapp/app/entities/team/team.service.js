@@ -20,7 +20,12 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'getAllTournaments': {
+                method: 'GET',
+                url: 'api/teams/tournaments/:id',
+                isArray: true
+            }
         });
     }
 })();

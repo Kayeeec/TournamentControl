@@ -1,5 +1,6 @@
 package cz.tournament.control.repository;
 
+import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
 import org.springframework.stereotype.Repository;
@@ -25,5 +26,7 @@ public interface TournamentRepository extends JpaRepository<Tournament, Long> {
     Tournament findOneWithEagerRelationships(@Param("id") Long id);
 
     List<Tournament> findBySetSettings(SetSettings setSettings);
+    
+    List<Tournament> findByParticipantsContains(Participant participant);
 
 }

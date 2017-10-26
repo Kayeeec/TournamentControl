@@ -238,7 +238,7 @@
                         <div class="col-md-3 col-sm-6 col-xs-12" 
                              ng-repeat="participant in vm.participants | filter: isPlayer">
                             <span>
-                                <label for="player_checkbox"> 
+                                <label for="player_checkbox_{{$index}}"> 
                                     <input  type="checkbox"  id="player_checkbox_{{$index}}" name="player_checkbox" 
                                             checklist-model="vm.selectedPlayers" checklist-value="participant"
                                             ng-click="vm.onPlayerClick()">

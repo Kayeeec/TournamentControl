@@ -28,7 +28,10 @@ public class Swiss extends Tournament implements Serializable {
     private Boolean color;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
-    
+    @Override
+    public String getTournamentType(){
+        return "swiss";
+    }
     
     public Integer getRounds() {
         return rounds;
