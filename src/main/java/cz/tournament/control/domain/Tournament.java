@@ -284,6 +284,10 @@ public class Tournament implements Serializable {
     public void setSetSettings(SetSettings setSettings) {
         this.setSettings = setSettings;
     }
+    
+    public String getTournamentType(){
+        return "tournament";
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
