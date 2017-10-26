@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "game")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Game implements Serializable, Comparable<Game> {
+public class Game implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -59,8 +60,8 @@ public class Game implements Serializable, Comparable<Game> {
     @ManyToOne
     private Participant rivalB;
 
-    @OneToMany(mappedBy = "game", 
-            fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "game",  fetch = FetchType.EAGER, 
+            cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnoreProperties({"game"})
     private Set<GameSet> sets = new HashSet<>();
@@ -218,16 +219,39 @@ public class Game implements Serializable, Comparable<Game> {
             return false;
         }
         Game game = (Game) o;
-        if (game.id == null || id == null) {
-            return false;
-        }
-        return Objects.equals(id, game.id);
+//        if (game.id == null || id == null) {
+//            return false;
+//        }
+//        return Objects.equals(id, game.id);
+        return Objects.equals(this.id, game.getId())
+                && Objects.equals(this.finished, game.isFinished())
+                && Objects.equals(this.note, game.getNote())
+                && Objects.equals(this.period, game.getPeriod())
+                && Objects.equals(this.playingField, game.getPlayingField())
+                && Objects.equals(this.rivalA, game.getRivalA())
+                && Objects.equals(this.rivalB, game.getRivalB())
+                && Objects.equals(this.round, game.getRound())
+                && Objects.equals(this.sets, game.getSets())
+                && Objects.equals(this.tournament, game.getTournament());      
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        final int prime = 37;
+        int result = 1;
+        result = prime * result + Objects.hashCode(id);
+        result = prime * result + Objects.hashCode(finished);
+        result = prime * result + Objects.hashCode(note);
+        result = prime * result + Objects.hashCode(period);
+        result = prime * result + Objects.hashCode(playingField);
+        result = prime * result + Objects.hashCode(rivalA);
+        result = prime * result + Objects.hashCode(rivalB);
+        result = prime * result + Objects.hashCode(round);
+        result = prime * result + Objects.hashCode(tournament);
+        return result;
     }
+
+    
 
     @Override
     public String toString() {
@@ -259,21 +283,41 @@ public class Game implements Serializable, Comparable<Game> {
 }
         return setIDs.toString();
     }
+    
+    public static Comparator<Game> PeriodRoundComparator
+            = new Comparator<Game>() {
+        @Override
+        public int compare(Game game1, Game game2) {
+            
+            if (game1 == null || game2 == null) {
+                throw new NullPointerException("Game.compareTo(Game o) : o is null");
+            }
 
-    @Override
-    public int compareTo(Game o) {
-        if (o == null) {
-            throw new NullPointerException("Game.compareTo(Game o) : o is null");
+            Integer period1 = game1.getPeriod();
+            Integer period2 = game2.getPeriod();
+
+            //ascending order
+            int byPeriod = period1.compareTo(period2);
+            if(byPeriod != 0){
+                return byPeriod;
+            }
+            return game1.getRound().compareTo(game2.getRound());
         }
 
-        int byPeriod = this.period.compareTo(o.period);
-        if (byPeriod != 0) {
-            return byPeriod;
+    };
+    
+    public static Comparator<Game> RoundComparator
+            = new Comparator<Game>() {
+        @Override
+        public int compare(Game game1, Game game2) {
+            
+            if (game1 == null || game2 == null) {
+                throw new NullPointerException("Game.compareTo(Game o) : o is null");
+            }
+            return game1.getRound().compareTo(game2.getRound());
         }
 
-        return this.round.compareTo(o.round);
-
-    }
+    };
     
     @JsonIgnore
     public boolean allSetsFinished_And_NotATie(){
@@ -433,6 +477,7 @@ public class Game implements Serializable, Comparable<Game> {
                 result.put("loser", rivalA);
                 return result;
             }
+            //tie
             return result;
         }
     }

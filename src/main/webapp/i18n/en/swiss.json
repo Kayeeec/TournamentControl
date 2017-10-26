@@ -1,0 +1,24 @@
+{
+    "tournamentControlApp": {
+        "swiss" : {
+            "home": {
+                "title": "Swisses",
+                "createLabel": "Create a new Swiss System tournament",
+                "editLabel": "Edit Swiss System tournament #{{id}}",
+                "createOrEditLabel": "Create or edit a Swiss"
+            },
+            "created": "A new Swiss is created with identifier {{ param }}",
+            "updated": "A Swiss is updated with identifier {{ param }}",
+            "deleted": "A Swiss is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Swiss {{ id }}?"
+            },
+            "detail": {
+                "title": "Swiss"
+            },
+            "rounds": "Rounds",
+            "roundsToGenerate": "Rounds To Generate",
+            "color": "Color"
+        }
+    }
+}

@@ -23,11 +23,22 @@
                     controllerAs: 'vm'
                 }
             },
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                },
+                sort: {
+                    value: 'id,asc',
+                    squash: true
+                },
+                search: null
+            },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('elimination');
-                    $translatePartialLoader.addPart('tournament');
                     $translatePartialLoader.addPart('eliminationType');
+                    $translatePartialLoader.addPart('tournament');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -156,7 +167,7 @@
                                 numberOfSets: null,
                                 setsToWin: null,
                                 tiesAllowed: null,
-                                scoreMax: null,
+                                
                                 type: null,
                                 bronzeMatch: null,
                                 id: null

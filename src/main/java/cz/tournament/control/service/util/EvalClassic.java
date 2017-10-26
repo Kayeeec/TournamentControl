@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.tournament.control.service;
+package cz.tournament.control.service.util;
 
 import cz.tournament.control.domain.Participant;
 
@@ -16,10 +16,10 @@ public class EvalClassic {
     public int matches;
     public int wins;
     public int loses;
-    public int scoreHis;
-    public int scoreRival;
+    public double scoreHis;
+    public double scoreRival;
     public int ties;
-    public int points;
+    public double points;
     public int rank;
 
     public int getRank() {
@@ -62,7 +62,7 @@ public class EvalClassic {
         this.loses = loses;
     }
 
-    public int getScoreHis() {
+    public double getScoreHis() {
         return scoreHis;
     }
 
@@ -70,7 +70,7 @@ public class EvalClassic {
         this.scoreHis = scoreHis;
     }
 
-    public int getScoreRival() {
+    public double getScoreRival() {
         return scoreRival;
     }
 
@@ -86,7 +86,7 @@ public class EvalClassic {
         this.ties = ties;
     }
 
-    public int getPoints() {
+    public double getPoints() {
         return points;
     }
 

@@ -10,7 +10,8 @@
             "updated": "A Player is updated with identifier {{ param }}",
             "deleted": "A Player is deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Player {{ id }}?"
+                "question": "Are you sure you want to delete player <b>{{ name }}</b> (id: {{id}})?",
+                "inTournamentError": "<b> {{name}} </b> cannot be deleted because this player is in at least one tournament. "
             },
             "detail": {
                 "title": "Player"

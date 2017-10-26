@@ -1,6 +1,5 @@
 package cz.tournament.control.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -8,6 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
+import org.hibernate.annotations.Cascade;
 
 /**
  * A GameSet.
@@ -36,9 +36,16 @@ public class GameSet implements Serializable {
     @JsonIgnoreProperties({"sets"})
     private Game game;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST})
+    @ManyToOne
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private SetSettings setSettings;
+    
+//    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    private SetSettings setSettings;
 
+    public GameSet() {
+    }
+    
     public Long getId() {
         return id;
     }
@@ -121,15 +128,29 @@ public class GameSet implements Serializable {
             return false;
         }
         GameSet gameSet = (GameSet) o;
-        if (gameSet.id == null || id == null) {
-            return false;
-        }
-        return Objects.equals(id, gameSet.id);
+//        if (gameSet.id == null || id == null) {
+//            return false;
+//        }
+//        return Objects.equals(id, gameSet.id);
+        return Objects.equals(id, gameSet.getId())
+                && Objects.equals(finished, gameSet.isFinished())
+                && Objects.equals(game, gameSet.getGame())
+                && Objects.equals(scoreA, gameSet.getScoreA())
+                && Objects.equals(scoreB, gameSet.getScoreB())
+                && Objects.equals(setSettings, gameSet.getSetSettings());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        final int prime = 41;
+        int result = 1;
+        result = prime * result + Objects.hashCode(id);
+        result = prime * result + Objects.hashCode(finished);
+        result = prime * result + Objects.hashCode(game);
+        result = prime * result + Objects.hashCode(scoreA);
+        result = prime * result + Objects.hashCode(scoreB);
+        result = prime * result + Objects.hashCode(setSettings);
+        return result;
     }
 
     @Override

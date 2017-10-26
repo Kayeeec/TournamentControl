@@ -11,8 +11,11 @@
             translate-values="{id: '{{vm.elimination.id}}'}">Edit Elimination tournament #{{vm.elimination.id}}</h4>
     </div>
     <div class="modal-body">
+        
         <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">Name</label>
+            <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">
+                Name
+            </label>
             <input type="text" class="form-control" name="name" id="field_name"
                    ng-model="vm.elimination.name"
                    required/>
@@ -76,7 +79,8 @@
 
 
         <div style="clear: both"></div>
-
+        
+        <!-- ********* set settings tab ********* -->
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="advancedSetSettings_heading">
@@ -165,54 +169,56 @@
                 </div>
             </div>
         </div>
+        <!-- ********* set settings tab / end ********* -->
 
-        <!--PARTICIPANTS ======================================================-->
+        <!-- ********* PARTICIPANTS ********* -->
         <div class="well well-sm">
             <ul class="nav nav-pills" id="myTab">
-                <li class="active"><a showtab href="#players" ng-click="chosen = 1; vm.prepareSeeding()">
-                        <span  data-translate=""> Add Players </span> <!--TODO: data translate-->
+                <li class="active"><a showtab href="#players" ng-click="chosen = 1">
+                        <span  data-translate=""> Add Players </span> <!--TODO: data-translate -->
                         <span class="badge"> {{vm.selectedPlayers.length}}</span>
                     </a>
                 </li>
-                <!--<li ng-disabled=""><p class="text-center text" 
-                style="padding-top: 10px;padding-left: 5px;padding-right: 5px" data-translate="">or</p></li>-->
-                <li><a showtab href="#teams" ng-click="chosen = 2; vm.prepareSeeding()">
-                        <span  data-translate=""> Add Teams </span> <!--TODO: data translate-->
+                <!--<li ng-disabled=""><p class="text-center text" style="padding-top: 10px;padding-left: 5px;padding-right: 5px" data-translate="">or</p></li>-->
+                <li><a showtab href="#teams" ng-click="chosen = 2">
+                        <span  data-translate=""> Add Teams </span><!--TODO: data-translate -->
                         <span class="badge"> {{vm.selectedTeams.length}}</span>
                     </a>
                 </li>
             </ul>
 
             <div class="tab-content" style="padding: 10px">
-
+                
                 <div class="tab-pane active row" id="players">
-                    <div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="participant in vm.participants| filter: isPlayer">
-                        <span>
-                            <label>
-                                <input  type="checkbox"  id="field_participants" name="participants" 
-                                        ng-click="vm.setParticipantsChanged();vm.prepareSeeding()"
+                        <div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="participant in vm.participants | filter: isPlayer">
+                            <span>
+                            <label for="player_checkbox_{{$index}}">
+                                <input  type="checkbox"  id="player_checkbox_{{$index}}" name="participants" 
+                                        ng-click="vm.onPlayerClick()"
                                         checklist-model="vm.selectedPlayers" checklist-value="participant"> 
                                 {{participant.player.name}}
-                            </label> 
-                        </span>
+                                </label> 
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="tab-pane row" id="teams">
-                    <div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="participant in vm.participants| filter: isTeam">
-                        <span>
-                            <label>
-                                <input  type="checkbox"  id="field_participants" name="participants" 
-                                        ng-click="vm.setParticipantsChanged();vm.prepareSeeding()"
-                                        checklist-model="vm.selectedTeams" checklist-value="participant" > 
-                                {{participant.team.name}}
-                            </label>
-                        </span>
+                    <div class="tab-pane row" id="teams">
+                        <div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="participant in vm.participants | filter: isTeam">
+                            <span>  
+                                <label for="team_checkbox_{{$index}}" ng-class="vm.getTeamCSS_onValidity(participant)">
+                                    <input  type="checkbox"  id="team_checkbox_{{$index}}" name="team_checkbox"
+                                            checklist-model="vm.selectedTeams" checklist-value="participant"
+                                            ng-disabled="vm.teamIsInvalid(participant)"
+                                            ng-click="vm.onTeamClick()"> 
+                                    
+                                        {{participant.team.name}}
+                                </label>
+                            </span>
+                        </div>
                     </div>
-                </div>
-
+                
             </div>
         </div>
-        <!--PARTICIPANTS ======================================================-->
+<!-- ********* end - PARTICIPANTS ********* -->
            
 
         <!-- participant seeding -->
@@ -225,49 +231,97 @@
             </div>
             <div class="form-group">
                 <label>
-                    <input ng-disabled="vm.selectedPlayers.length <= 2 && vm.selectedTeams.length <= 2" type="radio" 
+                    <input  type="radio" 
                            ng-model="seedRandomly" ng-value="false" ng-click="vm.prepareSeeding()">
                     Custom
                 </label>
             </div>
         </div>
-
+        
         <div ng-if="(!seedRandomly)">
-            
-            <div class="my-wrap">
-            <div id="tree"></div>
-            
-            <div ng-repeat="i in vm.myIterator(0,N/2,1)" class="my-dropzones-container">
-                <div id="over_{{i}}" class="tree-node-table this-is-over" style="top: {{vm.coordinates[i].top}}; left: {{vm.coordinates[i].left}}">
-                    <div ng-if="!vm.isBye(vm.seeding[i])" name="A" class="tree-node-table-A"> 
-                        <select class="form-control" 
-                            ng-options="participant.name for participant in vm.selectedParticipants track by participant.id"
-                            ng-model="vm.seeding[i]" 
-                            ng-change="vm.onParticipantSelect({{vm.seeding}}, vm.seeding[i], i); vm.changed = false">
-                            <option value=""> - </option>
-                        </select>
-                    </div>
-                    <div ng-if="vm.isBye(vm.seeding[i])" name="A" class="tree-node-table-A">
-                            BYE
-                    </div>
-                    <div ng-if="!vm.isBye(vm.seeding[N - 1 - i])" name="B" class="tree-node-table-A">
-                        <select class="form-control" 
-                            ng-options="participant.name for participant in vm.selectedParticipants track by participant.id"
-                            ng-model="vm.seeding[N - 1 - i]"
-                            ng-change="vm.onParticipantSelect({{vm.seeding}}, vm.seeding[N - 1 - i], N - 1 - i); vm.changed = false">
-                            <option value=""> - </option>
-                        </select>
-                    </div>
-                    <div ng-if="vm.isBye(vm.seeding[N - 1 - i])" name="B" class="tree-node-table-A">
-                        BYE
+            <div ng-if="vm.getSelectedParticipants().length < 3 "
+                 class="alert alert-warning">
+                For <b>custom seeding</b> at least <b>three</b>  participants need to be selected. <!--TODO: data-translate -->
+                <div ng-hide="true" id="tree" ></div>
+            </div>
+
+            <div ng-if="vm.getSelectedParticipants().length >= 3">
+                
+                <div class="my-wrap" ng-if="chosen===1" name="player_seeding">
+                    <div id="player_tree"></div>
+                    <div ng-hide="true" ng-init="vm.preparePlayerSeeding()"> </div>
+
+                    <div ng-repeat="i in vm.myIterator(0,vm.N/2,1)" class="my-dropzones-container">
+                        <div id="player_over_{{i}}" class="tree-node-table this-is-over" 
+                             style="top: {{vm.coordinates[i].top}}; left: {{vm.coordinates[i].left}}">
+                            <div ng-if="!vm.isBye(vm.player_seeding[i])" name="A" class="tree-node-table-A"> 
+                                <select class="form-control" 
+                                        ng-options="participant as vm.getSeedingOptionName(participant) for participant 
+                                            in vm.selectedPlayers track by participant.id"
+                                        ng-model="vm.player_seeding[i]" 
+                                        ng-change="vm.onPlayerSelect({{vm.player_seeding}}, vm.player_seeding[i], i); vm.playersChanged = false">
+                                    <option value=""> - </option>
+                                </select>
+                            </div>
+                            <div ng-if="vm.isBye(vm.player_seeding[i])" name="A" class="tree-node-table-A">
+                                BYE
+                            </div>
+                            <div ng-if="!vm.isBye(vm.player_seeding[vm.N - 1 - i])" name="B" class="tree-node-table-B">
+                                <select class="form-control" 
+                                        ng-options="participant as vm.getSeedingOptionName(participant) for participant 
+                                            in vm.selectedPlayers track by participant.id"
+                                        ng-model="vm.player_seeding[vm.N - 1 - i]"
+                                        ng-change="vm.onPlayerSelect({{vm.player_seeding}}, vm.player_seeding[vm.N - 1 - i], vm.N - 1 - i); vm.playersChanged = false">
+                                    <option value=""> - </option>
+                                </select>
+                            </div>
+                            <div ng-if="vm.isBye(vm.player_seeding[vm.N - 1 - i])" name="B" class="tree-node-table-B">
+                                BYE
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            </div>
-            
-        </div>
-        <!-- participant seeding END -->
+                
+                <div class="my-wrap" ng-if="chosen===2" name="team_seeding">
+                    <div id="team_tree"></div>
+                    <div ng-hide="true" ng-init="vm.prepareTeamSeeding()"> </div>
 
+                    <div ng-repeat="i in vm.myIterator(0,vm.N/2,1)" class="my-dropzones-container">
+                        <div id="team_over_{{i}}" class="tree-node-table this-is-over" 
+                             style="top: {{vm.coordinates[i].top}}; left: {{vm.coordinates[i].left}}">
+                            <div ng-if="!vm.isBye(vm.team_seeding[i])" name="A" class="tree-node-table-A"> 
+                                <select class="form-control" 
+                                        ng-options="participant as vm.getSeedingOptionName(participant) for participant 
+                                            in vm.selectedTeams track by participant.id"
+                                        ng-model="vm.team_seeding[i]" 
+                                        ng-change="vm.onTeamSelect({{vm.team_seeding}}, vm.team_seeding[i], i); vm.teamsChanged = false">
+                                    <option value=""> - </option>
+                                </select>
+                            </div>
+                            <div ng-if="vm.isBye(vm.team_seeding[i])" name="A" class="tree-node-table-A">
+                                BYE
+                            </div>
+                            <div ng-if="!vm.isBye(vm.team_seeding[vm.N - 1 - i])" name="B" class="tree-node-table-B">
+                                <select class="form-control" 
+                                        ng-options="participant as vm.getSeedingOptionName(participant) for participant 
+                                            in vm.selectedTeams track by participant.id"
+                                        ng-model="vm.team_seeding[vm.N - 1 - i]"
+                                        ng-change="vm.onTeamSelect({{vm.team_seeding}}, vm.team_seeding[vm.N - 1 - i], vm.N - 1 - i); vm.teamsChanged = false">
+                                    <option value=""> - </option>
+                                </select>
+                            </div>
+                            <div ng-if="vm.isBye(vm.team_seeding[vm.N - 1 - i])" name="B" class="tree-node-table-B">
+                                BYE
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+        <!-- participant seeding END -->
     </div>
 
     <div class="modal-footer">

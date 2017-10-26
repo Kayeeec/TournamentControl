@@ -16,6 +16,7 @@
                 "elimination": "Elimination",
                 "gameSet": "Game Set",
                 "setSettings": "Set Settings",
+                "swiss": "Swiss",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
@@ -97,7 +98,8 @@
             "edit": "Edit",
             "open": "Open",
             "save": "Save",
-            "view": "View"
+            "view": "View",
+            "ok": "Ok"
         },
         "detail": {
             "field": "Field",
@@ -112,6 +114,7 @@
             "maxlength": "This field cannot be longer than {{ max }} characters.",
             "min": "This field should be at least {{ min }}.",
             "max": "This field cannot be more than {{ max }}.",
+            "playingFields_max": "This field depends on number of participants and it cannot be more than <b>{{ max }}</b>.",
             "minbytes": "This field should be at least {{ min }} bytes.",
             "maxbytes": "This field cannot be more than {{ max }} bytes.",
             "pattern": "This field should follow pattern {{ pattern }}.",

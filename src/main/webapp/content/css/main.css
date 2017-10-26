@@ -7,6 +7,19 @@ body {
 /* ==========================================================================
 My styles
 ============================================================================= */
+.gi-1_5x{font-size: 1.5em;}
+.gi-2x{font-size: 2em;}
+.gi-3x{font-size: 3em;}
+.gi-4x{font-size: 4em;}
+.gi-5x{font-size: 5em;}
+
+.gamePointsInput{
+    width: 150px;
+}
+
+.white{
+    color: #ccc;
+}
 .myWins{
     color: #060;
 }
@@ -26,26 +39,44 @@ My styles
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: 200;
-    width: 100px;
+    width: fit-content;
+    background-color:#FFFFFF;
+    border-collapse: separate;
+    border:0.5px solid #7A7A7A;
+    border-radius: 5px;
     
 }
 .bracket-table, .bracket-table td {
-    border: 1px solid dimgray;
     padding: 3px;
-    overflow: hidden;
+    overflow: visible;
     white-space: nowrap;
 }
-
+.bracket-name-td-a{
+    border-bottom: 0.5px solid #7A7A7A;
+}
 .bracket-period-td {
     vertical-align: middle;
     text-align: center;
+    border-right: 0.5px solid #7A7A7A;
 }
+.bracket-glyphicon-td{
+    vertical-align: middle;
+    text-align: center;
+    border-left: 0.5px solid #7A7A7A;
+}
+
 .bracket-name-td{
     width: 70px;
 }
 .bracket-scores-td{
     text-align: center;
+    border-left: 0.5px solid #7A7A7A;
 }
+
+.bracket-scores-td-a{
+    border-bottom: 0.5px solid #7A7A7A;
+}
+
 .mylinkDisabled {
   cursor: not-allowed;
   pointer-events: none;
@@ -58,16 +89,24 @@ My styles
 
 .tree-node-table{
     width: 150px;
-    background-color:#eee;
-    border:1px solid #666666;
+    background-color:#F5F5F5;
+    border:0.5px solid #DDDDDD;
+    border-radius: 5px
 }
 .tree-node-table-A{
     width: auto;
-    height: 36px;
+    height: 32px;
     padding: auto;
-    border: 1px solid #666666;
+    border-bottom: 0.5px solid #DDDDDD;
     text-align: center;
-    line-height: 36px;
+    line-height: 32px;
+}
+.tree-node-table-B{
+    width: auto;
+    height: 32px;
+    padding: auto;
+    text-align: center;
+    line-height: 32px;
 }
 .my-wrap{
     position: relative;

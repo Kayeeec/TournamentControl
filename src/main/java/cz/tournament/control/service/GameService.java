@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -71,14 +72,16 @@ public class GameService {
         
         SetSettings defaultSetSettings = setSettingsService.save(game.getTournament().getSetSettings()) ;
         
-        //prepare sets - one or number of sets to win
-        GameSet set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
-        tmp.addSets(set);
-        Integer sets = tmp.getTournament().getSetsToWin();
-        if (sets != null && sets > 1) {
-            for (int i = 1; i < sets; i++) {
-                set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
-                tmp.addSets(set);
+        if((game.getRivalA()==null || !game.getRivalA().isBye()) && (game.getRivalB()==null || !game.getRivalB().isBye())){
+            //prepare sets - one or number of sets to win
+            GameSet set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
+            tmp.addSets(set);
+            Integer sets = tmp.getTournament().getSetsToWin();
+            if (sets != null && sets > 1) {
+                for (int i = 1; i < sets; i++) {
+                    set = gameSetService.save(new GameSet().game(tmp).setSettings(defaultSetSettings));
+                    tmp.addSets(set);
+                }
             }
         }
         
@@ -86,13 +89,41 @@ public class GameService {
         return result;
     }
     
+    private String getSetsString(Set<GameSet> sets){
+        String result = "";
+        for (GameSet set : sets) {
+            result = result + set.getId() + ", ";
+        }
+        return result;
+    }
+    
     public Game updateGame(Game game){
         String debug = "Request to update Game : " + game;
-        
+        Game oldGame = gameRepository.findOne(game.getId());
         //ensure tournament - never changes
         if(game.getTournament() == null){
-           Tournament oldTournament = gameRepository.findOne(game.getId()).getTournament();
-            game.setTournament(oldTournament); 
+           Tournament oldTournament = oldGame.getTournament();
+           game.setTournament(oldTournament); 
+        }
+        
+//        log.debug("old sets: {}", getSetsString(oldGame.getSets()));
+//        log.debug("new game: {}", getSetsString(game.getSets()));
+//        
+        //trigger removal
+        Set<Long> newIds = new HashSet<>();
+        for (GameSet set : game.getSets()) {
+            newIds.add(set.getId());
+        }
+        for (GameSet oldSet : oldGame.getSets()) {
+            if(!newIds.contains(oldSet.getId())){
+                gameSetService.delete(oldSet.getId());
+            }
+        }
+        
+        //trigger create and update sets, ensure game
+        for (GameSet set : game.getSets()) {
+            set.game(game);
+            gameSetService.updateGameSet(set);
         }
         
         //finish the game if all sets are finished and is not an unallowed tie 
@@ -117,16 +148,6 @@ public class GameService {
         if(tournament instanceof Elimination){
             log.debug("Tournament is instance of Elimination, calling nextGameUpdate().");
             elimination_nextGameUpdate(game, tournament);
-        }
-        
-        //delete sets if one rival is BYE - maybe could be better algorithm
-        if( isBye(game.getRivalA()) || isBye(game.getRivalB()) ){
-            List<GameSet> sets = new ArrayList<>(game.getSets());
-            for (GameSet set : sets) {
-                game.removeSets(set);
-            }
-            gameSetService.delete(sets);
-            
         }
         
         Game result = gameRepository.save(game);
@@ -489,7 +510,7 @@ public class GameService {
     
     private void singleElimination_nextGameUpdate(Game game, Elimination elimination) {
         List<Game> matches = new ArrayList<>(elimination.getMatches());
-        Collections.sort(matches);
+        Collections.sort(matches, Game.PeriodRoundComparator);
         int N = elimination.getN();
         int index = game.getPeriod() - 1;
         int rootIndex = N-2, bronzeIndex = N-1;
@@ -523,7 +544,7 @@ public class GameService {
     
     private void doubleElimination_nextGameUpdate(Game game, Elimination elimination){
         List<Game> matches = new ArrayList<>(elimination.getMatches());
-        Collections.sort(matches);
+        Collections.sort(matches, Game.PeriodRoundComparator);
         int N = elimination.getN();
         int index = matches.indexOf(game);
         int newFinalIndex = nextFinalIndex(N, matches.size(), elimination);
@@ -590,7 +611,7 @@ public class GameService {
         Game old = this.findOne(game.getId());
         if (old.isFinished() && !game.isFinished()) {
             List<Game> matches = new ArrayList<>(elimination.getMatches());
-            Collections.sort(matches);
+            Collections.sort(matches, Game.PeriodRoundComparator);
             
             propagateRivalsRemoval(game, matches, elimination);
         }
@@ -640,5 +661,4 @@ public class GameService {
             }
         }
     }
-    
 }

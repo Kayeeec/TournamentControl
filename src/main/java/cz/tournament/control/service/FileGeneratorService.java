@@ -5,6 +5,7 @@
  */
 package cz.tournament.control.service;
 
+import cz.tournament.control.service.util.EvalClassic;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
@@ -149,7 +150,7 @@ public class FileGeneratorService {
         Collections.sort(evals, new Comparator<EvalClassic>() {
             @Override
             public int compare(EvalClassic p1, EvalClassic p2) {
-                return Integer.compare(p1.points, p2.points);
+                return Double.compare(p1.points, p2.points);
             }
         });
 
@@ -184,9 +185,11 @@ public class FileGeneratorService {
 
     }
 
-    private int countPoints(AllVersusAll tournament, int wins, int loses, int ties) {
+    private Double countPoints(AllVersusAll tournament, int wins, int loses, int ties) {
         return (wins * tournament.getPointsForWinning()) + (ties * tournament.getPointsForTie()) - (loses * tournament.getPointsForLosing());
     }
+    
+   
 
 
 /*    {"Round", "Rival A", ":", "Rival B", "Score A", ":", "Score B"} */
@@ -196,7 +199,7 @@ public class FileGeneratorService {
         int rows = matches.size()/periods;
         
         //sort matches by period, then round 
-        Collections.sort(matches);
+        Collections.sort(matches, Game.PeriodRoundComparator);
         
         int position = 0;
         TableModel[] period = new TableModel[periods];

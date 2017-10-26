@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service Implementation for managing AllVersusAll.
@@ -66,9 +67,9 @@ public class AllVersusAllService {
         AllVersusAll old = allVersusAllRepository.findOne(allVersusAll.getId());
         
         if(!old.getParticipants().equals(allVersusAll.getParticipants()) 
-                || old.getNumberOfMutualMatches() != allVersusAll.getNumberOfMutualMatches()
-                || old.getPlayingFields() != allVersusAll.getPlayingFields()
-                || old.getSetsToWin() != allVersusAll.getSetsToWin()){
+                || !Objects.equals(old.getNumberOfMutualMatches(), allVersusAll.getNumberOfMutualMatches())
+                || !Objects.equals(old.getPlayingFields(), allVersusAll.getPlayingFields())
+                || !Objects.equals(old.getSetsToWin(), allVersusAll.getSetsToWin())){
             if(!allVersusAll.getMatches().isEmpty()) deleteAllMatches(allVersusAll);
             if(allVersusAll.getParticipants().size() >= 2) generateAssignment(allVersusAll);
         }

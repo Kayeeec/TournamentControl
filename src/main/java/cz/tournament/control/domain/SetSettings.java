@@ -34,6 +34,9 @@ public class SetSettings implements Serializable {
     @Column(name = "lead_by_points")
     private Integer leadByPoints;
 
+    public SetSettings() {
+    }
+
     public Long getId() {
         return id;
     }
@@ -90,15 +93,25 @@ public class SetSettings implements Serializable {
             return false;
         }
         SetSettings setSettings = (SetSettings) o;
-        if (setSettings.id == null || id == null) {
-            return false;
-        }
-        return Objects.equals(id, setSettings.id);
+//        if (setSettings.id == null || id == null) {
+//            return false;
+//        }
+//        return Objects.equals(id, setSettings.id);
+        return Objects.equals(this.id, setSettings.getId()) 
+                && Objects.equals(this.leadByPoints, setSettings.getLeadByPoints())
+                && Objects.equals(this.maxScore, setSettings.getMaxScore())
+                && Objects.equals(this.minReachedScore, setSettings.getMinReachedScore());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Objects.hashCode(id);
+        result = prime * result + Objects.hashCode(leadByPoints);
+        result = prime * result + Objects.hashCode(maxScore);
+        result = prime * result + Objects.hashCode(minReachedScore);
+        return result;
     }
 
     @Override

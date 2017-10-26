@@ -35,15 +35,6 @@ public class Tournament implements Serializable {
     @Column(name = "note")
     private String note;
 
-    @Column(name = "points_for_winning")
-    private Integer pointsForWinning;
-
-    @Column(name = "points_for_losing")
-    private Integer pointsForLosing;
-
-    @Column(name = "points_for_tie")
-    private Integer pointsForTie;
-
     @Column(name = "created")
     private ZonedDateTime created;
 
@@ -55,11 +46,20 @@ public class Tournament implements Serializable {
 
     @Column(name = "playing_fields")
     private Integer playingFields;
-    
-    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+
+    @Column(name = "points_for_winning")
+    private Double pointsForWinning;
+
+    @Column(name = "points_for_tie")
+    private Double pointsForTie;
+
+    @Column(name = "points_for_losing")
+    private Double pointsForLosing;
+
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(unique = true)
     private SetSettings setSettings;
-
+    
     @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnoreProperties({"tournament"})
@@ -75,6 +75,8 @@ public class Tournament implements Serializable {
                inverseJoinColumns = @JoinColumn(name="participants_id", referencedColumnName="id"))
     private Set<Participant> participants = new HashSet<>();
 
+
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -107,45 +109,6 @@ public class Tournament implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public Integer getPointsForWinning() {
-        return pointsForWinning;
-    }
-
-    public Tournament pointsForWinning(Integer pointsForWinning) {
-        this.pointsForWinning = pointsForWinning;
-        return this;
-    }
-
-    public void setPointsForWinning(Integer pointsForWinning) {
-        this.pointsForWinning = pointsForWinning;
-    }
-
-    public Integer getPointsForLosing() {
-        return pointsForLosing;
-    }
-
-    public Tournament pointsForLosing(Integer pointsForLosing) {
-        this.pointsForLosing = pointsForLosing;
-        return this;
-    }
-
-    public void setPointsForLosing(Integer pointsForLosing) {
-        this.pointsForLosing = pointsForLosing;
-    }
-
-    public Integer getPointsForTie() {
-        return pointsForTie;
-    }
-
-    public Tournament pointsForTie(Integer pointsForTie) {
-        this.pointsForTie = pointsForTie;
-        return this;
-    }
-
-    public void setPointsForTie(Integer pointsForTie) {
-        this.pointsForTie = pointsForTie;
     }
 
     public ZonedDateTime getCreated() {
@@ -207,6 +170,45 @@ public class Tournament implements Serializable {
 
     public void setPlayingFields(Integer playingFields) {
         this.playingFields = playingFields;
+    }
+
+    public Double getPointsForWinning() {
+        return pointsForWinning;
+    }
+
+    public Tournament pointsForWinning(Double pointsForWinning) {
+        this.pointsForWinning = pointsForWinning;
+        return this;
+    }
+
+    public void setPointsForWinning(Double pointsForWinning) {
+        this.pointsForWinning = pointsForWinning;
+    }
+
+    public Double getPointsForTie() {
+        return pointsForTie;
+    }
+
+    public Tournament pointsForTie(Double pointsForTie) {
+        this.pointsForTie = pointsForTie;
+        return this;
+    }
+
+    public void setPointsForTie(Double pointsForTie) {
+        this.pointsForTie = pointsForTie;
+    }
+
+    public Double getPointsForLosing() {
+        return pointsForLosing;
+    }
+
+    public Tournament pointsForLosing(Double pointsForLosing) {
+        this.pointsForLosing = pointsForLosing;
+        return this;
+    }
+
+    public void setPointsForLosing(Double pointsForLosing) {
+        this.pointsForLosing = pointsForLosing;
     }
 
     public Set<Game> getMatches() {
@@ -282,6 +284,11 @@ public class Tournament implements Serializable {
     public void setSetSettings(SetSettings setSettings) {
         this.setSettings = setSettings;
     }
+    
+    public String getTournamentType(){
+        return "tournament";
+    }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -291,31 +298,59 @@ public class Tournament implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Tournament tournament = (Tournament) o;
-        if (tournament.id == null || id == null) {
-            return false;
-        }
-        return Objects.equals(id, tournament.id);
+        Tournament other = (Tournament) o;
+//        if (tournament.getId() == null || getId() == null) {
+//            return false;
+//        }
+//        return Objects.equals(getId(), tournament.getId());
+        return Objects.equals(getId(), other.getId())
+                && Objects.equals(created, other.getCreated())
+                && Objects.equals(matches, other.getMatches())
+                && Objects.equals(name, other.getName())
+                && Objects.equals(note, other.getNote())
+                && Objects.equals(participants, other.getParticipants())
+                && Objects.equals(playingFields, other.getPlayingFields())
+                && Objects.equals(pointsForLosing, other.getPointsForLosing())
+                && Objects.equals(pointsForTie, other.getPointsForTie())
+                && Objects.equals(pointsForWinning, other.getPointsForWinning())
+                && Objects.equals( setSettings, other.getSetSettings())
+                && Objects.equals(setsToWin, other.getSetsToWin())
+                && Objects.equals(tiesAllowed, other.getTiesAllowed())
+                && Objects.equals(user, other.getUser()); 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        final int prime = 59;
+        int result = 1;
+        result = prime * result + Objects.hashCode(id);
+        result = prime * result + Objects.hashCode(created);
+        result = prime * result + Objects.hashCode(name);
+        result = prime * result + Objects.hashCode(note);
+        result = prime * result + Objects.hashCode(playingFields);
+        result = prime * result + Objects.hashCode(pointsForLosing);
+        result = prime * result + Objects.hashCode(pointsForTie);
+        result = prime * result + Objects.hashCode(pointsForWinning);
+        result = prime * result + Objects.hashCode(setSettings);
+        result = prime * result + Objects.hashCode(setsToWin);
+        result = prime * result + Objects.hashCode(tiesAllowed);
+        result = prime * result + Objects.hashCode(user);
+        return result;
     }
 
     @Override
     public String toString() {
         return "Tournament{" +
-            "id=" + id +
-            ", name='" + name + "'" +
-            ", note='" + note + "'" +
-            ", pointsForWinning='" + pointsForWinning + "'" +
-            ", pointsForLosing='" + pointsForLosing + "'" +
-            ", pointsForTie='" + pointsForTie + "'" +
-            ", created='" + created + "'" +
-            ", setsToWin='" + setsToWin + "'" +
-            ", tiesAllowed='" + tiesAllowed + "'" +
-            ", playingFields='" + playingFields + "'" +
-            '}';
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", note='" + getNote() + "'" +
+            ", created='" + getCreated() + "'" +
+            ", setsToWin='" + getSetsToWin() + "'" +
+            ", tiesAllowed='" + getTiesAllowed()+ "'" +
+            ", playingFields='" + getPlayingFields() + "'" +
+            ", pointsForWinning='" + getPointsForWinning() + "'" +
+            ", pointsForTie='" + getPointsForTie() + "'" +
+            ", pointsForLosing='" + getPointsForLosing() + "'" +
+            "}";
     }
 }

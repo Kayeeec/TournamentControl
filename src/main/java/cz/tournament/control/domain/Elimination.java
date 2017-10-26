@@ -53,6 +53,11 @@ public class Elimination extends Tournament implements Serializable {
     public void setBronzeMatch(Boolean bronzeMatch) {
         this.bronzeMatch = bronzeMatch;
     }
+    
+    @Override
+    public String getTournamentType(){
+        return "elimination";
+    }
 
     @Override
     public boolean equals(Object o) {

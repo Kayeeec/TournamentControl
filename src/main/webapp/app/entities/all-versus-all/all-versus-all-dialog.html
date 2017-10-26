@@ -1,5 +1,5 @@
 
-<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" > <!-- show-validation -->
 
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
@@ -12,17 +12,15 @@
 
     </div>
     <div class="modal-body">
-        <div class="form-group" ng-show="vm.allVersusAll.id">
-            <label for="id" data-translate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                   ng-model="vm.allVersusAll.id" readonly />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">Name</label>
+
+        <div class="form-group  ">
+            <label class="control-label" data-translate="tournamentControlApp.tournament.name" for="field_name">
+                Name
+            </label>
             <input type="text" class="form-control" name="name" id="field_name"
                    ng-model="vm.allVersusAll.name"
                    required/>
-            <div ng-show="editForm.name.$invalid">
+            <div ng-show="editForm.name.$invalid" class="">
                 <p class="help-block"
                    ng-show="editForm.name.$error.required" data-translate="entity.validation.required">
                     This field is required.
@@ -31,7 +29,9 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.tournament.note" for="field_note">Note</label>
+            <label class="control-label" data-translate="tournamentControlApp.tournament.note" for="field_note">
+                Note
+            </label>
             <textarea rows="3" type="text" class="form-control" name="note" id="field_note"
                       ng-model="vm.allVersusAll.note"
                       ></textarea>
@@ -39,28 +39,40 @@
         
         <div class="row">
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" for="field_pointsForWinning">Points For Winning</label>
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" 
+                       for="field_pointsForWinning">
+                    Points For Winning
+                </label>
                 <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
                        ng-model="vm.allVersusAll.pointsForWinning"
                        />
             </div>
 
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" for="field_pointsForLosing">Points For Losing</label>
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" 
+                       for="field_pointsForLosing">
+                    Points For Losing
+                </label>
                 <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
                        ng-model="vm.allVersusAll.pointsForLosing"
                        />
             </div>
 
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" for="field_pointsForTie">Points For Tie</label>
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" 
+                       for="field_pointsForTie">
+                    Points For Tie
+                </label>
                 <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
                        ng-model="vm.allVersusAll.pointsForTie"
                        />
             </div>
 
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" for="field_numberOfMutualMatches">Number Of Mutual Matches</label>
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3  ">
+                <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" 
+                       for="field_numberOfMutualMatches">
+                    Number Of Mutual Matches
+                </label>
                 <input type="number" class="form-control" name="numberOfMutualMatches" id="field_numberOfMutualMatches"
                        ng-model="vm.allVersusAll.numberOfMutualMatches"
                        required min="1"/>
@@ -70,7 +82,8 @@
                         This field is required.
                     </p>
                     <p class="help-block"
-                       ng-show="editForm.numberOfMutualMatches.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                       ng-show="editForm.numberOfMutualMatches.$error.min" data-translate="entity.validation.min" 
+                       translate-value-min="{{1}}">
                         This field should be at least 1.
                     </p>
                     <p class="help-block"
@@ -82,23 +95,29 @@
         </div>
         <div style="clear: both"></div>
         <div class="row">
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <label class="control-label" data-translate="tournamentControlApp.tournament.playingFields" for="field_playingFields">Playing Fields</label>
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3  ">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.playingFields" 
+                       for="field_playingFields">
+                    Playing Fields
+                </label>
                 <input type="number" class="form-control" name="playingFields" id="field_playingFields"
-                       ng-model="vm.allVersusAll.playingFields" min="1" max="{{maxPlayingFields()}}"
+                       ng-model="vm.allVersusAll.playingFields" min="1"
                        />
                 <div ng-show="editForm.playingFields.$invalid">
                     <p class="help-block"
-                       ng-show="editForm.playingFields.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                       ng-show="editForm.playingFields.$error.min" data-translate="entity.validation.min" 
+                       translate-value-min="{{1}}">
                         This field should be at least 1.
-                    </p>
-                    <p class="help-block"
-                       ng-show="editForm.playingFields.$error.max" data-translate="entity.validation.max" translate-value-max="{{maxPlayingFields()}}">
-                        This field should be at most {{maxPlayingFields()}}.
                     </p>
                     <p class="help-block"
                        ng-show="editForm.playingFields.$error.number" data-translate="entity.validation.number">
                         This field should be a number.
+                    </p>
+                </div>
+                <div ng-if="vm.playingFieldsInvalid()">
+                    <p class="help-block" data-translate="entity.validation.playingFields_max"
+                       translate-value-max="{{vm.maxPlayingFields()}}">
+                        Field should not be bigger than max.
                     </p>
                 </div>
             </div>
@@ -116,7 +135,8 @@
                 </select>
             </div>
         </div>
-
+        
+        <!-- ********* advanced set settings and participants  ********* -->
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="advancedSetSettings_heading">
@@ -129,17 +149,16 @@
                 </div>
                 <div id="advancedSetSettings" class="panel-collapse collapse" ng-class="{'in': vm.setSettingsChosen}" role="tabpanel" aria-labelledby="advancedSetSettings_heading">
                     <div class="panel-body">
-                        
                         <!--Set settings-->
                         <div class=" form-inline myPaqddingBottom">
-                            <div class=" form-group">
+                            <div class=" form-group  ">
                                 <label class="control-label" for="field_maxScore">
                                     <input type="radio" ng-model="vm.setSettingsChosen" value="maxScore" checked> Max Score
                                 </label>
-                                <input ng-disabled="vm.setSettingsChosen !== 'maxScore'" type="number" class="form-control" name="maxScore" id="field_maxScore"
-                                           ng-model="vm.preparedSettings.maxScore"
-                                           min="1"/>
-
+                                <input ng-disabled="vm.setSettingsChosen !== 'maxScore'" type="number" 
+                                    class="form-control" name="maxScore" id="field_maxScore"
+                                    ng-model="vm.preparedSettings.maxScore"
+                                    min="1"/>
                                 <div ng-show="editForm.maxScore.$invalid">
                                     <p class="help-block"
                                        ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" translate-value-min="1">
@@ -153,7 +172,7 @@
                             </div>
                         </div>
                         <div class="form-inline">
-                            <div class="form-group">
+                            <div class="form-group  ">
                                 <label class="control-label" for="field_leadByPoints">
                                     <input type="radio" ng-model="vm.setSettingsChosen" value="leadByPoints"> Lead-by points
                                 </label>
@@ -171,7 +190,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group  ">
                                 <label class="control-label" data-translate="tournamentControlApp.setSettings.minReachedScore" for="field_minReachedScore">Min Reached Score</label>
                                 <input ng-disabled="vm.setSettingsChosen !== 'leadByPoints'" type="number" class="form-control" name="minReachedScore" id="field_minReachedScore"
                                        ng-model="vm.preparedSettings.minReachedScore"
@@ -197,17 +216,17 @@
         </div>
 
         <div style="clear: both"></div>
-        <!--PARTICIPANTS ======================================================-->
+<!-- ********* PARTICIPANTS ********* -->
         <div class="well well-sm">
             <ul class="nav nav-pills" id="myTab">
                 <li class="active"><a showtab href="#players" ng-click="chosen = 1">
-                        <span  data-translate=""> Add Players </span> <!--TODO: data translate-->
+                        <span  data-translate=""> Add Players </span> <!--TODO: data-translate -->
                         <span class="badge"> {{vm.selectedPlayers.length}}</span>
                     </a>
                 </li>
-                <!--<li ng-disabled=""><p class="text-center text" style="padding-top: 10px;padding-left: 5px;padding-right: 5px" data-translate="">or</p></li>-->
-                <li><a showtab href="#teams" ng-click="chosen = 2">
-                        <span  data-translate=""> Add Teams </span> <!--TODO: data translate-->
+                <li ng-disabled=""><p class="text-center text" style="padding-top: 10px;padding-left: 5px;padding-right: 5px" data-translate="">or</p></li>
+                <li><a showtab href="#teams" ng-click="chosen = 2; vm.init_teamValidityMap()">
+                        <span  data-translate=""> Add Teams </span><!--TODO: data-translate -->
                         <span class="badge"> {{vm.selectedTeams.length}}</span>
                     </a>
                 </li>
@@ -215,22 +234,30 @@
 
             <div class="tab-content" style="padding: 10px">
                 
-                    <div class="tab-pane active row" id="players">
-                        <div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="participant in vm.participants | filter: isPlayer">
+                <div class="tab-pane active row" id="players">
+                        <div class="col-md-3 col-sm-6 col-xs-12" 
+                             ng-repeat="participant in vm.participants | filter: isPlayer">
                             <span>
-                                <label>
-                                    <input  type="checkbox"  id="field_participants" name="participants" 
-                                            checklist-model="vm.selectedPlayers" checklist-value="participant" > {{participant.player.name}}
+                                <label for="player_checkbox_{{$index}}"> 
+                                    <input  type="checkbox"  id="player_checkbox_{{$index}}" name="player_checkbox" 
+                                            checklist-model="vm.selectedPlayers" checklist-value="participant"
+                                            ng-click="vm.onPlayerClick()">
+                                        {{participant.player.name}}
                                 </label> 
                             </span>
                         </div>
                     </div>
                     <div class="tab-pane row" id="teams">
-                        <div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="participant in vm.participants | filter: isTeam">
-                            <span>
-                                <label>
-                                    <input  type="checkbox"  id="field_participants" name="participants"
-                                            checklist-model="vm.selectedTeams" checklist-value="participant" > {{participant.team.name}}
+                        <div class="col-md-3 col-sm-6 col-xs-12" 
+                             ng-repeat="participant in vm.participants | filter: isTeam">
+                            <span>  
+                                <label for="team_checkbox_{{$index}}" ng-class="vm.getTeamCSS_onValidity(participant)">
+                                    <input  type="checkbox"  id="team_checkbox_{{$index}}" name="team_checkbox"
+                                            checklist-model="vm.selectedTeams" checklist-value="participant"
+                                            ng-disabled="vm.teamIsInvalid(participant)"
+                                            ng-click="vm.onTeamClick()"> 
+                                    
+                                        {{participant.team.name}}
                                 </label>
                             </span>
                         </div>
@@ -238,15 +265,14 @@
                 
             </div>
         </div>
-        <!--PARTICIPANTS ======================================================-->
-
+<!-- ********* end - PARTICIPANTS ********* -->
     </div>
     <div class="modal-footer">
         <jhi-alert-error></jhi-alert-error>
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
         </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving || vm.playingFieldsInvalid()" class="btn btn-primary">
             <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
         </button>
     </div>

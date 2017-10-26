@@ -2,6 +2,8 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Team;
+import cz.tournament.control.domain.Tournament;
+import cz.tournament.control.domain.exceptions.ParticipantInTournamentException;
 import cz.tournament.control.service.TeamService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -13,8 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import org.springframework.http.HttpStatus;
 
 /**
  * REST controller for managing Team.
@@ -91,6 +96,14 @@ public class TeamResource {
         List<Team> teams = teamService.findAll();
         return teams;
     }
+    
+    @GetMapping("/teams/tournaments/{id}")
+    @Timed
+    public List<Tournament> getAllTournaments(@PathVariable Long id){
+        if(id == null) return new ArrayList<>();
+        Team team = teamService.findOne(id);
+        return teamService.findAllTournaments(team);
+    }
 
     /**
      * GET  /teams/:id : get the "id" team.
@@ -116,7 +129,13 @@ public class TeamResource {
     @Timed
     public ResponseEntity<Void> deleteTeam(@PathVariable Long id) {
         log.debug("REST request to delete Team : {}", id);
-        teamService.delete(id);
+        try {
+            teamService.delete(id);
+        } catch (ParticipantInTournamentException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).
+                    headers(HeaderUtil.
+                            createFailureAlert(ENTITY_NAME, "participantInTournament", ex.getMessage())).build();
+        }
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
