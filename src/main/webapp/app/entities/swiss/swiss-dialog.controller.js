@@ -33,8 +33,8 @@
         vm.participantsTouched = false;
         
         vm.swiss.participants = vm.swiss.participants || [];
-        vm.selectedPlayers = filterFilter(vm.swiss.participants, {team : null});
-        vm.selectedTeams = filterFilter(vm.swiss.participants, {player : null});
+        vm.selectedPlayers = filterFilter(vm.swiss.participants, {team : null, bye:false});
+        vm.selectedTeams = filterFilter(vm.swiss.participants, {player : null, bye:false});
         $scope.chosen = 1;
         
         function selectParticipants() {
@@ -72,6 +72,9 @@
         vm.teamPlayers = new Set();
         
         function addTeamMembers(set, participant) {
+            if(!participant || !participant.team || participant.team.members.length === 0){
+                return;
+            } 
             for (var i = 0; i < participant.team.members.length; i++) {
                 set.add(participant.team.members[i].id);
             }
@@ -116,6 +119,25 @@
             e.preventDefault();
             $(this).tab('show');
         });
+        
+        vm.selectAll = function () {
+            if($scope.chosen===1){
+                vm.selectedPlayers = filterFilter(vm.participants, {team : null, bye:false});
+                vm.onPlayerClick();
+            }
+            //select all on teams disabled because of conflicting teams
+            
+        };        
+        
+        vm.deselectAll = function () {
+            if($scope.chosen===1){
+                vm.selectedPlayers = [];
+                vm.onPlayerClick();
+            }else{
+                vm.selectedTeams = [];
+                vm.onTeamClick();
+            }
+        };
         
         /**** end Participant stuff ****/
         

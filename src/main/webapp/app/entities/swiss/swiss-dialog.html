@@ -228,20 +228,31 @@
         <div style="clear: both"></div>
         <!-- ********* PARTICIPANTS ********* -->
         <div class="well well-sm">
-            <ul class="nav nav-pills" id="myTab">
-                <li class="active"><a showtab href="#players" ng-click="chosen = 1;vm.updateSelectedParticipants_player(true)">
-                        <span  data-translate=""> Add Players </span> <!--TODO: data-translate -->
-                        <span class="badge"> {{vm.selectedPlayers.length}}</span>
-                    </a>
-                </li>
-                <!--<li ng-disabled=""><p class="text-center text" style="padding-top: 10px;padding-left: 5px;padding-right: 5px" data-translate="">or</p></li>-->
-                <li><a showtab href="#teams" ng-click="chosen = 2;vm.updateSelectedParticipants_team(true)">
-                        <span  data-translate=""> Add Teams </span> <!--TODO: data translate-->
-                        <span class="badge"> {{vm.selectedTeams.length}}</span>
-                    </a>
-                </li>
-            </ul>
-
+            <div>
+                <ul class="nav nav-pills pull-left" id="myTab">
+                    <li class="active"><a showtab href="#players" ng-click="chosen = 1;vm.updateSelectedParticipants_player(true)">
+                            <span  data-translate=""> Add Players </span> <!--TODO: data-translate -->
+                            <span class="badge"> {{vm.selectedPlayers.length}}</span>
+                        </a>
+                    </li>
+                    <!--<li ng-disabled=""><p class="text-center text" style="padding-top: 10px;padding-left: 5px;padding-right: 5px" data-translate="">or</p></li>-->
+                    <li><a showtab href="#teams" ng-click="chosen = 2;vm.updateSelectedParticipants_team(true)">
+                            <span  data-translate=""> Add Teams </span> <!--TODO: data translate-->
+                            <span class="badge"> {{vm.selectedTeams.length}}</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="pull-right">
+                    <button ng-disabled="chosen===2" type="button" class="btn btn-default"  ng-click="vm.selectAll()">
+                        <span data-translate="entity.action.selectAll">Select All</span>
+                    </button>
+                    <button type="button" class="btn btn-default"  ng-click="vm.deselectAll()">
+                        <span data-translate="entity.action.deselectAll">Deselect All</span>
+                    </button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
             <div class="tab-content" style="padding: 10px">
                 
                     <div class="tab-pane active row" id="players">

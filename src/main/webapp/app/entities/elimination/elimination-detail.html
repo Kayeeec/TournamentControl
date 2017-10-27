@@ -109,7 +109,7 @@
     <div name="winner">
         <div id="winner-tree"></div>
     </div>
-    <div name="bronze">
+    <div ng-if="vm.elimination.bronzeMatch"  name="bronze">
         <h3>Bronze match</h3> <!--TODO: data-translate -->
         <div ng-if="vm.elimination.bronzeMatch" id="bronze-tree"></div>
     </div>

@@ -26,8 +26,8 @@
         vm.participantsTouched = false;
         
         vm.allVersusAll.participants = vm.allVersusAll.participants || [];
-        vm.selectedPlayers = filterFilter(vm.allVersusAll.participants, {team : null});
-        vm.selectedTeams = filterFilter(vm.allVersusAll.participants, {player : null});
+        vm.selectedPlayers = filterFilter(vm.allVersusAll.participants, {team : null, bye:false});
+        vm.selectedTeams = filterFilter(vm.allVersusAll.participants, {player : null, bye:false});
         $scope.chosen = 1;
         
         function selectParticipants() {
@@ -68,6 +68,9 @@
         vm.teamPlayers = init_teamPlayers();
         
         function addTeamMembers(set, participant) {
+            if(!participant || !participant.team || participant.team.members.length === 0){
+                return;
+            } 
             for (var i = 0; i < participant.team.members.length; i++) {
                 set.add(participant.team.members[i].id);
             }
@@ -116,6 +119,25 @@
             $(this).tab('show');
         });
         
+        vm.selectAll = function () {
+            if($scope.chosen===1){
+                vm.selectedPlayers = filterFilter(vm.participants, {team : null, bye:false});
+                
+                vm.onPlayerClick();
+            }
+            //select all on teams disabled because of conflicting teams
+            
+        };        
+        
+        vm.deselectAll = function () {
+            if($scope.chosen===1){
+                vm.selectedPlayers = [];
+                vm.onPlayerClick();
+            }else{
+                vm.selectedTeams = [];
+                vm.onTeamClick();
+            }
+        };
         /**** end Participant stuff ****/
         
         /** Playing Fields Validation **/
