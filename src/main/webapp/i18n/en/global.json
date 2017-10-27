@@ -99,7 +99,9 @@
             "open": "Open",
             "save": "Save",
             "view": "View",
-            "ok": "Ok"
+            "ok": "Ok",
+            "selectAll": "Select All",
+            "deselectAll": "Deselect All"
         },
         "detail": {
             "field": "Field",

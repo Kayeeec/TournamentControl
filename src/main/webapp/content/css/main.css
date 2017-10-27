@@ -93,6 +93,10 @@ My styles
     border:0.5px solid #DDDDDD;
     border-radius: 5px
 }
+
+.not_a_first_round{
+    width: 90px;
+}
 .tree-node-table-A{
     width: auto;
     height: 32px;
