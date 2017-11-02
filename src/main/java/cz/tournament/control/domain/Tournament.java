@@ -303,8 +303,10 @@ public class Tournament implements Serializable {
 //            return false;
 //        }
 //        return Objects.equals(getId(), tournament.getId());
-        return Objects.equals(getId(), other.getId())
-                && Objects.equals(created, other.getCreated())
+        if(this.id != null && other.getId() != null){
+            return Objects.equals(getId(), other.getId());
+        }
+        return Objects.equals(created, other.getCreated())
                 && Objects.equals(matches, other.getMatches())
                 && Objects.equals(name, other.getName())
                 && Objects.equals(note, other.getNote())

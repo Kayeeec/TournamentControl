@@ -132,8 +132,10 @@ public class GameSet implements Serializable {
 //            return false;
 //        }
 //        return Objects.equals(id, gameSet.id);
-        return Objects.equals(id, gameSet.getId())
-                && Objects.equals(finished, gameSet.isFinished())
+        if(this.id !=null && gameSet.getId() != null){
+            return Objects.equals(id, gameSet.getId());
+        }
+        return Objects.equals(finished, gameSet.isFinished())
                 && Objects.equals(game, gameSet.getGame())
                 && Objects.equals(scoreA, gameSet.getScoreA())
                 && Objects.equals(scoreB, gameSet.getScoreB())

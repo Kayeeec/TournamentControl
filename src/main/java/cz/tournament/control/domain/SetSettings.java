@@ -97,8 +97,10 @@ public class SetSettings implements Serializable {
 //            return false;
 //        }
 //        return Objects.equals(id, setSettings.id);
-        return Objects.equals(this.id, setSettings.getId()) 
-                && Objects.equals(this.leadByPoints, setSettings.getLeadByPoints())
+        if(this.id != null && setSettings.getId()!=null){
+            return Objects.equals(this.id, setSettings.getId()); 
+        }
+        return Objects.equals(this.leadByPoints, setSettings.getLeadByPoints())
                 && Objects.equals(this.maxScore, setSettings.getMaxScore())
                 && Objects.equals(this.minReachedScore, setSettings.getMinReachedScore());
     }

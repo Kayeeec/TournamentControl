@@ -82,10 +82,29 @@ public class Swiss extends Tournament implements Serializable {
             return false;
         }
         Swiss swiss = (Swiss) o;
-        if (swiss.getId() == null || getId() == null) {
-            return false;
+//        if (swiss.getId() == null || getId() == null) {
+//            return false;
+//        }
+        if(this.getId() != null && swiss.getId()!=null){
+            return Objects.equals(getId(), swiss.getId());
         }
-        return Objects.equals(getId(), swiss.getId());
+        return Objects.equals(this.getCreated(), swiss.getCreated())
+                && Objects.equals(this.getMatches(), swiss.getMatches())
+                && Objects.equals(this.getName(), swiss.getName())
+                && Objects.equals(this.getNote(), swiss.getNote())
+                && Objects.equals(this.getParticipants(), swiss.getParticipants())
+                && Objects.equals(this.getPlayingFields(), swiss.getPlayingFields())
+                && Objects.equals(this.getPointsForLosing(), swiss.getPointsForLosing())
+                && Objects.equals(this.getPointsForTie(), swiss.getPointsForTie())
+                && Objects.equals(this.getPointsForWinning(), swiss.getPointsForWinning())
+                && Objects.equals( this.getSetSettings(), swiss.getSetSettings())
+                && Objects.equals(this.getSetsToWin(), swiss.getSetsToWin())
+                && Objects.equals(this.getTiesAllowed(), swiss.getTiesAllowed())
+                && Objects.equals(this.getUser(), swiss.getUser())
+                
+                && Objects.equals(this.getRounds(), swiss.getRounds())
+                && Objects.equals(this.getRoundsToGenerate(), swiss.getRoundsToGenerate())
+                && Objects.equals(this.isColor(), swiss.isColor());
     }
 
     @Override

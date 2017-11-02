@@ -223,8 +223,10 @@ public class Game implements Serializable {
 //            return false;
 //        }
 //        return Objects.equals(id, game.id);
-        return Objects.equals(this.id, game.getId())
-                && Objects.equals(this.finished, game.isFinished())
+        if(this.id != null && game.id != null){
+            return Objects.equals(this.id, game.getId());
+        }
+        return Objects.equals(this.finished, game.isFinished())
                 && Objects.equals(this.note, game.getNote())
                 && Objects.equals(this.period, game.getPeriod())
                 && Objects.equals(this.playingField, game.getPlayingField())
