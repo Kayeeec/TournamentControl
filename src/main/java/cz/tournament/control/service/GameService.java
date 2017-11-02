@@ -13,7 +13,6 @@ import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.EliminationType;
-import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.repository.EliminationRepository;
 import cz.tournament.control.repository.GameRepository;
 import java.util.ArrayList;
