@@ -54,10 +54,27 @@ public class AllVersusAll extends Tournament implements Serializable  {
             return false;
         }
         AllVersusAll allVersusAll = (AllVersusAll) o;
-        if (allVersusAll.getId() == null || this.getId() == null) {
-            return false;
+//        if (allVersusAll.getId() == null || this.getId() == null) {
+//            return false;
+//        }
+        if(this.getId()!= null && allVersusAll.getId()!= null){
+            Objects.equals(this.getId(), allVersusAll.getId());
         }
-        return Objects.equals(this.getId(), allVersusAll.getId());
+        return Objects.equals(this.getCreated(), allVersusAll.getCreated())
+                && Objects.equals(this.getMatches(), allVersusAll.getMatches())
+                && Objects.equals(this.getName(), allVersusAll.getName())
+                && Objects.equals(this.getNote(), allVersusAll.getNote())
+                && Objects.equals(this.getParticipants(), allVersusAll.getParticipants())
+                && Objects.equals(this.getPlayingFields(), allVersusAll.getPlayingFields())
+                && Objects.equals(this.getPointsForLosing(), allVersusAll.getPointsForLosing())
+                && Objects.equals(this.getPointsForTie(), allVersusAll.getPointsForTie())
+                && Objects.equals(this.getPointsForWinning(), allVersusAll.getPointsForWinning())
+                && Objects.equals( this.getSetSettings(), allVersusAll.getSetSettings())
+                && Objects.equals(this.getSetsToWin(), allVersusAll.getSetsToWin())
+                && Objects.equals(this.getTiesAllowed(), allVersusAll.getTiesAllowed())
+                && Objects.equals(this.getUser(), allVersusAll.getUser())
+                
+                && Objects.equals(this.getNumberOfMutualMatches(), allVersusAll.getNumberOfMutualMatches());
     }
 
     @Override
