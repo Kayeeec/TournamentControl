@@ -76,8 +76,10 @@
         }
 
         function getElementId(match) {
-            var result = '#match_'+match.id.toString();
-            return result;
+            if(match){
+                var result = '#match_'+match.id.toString();
+                return result;
+            }
         }
         
         vm.generateNodeStructure = function () {

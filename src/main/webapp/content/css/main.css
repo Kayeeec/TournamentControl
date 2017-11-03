@@ -16,6 +16,9 @@ My styles
 .gamePointsInput{
     width: 150px;
 }
+.byeMatch{
+    background-color: #EFF0F1 !important;
+}
 
 .white{
     color: #ccc;
