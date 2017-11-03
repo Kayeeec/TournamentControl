@@ -126,7 +126,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:'id' track by game.id">
+                    <tr ng-class="{'byeMatch':(game.rivalA.bye || game.rivalB.bye),
+                                'success': (game.finished && !game.rivalA.bye && !game.rivalB.bye)}" 
+                                ng-repeat="game in games| orderBy:'id' track by game.id">
                         <td>{{game.id}}</td>
                         <td ng-if="vm.swiss.playingFields && vm.swiss.playingFields > 1" style="text-align: center">{{game.playingField}}</td>
                         <td style="text-align: right">
@@ -162,9 +164,10 @@
         </div>
     </div>
     <!-- ********* end game tables  ********* -->
-    <button ng-disabled="vm.cannotGenerateNextRound()" type="button" class="btn btn-success center-block" ng-click="vm.generateNextRound()">
-        <span class="glyphicon glyphicon-download-alt"></span>
-        <span class="hidden-sm-down" data-translate=""> Generate next round </span> <!--TODO: data-translate -->
+    <button ng-disabled="vm.isGeneratingNextRound || vm.cannotGenerateNextRound()" type="button" class="btn btn-success center-block" ng-click="vm.generateNextRound()">
+        <span class="glyphicon glyphicon-plus"></span>
+        <span ng-if="vm.swiss.roundsToGenerate !== 0" class="hidden-sm-down" data-translate=""> Generate next round </span>
+        <span ng-if="vm.swiss.roundsToGenerate === 0" class="hidden-sm-down" data-translate=""> No more rounds to generate </span><!--TODO: data-translate -->
     </button>
     
 </div>

@@ -1,0 +1,11 @@
+version: '2'
+services:
+    tournamentcontrol-postgresql:
+        image: postgres:10.0
+        # volumes:
+        #     - ~/volumes/jhipster/TournamentControl/postgresql/:/var/lib/postgresql/data/
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=propil
+        ports:
+            - 5433:5433
