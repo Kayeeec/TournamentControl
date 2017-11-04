@@ -13,7 +13,6 @@ import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.EliminationType;
-import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.repository.EliminationRepository;
 import cz.tournament.control.repository.GameRepository;
 import java.util.ArrayList;
@@ -411,10 +410,11 @@ public class GameService {
     }
     
     /**
-     * Pics a looser bracket or bronze game to put loser into according to rules. 
+     * Pics a loser bracket or bronze game to put loser into according to rules. 
      * Only for double elimination tournament.
+     * 
      * RULES: 
-     * 1] tournament has bronze match 
+     * 1] tournament has bronze match (to bronze goes from two last looser brackets)
      *      comesFrom.index == 2*N-5 : loser to bronze match : A
      *      comesFrom.index == 2*N-4 : loser to bronze match : B
      * 2] comes from winner tree (index up to N-2)
@@ -429,15 +429,16 @@ public class GameService {
      * @return modified loserGame, with loser put in proper place, or null - indicates weird state
      */
     private Game progressLoser_returnGame(List<Game> matches, Participant loser, Game comesFrom, int N, Elimination elimination){
+        log.debug("** progressLoser_returnGame():");
         int index = comesFrom.getPeriod() - 1;
         //bronze
         if(elimination.getBronzeMatch()){
             Game bronze = findOne(matches.get(matches.size()-1).getId());
-            if(index == 2*N-5){
+            if(index == (2*N)-5){
                 bronze.setRivalA(loser);
                 return bronze;
             }
-            if(index == 2*N-4){
+            if(index == (2*N)-4){
                 bronze.setRivalB(loser);
                 return bronze;
             }
@@ -543,12 +544,15 @@ public class GameService {
     }
     
     private void doubleElimination_nextGameUpdate(Game game, Elimination elimination){
+        log.debug("###### doubleElimination_nextGameUpdate() triggered");
         List<Game> matches = new ArrayList<>(elimination.getMatches());
         Collections.sort(matches, Game.PeriodRoundComparator);
         int N = elimination.getN();
         int index = matches.indexOf(game);
         int newFinalIndex = nextFinalIndex(N, matches.size(), elimination);
-        if(newFinalIndex == index) return ;
+        if(newFinalIndex == index){
+            return ;
+        }
         int root = 2*N - 3;
         Map<String, Participant> winnerAndLoser = game.getWinnerAndLoser();
         
@@ -598,6 +602,7 @@ public class GameService {
     }
     
     private void elimination_nextGameUpdate(Game game, Tournament tournament) {
+        log.debug("elimination_nextGameUpdate() triggered");
         Elimination elimination = (Elimination) tournament;
         if (game.isFinished()) {
             if (elimination.getType().equals(EliminationType.SINGLE)) {

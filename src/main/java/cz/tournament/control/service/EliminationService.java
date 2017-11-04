@@ -57,7 +57,8 @@ public class EliminationService {
         if (!Objects.equals(old.getType(), elimination.getType())
                 || !Objects.equals(old.getBronzeMatch(), elimination.getBronzeMatch())
                 || !Objects.equals(old.getSetsToWin(), elimination.getSetsToWin())
-                || !Objects.equals(old.getParticipants(), elimination.getParticipants()) ) {
+                || !Objects.equals(old.getParticipants(), elimination.getParticipants()) 
+                || !Objects.equals(getEliminationSeeding(old.getId()), seeding)) {
             
             if (!elimination.getMatches().isEmpty()) {
                 deleteAllMatches(elimination);

@@ -35,10 +35,20 @@
             }
             return !allGamesFinished();
         };
+        vm.isGeneratingNextRound = false;
         
         vm.generateNextRound = function () {
-            Swiss.generateNextRound(vm.swiss);
-            $window.location.reload();
+            vm.isGeneratingNextRound = true;
+            
+            Swiss.generateNextRound(vm.swiss, onGenerateNextRoundSuccess, onGenerateNextRoundError);
+            function onGenerateNextRoundSuccess() {
+                    vm.isGeneratingNextRound = false;
+                    $window.location.reload();
+            }
+            function onGenerateNextRoundError(error) {
+                console.log('generateNextRound() - error occured: ', error.data.message);
+                vm.isGeneratingNextRound = false;
+            }
         };
         
         vm.nextRoundGenerated = function (round) {

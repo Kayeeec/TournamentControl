@@ -109,10 +109,15 @@ public class Participant implements Serializable {
             return false;
         }
         Participant participant = (Participant) o;
-        if (participant.id == null || id == null) {
-            return false;
+//        if (participant.id == null || id == null) {
+//            return false;
+//        }
+        if(this.id !=null && participant.getId() != null){
+            return Objects.equals(id, participant.id);
         }
-        return Objects.equals(id, participant.id);
+        return Objects.equals(this.getPlayer(), participant.getPlayer())
+                && Objects.equals(this.getTeam(), participant.getTeam())
+                && Objects.equals(this.getUser(), participant.getUser());
     }
 
     @Override

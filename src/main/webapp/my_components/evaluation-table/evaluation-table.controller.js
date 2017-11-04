@@ -33,7 +33,8 @@
             tournament.matches.forEach(function (match)
             {
                 if(match.finished){
-                  if (match.rivalA.id === participantID || match.rivalB.id === participantID) {
+                  if ((match.rivalA && match.rivalA.id === participantID) 
+                          || (match.rivalB && match.rivalB.id === participantID)) {
                     finishedMatches.push(match);
                     }  
                 }
