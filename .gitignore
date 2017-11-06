@@ -140,3 +140,4 @@ Desktop.ini
 ######################
 .eslintcache
 /src/main/webapp/my_components/participant-checklist/
+/src/main/webapp/my_components/
