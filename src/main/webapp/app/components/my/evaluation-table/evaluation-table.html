@@ -1,0 +1,40 @@
+<!--
+    author: Karolina Bozkova
+-->
+<div>
+    <div class="panel panel-default panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <h3 class="panel-title">Evaluation table</h3><!--TODO: data-translate-->
+        </div>
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="jh-table table table-striped myTextCenter">
+                <thead>
+                    <tr>
+                        <th class="myTextCenter">Rank</th>
+                        <th class="myTextCenter">Participant</th>
+                        <th class="myWins myTextCenter">Wins</th>
+                        <th class="myTextCenter myLoses">Loses</th>
+                        <th class="myTextCenter">Ties</th>
+                        <th class="myTextCenter" colspan="3">Score</th>
+                        <th class="myTextCenter">Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="count in vm.counts | orderBy:['-total', '-wins', 'loses', '-(score/scoreRival)']">
+                    <td >{{count.rank}}</td>
+                    <td id="participant">{{count.rival}}</td>
+                    <td id="wins" class="myWins">{{count.wins}}</td>
+                    <td id="loses" class="myLoses">{{count.loses}}</td>
+                    <td id="ties">{{count.ties}}</td>    
+                    <td id="score" style="text-align: right">{{count.score}}</td>
+                    <td id="colon" style="text-align: center; padding: 0px">:</td>
+                    <td id="scoreRival" style="text-align: left">{{count.scoreRival}}</td>
+                    <td id="points" class="myTotal">{{count.total}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
