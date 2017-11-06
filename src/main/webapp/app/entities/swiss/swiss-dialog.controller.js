@@ -56,9 +56,9 @@
         
         Set.prototype.addSet = function (set) {
             if(set){
-                for (let item of set){
+                set.forEach(function (item) {
                     this.add(item);
-                }
+                });
             }
         };
         
@@ -329,7 +329,8 @@
             var oldRival = oldSeeding[i];
             //if set to an already chosen value, switch it for its old
             if(newRival && vm.contains(oldSeeding, newRival)){
-                var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
+                //var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
+                var oldIndexOfNewRival = My.getIndexById(oldSeeding, newRival);
                 //swap
                 vm.player_seeding[oldIndexOfNewRival] = oldRival;
             }
@@ -339,7 +340,8 @@
             var oldRival = oldSeeding[i];
             //if set to an already chosen value, switch it for its old
             if(newRival && vm.contains(oldSeeding, newRival)){
-                var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
+                //var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
+                var oldIndexOfNewRival = My.getIndexById(oldSeeding, newRival);
                 //swap
                 vm.team_seeding[oldIndexOfNewRival] = oldRival;
             }

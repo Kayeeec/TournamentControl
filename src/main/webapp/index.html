@@ -53,6 +53,7 @@
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/messageformat/messageformat.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/json3/lib/json3.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-aria/angular-aria.js"></script>
@@ -72,11 +73,8 @@
     <script src="bower_components/bootstrap-ui-datetime-picker/dist/datetime-picker.js"></script>
     <script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
     <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
-    
     <script src="bower_components/checklist-model/checklist-model.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular-filter/dist/angular-filter.js"></script>
-    
     <!-- endinject -->
     <!-- endbuild -->
 
@@ -115,6 +113,12 @@
     <script src="app/entities/team/team.state.js"></script>
     <script src="app/entities/team/team.service.js"></script>
     <script src="app/entities/team/team.controller.js"></script>
+    <script src="app/entities/swiss/swiss-dialog.controller.js"></script>
+    <script src="app/entities/swiss/swiss-detail.controller.js"></script>
+    <script src="app/entities/swiss/swiss-delete-dialog.controller.js"></script>
+    <script src="app/entities/swiss/swiss.state.js"></script>
+    <script src="app/entities/swiss/swiss.service.js"></script>
+    <script src="app/entities/swiss/swiss.controller.js"></script>
     <script src="app/entities/set-settings/set-settings-dialog.controller.js"></script>
     <script src="app/entities/set-settings/set-settings-detail.controller.js"></script>
     <script src="app/entities/set-settings/set-settings-delete-dialog.controller.js"></script>
@@ -146,14 +150,6 @@
     <script src="app/entities/game/game.service.js"></script>
     <script src="app/entities/game/game.controller.js"></script>
     <script src="app/entities/entity.state.js"></script>
-    
-    <script src="app/entities/swiss/swiss-delete-dialog.controller.js"></script>
-    <script src="app/entities/swiss/swiss-detail.controller.js"></script>
-    <script src="app/entities/swiss/swiss-dialog.controller.js"></script>
-    <script src="app/entities/swiss/swiss.controller.js"></script>
-    <script src="app/entities/swiss/swiss.service.js"></script>
-    <script src="app/entities/swiss/swiss.state.js"></script>
-    
     <script src="app/entities/elimination/elimination-dialog.controller.js"></script>
     <script src="app/entities/elimination/elimination-detail.controller.js"></script>
     <script src="app/entities/elimination/elimination-delete-dialog.controller.js"></script>
@@ -177,6 +173,28 @@
     <script src="app/components/util/data-util.service.js"></script>
     <script src="app/components/util/capitalize.filter.js"></script>
     <script src="app/components/util/base64.service.js"></script>
+    <script src="app/components/my/treant-js-master/vendor/raphael.js"></script>
+    <script src="app/components/my/treant-js-master/vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="app/components/my/treant-js-master/vendor/jquery.mousewheel.js"></script>
+    <script src="app/components/my/treant-js-master/vendor/jquery.min.js"></script>
+    <script src="app/components/my/treant-js-master/vendor/jquery.easing.js"></script>
+    <script src="app/components/my/treant-js-master/Treant.js"></script>
+    <script src="app/components/my/treant-js-master/examples/timeline/timeline.js"></script>
+    <script src="app/components/my/treant-js-master/examples/test_ground/example_configs.js"></script>
+    <script src="app/components/my/treant-js-master/examples/tennis-draw/example7.js"></script>
+    <script src="app/components/my/treant-js-master/examples/super-simple/super-simple.js"></script>
+    <script src="app/components/my/treant-js-master/examples/simple-scrollbar/simple-scrollbar.js"></script>
+    <script src="app/components/my/treant-js-master/examples/no-parent/no-parent.js"></script>
+    <script src="app/components/my/treant-js-master/examples/evolution-tree/example6.js"></script>
+    <script src="app/components/my/treant-js-master/examples/custom-colored/custom-colored.js"></script>
+    <script src="app/components/my/treant-js-master/examples/custom-color-plus-scrollbar/custom-color-plus-scrollbar.js"></script>
+    <script src="app/components/my/treant-js-master/examples/connectors/connectors.js"></script>
+    <script src="app/components/my/treant-js-master/examples/comments/example8.js"></script>
+    <script src="app/components/my/treant-js-master/examples/collapsable/collapsable.js"></script>
+    <script src="app/components/my/treant-js-master/examples/basic-example/basic-example.js"></script>
+    <script src="app/components/my/showtab-directive.js"></script>
+    <script src="app/components/my/my-global-methods/my.service.js"></script>
+    <script src="app/components/my/evaluation-table/evaluation-table.controller.js"></script>
     <script src="app/components/login/login.service.js"></script>
     <script src="app/components/login/login.controller.js"></script>
     <script src="app/components/language/language.service.js"></script>
@@ -190,13 +208,6 @@
     <script src="app/components/alert/alert-error.directive.js"></script>
     <script src="app/components/alert/alert.service.js"></script>
     <script src="app/components/alert/alert.directive.js"></script>
-    
-    <script src="app/components/my/my-global-methods/my.service.js"></script>
-    <script src="app/components/my/evaluation-table/evaluation-table.controller.js"></script>
-    <script src="app/components/my/treant-js-master/vendor/raphael.js"></script>
-    <script src="app/components/my/treant-js-master/Treant.js"></script>
-    <script src="app/components/my/showtab-directive.js"></script>
-    
     <script src="app/blocks/interceptor/notification.interceptor.js"></script>
     <script src="app/blocks/interceptor/errorhandler.interceptor.js"></script>
     <script src="app/blocks/interceptor/auth-expired.interceptor.js"></script>
@@ -252,22 +263,6 @@
     <script src="app/account/activate/activate.state.js"></script>
     <script src="app/account/activate/activate.controller.js"></script>
     <script src="app/account/account.state.js"></script>
-    
-    
-    <!--my added modules - should not be changed by jhipster-->
-<!--    <script src="my_components/my-global-methods/my.service.js"></script>
-    <script src="my_components/evaluation-table/evaluation-table.controller.js"></script>
-    <script src="my_components/treant-js-master/vendor/raphael.js"></script>
-    <script src="my_components/treant-js-master/Treant.js"></script>
-    <script src="app/showtab-directive.js"></script>
-    -->
-<!--    <script src="bower_components/checklist-model/checklist-model.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="bower_components/angular-filter/dist/angular-filter.js"></script>-->
-    
-
-    <!--END__my added modules - should not be changed by jhipster-->
-    
     <!-- endinject -->
     <!-- endbuild -->
     

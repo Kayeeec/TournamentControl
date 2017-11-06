@@ -59,9 +59,9 @@
         /* Set implementation */
         Set.prototype.addSet = function (set) {
             if(set){
-                for (let item of set){
+                set.forEach(function (item) {
                     this.add(item);
-                }
+                });
             }
         };
         /* end set implementation */ 
@@ -184,19 +184,19 @@
         vm.teamsChanged = false;
         
         function nodeHTML(id,A,B) {
-            return  `<div id="${id}" class="tree-node-table not_a_first_round">
-                        <div name="A" class="tree-node-table-A"> ${vm.getName(A)} </div>
-                        <div name="B" class="tree-node-table-B"> ${vm.getName(B)} </div>
-                     </div>`;
+            return  '<div id="'+id+'}" class="tree-node-table not_a_first_round">'+
+                        '<div name="A" class="tree-node-table-A">'+vm.getName(A)+'</div>'+
+                        '<div name="B" class="tree-node-table-B">'+vm.getName(B)+'</div>'+
+                     '</div>';
         }
         
         function under_dragNodeHTML(i, N, seeding){
             var aName = vm.getName(seeding[i]);
             var bName = vm.getName(seeding[N - 1 - i]);
-            return  `<div id="${i}" class="tree-node-table .this-is-under">
-                        <div name="A" class="tree-node-table-A"> ${aName} </div>
-                        <div name="B" class="tree-node-table-B"> ${bName} </div>
-                     </div>`;
+            return  '<div id="'+i+'" class="tree-node-table .this-is-under">'+
+                        '<div name="A" class="tree-node-table-A">'+aName+'</div>'+
+                        '<div name="B" class="tree-node-table-B">'+bName+'</div>'+
+                     '</div>';
         }
         
         function parentIndex(i, N) {
@@ -382,7 +382,8 @@
             var oldRival = oldSeeding[i];
             //if set to an already chosen value, switch it for its old
             if(newRival && vm.contains(oldSeeding, newRival)){
-                var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
+                //var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
+                var oldIndexOfNewRival = My.getIndexById(oldSeeding, newRival);
                 //swap
                 vm.player_seeding[oldIndexOfNewRival] = oldRival;
             }
@@ -392,7 +393,8 @@
             var oldRival = oldSeeding[i];
             //if set to an already chosen value, switch it for its old
             if(newRival && vm.contains(oldSeeding, newRival)){
-                var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
+                //var oldIndexOfNewRival = oldSeeding.findIndex(item => item && item.id === newRival.id);
+                var oldIndexOfNewRival = My.getIndexById(oldSeeding, newRival);
                 //swap
                 vm.team_seeding[oldIndexOfNewRival] = oldRival;
             }

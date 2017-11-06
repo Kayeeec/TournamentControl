@@ -50,9 +50,9 @@
         /* Set implementation */
         Set.prototype.addSet = function (set) {
             if(set){
-                for (let item of set){
+                set.forEach(function (item) {
                     this.add(item);
-                }
+                });
             }
         };
         /* end set implementation */ 

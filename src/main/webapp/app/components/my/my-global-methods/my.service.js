@@ -32,6 +32,15 @@
         }
         return false;
     }
+    
+    function getIndexById(array,elem){
+        for (var i = 0; i < array.length; i++) {
+            if(elem && array[i] && elem.id===array[i].id){
+                return i;
+            }
+        }
+        return -1;
+    }
 
     function My() {
         return {
@@ -40,6 +49,9 @@
             },
             'containsElemWithId': function (array, elem) {
                 return contains(array,elem);
+            },
+            'getIndexById': function(array,elem) {
+                return getIndexById(array,elem);
             },
             'getSeedingOptionName': function getSeedingOptionName(seeding, participant) {
                 if(participant){
