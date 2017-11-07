@@ -69,7 +69,7 @@
                     controllerAs: 'vm'
                 },
                 'evaluation-table@swiss-detail':{
-                    templateUrl: 'my_components/evaluation-table/evaluation-table.html',
+                    templateUrl: 'app/components/my/evaluation-table/evaluation-table.html',
                     controller: 'EvaluationTableController',
                     controllerAs: 'vm'
                 }

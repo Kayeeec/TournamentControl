@@ -21,7 +21,9 @@ module.exports = {
 
 function app() {
     return gulp.src(config.app + 'index.html')
-        .pipe(inject(gulp.src(config.app + 'app/**/*.js')
+        .pipe(inject(gulp.src([config.app + 'app/**/*.js', 
+                config.app + 'treant-js-master/Treant.min.js', 
+                config.app + 'treant-js-master/vendor/raphael.js'])
             .pipe(plumber({errorHandler: handleErrors}))
             .pipe(naturalSort())
             .pipe(angularFilesort()), {relative: true}))

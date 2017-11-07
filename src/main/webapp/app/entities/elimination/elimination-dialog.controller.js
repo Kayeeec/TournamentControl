@@ -184,7 +184,7 @@
         vm.teamsChanged = false;
         
         function nodeHTML(id,A,B) {
-            return  '<div id="'+id+'}" class="tree-node-table not_a_first_round">'+
+            return  '<div id="'+id+'" class="tree-node-table not_a_first_round">'+
                         '<div name="A" class="tree-node-table-A">'+vm.getName(A)+'</div>'+
                         '<div name="B" class="tree-node-table-B">'+vm.getName(B)+'</div>'+
                      '</div>';
