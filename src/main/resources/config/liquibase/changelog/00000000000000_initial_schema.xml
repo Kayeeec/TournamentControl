@@ -163,7 +163,7 @@
                                  baseTableName="jhi_persistent_audit_evt_data"
                                  constraintName="fk_evt_pers_audit_evt_data"
                                  referencedColumnNames="event_id"
-                                 referencedTableName="jhi_persistent_audit_event"/>
+                                 referencedTableName="jhi_persistent_audit_event"/>    
     </changeSet>
 
 </databaseChangeLog>
