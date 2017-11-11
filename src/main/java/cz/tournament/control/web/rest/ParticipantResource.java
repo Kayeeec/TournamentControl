@@ -89,6 +89,7 @@ public class ParticipantResource {
     public List<Participant> getAllParticipants() {
         log.debug("REST request to get all Participants");
         List<Participant> participants = participantRepository.findByUserIsCurrentUser();
+        log.debug("    participants: {}", participants);
         return participants;
     }
 

@@ -68,13 +68,14 @@ public class Elimination extends Tournament implements Serializable {
             return false;
         }
         Elimination elimination = (Elimination) o;
-//        if (elimination.getId() == null || this.getId() == null) {
-//            return false;
-//        }
-        if(this.getId() != null && elimination.getId()!= null){
-            return Objects.equals(this.getId(), elimination.getId());
+        if (elimination.getId() == null || this.getId() == null) {
+            return false;
         }
-        return Objects.equals(this.getCreated(), elimination.getCreated())
+//        if(this.getId() != null && elimination.getId()!= null){
+//            return Objects.equals(this.getId(), elimination.getId());
+//        }
+        return Objects.equals(this.getId(), elimination.getId()) 
+                && Objects.equals(this.getCreated(), elimination.getCreated())
                 && Objects.equals(this.getMatches(), elimination.getMatches())
                 && Objects.equals(this.getName(), elimination.getName())
                 && Objects.equals(this.getNote(), elimination.getNote())

@@ -103,12 +103,14 @@ public class Team implements Serializable {
     public Team addMembers(Player player) {
         this.members.add(player);
         player.getTeams().add(this);
+//        player.addTeams(this);
         return this;
     }
 
     public Team removeMembers(Player player) {
         this.members.remove(player);
         player.getTeams().remove(this);
+//        player.removeTeams(this);
         return this;
     }
 
@@ -125,11 +127,16 @@ public class Team implements Serializable {
             return false;
         }
         Team team = (Team) o;
-        if(this.id != null && team.getId() != null){
-            return Objects.equals(this.id,team.getId());
+        if(this.id == null || team.getId() == null){
+            return false;
         }
+//        if(this.id != null && team.getId() != null){
+//            return Objects.equals(this.id,team.getId());
+//        }
+        
         return Objects.equals(this.name,team.getName())
-                && Objects.equals(this.user,team.getUser());
+                && Objects.equals(this.user,team.getUser())
+                && Objects.equals(this.id,team.getId());
     }
 
     @Override
@@ -139,10 +146,15 @@ public class Team implements Serializable {
 
     @Override
     public String toString() {
+        String members = "";
+        for (Player member : this.getMembers()) {
+            members = members + "("+ member.getId() +", "+ member.getName()+"), ";
+        }
         return "Team{" +
             "id=" + id +
             ", name='" + name + "'" +
-//            ", note='" + note + "'" +
+            ", note='" + note + "'" +
+            ", members=[" + members + "]" +
             '}';
     }
 }

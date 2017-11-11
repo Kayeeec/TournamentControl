@@ -25,6 +25,11 @@
                 method: 'GET',
                 url: 'api/players/tournaments/:id',
                 isArray: true
+            },
+            'getTeams': {
+                method: 'GET',
+                url: 'api/players/teams/:id',
+                isArray: true
             }
         });
     }

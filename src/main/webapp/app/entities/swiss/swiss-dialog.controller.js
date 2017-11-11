@@ -54,10 +54,10 @@
             return false;
         };
         
-        Set.prototype.addSet = function (set) {
+        var addSetToSet= function (addInto, set){
             if(set){
                 set.forEach(function (item) {
-                    this.add(item);
+                    addInto.add(item);
                 });
             }
         };
@@ -104,7 +104,7 @@
         vm.teamIsInvalid= function(participant){ 
           if(!vm.contains(vm.selectedTeams, participant)){
             var both = new Set();
-            both.addSet(vm.teamPlayers);
+            addSetToSet(both, vm.teamPlayers);
             addTeamMembers(both, participant);
             return vm.teamPlayers.size + participant.team.members.length > both.size; 
           }
@@ -141,13 +141,15 @@
         
         /**** end Participant stuff ****/
         
-        /** Playing Fields Validation **/
+        /** Playing Fields Validation 
+         *      returns at least 1; 
+         * **/
         vm.maxPlayingFields = function () {
             if($scope.chosen===1){//players
-                return Math.floor(vm.selectedPlayers.length/2);
+                return Math.max(1, Math.floor(vm.selectedPlayers.length/2));
             }
             else {//teams
-                return Math.floor(vm.selectedTeams.length/2);
+                return Math.max(1, Math.floor(vm.selectedTeams.length/2));
             }
         };
         

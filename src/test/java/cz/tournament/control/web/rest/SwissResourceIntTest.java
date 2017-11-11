@@ -6,6 +6,9 @@ import cz.tournament.control.domain.Swiss;
 import cz.tournament.control.repository.SwissRepository;
 import cz.tournament.control.service.SwissService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +49,9 @@ public class SwissResourceIntTest {
 
     private static final Boolean DEFAULT_COLOR = false;
     private static final Boolean UPDATED_COLOR = true;
+    
+    private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final String DEFAULT_NAME="swiss test";
 
     @Autowired
     private SwissRepository swissRepository;
@@ -90,6 +96,8 @@ public class SwissResourceIntTest {
             .rounds(DEFAULT_ROUNDS)
             .roundsToGenerate(DEFAULT_ROUNDS_TO_GENERATE)
             .color(DEFAULT_COLOR);
+        swiss.name(DEFAULT_NAME);
+        swiss.created(DEFAULT_CREATED);
         return swiss;
     }
 

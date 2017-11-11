@@ -1,5 +1,6 @@
 package cz.tournament.control.repository;
 
+import cz.tournament.control.domain.Player;
 import cz.tournament.control.domain.Team;
 import cz.tournament.control.domain.User;
 
@@ -24,5 +25,7 @@ public interface TeamRepository extends JpaRepository<Team,Long> {
     Team findOneWithEagerRelationships(@Param("id") Long id);
     
     List<Team> findByUser(User user);
+    
+    List<Team> findByMembersContains(Player player);
 
 }

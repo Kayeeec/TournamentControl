@@ -6,6 +6,9 @@ import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.repository.AllVersusAllRepository;
 import cz.tournament.control.service.AllVersusAllService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +43,8 @@ public class AllVersusAllResourceIntTest {
 
     private static final Integer DEFAULT_NUMBER_OF_MUTUAL_MATCHES = 1;
     private static final Integer UPDATED_NUMBER_OF_MUTUAL_MATCHES = 2;
+    private static final String DEFAULT_NAME = "all versus all test";
+    private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
 
     @Autowired
     private AllVersusAllRepository allVersusAllRepository;
@@ -71,6 +76,7 @@ public class AllVersusAllResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
+        
     }
 
     /**
@@ -82,6 +88,10 @@ public class AllVersusAllResourceIntTest {
     public static AllVersusAll createEntity(EntityManager em) {
         AllVersusAll allVersusAll = new AllVersusAll()
             .numberOfMutualMatches(DEFAULT_NUMBER_OF_MUTUAL_MATCHES);
+        allVersusAll.setName(DEFAULT_NAME);
+        allVersusAll.setCreated(DEFAULT_CREATED);
+        allVersusAll.setCreated(ZonedDateTime.now());
+        
         return allVersusAll;
     }
 
@@ -247,4 +257,5 @@ public class AllVersusAllResourceIntTest {
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(AllVersusAll.class);
     }
+    
 }

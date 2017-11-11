@@ -15,6 +15,7 @@ import cz.tournament.control.repository.ParticipantRepository;
 import cz.tournament.control.repository.PlayerRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
+import java.util.HashSet;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,22 +97,32 @@ public class PlayerService {
     /**
      * Deletes a player entity and its associated participant entity.
      * 
+     * No participant can be deleted when it still is in any 
+     * tournament -> throws exception that is caught and user is properly informed on front end
+     * 
+     * Player is simply removed from team.
+     * Player teams have to be fetched form db separately because db and 
+     * player instance might not be in sync.
+     * 
      * @param id of entity to delete
      * @throws cz.tournament.control.domain.exceptions.ParticipantInTournamentException
      */
     public void delete(Long id) throws ParticipantInTournamentException{
-        Participant participant = participantRepository.findByPlayer(playerRepository.findOne(id));
+        log.debug("deleting player with id: {}", id);
+        Player player = findOne(id);
+        Participant participant = participantRepository.findByPlayer(player);
+        
+        //check if its in any tournaments 
         List<Tournament> hisTournaments = tournamentService.findByParticipant(participant);
         if(!hisTournaments.isEmpty()){
-            throw new ParticipantInTournamentException("Cannot delete participant: "+participant.toString()+", is in at least one tournament.");
+            throw new ParticipantInTournamentException(participant);
         }
-        //break relationship with team
-        Player player = playerRepository.getOne(id);
-        Team[] teamsArr = player.getTeams().toArray(new Team[player.getTeams().size()]);
-        for (int i = 0; i < teamsArr.length; i++) {
-            player.removeTeams(teamsArr[i]);
-            teamService.updateTeam(teamsArr[i]);
+        //remove itself from each team 
+        List<Team> teams = teamService.findTeamsForPlayer(player);
+        for (Team team : teams) {
+            teamService.updateTeam(team.removeMembers(player));
         }
+        
         playerRepository.save(player);
         playerRepository.delete(id);
         participantRepository.delete(participant);

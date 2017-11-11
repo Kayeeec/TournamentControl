@@ -219,13 +219,12 @@ public class Game implements Serializable {
             return false;
         }
         Game game = (Game) o;
-//        if (game.id == null || id == null) {
-//            return false;
-//        }
-//        return Objects.equals(id, game.id);
-        if(this.id != null && game.id != null){
-            return Objects.equals(this.id, game.getId());
+        if (game.id == null || id == null) {
+            return false;
         }
+//        if(this.id != null && game.id != null){
+//            return Objects.equals(this.id, game.getId());
+//        }
         return Objects.equals(this.finished, game.isFinished())
                 && Objects.equals(this.note, game.getNote())
                 && Objects.equals(this.period, game.getPeriod())
@@ -234,7 +233,8 @@ public class Game implements Serializable {
                 && Objects.equals(this.rivalB, game.getRivalB())
                 && Objects.equals(this.round, game.getRound())
                 && Objects.equals(this.sets, game.getSets())
-                && Objects.equals(this.tournament, game.getTournament());      
+                && Objects.equals(this.tournament, game.getTournament())
+                && Objects.equals(this.id, game.getId());
     }
 
     @Override
