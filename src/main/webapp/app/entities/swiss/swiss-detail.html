@@ -164,7 +164,10 @@
         </div>
     </div>
     <!-- ********* end game tables  ********* -->
-    <button ng-disabled="vm.isGeneratingNextRound || vm.cannotGenerateNextRound()" type="button" class="btn btn-success center-block" ng-click="vm.generateNextRound()">
+    <button id="generateNextRoundBtn" ng-disabled="vm.isGeneratingNextRound || vm.cannotGenerateNextRound()" type="button" 
+            class="btn btn-success center-block" ng-click="vm.generateNextRound()"
+            data-loading-text='<span class="glyphicon glyphicon-refresh"></span>
+        <span  class="hidden-sm-down" data-translate=""> Generating... </span>'>
         <span class="glyphicon glyphicon-plus"></span>
         <span ng-if="vm.swiss.roundsToGenerate !== 0" class="hidden-sm-down" data-translate=""> Generate next round </span>
         <span ng-if="vm.swiss.roundsToGenerate === 0" class="hidden-sm-down" data-translate=""> No more rounds to generate </span><!--TODO: data-translate -->

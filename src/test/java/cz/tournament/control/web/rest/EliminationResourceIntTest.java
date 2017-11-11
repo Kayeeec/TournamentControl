@@ -30,6 +30,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import cz.tournament.control.domain.enumeration.EliminationType;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 /**
  * Test class for the EliminationResource REST controller.
  *
@@ -38,6 +41,9 @@ import cz.tournament.control.domain.enumeration.EliminationType;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TournamentControlApp.class)
 public class EliminationResourceIntTest {
+    
+    private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final String DEFAULT_NAME="elimination test";
 
     private static final EliminationType DEFAULT_TYPE = EliminationType.SINGLE;
     private static final EliminationType UPDATED_TYPE = EliminationType.DOUBLE;
@@ -87,6 +93,9 @@ public class EliminationResourceIntTest {
         Elimination elimination = new Elimination()
             .type(DEFAULT_TYPE)
             .bronzeMatch(DEFAULT_BRONZE_MATCH);
+        elimination.name(DEFAULT_NAME);
+        elimination.created(DEFAULT_CREATED);
+            
         return elimination;
     }
 

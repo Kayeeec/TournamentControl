@@ -54,5 +54,11 @@
         vm.nextRoundGenerated = function (round) {
             return round < (vm.swiss.rounds - vm.swiss.roundsToGenerate);
         };
+        
+        $('#generateNextRoundBtn').on('click', function () {
+            var $btn = $(this).button('loading');
+            // business logic...
+            //$btn.button('reset');
+        });
     }
 })();

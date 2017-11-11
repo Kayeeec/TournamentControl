@@ -299,13 +299,12 @@ public class Tournament implements Serializable {
             return false;
         }
         Tournament other = (Tournament) o;
-//        if (tournament.getId() == null || getId() == null) {
-//            return false;
-//        }
-//        return Objects.equals(getId(), tournament.getId());
-        if(this.id != null && other.getId() != null){
-            return Objects.equals(getId(), other.getId());
+        if (other.getId() == null || getId() == null) {
+            return false;
         }
+//        if(this.id != null && other.getId() != null){
+//            return Objects.equals(getId(), other.getId());
+//        }
         return Objects.equals(created, other.getCreated())
                 && Objects.equals(matches, other.getMatches())
                 && Objects.equals(name, other.getName())
@@ -318,14 +317,14 @@ public class Tournament implements Serializable {
                 && Objects.equals( setSettings, other.getSetSettings())
                 && Objects.equals(setsToWin, other.getSetsToWin())
                 && Objects.equals(tiesAllowed, other.getTiesAllowed())
-                && Objects.equals(user, other.getUser()); 
+                && Objects.equals(user, other.getUser())
+                && Objects.equals(getId(), other.getId());
     }
 
     @Override
     public int hashCode() {
         final int prime = 59;
         int result = 1;
-        result = prime * result + Objects.hashCode(id);
         result = prime * result + Objects.hashCode(created);
         result = prime * result + Objects.hashCode(name);
         result = prime * result + Objects.hashCode(note);

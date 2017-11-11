@@ -97,6 +97,11 @@ public class TeamResource {
         return teams;
     }
     
+    /**
+     * Gets all tournaments where team is a participant.
+     * @param id of a team to find tournaments to
+     * @return list of tournaments
+     */
     @GetMapping("/teams/tournaments/{id}")
     @Timed
     public List<Tournament> getAllTournaments(@PathVariable Long id){

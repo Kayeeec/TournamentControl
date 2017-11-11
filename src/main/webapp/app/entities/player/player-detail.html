@@ -12,6 +12,12 @@
         <dd>
             <span>{{vm.player.note}}</span>
         </dd>
+        <dt><span data-translate="">Is in teams</span></dt><!--TODO: data-translate -->
+        <dd>
+            <span ng-repeat="team in vm.teams">
+                <a ui-sref="team-detail({id:team.id})">{{team.name}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
         <dt><span data-translate="">Is in tournaments</span></dt><!--TODO: data-translate -->
         <dd>
             <span ng-repeat="tournament in vm.tournaments">

@@ -54,12 +54,12 @@ public class AllVersusAll extends Tournament implements Serializable  {
             return false;
         }
         AllVersusAll allVersusAll = (AllVersusAll) o;
-//        if (allVersusAll.getId() == null || this.getId() == null) {
-//            return false;
-//        }
-        if(this.getId()!= null && allVersusAll.getId()!= null){
-            Objects.equals(this.getId(), allVersusAll.getId());
+        if (allVersusAll.getId() == null || this.getId() == null) {
+            return false;
         }
+//        if(this.getId()!= null && allVersusAll.getId()!= null){
+//            return Objects.equals(this.getId(), allVersusAll.getId());
+//        }
         return Objects.equals(this.getCreated(), allVersusAll.getCreated())
                 && Objects.equals(this.getMatches(), allVersusAll.getMatches())
                 && Objects.equals(this.getName(), allVersusAll.getName())

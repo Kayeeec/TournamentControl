@@ -56,15 +56,14 @@
             return false;
         };
         
-        /* Set implementation */
-        Set.prototype.addSet = function (set) {
+        
+        var addSetToSet= function (addInto, set){
             if(set){
                 set.forEach(function (item) {
-                    this.add(item);
+                    addInto.add(item);
                 });
             }
         };
-        /* end set implementation */ 
 
         
         vm.getTeamCSS_onValidity = function (participant) {
@@ -114,7 +113,7 @@
         vm.teamIsInvalid= function(participant){
           if(!vm.contains(vm.selectedTeams, participant)){
             var both = new Set();
-            both.addSet(vm.teamPlayers);
+            addSetToSet(both, vm.teamPlayers);
             addTeamMembers(both, participant);
             return vm.teamPlayers.size + participant.team.members.length > both.size; 
           }

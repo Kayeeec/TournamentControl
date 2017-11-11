@@ -93,16 +93,16 @@ public class SetSettings implements Serializable {
             return false;
         }
         SetSettings setSettings = (SetSettings) o;
-//        if (setSettings.id == null || id == null) {
-//            return false;
-//        }
-//        return Objects.equals(id, setSettings.id);
-        if(this.id != null && setSettings.getId()!=null){
-            return Objects.equals(this.id, setSettings.getId()); 
+        if (setSettings.id == null || id == null) {
+            return false;
         }
+//        if(this.id != null && setSettings.getId()!=null){
+//            return Objects.equals(this.id, setSettings.getId()); 
+//        }
         return Objects.equals(this.leadByPoints, setSettings.getLeadByPoints())
                 && Objects.equals(this.maxScore, setSettings.getMaxScore())
-                && Objects.equals(this.minReachedScore, setSettings.getMinReachedScore());
+                && Objects.equals(this.minReachedScore, setSettings.getMinReachedScore())
+                && Objects.equals(this.id, setSettings.getId());
     }
 
     @Override
