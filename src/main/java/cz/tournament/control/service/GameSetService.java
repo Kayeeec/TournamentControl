@@ -3,7 +3,6 @@ package cz.tournament.control.service;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
 import cz.tournament.control.domain.SetSettings;
-import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.repository.GameRepository;
 import cz.tournament.control.repository.GameSetRepository;
 import cz.tournament.control.repository.SetSettingsRepository;

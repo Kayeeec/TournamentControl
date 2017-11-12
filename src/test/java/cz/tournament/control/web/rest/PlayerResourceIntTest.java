@@ -4,7 +4,6 @@ import cz.tournament.control.TournamentControlApp;
 
 import cz.tournament.control.domain.Player;
 import cz.tournament.control.repository.PlayerRepository;
-import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.service.PlayerService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
 
