@@ -101,8 +101,8 @@ jhipster:
             # security key (this key should be unique for your application, and kept secret)
             key: 744972ed2d4da8d9adad7bfb58c26a8faf3d83d5
     mail: # specific JHipster mail property, for standard properties see MailProperties
-        from: TournamentControl@localhost
-        base-url: http://my-server-url-to-change # Modify according to your server's URL
+        from: tournament.control@gmail.com
+        base-url: http://tournament-control.herokuapp.com # Modify according to your server's URL
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
         graphite:
