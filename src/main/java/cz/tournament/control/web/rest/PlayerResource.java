@@ -2,6 +2,7 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Player;
+import cz.tournament.control.domain.Team;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.exceptions.ParticipantInTournamentException;
 import cz.tournament.control.service.PlayerService;
@@ -18,7 +19,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -37,7 +37,7 @@ public class PlayerResource {
     public PlayerResource(PlayerService playerService) {
         this.playerService = playerService;
     }
-
+    
     
 
     /**
@@ -97,6 +97,11 @@ public class PlayerResource {
         return players;
     }
     
+    /**
+     * Gets all tournaments where player is a participant.
+     * @param id of a player to find tournaments to
+     * @return list of tournaments
+     */
     @GetMapping("/players/tournaments/{id}")
     @Timed
     public List<Tournament> getAllTournaments(@PathVariable Long id){
@@ -104,6 +109,20 @@ public class PlayerResource {
         
         Player player = playerService.findOne(id);
         return playerService.findAllTournaments(player);
+    }
+    
+    /**
+     * Gets teams for player, because teams attribute is ignored in json.
+     * @param id of a player to find teams to
+     * @return list of teams 
+     */
+    @GetMapping("/players/teams/{id}")
+    @Timed
+    public List<Team> getTeams(@PathVariable Long id){
+        if(id == null){return new ArrayList<>();}
+        
+        Player player = playerService.findOne(id);
+        return new ArrayList<>(player.getTeams());
     }
 
     /**

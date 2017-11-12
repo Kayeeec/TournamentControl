@@ -48,9 +48,10 @@ public class AllVersusAllResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new allVersusAll cannot already have an ID")).body(null);
         }
         AllVersusAll result = allVersusAllService.createAllVersusAll(allVersusAll);
+        
         return ResponseEntity.created(new URI("/api/all-versus-alls/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
     }
 
     /**
@@ -67,12 +68,13 @@ public class AllVersusAllResource {
     public ResponseEntity<AllVersusAll> updateAllVersusAll(@Valid @RequestBody AllVersusAll allVersusAll) throws URISyntaxException {
         log.debug("REST request to update AllVersusAll : {}", allVersusAll);
         if (allVersusAll.getId() == null) {
-            return createAllVersusAll(allVersusAll);
+            return this.createAllVersusAll(allVersusAll);
         }
         AllVersusAll result = allVersusAllService.updateAllVersusAll(allVersusAll);
+        
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, allVersusAll.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, allVersusAll.getId().toString()))
+                .body(result);
     }
 
     /**

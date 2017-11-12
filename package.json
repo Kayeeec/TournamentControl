@@ -64,5 +64,6 @@
   "scripts": {
     "test": "gulp test"
   },
-  "dependencies": {}
+  "dependencies": {
+    }
 }

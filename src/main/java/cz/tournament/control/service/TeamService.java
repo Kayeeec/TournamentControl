@@ -1,6 +1,7 @@
 package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Participant;
+import cz.tournament.control.domain.Player;
 import cz.tournament.control.domain.Team;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.User;
@@ -37,7 +38,6 @@ public class TeamService {
         this.tournamentService = tournamentService;
     }
     
-    
     public Team createTeam(Team team){
         //set creator as user
         User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
@@ -54,8 +54,9 @@ public class TeamService {
     }
     
     public Team updateTeam(Team team){
+        log.debug("updating team: {}", team);
         Team result = teamRepository.save(team);
-        log.debug("TEAM_SERVICE: Updated Team: {}", result);
+        log.debug("Updated Team: {}", result);
         return result;
     }
     
@@ -77,6 +78,12 @@ public class TeamService {
         return tournamentService.findByParticipant(participant);
     }
     
+    @Transactional(readOnly = true)
+    public List<Team> findTeamsForPlayer(Player player){
+        return teamRepository.findByMembersContains(player);
+    }
+    
+    
     /**
      * Deletes a team entity and its associated participant entity.
      * 
@@ -87,7 +94,7 @@ public class TeamService {
         Participant participant = participantRepository.findByTeam(teamRepository.findOne(id));
         List<Tournament> hisTournaments = tournamentService.findByParticipant(participant);
         if(!hisTournaments.isEmpty()){
-            throw new ParticipantInTournamentException("Cannot delete participant: "+participant.toString()+", is in at least one tournament.");
+            throw new ParticipantInTournamentException(participant);
         }
         teamRepository.delete(id);
         participantRepository.delete(participant);

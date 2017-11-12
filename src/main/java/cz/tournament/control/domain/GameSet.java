@@ -128,18 +128,18 @@ public class GameSet implements Serializable {
             return false;
         }
         GameSet gameSet = (GameSet) o;
-//        if (gameSet.id == null || id == null) {
-//            return false;
-//        }
-//        return Objects.equals(id, gameSet.id);
-        if(this.id !=null && gameSet.getId() != null){
-            return Objects.equals(id, gameSet.getId());
+        if (gameSet.id == null || id == null) {
+            return false;
         }
+//        if(this.id !=null && gameSet.getId() != null){
+//            return Objects.equals(id, gameSet.getId());
+//        }
         return Objects.equals(finished, gameSet.isFinished())
                 && Objects.equals(game, gameSet.getGame())
                 && Objects.equals(scoreA, gameSet.getScoreA())
                 && Objects.equals(scoreB, gameSet.getScoreB())
-                && Objects.equals(setSettings, gameSet.getSetSettings());
+                && Objects.equals(setSettings, gameSet.getSetSettings())
+                && Objects.equals(id, gameSet.getId());
     }
 
     @Override
