@@ -2,7 +2,6 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Game;
-import cz.tournament.control.domain.GameSet;
 import cz.tournament.control.domain.Tournament;
 
 import cz.tournament.control.service.GameService;
