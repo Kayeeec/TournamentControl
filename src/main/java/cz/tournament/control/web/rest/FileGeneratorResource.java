@@ -1,10 +1,8 @@
 package cz.tournament.control.web.rest;
 
-import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.repository.AllVersusAllRepository;
 
-import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.service.FileGeneratorService;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

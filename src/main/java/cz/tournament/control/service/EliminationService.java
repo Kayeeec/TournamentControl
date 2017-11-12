@@ -4,7 +4,6 @@ import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
-import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.EliminationType;
 import cz.tournament.control.repository.EliminationRepository;
 import cz.tournament.control.repository.UserRepository;

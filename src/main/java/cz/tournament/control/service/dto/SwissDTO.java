@@ -5,7 +5,6 @@
  */
 package cz.tournament.control.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.Swiss;
 import java.util.List;
