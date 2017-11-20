@@ -3,6 +3,7 @@ package cz.tournament.control.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.Swiss;
+import cz.tournament.control.domain.exceptions.RunPythonScriptException;
 import cz.tournament.control.service.SwissService;
 import cz.tournament.control.service.dto.SwissDTO;
 import cz.tournament.control.web.rest.util.HeaderUtil;
@@ -94,7 +95,7 @@ public class SwissResource {
      */
     @PostMapping("/swisses/generate")
     @Timed
-    public ResponseEntity<Swiss> generateNextRound(@RequestBody Swiss swiss) throws URISyntaxException{
+    public ResponseEntity<Swiss> generateNextRound(@RequestBody Swiss swiss) throws URISyntaxException, RunPythonScriptException{
         log.debug("REST request to generate next round Swiss : {}", swiss.toString());
         Swiss result = swissService.generateNextRound(swiss);
         return ResponseEntity.ok()
