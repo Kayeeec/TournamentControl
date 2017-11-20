@@ -4,11 +4,13 @@ import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.Swiss;
 import cz.tournament.control.domain.User;
+import cz.tournament.control.domain.exceptions.RunPythonScriptException;
 import cz.tournament.control.repository.SwissRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import cz.tournament.control.service.dto.SwissDTO;
 import cz.tournament.control.service.util.SwissParticipant;
+import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +19,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.Set;
+import org.python.core.PyException;
 import org.python.core.PyObject;
+import org.python.core.PySystemState;
 import org.python.util.PythonInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,6 +160,40 @@ public class SwissService {
         }
         return false;
     }
+  
+  private PyObject runPythonScript(String tuples) throws RunPythonScriptException{
+        try {
+            Properties props = new Properties(); 
+            // Default is 'message' which displays sys-package-mgr bloat 
+            // Choose one of error,warning,message,comment,debug 
+            props.setProperty("python.verbose", "debug"); 
+            
+            String javaClassPath = System.getProperty("java.class.path");
+            log.debug("java.class.path: {}", javaClassPath);
+            
+            props.setProperty("python.home", javaClassPath + "/WEB-INF");
+            
+            log.debug("python.path: {}", props.getProperty("python.path"));
+            log.debug("python.home: {}", props.getProperty("python.home"));
+            
+            PythonInterpreter.initialize(System.getProperties(), props, new String[] {""});
+            
+            PythonInterpreter interpreter = new PythonInterpreter();
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            long start = System.currentTimeMillis();
+            interpreter.execfile(loader.getResourceAsStream("minWeighMaxMatching.py"));
+            PyObject pairingStr = interpreter.eval("repr(matching("+ tuples +"))");
+            long end = System.currentTimeMillis();
+            long elapsedTime = end - start;
+            log.debug("elapsedTime = {}", elapsedTime);
+            return pairingStr;
+        
+      } catch (Exception e) {
+          //TODO: do print stack trace and perhaps create your own error to throw with proper message
+          e.printStackTrace();
+          throw new RunPythonScriptException();
+      }
+  }
     
     /**
      * Generates next round of a tournament if 
@@ -166,13 +205,14 @@ public class SwissService {
      * @return swiss tournament, unchanged if conditions above not met 
      * 
      */
-    public Swiss generateNextRound(Swiss swiss){
+    public Swiss generateNextRound(Swiss swiss) throws RunPythonScriptException{
+        log.debug("Request to generate next round - Swiss : {}", swiss);
         if(swiss.getRoundsToGenerate() < 0 || hasUnfinishedMatch(swiss) || swiss.getParticipants().size() <= 2){
+            log.debug("No next round generated.");
             return swiss;
         }
         swiss = decrementRoundsToGenerate_andSave(swiss);
         int round = swiss.getRounds() - swiss.getRoundsToGenerate();
-        
         //collect participant game statistics, sort them by id (games attribute probably not needed) TODO
         List<SwissParticipant> swissParticipants = collectParticipantStatistics(swiss);
         Collections.sort(swissParticipants, SwissParticipant.IdComparator);
@@ -186,11 +226,10 @@ public class SwissService {
                 matrix[row][col] = evaluation;
             }
         }
+        
         //find ideal pairing using that python program
         String tuples = matrixAsTupleList(matrix);
-        PythonInterpreter interpreter = new PythonInterpreter();
-        interpreter.execfile("src/main/resources/minWeighMaxMatching.py");
-        PyObject pairingStr = interpreter.eval("repr(matching("+ tuples +"))");
+        PyObject pairingStr = runPythonScript(tuples);
         List<Participant> participants = pairingStrToSeeding(pairingStr, swissParticipants);
         
         //generate games
@@ -218,8 +257,6 @@ public class SwissService {
             swiss.addMatches(savedGame);
         }
         return swissRepository.save(swiss);
-        
-        
     }
 
     /**
@@ -381,9 +418,12 @@ public class SwissService {
      */
     private int getIndexOf(Participant participant, List<SwissParticipant> swissParticipants){
         for (int i = 0; i < swissParticipants.size(); i++) {
-            if(Objects.equals(participant, swissParticipants.get(i).getParticipant())){
-                return i;
-            }
+//            if(Objects.equals(participant, swissParticipants.get(i).getParticipant())){
+//                return i;
+//            }
+              if(Objects.equals(participant.getId(), swissParticipants.get(i).getParticipant().getId())){
+                    return i;
+                }
         }
         return -1;
     }
