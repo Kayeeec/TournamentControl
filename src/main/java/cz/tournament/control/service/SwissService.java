@@ -163,18 +163,18 @@ public class SwissService {
   
   private PyObject runPythonScript(String tuples) throws RunPythonScriptException{
         try {
+            log.debug("running python scrypt");
             Properties props = new Properties(); 
             // Default is 'message' which displays sys-package-mgr bloat 
             // Choose one of error,warning,message,comment,debug 
             props.setProperty("python.verbose", "debug"); 
             
             String javaClassPath = System.getProperty("java.class.path");
+            
+            props.setProperty("python.path", javaClassPath + "/Lib");
+            
             log.debug("java.class.path: {}", javaClassPath);
-            
-            props.setProperty("python.home", javaClassPath + "/WEB-INF");
-            
             log.debug("python.path: {}", props.getProperty("python.path"));
-            log.debug("python.home: {}", props.getProperty("python.home"));
             
             PythonInterpreter.initialize(System.getProperties(), props, new String[] {""});
             
@@ -194,6 +194,11 @@ public class SwissService {
           throw new RunPythonScriptException();
       }
   }
+  
+  private void gotHerelog(int lognumber){
+      log.debug("got here: {}", lognumber);
+      lognumber++;
+  }
     
     /**
      * Generates next round of a tournament if 
@@ -207,18 +212,27 @@ public class SwissService {
      */
     public Swiss generateNextRound(Swiss swiss) throws RunPythonScriptException{
         log.debug("Request to generate next round - Swiss : {}", swiss);
+        swiss = save(swiss);
+        int lognumber = 0;
         if(swiss.getRoundsToGenerate() < 0 || hasUnfinishedMatch(swiss) || swiss.getParticipants().size() <= 2){
             log.debug("No next round generated.");
             return swiss;
         }
-        swiss = decrementRoundsToGenerate_andSave(swiss);
-        int round = swiss.getRounds() - swiss.getRoundsToGenerate();
+        //swiss = decrementRoundsToGenerate_andSave(swiss);
+        
+        int decrementedRoundsToGenerate = swiss.getRoundsToGenerate() -1;
+        int round = swiss.getRounds() - decrementedRoundsToGenerate;
+        log.debug("round: {}", round);
+        gotHerelog(lognumber);
+        
         //collect participant game statistics, sort them by id (games attribute probably not needed) TODO
         List<SwissParticipant> swissParticipants = collectParticipantStatistics(swiss);
+        gotHerelog(lognumber);
         Collections.sort(swissParticipants, SwissParticipant.IdComparator);
-        
+        gotHerelog(lognumber);
         //build a weight matrix (weights are negative for python program)
         int N = swiss.getParticipants().size() + (swiss.getParticipants().size()%2);
+        gotHerelog(lognumber);
         Integer[][] matrix = new Integer[N][N]; //[rows][columns]
         for (int row = 0; row < N; row++) {
             for (int col = row + 1; col < N; col++) { 
@@ -226,9 +240,10 @@ public class SwissService {
                 matrix[row][col] = evaluation;
             }
         }
-        
+        gotHerelog(lognumber);
         //find ideal pairing using that python program
         String tuples = matrixAsTupleList(matrix);
+        log.debug("calling runPythonScript(tuples)");
         PyObject pairingStr = runPythonScript(tuples);
         List<Participant> participants = pairingStrToSeeding(pairingStr, swissParticipants);
         
@@ -256,6 +271,9 @@ public class SwissService {
             Game savedGame = gameService.createGame(game);
             swiss.addMatches(savedGame);
         }
+        
+        swiss.setRoundsToGenerate(decrementedRoundsToGenerate);
+        
         return swissRepository.save(swiss);
     }
 
@@ -435,6 +453,7 @@ public class SwissService {
      * @return 
      */
     private List<SwissParticipant> collectParticipantStatistics(Swiss swiss) {
+        log.debug("collecting Participant Statistics");
         List<SwissParticipant> swissParticipants = new ArrayList<>();
         for (Participant participant : swiss.getParticipants()) {
             swissParticipants.add(new SwissParticipant().participant(participant));
