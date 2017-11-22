@@ -73,6 +73,10 @@
         {
             "fieldName": "pointsForLosing",
             "fieldType": "Double"
+        },
+        {
+            "fieldName": "inCombined",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20170320075825",

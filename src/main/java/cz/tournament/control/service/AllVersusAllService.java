@@ -118,7 +118,7 @@ public class AllVersusAllService {
     @Transactional(readOnly = true)
     public List<AllVersusAll> findAll() {
         log.debug("Request to get all AllVersusAlls");
-        List<AllVersusAll> result = allVersusAllRepository.findByUserIsCurrentUser();
+        List<AllVersusAll> result = allVersusAllRepository.findByUserIsCurrentUserAndInCombinedFalse();
 
         return result;
     }

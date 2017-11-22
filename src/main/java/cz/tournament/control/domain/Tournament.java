@@ -8,7 +8,13 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Objects;
 
@@ -56,10 +62,9 @@ public class Tournament implements Serializable {
     @Column(name = "points_for_losing")
     private Double pointsForLosing;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
-    @JoinColumn(unique = true)
-    private SetSettings setSettings;
-    
+    @Column(name = "in_combined")
+    private Boolean inCombined = false;
+
     @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnoreProperties({"tournament"})
@@ -75,6 +80,9 @@ public class Tournament implements Serializable {
                inverseJoinColumns = @JoinColumn(name="participants_id", referencedColumnName="id"))
     private Set<Participant> participants = new HashSet<>();
 
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(unique = true)
+    private SetSettings setSettings;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -83,6 +91,69 @@ public class Tournament implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    
+    private List<EvaluationParticipant> computeEvaluation(){
+        Map<Long, EvaluationParticipant> map = new HashMap<>();
+        
+        //gather number of wins, loses and ties
+        for (Game match : matches) {
+            if(!match.isFinished()){
+                return null;
+            }
+            //add rivals to map if not bye - saves us a cycle
+            if(!match.getRivalA().isBye() && !map.containsKey(match.getRivalA().getId()) ){
+                map.put(match.getRivalA().getId(), new EvaluationParticipant(match.getRivalA()) );
+            }
+            if(!match.getRivalB().isBye() && !map.containsKey(match.getRivalB().getId()) ){
+                map.put(match.getRivalB().getId(), new EvaluationParticipant(match.getRivalB()) );
+            }
+            
+            Map<String, Participant> winnerAndLoser = match.getWinnerAndLoser();
+            Participant winner = winnerAndLoser.get("winner");
+            Participant loser = winnerAndLoser.get("loser");
+            if(winner == null || loser == null){ 
+                //tie
+                map.get(match.getRivalA().getId()).ties += 1;
+                map.get(match.getRivalB().getId()).ties += 1;
+            }else{
+                map.get(winner.getId()).wins += 1;
+                map.get(loser.getId()).loses +=1;
+            }
+        }
+        return new ArrayList<>(map.values());
+    }
+    
+    /**
+     * If all games are finished returns given number of participants sorted by their place:
+     *     [1st, 2nd, 3rd ...]
+     * 
+     * Uses EvaluationParticipant class.
+     * 
+     * @param n - number of participants to return, not bigger that number of participants
+     * @return null if tournament not finished (has unfinished match), n participants otherwise
+     */
+    public List<Participant> getNWinners(int n){
+        if(n > participants.size()){
+            throw new IllegalArgumentException("Cannot return more winners than there are players - n > participants.size()");
+        }
+        
+        List<EvaluationParticipant> evaluatedParticipants = computeEvaluation();
+        if(evaluatedParticipants == null) return null;
+        
+        //compute total on all
+        for (EvaluationParticipant ep : evaluatedParticipants) {
+            ep.computeTotal(pointsForWinning, pointsForLosing, pointsForTie);
+        }
+        //sort
+        Collections.sort(evaluatedParticipants, EvaluationParticipant.TotalWinsLosesTiesDescendingComparator);
+        
+        //extract first n participants 
+        List<Participant> result = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            result.add(evaluatedParticipants.get(i).getParticipant());
+        }
+        return result;
     }
 
     public String getName() {
@@ -209,6 +280,19 @@ public class Tournament implements Serializable {
 
     public void setPointsForLosing(Double pointsForLosing) {
         this.pointsForLosing = pointsForLosing;
+    }
+
+    public Boolean isInCombined() {
+        return inCombined;
+    }
+
+    public Tournament inCombined(Boolean inCombined) {
+        this.inCombined = inCombined;
+        return this;
+    }
+
+    public void setInCombined(Boolean inCombined) {
+        this.inCombined = inCombined;
     }
 
     public Set<Game> getMatches() {
@@ -352,6 +436,7 @@ public class Tournament implements Serializable {
             ", pointsForWinning='" + getPointsForWinning() + "'" +
             ", pointsForTie='" + getPointsForTie() + "'" +
             ", pointsForLosing='" + getPointsForLosing() + "'" +
+            ", inCombined='" + isInCombined() + "'" +
             "}";
     }
 }

@@ -286,7 +286,7 @@ public class SwissService {
     @Transactional(readOnly = true)
     public Page<Swiss> findAll(Pageable pageable) {
         log.debug("Request to get all Swisses");
-        return swissRepository.findByUserIsCurrentUser(pageable);
+        return swissRepository.findByUserIsCurrentUserAndInCombinedFalse(pageable);
     }
 
     /**

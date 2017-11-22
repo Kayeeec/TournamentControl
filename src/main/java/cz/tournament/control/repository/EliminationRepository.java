@@ -14,7 +14,8 @@ import org.springframework.data.domain.Pageable;
 public interface EliminationRepository extends JpaRepository<Elimination,Long> {
     @Query("select elimination "
             + "from Elimination elimination inner join Tournament tournament on elimination.id = tournament.id "
-            + "where tournament.user.login = ?#{principal.username}")
-    Page<Elimination> findByUserIsCurrentUser(Pageable pageable);
+            + "where tournament.user.login = ?#{principal.username} "
+            + "and tournament.inCombined = false")
+    Page<Elimination> findByUserIsCurrentUserAndInCombinedFalse(Pageable pageable);
 
 }

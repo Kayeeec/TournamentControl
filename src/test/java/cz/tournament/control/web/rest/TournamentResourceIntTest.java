@@ -70,6 +70,9 @@ public class TournamentResourceIntTest {
     private static final Double DEFAULT_POINTS_FOR_LOSING = 1D;
     private static final Double UPDATED_POINTS_FOR_LOSING = 2D;
 
+    private static final Boolean DEFAULT_IN_COMBINED = false;
+    private static final Boolean UPDATED_IN_COMBINED = true;
+
     @Autowired
     private TournamentRepository tournamentRepository;
 
@@ -118,7 +121,8 @@ public class TournamentResourceIntTest {
             .playingFields(DEFAULT_PLAYING_FIELDS)
             .pointsForWinning(DEFAULT_POINTS_FOR_WINNING)
             .pointsForTie(DEFAULT_POINTS_FOR_TIE)
-            .pointsForLosing(DEFAULT_POINTS_FOR_LOSING);
+            .pointsForLosing(DEFAULT_POINTS_FOR_LOSING)
+            .inCombined(DEFAULT_IN_COMBINED);
         return tournament;
     }
 
@@ -151,6 +155,7 @@ public class TournamentResourceIntTest {
         assertThat(testTournament.getPointsForWinning()).isEqualTo(DEFAULT_POINTS_FOR_WINNING);
         assertThat(testTournament.getPointsForTie()).isEqualTo(DEFAULT_POINTS_FOR_TIE);
         assertThat(testTournament.getPointsForLosing()).isEqualTo(DEFAULT_POINTS_FOR_LOSING);
+        assertThat(testTournament.isInCombined()).isEqualTo(DEFAULT_IN_COMBINED);
     }
 
     @Test
@@ -227,7 +232,8 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.[*].playingFields").value(hasItem(DEFAULT_PLAYING_FIELDS)))
             .andExpect(jsonPath("$.[*].pointsForWinning").value(hasItem(DEFAULT_POINTS_FOR_WINNING.doubleValue())))
             .andExpect(jsonPath("$.[*].pointsForTie").value(hasItem(DEFAULT_POINTS_FOR_TIE.doubleValue())))
-            .andExpect(jsonPath("$.[*].pointsForLosing").value(hasItem(DEFAULT_POINTS_FOR_LOSING.doubleValue())));
+            .andExpect(jsonPath("$.[*].pointsForLosing").value(hasItem(DEFAULT_POINTS_FOR_LOSING.doubleValue())))
+            .andExpect(jsonPath("$.[*].inCombined").value(hasItem(DEFAULT_IN_COMBINED.booleanValue())));
     }
 
     @Test
@@ -249,7 +255,8 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.playingFields").value(DEFAULT_PLAYING_FIELDS))
             .andExpect(jsonPath("$.pointsForWinning").value(DEFAULT_POINTS_FOR_WINNING.doubleValue()))
             .andExpect(jsonPath("$.pointsForTie").value(DEFAULT_POINTS_FOR_TIE.doubleValue()))
-            .andExpect(jsonPath("$.pointsForLosing").value(DEFAULT_POINTS_FOR_LOSING.doubleValue()));
+            .andExpect(jsonPath("$.pointsForLosing").value(DEFAULT_POINTS_FOR_LOSING.doubleValue()))
+            .andExpect(jsonPath("$.inCombined").value(DEFAULT_IN_COMBINED.booleanValue()));
     }
 
     @Test
@@ -278,7 +285,8 @@ public class TournamentResourceIntTest {
             .playingFields(UPDATED_PLAYING_FIELDS)
             .pointsForWinning(UPDATED_POINTS_FOR_WINNING)
             .pointsForTie(UPDATED_POINTS_FOR_TIE)
-            .pointsForLosing(UPDATED_POINTS_FOR_LOSING);
+            .pointsForLosing(UPDATED_POINTS_FOR_LOSING)
+            .inCombined(UPDATED_IN_COMBINED);
 
         restTournamentMockMvc.perform(put("/api/tournaments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -298,6 +306,7 @@ public class TournamentResourceIntTest {
         assertThat(testTournament.getPointsForWinning()).isEqualTo(UPDATED_POINTS_FOR_WINNING);
         assertThat(testTournament.getPointsForTie()).isEqualTo(UPDATED_POINTS_FOR_TIE);
         assertThat(testTournament.getPointsForLosing()).isEqualTo(UPDATED_POINTS_FOR_LOSING);
+        assertThat(testTournament.isInCombined()).isEqualTo(UPDATED_IN_COMBINED);
     }
 
     @Test

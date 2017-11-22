@@ -11,7 +11,10 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface AllVersusAllRepository extends JpaRepository<AllVersusAll,Long> {
-    @Query("select allversusall from AllVersusAll allversusall inner join Tournament tournament on allversusall.id = tournament.id where tournament.user.login = ?#{principal.username}")
-    List<AllVersusAll> findByUserIsCurrentUser();
+    @Query("select allversusall "
+            + "from AllVersusAll allversusall inner join Tournament tournament on allversusall.id = tournament.id "
+            + "where tournament.user.login = ?#{principal.username} "
+            + "and tournament.inCombined = false")
+    List<AllVersusAll> findByUserIsCurrentUserAndInCombinedFalse();
     
 }

@@ -151,7 +151,7 @@ public class EliminationService {
     @Transactional(readOnly = true)
     public Page<Elimination> findAll(Pageable pageable) {
         log.debug("Request to get all Eliminations");
-        Page<Elimination> result = eliminationRepository.findByUserIsCurrentUser(pageable);
+        Page<Elimination> result = eliminationRepository.findByUserIsCurrentUserAndInCombinedFalse(pageable);
         return result;
     }
 
