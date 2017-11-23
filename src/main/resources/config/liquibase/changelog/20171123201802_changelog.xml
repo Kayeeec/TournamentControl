@@ -1,0 +1,77 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="karbo (generated)" id="1511468296428-1">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-2">
+        <createTable tableName="combined">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="combinedPK"/>
+            </column>
+            <column name="created" type="BYTEA"/>
+            <column name="in_group_tournament_type" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="note" type="VARCHAR(255)"/>
+            <column name="number_of_groups" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_winners_to_playoff" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="playoff_type" type="VARCHAR(255)"/>
+            <column name="playoff_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-3">
+        <createTable tableName="combined_all_participants">
+            <column name="combined_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="all_participants_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-4">
+        <createTable tableName="combined_groups">
+            <column name="combined_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="groups_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-5">
+        <addPrimaryKey columnNames="combined_id, all_participants_id" tableName="combined_all_participants"/>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-6">
+        <addPrimaryKey columnNames="combined_id, groups_id" tableName="combined_groups"/>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-7">
+        <addUniqueConstraint columnNames="playoff_id" constraintName="UC_COMBINEDPLAYOFF_ID_COL" tableName="combined"/>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-8">
+        <addUniqueConstraint columnNames="all_participants_id" constraintName="UK_6pexqje42n19bkat6f257hghk" tableName="combined_all_participants"/>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-9">
+        <addUniqueConstraint columnNames="groups_id" constraintName="UK_fd6s6oaloac93bby7p0ox8mkd" tableName="combined_groups"/>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-10">
+        <addForeignKeyConstraint baseColumnNames="all_participants_id" baseTableName="combined_all_participants" constraintName="FK2rq27osfrn8argtcclnpenaea" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="participant"/>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-11">
+        <addForeignKeyConstraint baseColumnNames="combined_id" baseTableName="combined_all_participants" constraintName="FKbdqoomd1cnowv7hh0fo8q983f" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="combined"/>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-12">
+        <addForeignKeyConstraint baseColumnNames="groups_id" baseTableName="combined_groups" constraintName="FKj9cyba1r256qkvinxlcyg9s3v" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tournament"/>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-13">
+        <addForeignKeyConstraint baseColumnNames="playoff_id" baseTableName="combined" constraintName="FKl1lnh6m1ts9knm04rehnucenc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tournament"/>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511468296428-14">
+        <addForeignKeyConstraint baseColumnNames="combined_id" baseTableName="combined_groups" constraintName="FKsqljf8l45rcqalb2k66hd17d4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="combined"/>
+    </changeSet>
+</databaseChangeLog>

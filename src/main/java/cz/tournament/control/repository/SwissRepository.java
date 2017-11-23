@@ -16,7 +16,7 @@ import org.springframework.data.jpa.repository.*;
 public interface SwissRepository extends JpaRepository<Swiss, Long> {
     @Query("select swiss "
             + "from Swiss swiss inner join Tournament tournament on swiss.id = tournament.id "
-            + "where tournament.user.login = ?#{principal.username}"
+            + "where tournament.user.login = ?#{principal.username} "
             + "and tournament.inCombined = false")
     Page<Swiss> findByUserIsCurrentUserAndInCombinedFalse(Pageable pageable);
 }

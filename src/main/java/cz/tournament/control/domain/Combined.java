@@ -57,7 +57,7 @@ public class Combined implements Serializable {
     @Column(name = "in_group_tournament_type")
     private TournamentType inGroupTournamentType;
 
-    @OneToMany(mappedBy = "combined")
+    @OneToMany()
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Participant> allParticipants = new HashSet<>();
@@ -66,7 +66,7 @@ public class Combined implements Serializable {
     @JoinColumn(unique = true)
     private Tournament playoff;
 
-    @OneToMany(mappedBy = "combined")
+    @OneToMany()
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Tournament> groups = new HashSet<>();
