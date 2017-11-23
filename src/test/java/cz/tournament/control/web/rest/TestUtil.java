@@ -13,6 +13,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
+import org.springframework.format.support.DefaultFormattingConversionService;
+import org.springframework.format.support.FormattingConversionService;
 
 /**
  * Utility class for testing REST controllers.
@@ -115,5 +118,17 @@ public class TestUtil {
         assertThat(domainObject1).isNotEqualTo(domainObject2);
         // HashCodes are equals because the objects are not persisted yet
         assertThat(domainObject1.hashCode()).isEqualTo(domainObject2.hashCode());
+    }
+    
+    /**
+     * Create a FormattingConversionService which use ISO date format, instead of the localized one.
+     * @return the FormattingConversionService
+     */
+    public static FormattingConversionService createFormattingConversionService() {
+        DefaultFormattingConversionService dfcs = new DefaultFormattingConversionService ();
+        DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
+        registrar.setUseIsoFormat(true);
+        registrar.registerFormatters(dfcs);
+        return dfcs;
     }
 }

@@ -1,0 +1,51 @@
+
+<div>
+    <h2><span data-translate="tournamentControlApp.combined.detail.title">Combined</span> {{vm.combined.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="tournamentControlApp.combined.name">Name</span></dt>
+        <dd>
+            <span>{{vm.combined.name}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.note">Note</span></dt>
+        <dd>
+            <span>{{vm.combined.note}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.created">Created</span></dt>
+        <dd>
+            <span>{{vm.combined.created | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.numberOfWinnersToPlayoff">Number Of Winners To Playoff</span></dt>
+        <dd>
+            <span>{{vm.combined.numberOfWinnersToPlayoff}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.numberOfGroups">Number Of Groups</span></dt>
+        <dd>
+            <span>{{vm.combined.numberOfGroups}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.playoffType">Playoff Type</span></dt>
+        <dd>
+            <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.playoffType}}">{{vm.combined.playoffType}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.inGroupTournamentType">In Group Tournament Type</span></dt>
+        <dd>
+            <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.inGroupTournamentType}}">{{vm.combined.inGroupTournamentType}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.playoff">Playoff</span></dt>
+        <dd>
+            <a ui-sref="tournament-detail({id:vm.combined.playoff.id})">{{vm.combined.playoff.name}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="combined-detail.edit({id:vm.combined.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -17,6 +17,7 @@
                 "gameSet": "Game Set",
                 "setSettings": "Set Settings",
                 "swiss": "Swiss",
+                "combined": "Combined",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

@@ -16,6 +16,7 @@
     <include file="config/liquibase/changelog/20170427090215_added_entity_SetSettings.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171009110957_added_entity_Swiss.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20170320075825_added_entity_Tournament.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171123170253_added_entity_Combined.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20170320075825_added_entity_constraints_Game.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20170320075825_added_entity_constraints_Participant.xml" relativeToChangelogFile="false"/>
@@ -24,6 +25,7 @@
 <!--    <include file="config/liquibase/changelog/20170320075825_added_entity_constraints_Tournament.xml" relativeToChangelogFile="false"/>-->
     <include file="config/liquibase/changelog/20170412171747_added_entity_constraints_GameSet.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20170320075825_added_entity_constraints_Tournament.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171123170253_added_entity_constraints_Combined.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <include file="config/liquibase/changelog/20171122193537_changelog.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

@@ -1,0 +1,76 @@
+<div>
+    <h2 data-translate="tournamentControlApp.combined.home.title">Combineds</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="combined.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="tournamentControlApp.combined.home.createLabel">
+                        Create new Combined
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span data-translate="tournamentControlApp.combined.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="note"><span data-translate="tournamentControlApp.combined.note">Note</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="created"><span data-translate="tournamentControlApp.combined.created">Created</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="numberOfWinnersToPlayoff"><span data-translate="tournamentControlApp.combined.numberOfWinnersToPlayoff">Number Of Winners To Playoff</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="numberOfGroups"><span data-translate="tournamentControlApp.combined.numberOfGroups">Number Of Groups</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="playoffType"><span data-translate="tournamentControlApp.combined.playoffType">Playoff Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="inGroupTournamentType"><span data-translate="tournamentControlApp.combined.inGroupTournamentType">In Group Tournament Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="playoff.name"><span data-translate="tournamentControlApp.combined.playoff">Playoff</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="combined in vm.combineds track by combined.id">
+                    <td><a ui-sref="combined-detail({id:combined.id})">{{combined.id}}</a></td>
+                    <td>{{combined.name}}</td>
+                    <td>{{combined.note}}</td>
+                    <td>{{combined.created | date:'medium'}}</td>
+                    <td>{{combined.numberOfWinnersToPlayoff}}</td>
+                    <td>{{combined.numberOfGroups}}</td>
+                    <td data-translate="{{'tournamentControlApp.TournamentType.' + combined.playoffType}}">{{combined.playoffType}}</td>
+                    <td data-translate="{{'tournamentControlApp.TournamentType.' + combined.inGroupTournamentType}}">{{combined.inGroupTournamentType}}</td>
+                    <td>
+                        <a ui-sref="tournament-detail({id:combined.playoff.id})">{{combined.playoff.name}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="combined-detail({id:combined.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="combined.edit({id:combined.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="combined.delete({id:combined.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>
