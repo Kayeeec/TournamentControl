@@ -5,7 +5,6 @@
  */
 package cz.tournament.control.service.util;
 
-import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -18,23 +17,13 @@ import java.util.Set;
  * @author Karolina Bozkova
  */
 public class SwissParticipant {
-    private Long id;
+    private Long id; //participant.id
     private Participant participant;
-    private Set<Game> games = new HashSet<>();
     private Set<Participant> rivals = new HashSet<>();
     private String colorStr = "";
     private Double points = 0.0;
 
     public SwissParticipant() {
-    }
-    
-    public SwissParticipant(Participant participant, Set<Game> games, Set<Participant> rivals, String colorStr, Double points) {
-        this.participant = participant;
-        this.id = participant.getId();
-        this.games = games;
-        this.rivals = rivals;
-        this.colorStr = colorStr;
-        this.points = points;
     }
 
     public Long getId() {
@@ -62,29 +51,6 @@ public class SwissParticipant {
         this.participant = participant;
         this.id = participant.getId();
         return this;
-    }
-
-    public Set<Game> getGames() {
-        return games;
-    }
-
-    public void setGames(Set<Game> games) {
-        this.games = games;
-    }
-    
-    public SwissParticipant games(Set<Game> games){
-        this.games = games;
-        return this;
-    }
-    
-    public Set<Game> addGame(Game game){
-        this.games.add(game);
-        return this.games;
-    }
-    
-    public Set<Game> removeGame(Game game){
-        this.games.remove(game);
-        return this.games;
     }
 
     public Set<Participant> getRivals() {

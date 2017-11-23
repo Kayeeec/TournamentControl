@@ -449,6 +449,8 @@ public class SwissService {
     /**
      * Assumes that all games of swiss tournament are finished.
      * 
+     * could be done better with map TODO
+     * 
      * @param swiss
      * @return 
      */
@@ -469,10 +471,6 @@ public class SwissService {
             int indexB = getIndexOf(game.getRivalB(), swissParticipants);
             SwissParticipant spA = swissParticipants.get(indexA);
             SwissParticipant spB = swissParticipants.get(indexB);
-            
-            //add game to those swissP. might not be needed 
-            spA.addGame(game);
-            spB.addGame(game);
             
             //add rivals
             spA.addRival(game.getRivalB());
