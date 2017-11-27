@@ -36,6 +36,10 @@
         <dd>
             <a ui-sref="tournament-detail({id:vm.combined.playoff.id})">{{vm.combined.playoff.name}}</a>
         </dd>
+        <dt><span data-translate="tournamentControlApp.combined.user">User</span></dt>
+        <dd>
+            {{vm.combined.user.login}}
+        </dd>
     </dl>
 
     <button type="submit"

@@ -24,7 +24,8 @@
             "inGroupTournamentType": "In Group Tournament Type",
             "allParticipants": "All Participants",
             "playoff": "Playoff",
-            "groups": "Groups"
+            "groups": "Groups",
+            "user": "User"
         }
     }
 }

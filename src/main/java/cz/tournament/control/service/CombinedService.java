@@ -45,7 +45,7 @@ public class CombinedService {
     @Transactional(readOnly = true)
     public Page<Combined> findAll(Pageable pageable) {
         log.debug("Request to get all Combineds");
-        return combinedRepository.findAll(pageable);
+        return combinedRepository.findByUserIsCurrentUser(pageable);
     }
 
     /**

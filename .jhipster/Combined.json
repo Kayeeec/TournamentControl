@@ -20,6 +20,14 @@
             "otherEntityName": "tournament",
             "relationshipType": "one-to-many",
             "otherEntityRelationshipName": "combined"
+        },
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "combined"
         }
     ],
     "fields": [

@@ -1,0 +1,11 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="karbo (generated)" id="1511775235035-1">
+        <addColumn tableName="combined">
+            <column name="user_id" type="int8"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="karbo (generated)" id="1511775235035-2">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="combined" constraintName="FKqkqjd8eeekhne1psut2aba0yi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="jhi_user"/>
+    </changeSet>
+</databaseChangeLog>

@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import cz.tournament.control.domain.enumeration.TournamentType;
+import cz.tournament.control.domain.enumeration.TournamentType;
 /**
  * Test class for the CombinedResource REST controller.
  *

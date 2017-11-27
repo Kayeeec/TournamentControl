@@ -5,9 +5,9 @@
         .module('tournamentControlApp')
         .controller('CombinedDetailController', CombinedDetailController);
 
-    CombinedDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Combined', 'Participant', 'Tournament'];
+    CombinedDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Combined', 'Participant', 'Tournament', 'User'];
 
-    function CombinedDetailController($scope, $rootScope, $stateParams, previousState, entity, Combined, Participant, Tournament) {
+    function CombinedDetailController($scope, $rootScope, $stateParams, previousState, entity, Combined, Participant, Tournament, User) {
         var vm = this;
 
         vm.combined = entity;

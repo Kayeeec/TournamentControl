@@ -27,6 +27,7 @@
                     <th jh-sort-by="playoffType"><span data-translate="tournamentControlApp.combined.playoffType">Playoff Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="inGroupTournamentType"><span data-translate="tournamentControlApp.combined.inGroupTournamentType">In Group Tournament Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="playoff.name"><span data-translate="tournamentControlApp.combined.playoff">Playoff</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="user.login"><span data-translate="tournamentControlApp.combined.user">User</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -42,6 +43,9 @@
                     <td data-translate="{{'tournamentControlApp.TournamentType.' + combined.inGroupTournamentType}}">{{combined.inGroupTournamentType}}</td>
                     <td>
                         <a ui-sref="tournament-detail({id:combined.playoff.id})">{{combined.playoff.name}}</a>
+                    </td>
+                    <td>
+                        {{combined.user.login}}
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

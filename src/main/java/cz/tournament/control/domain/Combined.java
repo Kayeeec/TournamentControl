@@ -71,6 +71,9 @@ public class Combined implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Tournament> groups = new HashSet<>();
 
+    @ManyToOne
+    private User user;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -182,13 +185,13 @@ public class Combined implements Serializable {
 
     public Combined addAllParticipants(Participant participant) {
         this.allParticipants.add(participant);
-        //participant.setCombined(this);
+//        participant.setCombined(this);
         return this;
     }
 
     public Combined removeAllParticipants(Participant participant) {
         this.allParticipants.remove(participant);
-        //participant.setCombined(null);
+//        participant.setCombined(null);
         return this;
     }
 
@@ -220,52 +223,103 @@ public class Combined implements Serializable {
 
     public Combined addGroups(Tournament tournament) {
         this.groups.add(tournament);
-        //tournament.setCombined(this);
+//        tournament.setCombined(this);
         return this;
     }
 
     public Combined removeGroups(Tournament tournament) {
         this.groups.remove(tournament);
-        //tournament.setCombined(null);
+//        tournament.setCombined(null);
         return this;
     }
 
     public void setGroups(Set<Tournament> tournaments) {
         this.groups = tournaments;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Combined user(User user) {
+        this.user = user;
+        return this;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Combined combined = (Combined) o;
-        if (combined.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), combined.getId());
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + Objects.hashCode(this.id);
+        hash = 53 * hash + Objects.hashCode(this.name);
+        hash = 53 * hash + Objects.hashCode(this.note);
+        hash = 53 * hash + Objects.hashCode(this.created);
+        hash = 53 * hash + Objects.hashCode(this.numberOfWinnersToPlayoff);
+        hash = 53 * hash + Objects.hashCode(this.numberOfGroups);
+        hash = 53 * hash + Objects.hashCode(this.playoffType);
+        hash = 53 * hash + Objects.hashCode(this.inGroupTournamentType);
+        hash = 53 * hash + Objects.hashCode(this.user);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Combined other = (Combined) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.note, other.note)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.created, other.created)) {
+            return false;
+        }
+        if (!Objects.equals(this.numberOfWinnersToPlayoff, other.numberOfWinnersToPlayoff)) {
+            return false;
+        }
+        if (!Objects.equals(this.numberOfGroups, other.numberOfGroups)) {
+            return false;
+        }
+        if (this.playoffType != other.playoffType) {
+            return false;
+        }
+        if (this.inGroupTournamentType != other.inGroupTournamentType) {
+            return false;
+        }
+        if (!Objects.equals(this.user, other.user)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String toString() {
-        return "Combined{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", note='" + getNote() + "'" +
-            ", created='" + getCreated() + "'" +
-            ", numberOfWinnersToPlayoff='" + getNumberOfWinnersToPlayoff() + "'" +
-            ", numberOfGroups='" + getNumberOfGroups() + "'" +
-            ", playoffType='" + getPlayoffType() + "'" +
-            ", inGroupTournamentType='" + getInGroupTournamentType() + "'" +
-            "}";
+        return "Combined{" + "id=" + id 
+                + ", name=" + name 
+                + ", note=" + note 
+                + ", created=" + created 
+                + ", numberOfWinnersToPlayoff=" + numberOfWinnersToPlayoff 
+                + ", numberOfGroups=" + numberOfGroups 
+                + ", playoffType=" + playoffType 
+                + ", inGroupTournamentType=" + inGroupTournamentType
+                + ", user=" + user + '}';
     }
+
+    
 }
