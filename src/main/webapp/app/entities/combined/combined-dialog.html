@@ -31,17 +31,17 @@
                     ng-model="vm.combined.note"
                     />
         </div>
-        
+
 <!-- ********* PARTICIPANTS ********* -->
         <div id="participants" class="well well-sm">
             <div id="participants_header">
                 <ul class="nav nav-pills pull-left" id="myTab">
-                    <li class="active"><a showtab href="#players" ng-click="chosen = 1">
+                    <li class="active"><a showtab href="#players" ng-click="chosen = 1; vm.init_groupParticipantObject(true)">
                             <span  data-translate=""> Add Players </span> <!--TODO: data-translate -->
                             <span class="badge"> {{vm.selectedPlayers.length}}</span>
                         </a>
                     </li>
-                    <li><a showtab href="#teams" ng-click="chosen = 2">
+                    <li><a showtab href="#teams" ng-click="chosen = 2; vm.init_groupParticipantObject(true)">
                             <span  data-translate=""> Add Teams </span> <!--TODO: data translate-->
                             <span class="badge"> {{vm.selectedTeams.length}}</span>
                         </a>
@@ -59,27 +59,27 @@
             <div class="clearfix"></div>
             <div id="participants_checkboxes" class="tab-content" style="padding: 10px">
                     <div id="players" class="tab-pane active row">
-                        <div class="col-md-3 col-sm-6 col-xs-12" 
+                        <div class="col-md-3 col-sm-6 col-xs-12"
                              ng-repeat="participant in vm.participants | filter: isPlayer">
                             <span>
                                 <label for="player_checkbox_{{$index}}">
-                                    <input  type="checkbox"  id="player_checkbox_{{$index}}" name="player_checkbox" 
+                                    <input  type="checkbox"  id="player_checkbox_{{$index}}" name="player_checkbox"
                                             checklist-model="vm.selectedPlayers" checklist-value="participant"
                                             ng-click="vm.onPlayerClick(participant)"> {{participant.player.name}}
-                                </label> 
+                                </label>
                             </span>
                         </div>
                     </div>
                     <div id="teams" class="tab-pane row">
-                        <div class="col-md-3 col-sm-6 col-xs-12" 
+                        <div class="col-md-3 col-sm-6 col-xs-12"
                              ng-repeat="participant in vm.participants | filter: isTeam">
-                            <span>  
+                            <span>
                                 <label for="team_checkbox_{{$index}}" ng-class="vm.getTeamCSS_onValidity(participant)">
                                     <input  type="checkbox"  id="team_checkbox_{{$index}}" name="team_checkbox"
                                             checklist-model="vm.selectedTeams" checklist-value="participant"
                                             ng-disabled="vm.teamIsInvalid(participant)"
-                                            ng-click="vm.onTeamClick(participant)"> 
-                                    
+                                            ng-click="vm.onTeamClick(participant)">
+
                                         {{participant.team.name}}
                                 </label>
                             </span>
@@ -88,7 +88,7 @@
             </div>
         </div>
 <!-- ********* end - PARTICIPANTS ********* -->
-        
+
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.combined.numberOfGroups" for="field_numberOfGroups">Number Of Groups</label>
             <input type="number" class="form-control" name="numberOfGroups" id="field_numberOfGroups"
@@ -128,25 +128,28 @@
                 </div>
                 <div class="form-group">
                     <label for="assign_to_group_manually_radio">
-                    <input class="radio radio-inline" id="assign_to_group_manually_radio" type="radio" 
+                    <input class="radio radio-inline" id="assign_to_group_manually_radio" type="radio"
                        ng-model="vm.assign_to_group_manually" ng-value="true">
                     manually</label>
                 </div>
                 <div class="form-group">
                     <label  for="assign_to_group_automatically_radio">
-                    <input class="radio radio-inline" id="assign_to_group_automatically_radio" type="radio" 
+                    <input class="radio radio-inline" id="assign_to_group_automatically_radio" type="radio"
                        ng-model="vm.assign_to_group_manually" ng-value="false">
                     automatically</label>
                 </div>
             </div>
-            
-            <div ng-if="vm.assign_to_group_manually === true" ng-init="vm.init_groupParticipantObject()" class="well well-sm">
-                <div ng-if="chosen === 1"
-                     ng-repeat="(groupLetter, groupParticipants) in vm.groupPlayerObject">
-                    <div class="form-group">
+
+            <div ng-if="vm.assign_to_group_manually === true" ng-init="vm.init_groupParticipantObject(true)" class="well well-sm">
+                <div ng-if="chosen === 1" >
+                    <div class="form-group" ng-repeat="(groupLetter, groupParticipants) in vm.groupPlayerObject">
                         <label for="group_select_{{groupLetter}}">Group {{groupLetter}}</label>
-                        <ui-select id='group_select_{{groupLetter}}' ng-model="vm.groupPlayerObject[groupLetter]" multiple theme="bootstrap" title="Choose a participant" 
-                                   on-select="vm.onPlayerUiSelect_Select(group, $item)" on-remove="vm.onPlayerUiSelect_Remove(group, $item)">
+                        <ui-select id='group_select_{{groupLetter}}'
+                                   ng-model="vm.groupPlayerObject[groupLetter]" 
+                                   multiple theme="bootstrap" title="Choose a participant" close-on-select="false"
+                                   on-select="vm.onPlayerUiSelect_Select(group, $item)" 
+                                   on-remove="vm.onPlayerUiSelect_Remove(group, $item)"
+                                   >
                             <ui-select-match placeholder="Select or search a person in the list...">{{$item.name}}</ui-select-match>
                             <ui-select-choices repeat="item in vm.playersToChoose | filter: $select.search track by item.id">
                                 <div ng-bind-html="item.name | highlight: $select.search"></div>
@@ -157,13 +160,16 @@
                         </ui-select>
                     </div>
                 </div>
-                <div ng-if="chosen === 2" 
-                     ng-repeat="(groupLetter, groupParticipants) in vm.groupTeamObject">
-                    <div class="form-group">
+                <div ng-if="chosen === 2">
+                    <div class="form-group" ng-repeat="(groupLetter, groupParticipants) in vm.groupTeamObject">
                         <label for="group_select_{{groupLetter}}">Group {{groupLetter}}</label>
-                        <ui-select id='group_select_{{groupLetter}}' ng-model="vm.groupTeamObject[groupLetter]" multiple theme="bootstrap" title="Choose a participant" 
-                                   on-select="vm.onTeamUiSelect_Select($item)"  on-remove="vm.onTeamUiSelect_Remove($item)">
-                            <ui-select-match placeholder="Select or search a person in the list...">{{$item.name}}</ui-select-match>
+                        <ui-select id='group_select_{{groupLetter}}'
+                                   ng-model="vm.groupTeamObject[groupLetter]" 
+                                   multiple theme="bootstrap" title="Choose a participant" close-on-select="false"
+                                   on-select="vm.onTeamUiSelect_Select(group, $item)" 
+                                   on-remove="vm.onTeamUiSelect_Remove(group, $item)"
+                                   >
+                            <ui-select-match placeholder="Select or search a team in the list...">{{$item.name}}</ui-select-match>
                             <ui-select-choices repeat="item in vm.teamsToChoose | filter: $select.search track by item.id">
                                 <div ng-bind-html="item.name | highlight: $select.search"></div>
                             </ui-select-choices>
@@ -176,8 +182,8 @@
             </div>
         </div>
        <!--**** END - group assignment **** -->
-       
-       <div id="seeding" class="form-group" ng-if="vm.assign_to_group_manually || vm.combined.numberOfGroups === 1">
+
+       <div id="seeding" class="form-group" ng-if="vm.assign_to_group_manually  && vm.combined.inGroupTournamentType !== 'ALL_VERSUS_ALL'">
             <div class="form-inline">
                 <div class="form-group">
                     <label >Seed participants: </label>
@@ -185,37 +191,132 @@
                 </div>
                 <div class="form-group">
                     <label for="seed_manually_radio">
-                    <input class="radio radio-inline" id="seed_manually_radio" type="radio" 
+                    <input class="radio radio-inline" id="seed_manually_radio" type="radio"
                        ng-model="vm.seed_manually" ng-value="true">
                     manually</label>
                 </div>
                 <div class="form-group">
-                    <label  for="assign_to_group_automatically_radio">
-                    <input class="radio radio-inline" id="assign_to_group_automatically_radio" type="radio" 
+                    <label  for="seed_automatically_radio">
+                    <input class="radio radio-inline" id="seed_automatically_radio" type="radio"
                        ng-model="vm.seed_manually" ng-value="false">
                     automatically</label>
                 </div>
             </div>
+           <div ng-if="vm.seed_manually">
            <div ng-if="vm.noParticipantsSelected()" class="alert alert-info">
-               No participants have been selected, nothing to seed. 
+               No participants have been selected, nothing to seed.
            </div>
            <div ng-if="!vm.noParticipantsSelected()">
                <div ng-if="vm.invalidGroupAssignment()" class="alert alert-warning">
-                   All chosen participants must be assignet to a group.
+                   All chosen participants must be assigned to a group.
                </div>
-               <div ng-if="!vm.invalidGroupAssignment()">
-                   <div ng-if="vm.combined.inGroupTournamentType === 'ALL_VERSUS_ALL' || vm.combined.inGroupTournamentType === 'SWISS'">
+               <!--***** This is where seeding actually happens ******-->
+               <div ng-if="!vm.invalidGroupAssignment()" ng-init="vm.initSeeding(true)">
+                   <div ng-if="vm.combined.inGroupTournamentType === 'SWISS'">
+                       <div ng-if="chosen === 1">
+                            <div ng-repeat="(group, seeding) in vm.playerSeedingObject" class="panel panel-info">
+                                <div class="panel-heading panel-heading-sm">Group {{group}}</div>
+                                <table name="seeding-players" class="table table-condensed">
+                                    <tbody>
+                                        <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(group),1)">
+                                            <td class="my_rival_seeding_column">
+                                            <ui-select ng-model="vm.playerSeedingObject[group][i]" theme="bootstrap"
+                                            ng-disabled="vm.isBye($select.selected)"
+                                            ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][i], i, group)">
+                                                <ui-select-match placeholder="Select or search a person in the list...">{{$select.selected.name}}</ui-select-match>
+                                                <ui-select-choices repeat="item in vm.groupPlayerObject[group] | filter: $select.search">
+                                                    <div class="row">
+                                                        <div class="pull-left text">
+                                                            <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                            &nbsp;
+                                                        </div>
+                                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </td>
+                                        <td class="my_middle_seeding_column"><p class="text-center">vs.</p></td>
+                                        <td class="my_rival_seeding_column">
+                                            <ui-select ng-model="vm.playerSeedingObject[group][vm.getRivalIndex(group, i)]" theme="bootstrap"
+                                            ng-disabled="vm.isBye($select.selected)"
+                                            ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][vm.getRivalIndex(group, i)], vm.getRivalIndex(group, i), group)">
+                                                <ui-select-match placeholder="Select or search a person in the list...">{{$select.selected.name}}</ui-select-match>
+                                                <ui-select-choices repeat="item in vm.groupPlayerObject[group] | filter: $select.search">
+                                                    <div class="row">
+                                                        <div class="pull-left text">
+                                                            <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                            &nbsp;
+                                                        </div>
+                                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </td>
+                                        </tr>
+                                            
+                                    </tbody>
+                                </table>
+                            </div>
+                       </div>
+                       <div ng-if="chosen === 2">
+                           <div ng-repeat="(group, seeding) in vm.teamSeedingObject" class="panel panel-info">
+                                <div class="panel-heading panel-heading-sm">Group {{group}}</div>
+                                <table name="seeding-teams" class="table table-condensed">
+                                    <tbody>
+                                        <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(group),1)">
+                                            <td class="my_rival_seeding_column">
+                                            <ui-select ng-model="vm.teamSeedingObject[group][i]" theme="bootstrap"
+                                            ng-disabled="vm.isBye($select.selected)"
+                                            ng-change="vm.onTeamSelect({{vm.teamSeedingObject[group]}}, vm.teamSeedingObject[group][i], i, group)">
+                                                <ui-select-match placeholder="Select or search a team in the list...">{{$select.selected.name}}</ui-select-match>
+                                                <ui-select-choices repeat="item in vm.groupTeamObject[group] | filter: $select.search">
+                                                    <div class="row">
+                                                        <div class="pull-left text">
+                                                            <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                            &nbsp;
+                                                        </div>
+                                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </td>
+                                        <td class="my_middle_seeding_column"><p class="text-center">vs.</p></td>
+                                        <td class="my_rival_seeding_column">
+                                            <ui-select ng-model="vm.teamSeedingObject[group][vm.getRivalIndex(group, i)]" theme="bootstrap"
+                                            ng-disabled="vm.isBye($select.selected)"
+                                            ng-change="vm.onTeamSelect({{vm.teamSeedingObject[group]}}, vm.teamSeedingObject[group][vm.getRivalIndex(group, i)], vm.getRivalIndex(group, i), group)">
+                                                <ui-select-match placeholder="Select or search a team in the list...">{{$select.selected.name}}</ui-select-match>
+                                                <ui-select-choices repeat="item in vm.groupTeamObject[group] | filter: $select.search">
+                                                    <div class="row">
+                                                        <div class="pull-left text">
+                                                            <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                            &nbsp;
+                                                        </div>
+                                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </td>
+                                        </tr>
+                                            
+                                    </tbody>
+                                </table>
+                            </div>
+
+                       </div>
                    </div>
 
                    <div ng-if="vm.combined.inGroupTournamentType === 'ELIMINATION'">
                    </div>
                </div>
            </div>
-           
-           
-           
-           
+           </div>
+
+
+
+
        </div>
+
 
 <!--**** play off **** -->
         <div class="form-group">
@@ -238,7 +339,7 @@
                 </p>
             </div>
         </div>
-        
+
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.combined.playoffType" for="field_playoffType">Playoff Type</label>
             <select class="form-control" name="playoffType" ng-model="vm.combined.playoffType" id="field_playoffType">
@@ -247,7 +348,7 @@
                 <option value="SWISS" data-translate="tournamentControlApp.TournamentType.SWISS">SWISS</option>
             </select>
         </div>
-        
+
 
     </div>
     <div class="modal-footer">

@@ -7,19 +7,15 @@ body {
 /* ==========================================================================
 My styles
 ============================================================================= */
-.my_btnlike_text{
-    display: inline-block;
-    padding: 6px 12px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: normal;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    border: 1px solid;
-    border-radius: 4px;
-    border-color: #ccc;
+.my_rival_seeding_column{
+}
+
+.my_middle_seeding_column{
+}
+
+.panel-heading-sm{
+    height: 28px;
+    padding: 4px 10px;
 }
 
 .gi-1_5x{font-size: 1.5em;}
