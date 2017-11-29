@@ -1,5 +1,5 @@
 
-<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" ><!-- show-validation -->
 
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
@@ -63,7 +63,7 @@
                              ng-repeat="participant in vm.participants | filter: isPlayer">
                             <span>
                                 <label for="player_checkbox_{{$index}}">
-                                    <input  type="checkbox"  id="player_checkbox_{{$index}}" name="player_checkbox"
+                                    <input  type="checkbox"  id="player_checkbox_{{$index}}" 
                                             checklist-model="vm.selectedPlayers" checklist-value="participant"
                                             ng-click="vm.onPlayerClick(participant)"> {{participant.player.name}}
                                 </label>

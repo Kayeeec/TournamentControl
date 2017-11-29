@@ -190,34 +190,6 @@
             return String.fromCharCode(c.charCodeAt(0) + 1);
         }
         
-        /* *** will have to be redone todo*** */
-        function init_GP_Object(participantsToChoose, oldObject, noNeedToEmpty) {
-            console.log("init_groupParticipantObject:");
-            var object = oldObject;
-            
-            if(!vm.combined.numberOfGroups || vm.combined.numberOfGroups === 0){
-                console.log("    no groups"); return {};
-            }
-            var letter = "@";
-            if(vm.combined.numberOfGroups === 1){
-                object = {"A": angular.copy(participantsToChoose)};
-
-            }else{
-                if(vm.groupNumberChanged){
-                    object = {};
-                }
-                for (var i = 0; i < vm.combined.numberOfGroups; i++) {
-                    letter = nextChar_upperCase(letter);
-                    if(noNeedToEmpty && oldObject[letter]){
-                         object[letter] = oldObject[letter];
-                    }else{
-                        object[letter] = [];
-                    }
-                }
-            }
-            return object;
-        };
-        
         function initPlayerGroupingObject(noNeedToEmpty) {
             console.log("init_groupParticipantObject:");
             if (!vm.combined.numberOfGroups || vm.combined.numberOfGroups === 0) {
@@ -273,7 +245,6 @@
                 }
             }
         }
-        
         
         vm.init_groupParticipantObject = function (noNeedToEmpty) {
             if(vm.assign_to_group_manually){
