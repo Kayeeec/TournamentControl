@@ -15,6 +15,7 @@
         vm.save = save;
         vm.contains = My.containsElemWithId;
         vm.printListOfParticipants = My.printRivals;
+        vm.myIterator = My.iterator;
 
 
         /* *** default values *** */
@@ -99,6 +100,8 @@
                 //was deselected
                 onTeamDeselect(participant);
             }
+            vm.initSeeding();
+                
 
         };
 
@@ -113,6 +116,7 @@
                 //was deselected
                 onPlayerDeselect(participant);
             }
+            vm.initSeeding();
         };
 
         var addSetToSet= function (addInto, set){
@@ -287,6 +291,7 @@
 
         /* *** onPlayerClick in participants stuff *** */
         function updatePlayersToChoose(participant) {
+            vm.groupAssignmentChanged = true;
             if(!participant){
                 //used for select/deselect all
                 vm.playersToChoose = angular.copy(vm.selectedPlayers);
@@ -300,6 +305,7 @@
             removeObjectFromArrayById(vm.playersToChoose, participant);
         }
         function updateTeamsToChoose(participant) {
+            vm.groupAssignmentChanged = true;
             if(!participant){
                 //used for select/deselect all
                 vm.teamsToChoose = angular.copy(vm.selectedTeams);
@@ -395,11 +401,9 @@
         vm.seed_manually = false;
         vm.playerSeedingObject = {};
         vm.teamSeedingObject = {};
-        var bye = Participant.getBye();
+        vm.bye = Participant.getBye();
         vm.iterator = My.iterator;
         vm.isBye = My.isBye;
-        
-        
         
         vm.pairsNumber = function(group){
             console.log("pairs number");
@@ -410,41 +414,82 @@
             console.log("     group: ", group, ", n: ", vm.teamSeedingObject[group].length, " result: ", Math.ceil(vm.teamSeedingObject[group].length/2));
             return Math.ceil(vm.teamSeedingObject[group].length/2);
         };
-
-        function init_seeding_object(groupObject,old, noNeedToEmpty) {
-            console.log("init_seeding_object");
+        
+        function init_player_seeding_object(noNeedToEmpty) {
+            console.log("init_player_seeding_object");
             var object = {};
+            var old = Object.create(vm.playerSeedingObject);
             var letter = "@";
 
             //new or changed
-            console.log("    number of groups ", vm.combined.numberOfGroups);
             for (var i = 0; i < vm.combined.numberOfGroups; i++) {
                 letter = nextChar_upperCase(letter);
-                
-                
-                if(noNeedToEmpty && old[letter] && !vm.groupAssignmentChanged){
+                console.log("   ",letter);
+                if(noNeedToEmpty && old.hasOwnProperty(letter) && !vm.groupAssignmentChanged){
                     object[letter] = angular.copy(old[letter]);
-                    console.log("    creating group ", letter,", object.letter: ", object[letter]);
                 }else{
                     object[letter] = [];
-                    console.log("    creating group ", letter,", object.letter: ", object[letter]);
+                    
                     //fill with proper number of nulls and byes
-                    var numberOfByes = getNumberOfByes(groupObject[letter].length);
-                    for (var n = 0; n < groupObject[letter].length; n++ ){
+                    var numberOfByes = getNumberOfByes(vm.groupPlayerObject[letter].length);
+                    for (var n = 0; n < vm.groupPlayerObject[letter].length; n++ ){
+                        console.log("   pushing null ", n);
                         object[letter].push(null);
                     }
-                    if(numberOfByes > 0){
-                        for (var b = 0; b < numberOfByes; b++){
-                            object[letter].push(bye);
+                    if (numberOfByes > 0) {
+                        var l = vm.groupPlayerObject[letter].length;
+                        for (var b = 0; b < numberOfByes; b++) {
+                            console.log("   pushing BYE: ", l+b);
+                            object[letter][l+b] = JSON.parse(JSON.stringify(vm.bye));
                         }
                     }
+                    
                 }
             }
-            
-            console.log("    result: ", object);
-            return object;
+            vm.playerSeedingObject = object;
+            console.log("    result - vm.playerSeedingObject ", vm.playerSeedingObject);
         }
+        
+        function init_team_seeding_object(noNeedToEmpty) {
+            console.log("init_team_seeding_object");
+            var object = {};
+            var old = Object.create(vm.teamSeedingObject);
+            var letter = "@";
 
+            //new or changed
+            for (var i = 0; i < vm.combined.numberOfGroups; i++) {
+                letter = nextChar_upperCase(letter);
+                console.log("   ",letter);
+                if(noNeedToEmpty && old.hasOwnProperty(letter) && !vm.groupAssignmentChanged){
+                    object[letter] = angular.copy(old[letter]);
+                }else{
+                    object[letter] = [];
+                    
+                    //fill with proper number of nulls and byes
+                    var numberOfByes = getNumberOfByes(vm.groupTeamObject[letter].length);
+                    for (var n = 0; n < vm.groupTeamObject[letter].length; n++ ){
+                        console.log("   pushing null ", n);
+                        object[letter].push(null);
+                    }
+                    if (numberOfByes > 0) {
+                        var l = vm.groupTeamObject[letter].length;
+                        for (var b = 0; b < numberOfByes; b++) {
+                            console.log("   pushing BYE: ", l+b);
+                            object[letter][l+b] = JSON.parse(JSON.stringify(vm.bye));
+                        }
+                    }
+                    
+                }
+            }
+            vm.teamSeedingObject = object;
+            console.log("    result - vm.teamSeedingObject ", vm.teamSeedingObject);
+        }
+        
+        /* *** 
+         *  noNeedToEmpty = true: 
+         *          old seeding remains 
+         *  
+         *    *** */
         vm.initSeeding = function (noNeedToEmpty) {
             console.log("vm.initSeeding()");
             if(!vm.seed_manually || old_and_unchanged()){
@@ -452,13 +497,33 @@
                 return;
             }
             if($scope.chosen === 1){
-                vm.playerSeedingObject = init_seeding_object(vm.groupPlayerObject,vm.playerSeedingObject, noNeedToEmpty);
+                //vm.playerSeedingObject = init_seeding_object(vm.groupPlayerObject,vm.playerSeedingObject, noNeedToEmpty);
+                init_player_seeding_object(noNeedToEmpty);
+                
+                if(vm.combined.inGroupTournamentType === 'ELIMINATION'){
+                    for (var group in vm.playerSeedingObject) {
+                        if(vm.playerSeedingObject.hasOwnProperty(group)){
+                            vm.initPlayerTree(group);
+                            console.log("  vm.coordinates: ", vm.coordinates);
+                        }
+                    }
+                }
+                
             }else{
-                vm.teamSeedingObject = init_seeding_object(vm.groupTeamObject,vm.teamSeedingObject, noNeedToEmpty);
+//                vm.teamSeedingObject = init_seeding_object(vm.groupTeamObject,vm.teamSeedingObject, noNeedToEmpty);
+                init_team_seeding_object(noNeedToEmpty);
+                
+                if(vm.combined.inGroupTournamentType === 'ELIMINATION'){
+                    for (var group in vm.teamSeedingObject) {
+                        if(vm.teamSeedingObject.hasOwnProperty(group)){
+                            vm.initTeamTree(group);
+                        }
+                    }
+                }
             }
             vm.groupAssignmentChanged = false;
         };
-
+        
         function old_and_unchanged() {
             return vm.combined.id && !vm.participantsTouched && !vm.groupNumberChanged && !vm.groupAssignmentChanged;
         };
@@ -487,7 +552,8 @@
                 return (n % 2);
             }
             if(vm.combined.inGroupTournamentType === 'ELIMINATION'){
-                N = My.getN(n);
+                var N = My.getN(n);
+                console.log("N: ",N,", n: ",n,", byes: ",N-n);
                 return N - n;
             }
         }
@@ -581,6 +647,180 @@
             }
             
         };
+        
+        /* *** ELIMINATION seeding section *** */
+        /* *** ELIMINATION seeding section *** */
+        vm.coordinates = {};
+        
+        function nodeHTML(i,A,B, group) {
+            var id = i+"_"+group;
+            return  '<div id="'+id+'" class="tree-node-table not_a_first_round">'+
+                        '<div name="A" class="tree-node-table-A">'+vm.getName(A)+'</div>'+
+                        '<div name="B" class="tree-node-table-B">'+vm.getName(B)+'</div>'+
+                     '</div>';
+        }
+        function under_dragNodeHTML(i, N, seeding, group){
+            var aName = vm.getName(seeding[i]);
+            var bName = vm.getName(seeding[N - 1 - i]);
+            var id = i+"_"+group;
+            return  '<div id="'+id+'" class="tree-node-table .this-is-under">'+
+                        '<div name="A" class="tree-node-table-A">'+aName+'</div>'+
+                        '<div name="B" class="tree-node-table-B">'+bName+'</div>'+
+                     '</div>';
+        }
+        function parentIndex(i, N) {
+            if(i===N-2) return -1;
+            return Math.floor((i + N - 2)/2)+1;
+        }
+        function player_tree(group) {
+            console.log(" redrawing tree...");
+            
+            var containerId = '#player_tree_'+group;
+            console.log("containerId: ", containerId);
+//            var N = vm.playerSeedingObject[group].length;
+            var N = My.getN(vm.groupPlayerObject[group].length);
+            
+            var config = {container: containerId, rootOrientation: "EAST", nodeAlign: "BOTTOM",
+                connectors: {type: 'step'}};
+            if(N<=2){
+                var only = {innerHTML: under_dragNodeHTML(0, N, vm.playerSeedingObject[group])};
+                var nodes = [config, only];
+                return nodes;
+            }
+            
+            var numberOfNodes = (N-1);
+            var numberOfSelectableNodes = N/2;
+            
+            var rootID = numberOfNodes-1;
+            var root = {innerHTML: nodeHTML(rootID, '', '', group)};
+            var nodes = [];
+            
+            nodes[rootID]=root;
+            for (var i = rootID-1 ; i >= 0; i--) {
+                var node;
+                if(i>=numberOfSelectableNodes){//parents
+                    node = {parent: nodes[parentIndex(i, N)], innerHTML: nodeHTML(i, null, null, group)};
+                }else{//selectable
+                    node = {parent: nodes[parentIndex(i, N)], innerHTML: under_dragNodeHTML(i, N, vm.playerSeedingObject[group], group)};
+                }
+                nodes[i]=node;
+            }
+            nodes.push(config);
+            nodes.reverse();
+            return nodes;
+        }
+        
+        function team_tree(group) {
+            console.log(" redrawing tree...");
+            
+            var containerId = '#team_tree_'+group;
+            console.log("containerId: ", containerId);
+//            var N = vm.teamSeedingObject[group].length;
+            var N = My.getN(vm.groupTeamObject[group].length);
+            
+            var config = {container: containerId, rootOrientation: "EAST", nodeAlign: "BOTTOM",
+                connectors: {type: 'step'}};
+            if(N<=2){
+                var only = {innerHTML: under_dragNodeHTML(0, N, vm.teamSeedingObject[group])};
+                var nodes = [config, only];
+                return nodes;
+            }
+            
+            var numberOfNodes = (N-1);
+            var numberOfSelectableNodes = N/2;
+            
+            var rootID = numberOfNodes-1;
+            var root = {innerHTML: nodeHTML(rootID, '', '', group)};
+            var nodes = [];
+            
+            nodes[rootID]=root;
+            for (var i = rootID-1 ; i >= 0; i--) {
+                var node;
+                if(i>=numberOfSelectableNodes){//parents
+                    node = {parent: nodes[parentIndex(i, N)], innerHTML: nodeHTML(i, null, null, group)};
+                }else{//selectable
+                    node = {parent: nodes[parentIndex(i, N)], innerHTML: under_dragNodeHTML(i, N, vm.teamSeedingObject[group], group)};
+                }
+                nodes[i]=node;
+            }
+            nodes.push(config);
+            nodes.reverse();
+            return nodes;
+        }
+        
+        vm.initPlayerTree = function (group) {
+            angular.element(document).ready(function () {
+                if (vm.playerSeedingObject.hasOwnProperty(group)) {
+                    new Treant(player_tree(group));
+                    getPlayerCoordinatesAndSize(group);
+                }
+            });
+        };
+        
+        vm.initTeamTree = function (group) {
+            angular.element(document).ready(function () {
+                if (vm.teamSeedingObject.hasOwnProperty(group)) {
+                    new Treant(team_tree(group));
+                    getTeamCoordinatesAndSize(group);
+                }
+            });
+        };
+        
+        function getElementCoordinates(id, group){
+            var el = document.getElementById(id+"_"+group);
+            var parent = angular.element(el).parent();
+            var node = {top: parent.css("top"), left: parent.css("left")};
+            vm.coordinates[group][id]=node;
+            console.log("    vm.coordinates[",group,"][",id,"]: ", vm.coordinates[group][id]);
+        }
+        
+        function getPlayerCoordinatesAndSize(group) {
+            console.log("getPlayerCoordinatesAndSize()");
+            var N = My.getN(vm.groupPlayerObject[group].length);
+            vm.coordinates[group] = [];
+            vm.coordinates[group] = Array.apply(null, Array(N/2)).map(function () {});
+            console.log("    N: ", N, ", group: ", group);
+            for (var i = 0; i < N/2; i++) {
+                if(!vm.coordinates[group][i]){
+                    getElementCoordinates(i,group);
+                }
+            }
+            
+            //is this necessary?
+            vm.treeSize = {};
+            var t = angular.element(document.getElementById("player_tree_"+group));
+            vm.treeSize["player_tree_"+group] = {};
+            vm.treeSize["player_tree_"+group]["width"] = t.css("width");
+            vm.treeSize["player_tree_"+group]["height"] = t.css("height"); 
+        }
+        
+        function getTeamCoordinatesAndSize(group) {
+            var N = vm.teamSeedingObject[group].length;
+            vm.coordinates[group] = [];
+            vm.coordinates[group] = Array.apply(null, Array(N/2)).map(function () {});
+            for (var i = 0; i < N/2; i++) {
+                if(!vm.coordinates[group][i]){
+                    getElementCoordinates(i,group);
+                }
+            }
+            //is this necessary?
+            vm.treeSize = {};
+            var t = angular.element(document.getElementById("team_tree_"+group));
+            vm.treeSize["team_tree_"+group] = {};
+            vm.treeSize["team_tree_"+group].width = t.css("width");
+            vm.treeSize["team_tree_"+group].height = t.css("height");
+        }
+        
+        vm.getSelectedParticipants = function (group) {
+            if($scope.chosen === 1) return vm.playerSeedingObject[group];
+            if($scope.chosen === 2) return vm.teamSeedingObject[group];
+        };
+        
+        
+        
+        /* *** end - ELIMINATION seeding section *** */
+        /* *** end - ELIMINATION seeding section *** */
+        
         
 
 

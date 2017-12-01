@@ -236,10 +236,10 @@
                                             </ui-select>
                                         </td>
                                         <td class="my_middle_seeding_column"><p class="text-center">vs.</p></td>
-                                        <td class="my_rival_seeding_column">
-                                            <ui-select ng-model="vm.playerSeedingObject[group][vm.getRivalIndex(group, i)]" theme="bootstrap"
+                                        <td class="my_rival_seeding_column" ng-init="rivalIndex = vm.getRivalIndex(group, i)">
+                                            <ui-select ng-model="vm.playerSeedingObject[group][rivalIndex]" theme="bootstrap"
                                             ng-disabled="vm.isBye($select.selected)"
-                                            ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][vm.getRivalIndex(group, i)], vm.getRivalIndex(group, i), group)">
+                                            ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][rivalIndex], rivalIndex, group)">
                                                 <ui-select-match placeholder="Select or search a person in the list...">{{$select.selected.name}}</ui-select-match>
                                                 <ui-select-choices repeat="item in vm.groupPlayerObject[group] | filter: $select.search">
                                                     <div class="row">
@@ -281,10 +281,10 @@
                                             </ui-select>
                                         </td>
                                         <td class="my_middle_seeding_column"><p class="text-center">vs.</p></td>
-                                        <td class="my_rival_seeding_column">
-                                            <ui-select ng-model="vm.teamSeedingObject[group][vm.getRivalIndex(group, i)]" theme="bootstrap"
+                                        <td class="my_rival_seeding_column" ng-init="rivalIndex = vm.getRivalIndex(group, i)">
+                                            <ui-select ng-model="vm.teamSeedingObject[group][rivalIndex]" theme="bootstrap"
                                             ng-disabled="vm.isBye($select.selected)"
-                                            ng-change="vm.onTeamSelect({{vm.teamSeedingObject[group]}}, vm.teamSeedingObject[group][vm.getRivalIndex(group, i)], vm.getRivalIndex(group, i), group)">
+                                            ng-change="vm.onTeamSelect({{vm.teamSeedingObject[group]}}, vm.teamSeedingObject[group][rivalIndex], rivalIndex, group)">
                                                 <ui-select-match placeholder="Select or search a team in the list...">{{$select.selected.name}}</ui-select-match>
                                                 <ui-select-choices repeat="item in vm.groupTeamObject[group] | filter: $select.search">
                                                     <div class="row">
@@ -307,6 +307,141 @@
                    </div>
 
                    <div ng-if="vm.combined.inGroupTournamentType === 'ELIMINATION'">
+                       <div  ng-if="chosen === 1">
+                           <div class="panel panel-info" ng-repeat="(group, seeding) in vm.playerSeedingObject">
+                               <div class="panel-heading panel-heading-sm">Group {{group}} </div>
+                            <div class="panel-body">   
+                           <div class="my-wrap " > 
+                               <div ng-if="vm.groupPlayerObject[group].length < 3 "
+                                    class="alert alert-warning">
+                                   <!--TODO: data-translate -->
+                                   Group {{group}}: for <b>custom seeding</b> at least <b>three</b>  participants need to be assigned to this group. 
+                                   <div ng-hide="true" id="{{'player_tree_'+group}}"></div>
+                               </div>
+
+                               <div ng-if="vm.groupPlayerObject[group].length >= 3 ">
+                                   <div id="{{'player_tree_'+group}}"></div>
+                                   
+<!--                                   
+                                    <div class="panel panel-info">
+                                       <div class="panel-heading panel-heading-sm">Group {{group}} </div>
+                                       <div class="panel-body">
+
+                                       </div>
+                                   </div>
+-->
+
+
+                                   <div ng-init="vm.initSeeding(!vm.groupNumberChanged && !vm.playersChanged && !vm.teamsChanged && !vm.groupAssignmentChanged)"></div>
+                                   <!--generating tables-->
+                                   <div ng-init="N = vm.playerSeedingObject[group].length"></div>
+                                   <div ng-repeat="i in vm.myIterator(0,N/2,1)" class="my-dropzones-container">
+                                       <div id="player_over_{{i}}" class="tree-node-table this-is-over" 
+                                            style="top: {{vm.coordinates[group][i].top}}; left: {{vm.coordinates[group][i].left}}">
+                                           <div name="A" class="tree-node-table-A">
+                                               <ui-select ng-model="vm.playerSeedingObject[group][i]" theme="bootstrap"
+                                                          ng-disabled="vm.isBye($select.selected)" 
+                                                          ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][i], i, group)">
+                                                   <ui-select-match placeholder="Select or search... ">{{$select.selected.name}}</ui-select-match>
+                                                   <ui-select-choices repeat="item in vm.groupPlayerObject[group] | filter: $select.search track by item.id"
+                                                                      position='down'>
+                                                       <div class="row">
+                                                           <div class="pull-left text">
+                                                               <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                               &nbsp;
+                                                           </div>
+                                                           <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                       </div>
+                                                   </ui-select-choices>
+                                               </ui-select>
+
+                                           </div>
+                                           <div name="B" class="tree-node-table-B"  ng-init="rivalIndex = vm.getRivalIndex(group, i)" >
+                                               <ui-select ng-model="vm.playerSeedingObject[group][rivalIndex]" theme="bootstrap"
+                                                          ng-disabled="vm.isBye($select.selected)"
+                                                          ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][rivalIndex], rivalIndex, group)">
+                                                   <ui-select-match placeholder="Select or search...">{{$select.selected.name}}</ui-select-match>
+                                                   <ui-select-choices repeat="item in vm.groupPlayerObject[group] | filter: $select.search track by item.id"
+                                                                      position='down'> 
+                                                       <div class="row">
+                                                           <div class="pull-left text">
+                                                               <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                               &nbsp;
+                                                           </div>
+                                                           <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                       </div>
+                                                   </ui-select-choices>
+                                               </ui-select>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                                </div>
+                               </div>
+                       </div>
+                       
+                       
+                       
+                       <div  ng-if="chosen === 2">
+                           <div class="my-wrap " ng-repeat="(group, seeding) in vm.teamSeedingObject"> 
+                               <div ng-if="vm.groupTeamObject[group].length < 3 "
+                                    class="alert alert-warning">
+                                   <!--TODO: data-translate -->
+                                   Group {{group}}: for <b>custom seeding</b> at least <b>three</b>  participants need to be assigned to this group. 
+                                   <!--<div ng-hide="true" id="{{'team_tree_'+group}}"></div>-->
+                               </div>
+
+                               <div ng-if="vm.groupTeamObject[group].length >= 3 ">
+                                   <div id="{{'team_tree_'+group}}"></div>
+
+                                   <div ng-init="vm.initSeeding(!vm.groupNumberChanged && !vm.teamsChanged && !vm.teamsChanged && !vm.groupAssignmentChanged)"></div>
+                                   <!--generating tables-->
+                                   <div ng-init="N = vm.teamSeedingObject[group].length"></div>
+                                   <div ng-repeat="i in vm.myIterator(0,N/2,1)" class="my-dropzones-container">
+                                       <div id="team_over_{{i}}" class="tree-node-table this-is-over" 
+                                            style="top: {{vm.coordinates[group][i].top}}; left: {{vm.coordinates[group][i].left}}">
+                                           <div name="A" class="tree-node-table-A">
+                                               <ui-select ng-model="vm.teamSeedingObject[group][i]" theme="bootstrap"
+                                                          ng-disabled="vm.isBye($select.selected)" 
+                                                          ng-change="vm.onTeamSelect({{vm.teamSeedingObject[group]}}, vm.teamSeedingObject[group][i], i, group)">
+                                                   <ui-select-match placeholder="Select or search... ">{{$select.selected.name}}</ui-select-match>
+                                                   <ui-select-choices repeat="item in vm.groupTeamObject[group] | filter: $select.search track by item.id"
+                                                                      position='down'>
+                                                       <div class="row">
+                                                           <div class="pull-left text">
+                                                               <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                               &nbsp;
+                                                           </div>
+                                                           <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                       </div>
+                                                   </ui-select-choices>
+                                               </ui-select>
+
+                                           </div>
+                                           <div name="B" class="tree-node-table-B"  ng-init="rivalIndex = vm.getRivalIndex(group, i)" >
+                                               <ui-select ng-model="vm.teamSeedingObject[group][rivalIndex]" theme="bootstrap"
+                                                          ng-disabled="vm.isBye($select.selected)" 
+                                                          ng-change="vm.onTeamSelect({{vm.teamSeedingObject[group]}}, vm.teamSeedingObject[group][rivalIndex], rivalIndex, group)">
+                                                   <ui-select-match placeholder="Select or search...">{{$select.selected.name}}</ui-select-match>
+                                                   <ui-select-choices repeat="item in vm.groupTeamObject[group] | filter: $select.search track by item.id"
+                                                                      position='down'>
+                                                       <div class="row">
+                                                           <div class="pull-left text">
+                                                               <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                               &nbsp;
+                                                           </div>
+                                                           <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                       </div>
+                                                   </ui-select-choices>
+                                               </ui-select>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                       
                    </div>
                </div>
            </div>

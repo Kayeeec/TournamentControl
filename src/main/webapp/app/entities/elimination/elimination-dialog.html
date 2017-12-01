@@ -260,8 +260,8 @@
                 
                 <div class="my-wrap" ng-if="chosen===1" name="player_seeding">
                     <div id="player_tree"></div>
+                    <!--hidden generated tables-->
                     <div ng-hide="true" ng-init="vm.preparePlayerSeeding()"> </div>
-
                     <div ng-repeat="i in vm.myIterator(0,vm.N/2,1)" class="my-dropzones-container">
                         <div id="player_over_{{i}}" class="tree-node-table this-is-over" 
                              style="top: {{vm.coordinates[i].top}}; left: {{vm.coordinates[i].left}}">
@@ -291,6 +291,7 @@
                             </div>
                         </div>
                     </div>
+                    
                 </div>
                 
                 <div class="my-wrap" ng-if="chosen===2" name="team_seeding">
