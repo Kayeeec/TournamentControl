@@ -47,8 +47,13 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('combined');
                     $translatePartialLoader.addPart('tournamentType');
-                    $translatePartialLoader.addPart('tournamentType');
                     $translatePartialLoader.addPart('global');
+                    $translatePartialLoader.addPart('swiss');
+                    $translatePartialLoader.addPart('allVersusAll');
+                    $translatePartialLoader.addPart('tournament');
+                    $translatePartialLoader.addPart('setSettings');
+                    $translatePartialLoader.addPart('game');
+                    $translatePartialLoader.addPart('gameSet');
                     return $translate.refresh();
                 }]
             }

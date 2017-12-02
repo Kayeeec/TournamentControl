@@ -16,11 +16,12 @@
         vm.contains = My.containsElemWithId;
         vm.printListOfParticipants = My.printRivals;
         vm.myIterator = My.iterator;
+        vm.set_group_numberOfFields = false;
 
 
         /* *** default values *** */
         vm.combined.inGroupTournamentType = vm.combined.inGroupTournamentType || "ALL_VERSUS_ALL";
-        vm.combined.playoffType = vm.combined.playoffType || "ELIMINATION";
+        vm.combined.playoffType = vm.combined.playoffType || "ELIMINATION_SINGLE";
         vm.combined.numberOfWinnersToPlayoff = vm.combined.numberOfWinnersToPlayoff || 1;
         vm.combined.numberOfGroups = vm.combined.numberOfGroups || 1;
         /* *** end - default values *** */
@@ -187,6 +188,7 @@
         vm.numberOfGroupsChanged = function () {
             vm.groupNumberChanged = true;
             vm.init_groupParticipantObject();
+            vm.initPlayingFields();
             
         };
         function nextChar_upperCase(c) {
@@ -195,16 +197,13 @@
         }
         
         function initPlayerGroupingObject(noNeedToEmpty) {
-            console.log("init_groupParticipantObject:");
             if (!vm.combined.numberOfGroups || vm.combined.numberOfGroups === 0) {
-                console.log("    no groups");
                 return;
             }
             if (vm.combined.numberOfGroups === 1) {
                 vm.groupPlayerObject = {};
                 vm.groupPlayerObject["A"] = angular.copy(vm.selectedPlayers);
                 vm.playersToChoose = [];
-                console.log("   groupPlayerObject: ", vm.groupPlayerObject);
                 return;
             }
             var oldObject = Object.create(vm.groupPlayerObject);
@@ -223,9 +222,7 @@
         }
         
         function initTeamGroupingObject(noNeedToEmpty) {
-            console.log("init_groupParticipantObject:");
             if (!vm.combined.numberOfGroups || vm.combined.numberOfGroups === 0) {
-                console.log("    no groups");
                 return;
             }
             if (vm.combined.numberOfGroups === 1) {
@@ -406,12 +403,9 @@
         vm.isBye = My.isBye;
         
         vm.pairsNumber = function(group){
-            console.log("pairs number");
             if($scope.chosen === 1){
-                console.log("     group: ", group, ", n: ", vm.playerSeedingObject[group].length, " result: ", Math.ceil(vm.playerSeedingObject[group].length/2));
              return Math.ceil(vm.playerSeedingObject[group].length/2);
             }
-            console.log("     group: ", group, ", n: ", vm.teamSeedingObject[group].length, " result: ", Math.ceil(vm.teamSeedingObject[group].length/2));
             return Math.ceil(vm.teamSeedingObject[group].length/2);
         };
         
@@ -493,18 +487,16 @@
         vm.initSeeding = function (noNeedToEmpty) {
             console.log("vm.initSeeding()");
             if(!vm.seed_manually || old_and_unchanged()){
-                console.log("    nothing to init - seed manually = ", vm.seed_manually, ", old and unchanged = ", old_and_unchanged());
                 return;
             }
             if($scope.chosen === 1){
                 //vm.playerSeedingObject = init_seeding_object(vm.groupPlayerObject,vm.playerSeedingObject, noNeedToEmpty);
                 init_player_seeding_object(noNeedToEmpty);
                 
-                if(vm.combined.inGroupTournamentType === 'ELIMINATION'){
+                if(vm.combined.inGroupTournamentType === 'ELIMINATION_SINGLE' || vm.combined.inGroupTournamentType === 'ELIMINATION_DOUBLE'){
                     for (var group in vm.playerSeedingObject) {
                         if(vm.playerSeedingObject.hasOwnProperty(group)){
                             vm.initPlayerTree(group);
-                            console.log("  vm.coordinates: ", vm.coordinates);
                         }
                     }
                 }
@@ -513,7 +505,7 @@
 //                vm.teamSeedingObject = init_seeding_object(vm.groupTeamObject,vm.teamSeedingObject, noNeedToEmpty);
                 init_team_seeding_object(noNeedToEmpty);
                 
-                if(vm.combined.inGroupTournamentType === 'ELIMINATION'){
+                if(vm.combined.inGroupTournamentType === 'ELIMINATION_SINGLE' || vm.combined.inGroupTournamentType === 'ELIMINATION_DOUBLE'){
                     for (var group in vm.teamSeedingObject) {
                         if(vm.teamSeedingObject.hasOwnProperty(group)){
                             vm.initTeamTree(group);
@@ -538,7 +530,7 @@
                         vm.teamSeedingObject[groupTournament.name] = filterFilter(seeding, {player : null});
                     }
                     function onGetSeedingError(error) {
-                        console.log('getSeeding() - error occured: ', error.data.message);
+                        console.log('    getSeeding() - error occured: ', error.data.message);
                     }
                 }
             }
@@ -551,9 +543,9 @@
             if(vm.combined.inGroupTournamentType === 'SWISS'){
                 return (n % 2);
             }
-            if(vm.combined.inGroupTournamentType === 'ELIMINATION'){
+            if(vm.combined.inGroupTournamentType === 'ELIMINATION_SINGLE' || vm.combined.inGroupTournamentType === 'ELIMINATION_DOUBLE'){
                 var N = My.getN(n);
-                console.log("N: ",N,", n: ",n,", byes: ",N-n);
+                console.log("getNumberOfByes(n)___ N: ",N,", n: ",n,", byes: ",N-n);
                 return N - n;
             }
         }
@@ -676,7 +668,6 @@
             console.log(" redrawing tree...");
             
             var containerId = '#player_tree_'+group;
-            console.log("containerId: ", containerId);
 //            var N = vm.playerSeedingObject[group].length;
             var N = My.getN(vm.groupPlayerObject[group].length);
             
@@ -714,7 +705,6 @@
             console.log(" redrawing tree...");
             
             var containerId = '#team_tree_'+group;
-            console.log("containerId: ", containerId);
 //            var N = vm.teamSeedingObject[group].length;
             var N = My.getN(vm.groupTeamObject[group].length);
             
@@ -771,15 +761,12 @@
             var parent = angular.element(el).parent();
             var node = {top: parent.css("top"), left: parent.css("left")};
             vm.coordinates[group][id]=node;
-            console.log("    vm.coordinates[",group,"][",id,"]: ", vm.coordinates[group][id]);
         }
         
         function getPlayerCoordinatesAndSize(group) {
-            console.log("getPlayerCoordinatesAndSize()");
             var N = My.getN(vm.groupPlayerObject[group].length);
             vm.coordinates[group] = [];
             vm.coordinates[group] = Array.apply(null, Array(N/2)).map(function () {});
-            console.log("    N: ", N, ", group: ", group);
             for (var i = 0; i < N/2; i++) {
                 if(!vm.coordinates[group][i]){
                     getElementCoordinates(i,group);
@@ -821,11 +808,192 @@
         /* *** end - ELIMINATION seeding section *** */
         /* *** end - ELIMINATION seeding section *** */
         
-        
-
-
-
         /** *** end - seeding stuff *** **/
+        
+        /* *** ADVANCED GROUP SETTINGS *** */
+        /* *** ADVANCED GROUP SETTINGS *** */
+        vm.groupSettings = {
+            pointsForWinning: 1,
+            pointsForLosing: 0,
+            pointsForTie: 0.5,
+            setsToWin: 1,
+            tiesAllowed: false,
+            setSettings: {id: null, maxScore: null, minReachedScore: null, leadByPoints: null}, //this will be an object
+            playingFields: {}, //this wil be an object with key for each group
+            
+            color: false, //if swiss
+            numberOfMutualMatches: 1,
+            
+            chosenSetSettings: 'maxScore'
+        };
+        
+        /* *** run only once at start *** */
+        function groupSettingsInit() {
+            if(!vm.combined.id){
+                //new, leave default values; maybe initPlayingFields,
+                vm.initPlayingFields();
+                return;
+            }
+            //get the old ones 
+            if(vm.combined.groups && vm.combined.groups.length > 0){
+                var groupTournament = vm.combined.groups[0];
+                vm.groupSettings.pointsForWinning = groupTournament.pointsForWinning;
+                vm.groupSettings.pointsForLosing = groupTournament.pointsForLosing;
+                vm.groupSettings.pointsForTie = groupTournament.pointsForTie;
+                vm.groupSettings.setsToWin = groupTournament.setsToWin;
+                vm.groupSettings.tiesAllowed = groupTournament.tiesAllowed;
+                vm.groupSettings.setSettings = JSON.parse(JSON.stringify(groupTournament.setSettings));
+                
+                if(groupTournament.setSettings.leadByPoints !== null 
+                    || groupTournament.setSettings.minReachedScore !== null){
+                    vm.groupSettings.chosenSetSettings = 'leadByPoints';
+                }else{
+                   vm.groupSettings.chosenSetSettings = 'maxScore'; 
+                }
+                
+                if(vm.combined.inGroupTournamentType === 'ALL_VERSUS_ALL'){
+                    vm.groupSettings.numberOfMutualMatches = groupTournament.numberOfMutualMatches;
+                }
+                
+                if(vm.combined.inGroupTournamentType === 'SWISS'){
+                    vm.groupSettings.color = groupTournament.color;
+                }
+                
+                //init old field counts
+                for (var i = 0; i < vm.combined.groups.length; i++) {
+                    var group = vm.combined.groups[i];
+                    vm.groupSettings.playingFields[group.name] = group.playingFields;
+                }
+                console.log("old group settings: ", vm.groupSettings);
+            }
+        }
+        
+        vm.initPlayingFields = function () {
+            var letter = "@";
+            vm.groupSettings.playingFields = {};
+            for (var i = 0; i < vm.combined.numberOfGroups; i++) {
+                letter = nextChar_upperCase(letter);
+                vm.groupSettings.playingFields[letter] = 1;
+            }
+            console.log("vm.groupSettings.playingFields: ", vm.groupSettings.playingFields);
+        };
+        
+        groupSettingsInit();
+        
+        
+        
+        function resolveSetSettings(setsettings) {
+            var settings = JSON.parse(JSON.stringify(setsettings));
+            if (settings.chosenSetSettings === 'maxScore') {
+                settings.setSettings.leadByPoints = null;
+                settings.setSettings.minReachedScore = null;
+            }
+            if (settings.chosenSetSettings === 'leadByPoints') {
+                settings.setSettings.maxScore = null;
+            }
+            return settings;
+        }
+    /* END - setSettings stuff */
+    
+    /* *** end - ADVANCED GROUP SETTINGS *** */
+    /* *** end - ADVANCED GROUP SETTINGS *** */
+    
+        /* *** advanced playoff settings *** */
+        vm.playoffPointsSame = true;
+        vm.playoffSetSettingsSame = true;
+        vm.playoffSettings = {
+            pointsForWinning: 1,
+            pointsForLosing: 0,
+            pointsForTie: 0.5,
+            setsToWin: 1,
+            tiesAllowed: false,
+            setSettings: {id: null, maxScore: null, minReachedScore: null, leadByPoints: null}, //this will be an object
+            playingFields: 1, //this wil be an object with key for each group
+
+            color: false, //if swiss
+            numberOfMutualMatches: 1,
+
+            chosenSetSettings: 'maxScore'
+        };
+        
+        function playoffSettingsInit() {
+            if(!vm.combined.id){
+                //new, leave default values;
+                return;
+            }
+            //get the old ones 
+            if(vm.combined.playoff){
+                vm.playoffSettings.pointsForWinning = vm.combined.playoff.pointsForWinning;
+                vm.playoffSettings.pointsForLosing = vm.combined.playoff.pointsForLosing;
+                vm.playoffSettings.pointsForTie = vm.combined.playoff.pointsForTie;
+                vm.playoffSettings.setsToWin = vm.combined.playoff.setsToWin;
+                vm.playoffSettings.tiesAllowed = vm.combined.playoff.tiesAllowed;
+                vm.playoffSettings.playingFields = vm.combined.playoff.playingFields;
+                vm.playoffSettings.setSettings = JSON.parse(JSON.stringify(vm.combined.playoff.setSettings));
+                
+                if(vm.combined.playoff.setSettings.leadByPoints !== null 
+                    || vm.combined.playoff.setSettings.minReachedScore !== null){
+                    vm.playoffSettings.chosenSetSettings = 'leadByPoints';
+                }else{
+                   vm.playoffSettings.chosenSetSettings = 'maxScore'; 
+                }
+                
+                if(vm.combined.playoffType === 'ALL_VERSUS_ALL'){
+                    vm.playoffSettings.numberOfMutualMatches = vm.combined.playoff.numberOfMutualMatches;
+                }
+                
+                if(vm.combined.playoffType === 'SWISS'){
+                    vm.playoffSettings.color = vm.combined.playoff.color;
+                }
+                
+                console.log("old playof settings: ", vm.playoffSettings);
+            }
+        }
+        playoffSettingsInit();
+        
+        /* *** end - advanced playoff settings *** */
+        
+        function buildCombinedDTO() {
+            var dto = {
+                combined: vm.combined,
+                groupSettings: vm.groupSettings,
+                playoffSettings: vm.playoffSettings,
+                grouping: null,
+                seeding: null
+            };
+            //nulling not chosen setSettings attributes
+            dto.groupSettings.setSettings = resolveSetSettings(dto.groupSettings.setSettings);
+            dto.playoffSettings.setSettings = resolveSetSettings(dto.playoffSettings.setSettings);
+            
+            //resolving same attributes 
+            if(vm.playoffPointsSame){
+                dto.playoffSettings.pointsForWinning = vm.groupSettings.pointsForWinning;
+                dto.playoffSettings.pointsForLosing = vm.groupSettings.pointsForLosing;
+                dto.playoffSettings.pointsForTie = vm.groupSettings.pointsForTie;
+            }
+            if(vm.playoffSetSettingsSame){
+                dto.playoffSettings.setSettings = JSON.parse(JSON.stringify(vm.groupSettings.setSettings));
+            }
+            
+            if(vm.assign_to_group_manually){
+                if($scope.chosen === 1){
+                    dto.grouping = JSON.parse(JSON.stringify(vm.groupPlayerObject));
+                }else{
+                    dto.grouping = JSON.parse(JSON.stringify(vm.groupTeamObject));
+                }
+            }
+            
+            if(vm.seed_manually){
+                if($scope.chosen === 1){
+                    dto.seeding = JSON.parse(JSON.stringify(vm.playerSeedingObject));
+                }else{
+                    dto.seeding = JSON.parse(JSON.stringify(vm.teamSeedingObject));
+                }
+            }
+            
+            return dto;
+        };
+        
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -837,10 +1005,13 @@
 
         function save () {
             vm.isSaving = true;
+            selectParticipants();
+            var combinedDTO = buildCombinedDTO();
+            
             if (vm.combined.id !== null) {
-                Combined.update(vm.combined, onSaveSuccess, onSaveError);
+                Combined.update(combinedDTO, onSaveSuccess, onSaveError);
             } else {
-                Combined.save(vm.combined, onSaveSuccess, onSaveError);
+                Combined.save(combinedDTO, onSaveSuccess, onSaveError);
             }
         }
 

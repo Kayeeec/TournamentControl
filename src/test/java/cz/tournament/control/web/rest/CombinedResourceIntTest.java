@@ -59,10 +59,10 @@ public class CombinedResourceIntTest {
     private static final Integer UPDATED_NUMBER_OF_GROUPS = 2;
 
     private static final TournamentType DEFAULT_PLAYOFF_TYPE = TournamentType.ALL_VERSUS_ALL;
-    private static final TournamentType UPDATED_PLAYOFF_TYPE = TournamentType.ELIMINATION;
+    private static final TournamentType UPDATED_PLAYOFF_TYPE = TournamentType.ELIMINATION_SINGLE;
 
     private static final TournamentType DEFAULT_IN_GROUP_TOURNAMENT_TYPE = TournamentType.ALL_VERSUS_ALL;
-    private static final TournamentType UPDATED_IN_GROUP_TOURNAMENT_TYPE = TournamentType.ELIMINATION;
+    private static final TournamentType UPDATED_IN_GROUP_TOURNAMENT_TYPE = TournamentType.ELIMINATION_SINGLE;
 
     @Autowired
     private CombinedRepository combinedRepository;

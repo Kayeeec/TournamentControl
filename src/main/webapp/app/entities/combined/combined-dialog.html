@@ -89,35 +89,259 @@
         </div>
 <!-- ********* end - PARTICIPANTS ********* -->
 
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.combined.numberOfGroups" for="field_numberOfGroups">Number Of Groups</label>
-            <input type="number" class="form-control" name="numberOfGroups" id="field_numberOfGroups"
-                    ng-model="vm.combined.numberOfGroups"
-                    ng-change="vm.numberOfGroupsChanged()"
-                    required min="1"/>
-            <div ng-show="editForm.numberOfGroups.$invalid">
-                <p class="help-block"
-                    ng-show="editForm.numberOfGroups.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.numberOfGroups.$error.min" data-translate="entity.validation.min" translate-value-min="1">
-                    This field should be at least 1.
-                </p>
-                <p class="help-block"
-                    ng-show="editForm.numberOfGroups.$error.number" data-translate="entity.validation.number">
-                    This field should be a number.
-                </p>
+<br/>
+<h4>Group Settings</h4>
+<hr/>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.combined.numberOfGroups" for="field_numberOfGroups">Number Of Groups</label>
+                <input type="number" class="form-control" name="numberOfGroups" id="field_numberOfGroups"
+                       ng-model="vm.combined.numberOfGroups"
+                       ng-change="vm.numberOfGroupsChanged()"
+                       required min="1" max="26"/>
+                <div ng-show="editForm.numberOfGroups.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.numberOfGroups.$error.required" data-translate="entity.validation.required">
+                        This field is required.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfGroups.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfGroups.$error.max" data-translate="entity.validation.max" translate-value-max="26">
+                        This field should be at most 26.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfGroups.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+            </div>
+            <div class="form-group col-md-8">
+                <label class="control-label" data-translate="tournamentControlApp.combined.inGroupTournamentType" for="field_inGroupTournamentType">In Group Tournament Type</label>
+                <select class="form-control" name="inGroupTournamentType" ng-model="vm.combined.inGroupTournamentType" id="field_inGroupTournamentType">
+                    <option value="ALL_VERSUS_ALL" data-translate="tournamentControlApp.TournamentType.ALL_VERSUS_ALL">ALL_VERSUS_ALL</option>
+                    <option value="ELIMINATION_SINGLE" data-translate="tournamentControlApp.TournamentType.ELIMINATION_SINGLE">ELIMINATION_SINGLE</option>
+                    <option value="ELIMINATION_DOUBLE" data-translate="tournamentControlApp.TournamentType.ELIMINATION_DOUBLE">ELIMINATION_DOUBLE</option>
+                    <option value="SWISS" data-translate="tournamentControlApp.TournamentType.SWISS">SWISS</option>
+                </select>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="tournamentControlApp.combined.inGroupTournamentType" for="field_inGroupTournamentType">In Group Tournament Type</label>
-            <select class="form-control" name="inGroupTournamentType" ng-model="vm.combined.inGroupTournamentType" id="field_inGroupTournamentType">
-                <option value="ALL_VERSUS_ALL" data-translate="tournamentControlApp.TournamentType.ALL_VERSUS_ALL">ALL_VERSUS_ALL</option>
-                <option value="ELIMINATION" data-translate="tournamentControlApp.TournamentType.ELIMINATION">ELIMINATION</option>
-                <option value="SWISS" data-translate="tournamentControlApp.TournamentType.SWISS">SWISS</option>
-            </select>
+        <div class="row">
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" 
+                       for="field_pointsForWinning">
+                    Points For Winning
+                </label>
+                <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
+                       ng-model="vm.groupSettings.pointsForWinning"
+                       />
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" 
+                       for="field_pointsForLosing">
+                    Points For Losing
+                </label>
+                <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
+                       ng-model="vm.groupSettings.pointsForLosing"
+                       />
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" 
+                       for="field_pointsForTie">
+                    Points For Tie
+                </label>
+                <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
+                       ng-model="vm.groupSettings.pointsForTie" ng-disabled="!vm.groupSettings.tiesAllowed"
+                       />
+            </div>
+            
+            <div class="form-group col-xs-6 col-md-4" >
+                <label class="control-label" data-translate="tournamentControlApp.tournament.setsToWin" 
+                       for="field_setsToWin">
+                    Sets To Win
+                </label>
+                <input type="number" pattern="" min="1" class="form-control" name="setsToWin" id="field_setsToWin"
+                       ng-model="vm.groupSettings.setsToWin"
+                       />
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4"
+                 ng-if="vm.combined.inGroupTournamentType != 'ELIMINATION_SINGLE' && vm.combined.inGroupTournamentType != 'ELIMINATION_DOUBLE'">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.tiesAllowed" 
+                       for="field_tiesAllowed">
+                    Ties Allowed
+                </label>
+                <select name="tiesAllowed" id="field_tiesAllowed" class="form-control"
+                        ng-model="vm.groupSettings.tiesAllowed"  
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, 
+                                                                                    {display: 'Yes', value: true}]"> 
+                </select>
+            </div>
+            
+            <div class="form-group col-xs-6 col-md-4" ng-if="vm.combined.inGroupTournamentType === 'ALL_VERSUS_ALL'">
+                <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" 
+                       for="field_numberOfMutualMatches">
+                    Number Of Mutual Matches
+                </label>
+                <input type="number" class="form-control" name="numberOfMutualMatches" id="field_numberOfMutualMatches"
+                       ng-model="vm.groupSettings.numberOfMutualMatches"
+                       required min="1"/>
+                <div ng-show="editForm.numberOfMutualMatches.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.numberOfMutualMatches.$error.required" data-translate="entity.validation.required">
+                        This field is required.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfMutualMatches.$error.min" data-translate="entity.validation.min" 
+                       translate-value-min="{{1}}">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfMutualMatches.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4" ng-if="vm.combined.inGroupTournamentType === 'SWISS'">
+                <label class="control-label" data-translate="tournamentControlApp.swiss.color" for="field_color">
+                    Color
+                </label>
+                <select name="color" id="field_color" class="form-control"
+                        ng-model="vm.groupSettings.color"  
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, 
+                                                                                    {display: 'Yes', value: true}]"> 
+                </select>
+            </div>
         </div>
+<div ng-if="vm.combined.inGroupTournamentType != 'ELIMINATION_SINGLE' && vm.combined.inGroupTournamentType != 'ELIMINATION_DOUBLE'">
+    <div class="form-group checkbox">
+        <label>
+            <input type="checkbox" ng-model="vm.set_group_numberOfFields">
+            Set number of fields for each group
+        </label>
+    </div>
+    <div class="form-group" ng-if="vm.set_group_numberOfFields">
+        <div class=" form-inline" >
+            <div class="form-group" style="font-family:monospace;"
+                ng-repeat="(group, fields) in vm.groupSettings.playingFields">
+                <label>
+                    {{group}}: 
+                    <input type="number" class="form-control" name="playingFields" id="field_playingFields_{{group}}"
+                        ng-model="vm.groupSettings.playingFields[group]" min="1" style="width: 60px" />
+                    &nbsp;
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ********* Set Settings ********* -->
+<!-- ********* set settings tab ********* -->
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="group_setSettings_heading">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" 
+                           data-parent="#accordion" data-target="#group_setSettings" 
+                           aria-expanded="false" aria-controls="group_setSettings">
+                            Advanced Set Settings [optional]
+                        </a>
+                    </h4>
+                </div>
+                
+                <div id="group_setSettings" class="panel-collapse collapse" ng-class="{'in': vm.groupSettings.setSettings.maxScore || vm.groupSettings.setSettings.leadByPoints}" 
+                     role="tabpanel" aria-labelledby="group_setSettings_heading">
+                    <div class="panel-body">
+
+                        <!--Set settings-->
+                        <div class="form-group">
+                            <div class="form-inline">
+                                <span>Set&nbsp; </span>    
+                                <div class="form-group">
+                                    <label for="group_maxScore_radio">
+                                        <input class="radio radio-inline" id="group_maxScore_radio" type="radio"
+                                               ng-model="vm.groupSettings.chosenSetSettings" value="maxScore">
+                                        maximum score </label>
+                                </div>
+                                <span>&nbsp; or &nbsp; </span>  
+                                <div class="form-group">
+                                    <label  for="group_leadByPoints_radio">
+                                        <input class="radio radio-inline" id="group_leadByPoints_radio" type="radio"
+                                               ng-model="vm.groupSettings.chosenSetSettings" value="leadByPoints">
+                                        minimum reached score</label> with <label>point difference  
+                                            <input ng-hide="true" type="radio" class="radio radio-inline"/></label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row" ng-if="vm.groupSettings.chosenSetSettings === 'maxScore'">
+                            <div class="form-group col-md-6">
+                                <label for="group_maxScore">Maximum Score</label>
+                                <input type="number" class="form-control" name="group_maxScore" id="group_maxScore"
+                                           ng-model="vm.groupSettings.setSettings.maxScore" min="1"/>
+    <!--                                <div ng-show="editForm.maxScore.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.maxScore.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>-->
+                            </div>
+                        </div>
+                        
+                        <div class="row" ng-if="vm.groupSettings.chosenSetSettings === 'leadByPoints'">
+                            <div class="form-group col-md-6">
+                                <label for="group_minReachedScore">Minimum Reached Score</label>
+                                <input type="number" class="form-control" name="group_minReachedScore" id="group_minReachedScore"
+                                           ng-model="vm.groupSettings.setSettings.minReachedScore" min="0"/>
+                                 
+    <!--                                <div ng-show="editForm.maxScore.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.maxScore.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>-->
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="group_leadByPoints">Point Difference </label>
+                                <input type="number" class="form-control" name="group_leadByPoints" id="group_leadByPoints"
+                                           ng-model="vm.groupSettings.setSettings.leadByPoints" min="1"/>
+                                 
+    <!--                                <div ng-show="editForm.maxScore.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.maxScore.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>-->
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- ********* END - SetSettings ********* -->
+
+
 
        <!--**** group assignment **** -->
         <div id="assigning_participants_to_groups" class="form-group">
@@ -143,7 +367,7 @@
             <div ng-if="vm.assign_to_group_manually === true" ng-init="vm.init_groupParticipantObject(true)" class="well well-sm">
                 <div ng-if="chosen === 1" >
                     <div class="form-group" ng-repeat="(groupLetter, groupParticipants) in vm.groupPlayerObject">
-                        <label for="group_select_{{groupLetter}}">Group {{groupLetter}}</label>
+                        <label for="group_select_{{groupLetter}}">Group {{groupLetter}}&nbsp;<span class="badge">{{vm.groupPlayerObject[groupLetter].length}}</span></label>
                         <ui-select id='group_select_{{groupLetter}}'
                                    ng-model="vm.groupPlayerObject[groupLetter]" 
                                    multiple theme="bootstrap" title="Choose a participant" close-on-select="false"
@@ -162,7 +386,7 @@
                 </div>
                 <div ng-if="chosen === 2">
                     <div class="form-group" ng-repeat="(groupLetter, groupParticipants) in vm.groupTeamObject">
-                        <label for="group_select_{{groupLetter}}">Group {{groupLetter}}</label>
+                        <label for="group_select_{{groupLetter}}">Group {{groupLetter}}&nbsp;<span class="badge">{{vm.groupTeamObject[groupLetter].length}}</span></label>
                         <ui-select id='group_select_{{groupLetter}}'
                                    ng-model="vm.groupTeamObject[groupLetter]" 
                                    multiple theme="bootstrap" title="Choose a participant" close-on-select="false"
@@ -306,7 +530,7 @@
                        </div>
                    </div>
 
-                   <div ng-if="vm.combined.inGroupTournamentType === 'ELIMINATION'">
+                   <div ng-if="vm.combined.inGroupTournamentType === 'ELIMINATION_SINGLE' || vm.combined.inGroupTournamentType === 'ELIMINATION_DOUBLE'">
                        <div  ng-if="chosen === 1">
                            <div class="panel panel-info" ng-repeat="(group, seeding) in vm.playerSeedingObject">
                                <div class="panel-heading panel-heading-sm">Group {{group}} </div>
@@ -322,16 +546,6 @@
                                <div ng-if="vm.groupPlayerObject[group].length >= 3 ">
                                    <div id="{{'player_tree_'+group}}"></div>
                                    
-<!--                                   
-                                    <div class="panel panel-info">
-                                       <div class="panel-heading panel-heading-sm">Group {{group}} </div>
-                                       <div class="panel-body">
-
-                                       </div>
-                                   </div>
--->
-
-
                                    <div ng-init="vm.initSeeding(!vm.groupNumberChanged && !vm.playersChanged && !vm.teamsChanged && !vm.groupAssignmentChanged)"></div>
                                    <!--generating tables-->
                                    <div ng-init="N = vm.playerSeedingObject[group].length"></div>
@@ -446,43 +660,291 @@
                </div>
            </div>
            </div>
-
-
-
-
        </div>
+       <!-- ********* seeding - end ********* -->
+       
+       
+       
+       
+       
 
 
 <!--**** play off **** -->
-        <div class="form-group">
+<!--<hr/>-->
+<br/>
+<h4>Play-off Settings</h4>
+<hr/>
+    <div class="row">
+        <div class="form-group col-md-4">
             <label class="control-label" data-translate="tournamentControlApp.combined.numberOfWinnersToPlayoff" for="field_numberOfWinnersToPlayoff">Number Of Winners To Playoff</label>
             <input type="number" class="form-control" name="numberOfWinnersToPlayoff" id="field_numberOfWinnersToPlayoff"
-                    ng-model="vm.combined.numberOfWinnersToPlayoff"
-                    required min="0"/>
+                   ng-model="vm.combined.numberOfWinnersToPlayoff"
+                   required min="0"/>
             <div ng-show="editForm.numberOfWinnersToPlayoff.$invalid">
                 <p class="help-block"
-                    ng-show="editForm.numberOfWinnersToPlayoff.$error.required" data-translate="entity.validation.required">
+                   ng-show="editForm.numberOfWinnersToPlayoff.$error.required" data-translate="entity.validation.required">
                     This field is required.
                 </p>
                 <p class="help-block"
-                    ng-show="editForm.numberOfWinnersToPlayoff.$error.min" data-translate="entity.validation.min" translate-value-min="0">
+                   ng-show="editForm.numberOfWinnersToPlayoff.$error.min" data-translate="entity.validation.min" translate-value-min="0">
                     This field should be at least 0.
                 </p>
                 <p class="help-block"
-                    ng-show="editForm.numberOfWinnersToPlayoff.$error.number" data-translate="entity.validation.number">
+                   ng-show="editForm.numberOfWinnersToPlayoff.$error.number" data-translate="entity.validation.number">
                     This field should be a number.
                 </p>
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group col-md-8">
             <label class="control-label" data-translate="tournamentControlApp.combined.playoffType" for="field_playoffType">Playoff Type</label>
             <select class="form-control" name="playoffType" ng-model="vm.combined.playoffType" id="field_playoffType">
                 <option value="ALL_VERSUS_ALL" data-translate="tournamentControlApp.TournamentType.ALL_VERSUS_ALL">ALL_VERSUS_ALL</option>
-                <option value="ELIMINATION" data-translate="tournamentControlApp.TournamentType.ELIMINATION">ELIMINATION</option>
+                <option value="ELIMINATION_SINGLE" data-translate="tournamentControlApp.TournamentType.ELIMINATION_SINGLE">ELIMINATION_SINGLE</option>
+                <option value="ELIMINATION_DOUBLE" data-translate="tournamentControlApp.TournamentType.ELIMINATION_DOUBLE">ELIMINATION_DOUBLE</option>
                 <option value="SWISS" data-translate="tournamentControlApp.TournamentType.SWISS">SWISS</option>
             </select>
         </div>
+    </div>
+
+<div class="checkbox">
+    <label>
+        <input type="checkbox" ng-model="vm.playoffPointsSame">
+        Points for winning, losing and tie same as in groups
+    </label>
+</div>
+<div ng-if="!vm.playoffPointsSame" class="row" >
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" 
+                       for="field_playoffPointsForWinning">
+                    Points For Winning
+                </label>
+                <input type="number" class="form-control" name="playoffPointsForWinning" id="field_playoffPointsForWinning"
+                       ng-model="vm.playoffSettings.pointsForWinning"
+                       />
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" 
+                       for="fields_playoffPointsForLosing">
+                    Points For Losing
+                </label>
+                <input type="number" class="form-control" name="playoffPointsForLosing" id="fields_playoffPointsForLosing"
+                       ng-model="vm.playoffSettings.pointsForLosing"
+                       />
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" 
+                       for="field_playoffPointsForTie">
+                    Points For Tie
+                </label>
+                <input type="number" class="form-control" name="playoffPointsForTie" id="field_playoffPointsForTie"
+                       ng-model="vm.playoffSettings.pointsForTie" ng-disabled="!vm.playoffSettings.tiesAllowed"
+                       />
+            </div>
+</div>
+    <div class="row">
+        <div class="form-group col-xs-6 col-md-4" >
+                <label class="control-label" data-translate="tournamentControlApp.tournament.setsToWin" 
+                       for="field_playoffSetsToWin">
+                    Sets To Win
+                </label>
+                <input type="number" pattern="" min="1" class="form-control" name="playoffSetsToWin" id="field_playoffSetsToWin"
+                       ng-model="vm.playoffSettings.setsToWin"
+                       />
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4"
+                 ng-if="vm.combined.playoffType != 'ELIMINATION_SINGLE' && vm.combined.playoffType != 'ELIMINATION_DOUBLE'">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.tiesAllowed" 
+                       for="field_playoffTiesAllowed">
+                    Ties Allowed
+                </label>
+                <select name="playoffTiesAllowed" id="field_playoffTiesAllowed" class="form-control"
+                        ng-model="vm.playoffSettings.tiesAllowed"  
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, 
+                                                                                    {display: 'Yes', value: true}]"> 
+                </select>
+            </div>
+            
+            <div class="form-group col-xs-6 col-md-4" ng-if="vm.combined.playoffType === 'ALL_VERSUS_ALL'">
+                <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" 
+                       for="field_playoffNumberOfMutualMatches">
+                    Number Of Mutual Matches
+                </label>
+                <input type="number" class="form-control" name="playoffNumberOfMutualMatches" id="field_playoffNumberOfMutualMatches"
+                       ng-model="vm.playoffSettings.numberOfMutualMatches"
+                       required min="1"/>
+                <div ng-show="editForm.playoffNumberOfMutualMatches.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.playoffNumberOfMutualMatches.$error.required" data-translate="entity.validation.required">
+                        This field is required.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.playoffNumberOfMutualMatches.$error.min" data-translate="entity.validation.min" 
+                       translate-value-min="{{1}}">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.playoffNumberOfMutualMatches.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4" ng-if="vm.combined.playoffType === 'SWISS'">
+                <label class="control-label" data-translate="tournamentControlApp.swiss.color" for="field_playoffColor">
+                    Color
+                </label>
+                <select name="playoffColor" id="field_playoffColor" class="form-control"
+                        ng-model="vm.playoffSettings.color"  
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, 
+                                                                                    {display: 'Yes', value: true}]"> 
+                </select>
+            </div>
+        
+        <div class="form-group col-xs-6 col-md-4" 
+             ng-if="vm.combined.playoffType != 'ELIMINATION_SINGLE' && vm.combined.playoffType != 'ELIMINATION_DOUBLE'">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.playingFields" 
+                       for="field_playoffPlayingFields">
+                    Playing Fields
+                </label>
+                <input type="number" class="form-control" name="playoffPlayingFields" id="field_playoffPlayingFields"
+                       ng-model="vm.playoffSettings.playingFields" min="1"
+                       />
+                <div ng-show="editForm.playoffPlayingFields.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.playoffPlayingFields.$error.min" data-translate="entity.validation.min" 
+                       translate-value-min="{{1}}">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.playoffPlayingFields.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+<!--                <div ng-if="vm.playingFieldsInvalid()">
+                    <p class="help-block" data-translate="entity.validation.playingFields_max"
+                       translate-value-max="{{vm.maxPlayingFields()}}">
+                        Field should not be bigger than max.
+                    </p>
+                </div>-->
+            </div>
+    </div>
+<div class="checkbox">
+    <label>
+        <input type="checkbox" ng-model="vm.playoffSetSettingsSame">
+        Advanced set settings same as in groups
+    </label>
+</div>
+<div ng-if="!vm.playoffSetSettingsSame">
+    <!-- ********* Set Settings ********* -->
+<!-- ********* set settings tab ********* -->
+        <div class="panel-group" id="accordion_playoff" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="playoff_setSettings_heading">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" 
+                           data-parent="#accordion_playoff" data-target="#playoff_setSettings" 
+                           aria-expanded="false" aria-controls="playoff_setSettings">
+                            Advanced Set Settings [optional]
+                        </a>
+                    </h4>
+                </div>
+                
+                <div id="playoff_setSettings" class="panel-collapse collapse in"
+                     role="tabpanel" aria-labelledby="playoff_setSettings_heading">
+                    <div class="panel-body">
+
+                        <!--Set settings-->
+                        <div class="form-group">
+                            <div class="form-inline">
+                                <span>Set&nbsp; </span>    
+                                <div class="form-group">
+                                    <label for="playoff_maxScore_radio">
+                                        <input class="radio radio-inline" id="playoff_maxScore_radio" type="radio"
+                                               ng-model="vm.playoffSettings.chosenSetSettings" value="maxScore">
+                                        maximum score </label>
+                                </div>
+                                <span>&nbsp; or &nbsp; </span>  
+                                <div class="form-group">
+                                    <label  for="playoff_leadByPoints_radio">
+                                        <input class="radio radio-inline" id="playoff_leadByPoints_radio" type="radio"
+                                               ng-model="vm.playoffSettings.chosenSetSettings" value="leadByPoints">
+                                        minimum reached score</label> with <label>point difference  
+                                            <input ng-hide="true" type="radio" class="radio radio-inline"/></label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row" ng-if="vm.playoffSettings.chosenSetSettings === 'maxScore'">
+                            <div class="form-group col-md-6">
+                                <label for="field_playoffMaxScore">Maximum Score</label>
+                                <input type="number" class="form-control" name="playoffMaxScore" id="field_playoffMaxScore"
+                                           ng-model="vm.playoffSettings.setSettings.maxScore" min="1"/>
+                                    <div ng-show="editForm.playoffMaxScore.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffMaxScore.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffMaxScore.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row" ng-if="vm.playoffSettings.chosenSetSettings === 'leadByPoints'">
+                            <div class="form-group col-md-6">
+                                <label for="field_playoffMinReachedScore">Minimum Reached Score</label>
+                                <input type="number" class="form-control" name="playoffMinReachedScore" id="field_playoffMinReachedScore"
+                                           ng-model="vm.playoffSettings.setSettings.minReachedScore" min="0"/>
+                                 
+                                    <div ng-show="editForm.playoffMinReachedScore.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffMinReachedScore.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffMinReachedScore.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="field_playoffLeadByPoints">Point Difference </label>
+                                <input type="number" class="form-control" name="playoffLeadByPoints" id="field_playoffLeadByPoints"
+                                           ng-model="vm.playoffSettings.setSettings.leadByPoints" min="1"/>
+                                 
+                                    <div ng-show="editForm.playoffLeadByPoints.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffLeadByPoints.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffLeadByPoints.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- ********* END - SetSettings ********* -->
+    
+    
+</div>
+
+
+
 
 
     </div>
