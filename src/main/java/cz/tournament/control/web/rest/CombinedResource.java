@@ -3,6 +3,7 @@ package cz.tournament.control.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Combined;
 import cz.tournament.control.service.CombinedService;
+import cz.tournament.control.service.dto.CombinedDTO;
 import cz.tournament.control.web.rest.errors.BadRequestAlertException;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import cz.tournament.control.web.rest.util.PaginationUtil;
@@ -44,18 +45,19 @@ public class CombinedResource {
     /**
      * POST  /combineds : Create a new combined.
      *
-     * @param combined the combined to create
+     * @param combinedDTO the combined to create
      * @return the ResponseEntity with status 201 (Created) and with body the new combined, or with status 400 (Bad Request) if the combined has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/combineds")
     @Timed
-    public ResponseEntity<Combined> createCombined(@Valid @RequestBody Combined combined) throws URISyntaxException {
-        log.debug("REST request to save Combined : {}", combined);
-        if (combined.getId() != null) {
+    public ResponseEntity<Combined> createCombined(@Valid @RequestBody CombinedDTO combinedDTO) throws URISyntaxException {
+        log.debug("REST request to save Combined : {}", combinedDTO);
+        if (combinedDTO.getCombined().getId() != null) {
             throw new BadRequestAlertException("A new combined cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Combined result = combinedService.save(combined);
+       Combined result = combinedService.createCombined(combinedDTO);
+       
         return ResponseEntity.created(new URI("/api/combineds/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -64,7 +66,7 @@ public class CombinedResource {
     /**
      * PUT  /combineds : Updates an existing combined.
      *
-     * @param combined the combined to update
+     * @param combinedDTO the combined to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated combined,
      * or with status 400 (Bad Request) if the combined is not valid,
      * or with status 500 (Internal Server Error) if the combined couldn't be updated
@@ -72,14 +74,15 @@ public class CombinedResource {
      */
     @PutMapping("/combineds")
     @Timed
-    public ResponseEntity<Combined> updateCombined(@Valid @RequestBody Combined combined) throws URISyntaxException {
-        log.debug("REST request to update Combined : {}", combined);
-        if (combined.getId() == null) {
-            return createCombined(combined);
+    public ResponseEntity<Combined> updateCombined(@Valid @RequestBody CombinedDTO combinedDTO) throws URISyntaxException {
+        log.debug("REST request to update Combined : {}", combinedDTO);
+        if (combinedDTO.getCombined().getId() == null) {
+            return createCombined(combinedDTO);
         }
-        Combined result = combinedService.save(combined);
+        Combined result = combinedService.updateCombined(combinedDTO);
+        
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, combined.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 

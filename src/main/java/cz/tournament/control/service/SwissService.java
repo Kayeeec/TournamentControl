@@ -10,7 +10,6 @@ import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import cz.tournament.control.service.dto.SwissDTO;
 import cz.tournament.control.service.util.SwissParticipant;
-import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
-import org.python.core.PyException;
 import org.python.core.PyObject;
-import org.python.core.PySystemState;
 import org.python.util.PythonInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -739,30 +736,6 @@ public class SwissService {
         }
         return pairing;
     }
-
-//    /*
-//    to test tour getLetterScore()
-//    */
-//    public static void main(String[] args) {
-//        System.out.println("'', "+getLetterScore("".toCharArray()));
-//        System.out.println("'a', "+getLetterScore("a".toCharArray()));
-//        System.out.println("'b', "+getLetterScore("b".toCharArray()));
-//        
-//        System.out.println("'aa', "+getLetterScore("aa".toCharArray()));
-//        System.out.println("'ba', "+getLetterScore("ba".toCharArray()));
-//        System.out.println("'ab', "+getLetterScore("ab".toCharArray()));
-//        System.out.println("'bb', "+getLetterScore("bb".toCharArray()));
-//        
-//        System.out.println("'aaa', "+getLetterScore("aaa".toCharArray()));
-//        System.out.println("'aab', "+getLetterScore("aab".toCharArray()));
-//        System.out.println("'aba', "+getLetterScore("aba".toCharArray()));
-//        System.out.println("'baa', "+getLetterScore("baa".toCharArray()));
-//        System.out.println("'bbb', "+getLetterScore("bbb".toCharArray()));
-//        System.out.println("'bba', "+getLetterScore("bba".toCharArray()));
-//        System.out.println("'bab', "+getLetterScore("bab".toCharArray()));
-//        System.out.println("'abb', "+getLetterScore("abb".toCharArray()));
-//        
-//    }
     
 
     

@@ -16,7 +16,8 @@
         vm.contains = My.containsElemWithId;
         vm.printListOfParticipants = My.printRivals;
         vm.myIterator = My.iterator;
-        vm.set_group_numberOfFields = false;
+        vm.setNumberOfFields = 'DO_NOT_SET'; //'FOR_EACH', 'TOTAL_AUTO', 'DO_NOT_SET'
+        
 
 
         /* *** default values *** */
@@ -820,7 +821,9 @@
             tiesAllowed: false,
             setSettings: {id: null, maxScore: null, minReachedScore: null, leadByPoints: null}, //this will be an object
             playingFields: {}, //this wil be an object with key for each group
+            totalPlayingFields: 1,
             
+            bronzeMatch: false,
             color: false, //if swiss
             numberOfMutualMatches: 1,
             
@@ -909,7 +912,7 @@
             tiesAllowed: false,
             setSettings: {id: null, maxScore: null, minReachedScore: null, leadByPoints: null}, //this will be an object
             playingFields: 1, //this wil be an object with key for each group
-
+            bronzeMatch: false,
             color: false, //if swiss
             numberOfMutualMatches: 1,
 
@@ -958,7 +961,7 @@
                 combined: vm.combined,
                 groupSettings: vm.groupSettings,
                 playoffSettings: vm.playoffSettings,
-                grouping: null,
+                grouping: null, //("groupletter":[players])
                 seeding: null
             };
             //nulling not chosen setSettings attributes
@@ -990,6 +993,20 @@
                     dto.seeding = JSON.parse(JSON.stringify(vm.teamSeedingObject));
                 }
             }
+            //'FOR_EACH', 'TOTAL_AUTO', 'DO_NOT_SET'
+            if(vm.setNumberOfFields === 'DO_NOT_SET'){
+                dto.groupSettings.playingFields = null;
+                dto.groupSettings.totalPlayingFields = null;
+            }
+            if(vm.setNumberOfFields === 'TOTAL_AUTO'){
+                dto.groupSettings.playingFields = null;
+            }
+            if(vm.setNumberOfFields === 'FOR_EACH'){
+                dto.groupSettings.totalPlayingFields = null;
+            }
+            
+            console.log("DTO: ");
+            console.log(JSON.parse(JSON.stringify(dto)));
             
             return dto;
         };

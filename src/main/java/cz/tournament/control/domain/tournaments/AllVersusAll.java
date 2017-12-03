@@ -25,7 +25,10 @@ public class AllVersusAll extends Tournament implements Serializable  {
     @Min(value = 1)
     @Column(name = "number_of_mutual_matches", nullable = false)
     private Integer numberOfMutualMatches = 1;
-      
+
+    public AllVersusAll() {
+        super();
+    }
     
     public Integer getNumberOfMutualMatches() {
         return numberOfMutualMatches;
@@ -98,6 +101,5 @@ public class AllVersusAll extends Tournament implements Serializable  {
             ", numberOfMutualMatches='" + numberOfMutualMatches + "'" +
             '}';
     }
- 
     
 }

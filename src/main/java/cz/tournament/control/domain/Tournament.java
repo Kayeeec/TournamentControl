@@ -9,7 +9,6 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,6 +84,11 @@ public class Tournament implements Serializable {
     private SetSettings setSettings;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+
+    public Tournament() {
+    }
+    
+    
     public Long getId() {
         return id;
     }

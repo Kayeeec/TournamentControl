@@ -27,7 +27,10 @@ public class Elimination extends Tournament implements Serializable {
     @Column(name = "bronze_match")
     private Boolean bronzeMatch = true;
 
-
+    public Elimination() {
+        super();
+    }
+    
     public EliminationType getType() {
         return type;
     }
