@@ -7,19 +7,6 @@ body {
 /* ==========================================================================
 My styles
 ============================================================================= */
-.my_rival_seeding_column{
-}
-
-.my_middle_seeding_column{
-}
-
-.ui-select-choices {
-        position: fixed;
-        top: auto;
-        left: auto;
-        width: inherit;
-        z-index: 200;
-      }
 
 .panel-heading-sm{
     height: 28px;

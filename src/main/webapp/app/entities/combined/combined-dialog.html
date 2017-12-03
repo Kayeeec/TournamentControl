@@ -489,11 +489,11 @@
                    <div ng-if="vm.combined.inGroupTournamentType === 'SWISS'">
                        <div ng-if="chosen === 1">
                             <div ng-repeat="(group, seeding) in vm.playerSeedingObject" class="panel panel-info">
-                                <div class="panel-heading panel-heading-sm">Group {{group}}</div>
+                                <div class="panel-heading panel-heading-sm">Group {{group}}</div> 
                                 <table name="seeding-players" class="table table-condensed">
                                     <tbody>
                                         <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(group),1)">
-                                            <td class="my_rival_seeding_column">
+                                            <td class="col-md-5" style="width: 45.83333333%">
                                             <ui-select ng-model="vm.playerSeedingObject[group][i]" theme="bootstrap"
                                             ng-disabled="vm.isBye($select.selected)"
                                             ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][i], i, group)">
@@ -509,8 +509,8 @@
                                                 </ui-select-choices>
                                             </ui-select>
                                         </td>
-                                        <td class="my_middle_seeding_column"><p class="text-center">vs.</p></td>
-                                        <td class="my_rival_seeding_column" ng-init="rivalIndex = vm.getRivalIndex(group, i)">
+                                        <td class="col-md-1 text-center" style="vertical-align: middle">vs.</td>
+                                        <td class="col-md-5" style="width: 45.83333333%" ng-init="rivalIndex = vm.getRivalIndex(group, i)">
                                             <ui-select ng-model="vm.playerSeedingObject[group][rivalIndex]" theme="bootstrap"
                                             ng-disabled="vm.isBye($select.selected)"
                                             ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][rivalIndex], rivalIndex, group)">
@@ -530,6 +530,7 @@
                                             
                                     </tbody>
                                 </table>
+                                
                             </div>
                        </div>
                        <div ng-if="chosen === 2">
