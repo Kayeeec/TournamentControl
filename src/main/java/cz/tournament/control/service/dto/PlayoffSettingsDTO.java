@@ -1,6 +1,11 @@
 package cz.tournament.control.service.dto;
 
+import cz.tournament.control.domain.Combined;
+import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.SetSettings;
+import cz.tournament.control.domain.Swiss;
+import cz.tournament.control.domain.Tournament;
+import cz.tournament.control.domain.tournaments.AllVersusAll;
 
 /**
  *
@@ -10,19 +15,53 @@ public class PlayoffSettingsDTO {
     private Double pointsForWinning;
     private Double pointsForTie;
     private Double pointsForLosing;
-    
     private Integer setsToWin;
-    private Boolean tiesAllowed;
-    
     private SetSettings setSettings;
     
-    private Boolean color;
-    private Integer numberOfMutualMatches;
-    private Boolean  bronzeMatch;
+    private Boolean color;                  //S--
+    private Integer numberOfMutualMatches;  //-A-
+    private Integer playingFields;          //SA-
+    private Boolean tiesAllowed;            //SA-
+    private Boolean  bronzeMatch;           //--E
     
-    private Integer playingFields;
+    
 
     public PlayoffSettingsDTO() {
+    }
+
+    PlayoffSettingsDTO(Combined combined) {
+        if(combined.getPlayoff() != null){
+            Tournament tournament = combined.getPlayoff();
+            this.pointsForWinning = tournament.getPointsForWinning();
+            this.pointsForLosing = tournament.getPointsForLosing();
+            this.pointsForTie = tournament.getPointsForTie();
+            this.setSettings = tournament.getSetSettings();
+            this.setsToWin = tournament.getSetsToWin();
+            
+            switch (combined.getPlayoffType()) {
+                case ALL_VERSUS_ALL:
+                    AllVersusAll allVersusAll = (AllVersusAll) tournament;
+                    this.numberOfMutualMatches = allVersusAll.getNumberOfMutualMatches();
+                    
+                    this.playingFields = allVersusAll.getPlayingFields();
+                    this.tiesAllowed = allVersusAll.getTiesAllowed();
+                    
+                    break;
+                case SWISS:
+                    Swiss swiss = (Swiss) tournament;
+                    this.color = swiss.isColor();
+                    
+                    this.playingFields = swiss.getPlayingFields();
+                    this.tiesAllowed = swiss.getTiesAllowed();
+                    
+                    break;
+                default: //elimination single/double
+                    Elimination elimination = (Elimination) tournament;
+                    this.bronzeMatch = elimination.getBronzeMatch();
+                    
+            }
+            
+        }
     }
 
     public Boolean getBronzeMatch() {

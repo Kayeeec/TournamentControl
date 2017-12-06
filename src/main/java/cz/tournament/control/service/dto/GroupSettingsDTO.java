@@ -5,8 +5,17 @@
  */
 package cz.tournament.control.service.dto;
 
+import cz.tournament.control.domain.Combined;
+import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.SetSettings;
+import cz.tournament.control.domain.Swiss;
+import cz.tournament.control.domain.Tournament;
+import cz.tournament.control.domain.tournaments.AllVersusAll;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -19,17 +28,49 @@ public class GroupSettingsDTO {
     private Integer setsToWin;
     private SetSettings setSettings;
     
-    private Boolean color;                      //swiss
-    private Integer numberOfMutualMatches;      //          allVersusAll
-    private Map<String,Integer> playingFields;  //swiss,    allVersusAll
-    private Integer totalPlayingFields;         //swiss,    allVersusAll
-    private Boolean tiesAllowed;                //swiss,    allVersusAll
-    
-    private Boolean bronzeMatch; //elimination_single, elimination_double
+    private Boolean color;                      //S--
+    private Integer numberOfMutualMatches;      //-A-
+    private Map<String,Integer> playingFields;  //SA-
+    private Integer totalPlayingFields;         //SA-
+    private Boolean tiesAllowed;                //SA-
+    private Boolean bronzeMatch;                //--E
     
     public GroupSettingsDTO() {
     }
 
+    public GroupSettingsDTO(Combined combined) {
+        if(!combined.getGroups().isEmpty()){
+            Tournament tournament = combined.getGroups().iterator().next();
+            this.pointsForWinning = tournament.getPointsForWinning();
+            this.pointsForLosing = tournament.getPointsForLosing();
+            this.pointsForTie = tournament.getPointsForTie();
+            this.setSettings = tournament.getSetSettings();
+            this.setsToWin = tournament.getSetsToWin();
+
+            switch (combined.getInGroupTournamentType()) {
+                case ALL_VERSUS_ALL:
+                    AllVersusAll ava = (AllVersusAll) tournament;
+                    this.numberOfMutualMatches = ava.getNumberOfMutualMatches();
+                    
+                    extract_PlayingFieldsAndTotalPlayingFields(combined.getGroups());
+                    this.tiesAllowed = ava.getTiesAllowed();
+                    
+                    break;
+                case SWISS:
+                    Swiss swiss = (Swiss) tournament;
+                    this.color = swiss.isColor();
+                    
+                    extract_PlayingFieldsAndTotalPlayingFields(combined.getGroups());
+                    this.tiesAllowed = swiss.getTiesAllowed();
+                    
+                    break;
+                default: //elimination single/double
+                    Elimination elimination = (Elimination) tournament;
+                    this.bronzeMatch = elimination.getBronzeMatch();
+            }
+        }
+    }
+    
     public Boolean getBronzeMatch() {
         return bronzeMatch;
     }
@@ -145,12 +186,26 @@ public class GroupSettingsDTO {
     }
     
     private String playingFields_toString() {
+        if(playingFields == null) return "null";
         String str = "";
             for (Map.Entry<String, Integer> playingField : playingFields.entrySet()) {
                 String entry = "("+playingField.getKey()+", "+playingField.getValue()+"), ";
             str = str.concat(entry);
             }
             return str;
+    }
+
+    private void extract_PlayingFieldsAndTotalPlayingFields(Set<Tournament> groups) {
+        int total = 0;
+        Map<String,Integer> mapFields = new HashMap<>();
+        
+        for (Tournament group : groups) {
+            mapFields.put(group.getName(), group.getPlayingFields());
+            total += group.getPlayingFields();
+        }
+        
+        this.totalPlayingFields = total;
+        this.playingFields = mapFields;
     }
     
     

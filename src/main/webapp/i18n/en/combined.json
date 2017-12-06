@@ -2,7 +2,7 @@
     "tournamentControlApp": {
         "combined" : {
             "home": {
-                "title": "Combineds",
+                "title": "Combined group tournament: ",
                 "createLabel": "Create a new Combined",
                 "createOrEditLabel": "Create or edit a Combined"
             },

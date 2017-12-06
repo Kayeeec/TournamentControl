@@ -31,9 +31,9 @@
         vm.participants = Participant.query();
         vm.participantsTouched = false;
 
-        vm.combined.participants = vm.combined.participants || [];
-        vm.selectedPlayers = filterFilter(vm.combined.participants, {team : null, bye:false});
-        vm.selectedTeams = filterFilter(vm.combined.participants, {player : null, bye:false});
+        vm.combined.allParticipants = vm.combined.allParticipants || [];
+        vm.selectedPlayers = filterFilter(vm.combined.allParticipants, {team : null, bye:false});
+        vm.selectedTeams = filterFilter(vm.combined.allParticipants, {player : null, bye:false});
         $scope.chosen = init_chosen();
 
         function init_chosen() {
@@ -50,12 +50,15 @@
          *  *** */
         function selectParticipants() {
             if($scope.chosen === 1){
-                angular.copy(vm.selectedPlayers, vm.combined.allParticipants);
+                return vm.selectedPlayers;
             }
-            if($scope.chosen === 2){
-                angular.copy(vm.selectedTeams, vm.combined.allParticipants);
-            }
+            return vm.selectedTeams;
+//            if ($scope.chosen === 1) {
+//                vm.combined.allParticipants = angular.copy(vm.selectedPlayers);
+//            }
+//            vm.combined.allParticipants = angular.copy(vm.selectedTeams);
         }
+        
         $scope.isPlayer = function (participant) {
             if(participant.player !== null) return true;
             return false;
@@ -1022,8 +1025,10 @@
 
         function save () {
             vm.isSaving = true;
-            selectParticipants();
+            vm.combined.allParticipants =JSON.parse(JSON.stringify(selectParticipants()));
             var combinedDTO = buildCombinedDTO();
+            console.log("saving: combinedDTO = ");
+            console.log(combinedDTO);
             
             if (vm.combined.id !== null) {
                 Combined.update(combinedDTO, onSaveSuccess, onSaveError);

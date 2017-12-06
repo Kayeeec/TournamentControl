@@ -11,6 +11,7 @@ import cz.tournament.control.security.SecurityUtils;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -176,6 +177,10 @@ public class EliminationService {
     public void delete(Long id) {
         log.debug("Request to delete Elimination : {}", id);
         eliminationRepository.delete(id);
+    }
+    public void delete(Collection<Elimination> tournaments) {
+        log.debug("Request to delete Eliminations : {}", tournaments);
+        eliminationRepository.delete(tournaments);
     }
     
     

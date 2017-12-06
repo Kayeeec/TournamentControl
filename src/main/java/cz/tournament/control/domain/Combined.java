@@ -1,6 +1,5 @@
 package cz.tournament.control.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -23,6 +22,7 @@ import cz.tournament.control.domain.enumeration.TournamentType;
 public class Combined implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final String TOURNAMENT_TYPE = "combined";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
@@ -58,7 +58,6 @@ public class Combined implements Serializable {
     private TournamentType inGroupTournamentType;
 
     @OneToMany()
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Participant> allParticipants = new HashSet<>();
 
@@ -67,7 +66,6 @@ public class Combined implements Serializable {
     private Tournament playoff;
 
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE})
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Tournament> groups = new HashSet<>();
 
@@ -307,18 +305,37 @@ public class Combined implements Serializable {
         }
         return true;
     }
+    
+    private String printValueOrNull(Object o){
+        if(o != null){
+            return o.toString();
+        }
+        return "null";
+    }
 
     @Override
     public String toString() {
-        return "Combined{" + "id=" + id 
-                + ", name=" + name 
-                + ", note=" + note 
-                + ", created=" + created 
-                + ", numberOfWinnersToPlayoff=" + numberOfWinnersToPlayoff 
-                + ", numberOfGroups=" + numberOfGroups 
-                + ", playoffType=" + playoffType 
-                + ", inGroupTournamentType=" + inGroupTournamentType
-                + ", user=" + user + '}';
+        return "Combined{" + "id=" +  printValueOrNull(id)
+                + ", name=" +  printValueOrNull(name)
+                + ", note=" +  printValueOrNull(note)
+                + ", created=" +  printValueOrNull(created)
+                + ", numberOfWinnersToPlayoff=" +  printValueOrNull(numberOfWinnersToPlayoff)
+                + ", numberOfGroups=" +  printValueOrNull(numberOfGroups)
+                + ", playoffType=" +  printValueOrNull(playoffType)
+                + ", inGroupTournamentType=" +  printValueOrNull(inGroupTournamentType)
+                + ", user=" +  printValueOrNull(user) + System.lineSeparator()
+                + ", allParticipants: "+ printAllParticipants()
+                + '}';
+    }
+
+    private String printAllParticipants() {
+        if(allParticipants == null) return "[]";
+        String str = "[";
+        for (Participant participant : allParticipants) {
+            str = str + participant.getName() + ", ";
+        }
+        str = str + "]";
+        return str;
     }
 
     

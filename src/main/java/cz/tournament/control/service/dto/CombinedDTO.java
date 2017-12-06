@@ -19,6 +19,18 @@ public class CombinedDTO {
 
     public CombinedDTO() {
     }
+    
+    /**
+     * Does not set grouping and seeding!
+     * @param combined 
+     */
+    public CombinedDTO(Combined combined) {
+        this.combined = combined;
+        this.groupSettings = new GroupSettingsDTO(combined);
+        this.playoffSettings = new PlayoffSettingsDTO(combined);
+    }
+    
+    
 
     public Combined getCombined() {
         return combined;
@@ -80,6 +92,7 @@ public class CombinedDTO {
     }
 
     private String mapStringParticipantList_toString(Map<String, List<Participant>> map) {
+        if(map == null) return "[]";
         String str = "[";
         for (Map.Entry<String, List<Participant>> entry : map.entrySet()) {
             String group = entry.getKey();

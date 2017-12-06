@@ -1,6 +1,8 @@
 
 <div>
-    <h2><span data-translate="tournamentControlApp.combined.detail.title">Combined</span> {{vm.combined.id}}</h2>
+    <h2><small data-translate="tournamentControlApp.combined.detail.title">
+            Combined group tournament: </small> {{vm.combined.name}}
+    </h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
@@ -32,13 +34,12 @@
         <dd>
             <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.inGroupTournamentType}}">{{vm.combined.inGroupTournamentType}}</span>
         </dd>
-        <dt><span data-translate="tournamentControlApp.combined.playoff">Playoff</span></dt>
+        <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
         <dd>
-            <a ui-sref="tournament-detail({id:vm.combined.playoff.id})">{{vm.combined.playoff.name}}</a>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.combined.user">User</span></dt>
-        <dd>
-            {{vm.combined.user.login}}
+            <span ng-repeat="participant in vm.combined.allParticipants">
+                <a ng-if="participant.player" ui-sref="player-detail({id: participant.player.id})">{{participant.player.name}}</a>
+                <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>{{$last ? '' : ', '}}
+            </span>
         </dd>
     </dl>
 
@@ -52,4 +53,72 @@
         <span class="glyphicon glyphicon-pencil"></span>
         <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>
+    
+    <button disabled type="button" class="btn btn-success" ng-href="/generateFile/combined/{{vm.combined.id}}">
+        <span class="glyphicon glyphicon-download-alt"></span>
+        <span class="hidden-sm-down" data-translate=""> Generate .ods spreadsheet </span> <!--TODO: data-translate -->
+    </button>
+    
+    <div id="combined-evaluation-table">
+        <!--todo-->
+    </div>
+    
+    <div ng-if="!vm.isElimination(vm.combined.inGroupTournamentType)">
+        <div class="panel panel-info" ng-repeat="group in vm.combined.groups | orderBy: 'name' track by group.id">
+            <div class="panel-heading" >Group: {{group.name}}</div> <!--TODO: data-translate -->
+
+            <!-- Table -->
+            <table class="table table-striped">
+                <thead>
+                    <tr >
+                        <th>ID</th>
+                        <th ng-if="vm.combined.playingFields && vm.combined.playingFields > 1" style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.playingField">Playing Field</span></th>
+                        <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.gameSet.score">Score</span></th>
+                        <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.finished">Finished</span></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-class="{'byeMatch':(game.rivalA.bye || game.rivalB.bye),
+                                'success': (game.finished && !game.rivalA.bye && !game.rivalB.bye)}" 
+                                ng-repeat="game in group.matches| orderBy:'id' track by game.id">
+                        <td>{{game.id}}</td>
+                        <td ng-if="vm.combined.playingFields && vm.combined.playingFields > 1" style="text-align: center">{{game.playingField}}</td>
+                        <td style="text-align: right">
+                            <a ng-if="game.rivalA.player" ui-sref="player-detail({id:game.rivalA.player.id})">{{game.rivalA.player.name}}</a>
+                            <a ng-if="game.rivalA.team" ui-sref="team-detail({id:game.rivalA.team.id})">{{game.rivalA.team.name}}</a>
+                        </td>
+                        <td style="text-align: center;padding: 0px">:</td>
+                        <td style="text-align: left">
+                            <a ng-if="game.rivalB.player" ui-sref="player-detail({id:game.rivalB.player.id})">{{game.rivalB.player.name}}</a>
+                            <a ng-if="game.rivalB.team" ui-sref="team-detail({id:game.rivalB.team.id})">{{game.rivalB.team.name}}</a>
+                        </td>
+                        <td>
+                            <span ng-repeat="set in game.sets | orderBy:'id'">
+                                {{set.scoreA}} : {{set.scoreB}}{{$last ? '' : ' | '}}
+                            </span>
+                        </td>
+                        
+                        <td style="text-align: center">{{game.finished}}</td>
+                        <td class="text-right">
+                            <div class="btn-group flex-btn-group-container">
+                                <button type="submit"
+                                        ui-sref="game.combined-edit({gameId:game.id, id:vm.combined.id})"
+                                        class="btn btn-primary btn-sm"
+                                        ng-disabled="game.rivalA.bye || game.rivalB.bye">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                    <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+    <div ng-if="vm.isElimination(vm.combined.inGroupTournamentType)">
+        <!--todo-->
+    </div>
 </div>

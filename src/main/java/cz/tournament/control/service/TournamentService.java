@@ -15,6 +15,7 @@ import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,6 +119,14 @@ public class TournamentService {
         
         tournamentRepository.delete(id);
     }
+    
+    public void delete(Collection<Tournament> tournaments){
+        
+        tournamentRepository.delete(tournaments);
+    }
+    
+    
+    
     
     
     

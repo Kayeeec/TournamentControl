@@ -1,5 +1,6 @@
 package cz.tournament.control.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -27,6 +28,7 @@ import java.util.Objects;
 public class Tournament implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final String TOURNAMENT_TYPE = "tournament";
 
     @Id
     @Column(name = "id")
@@ -374,7 +376,17 @@ public class Tournament implements Serializable {
     }
     
     public String getTournamentType(){
-        return "tournament";
+        return TOURNAMENT_TYPE;
+    }
+    
+    @JsonIgnore //though it might be useful on frontend
+    public Boolean allMatchesFinished(){
+        for (Game match : matches) {
+            if(!match.allSetsFinished()){
+                return false;
+            }
+        }
+        return true;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

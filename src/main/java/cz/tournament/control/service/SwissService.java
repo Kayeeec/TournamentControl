@@ -13,6 +13,7 @@ import cz.tournament.control.service.util.SwissParticipant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -306,6 +307,10 @@ public class SwissService {
     public void delete(Long id) {
         log.debug("Request to delete Swiss : {}", id);
         swissRepository.delete(id);
+    }
+    public void delete(Collection<Swiss> tournaments) {
+        log.debug("Request to delete Swiss : {}", tournaments);
+        swissRepository.delete(tournaments);
     }
     
     /**

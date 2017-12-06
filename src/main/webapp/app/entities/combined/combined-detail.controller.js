@@ -17,5 +17,10 @@
             vm.combined = result;
         });
         $scope.$on('$destroy', unsubscribe);
+        
+        vm.isElimination = function(type){
+            return type === 'ELIMINATION_SINGLE' || type === 'ELIMINATION_DOUBLE';
+        };
+        
     }
 })();
