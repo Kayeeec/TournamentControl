@@ -5,6 +5,7 @@
  */
 package cz.tournament.control.service;
 
+import aj.org.objectweb.asm.Opcodes;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
@@ -15,6 +16,7 @@ import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.slf4j.Logger;
@@ -35,12 +37,14 @@ public class TournamentService {
     private final TournamentRepository tournamentRepository;
     private final EliminationRepository eliminationRepository;
     private final AllVersusAllRepository allVersusAllRepository;
+    private final SetSettingsService setSettingsService;
 
-    public TournamentService(UserRepository userRepository, TournamentRepository tournamentRepository, EliminationRepository eliminationRepository, AllVersusAllRepository allVersusAllRepository) {
+    public TournamentService(UserRepository userRepository, TournamentRepository tournamentRepository, EliminationRepository eliminationRepository, AllVersusAllRepository allVersusAllRepository, SetSettingsService setSettingsService) {
         this.userRepository = userRepository;
         this.tournamentRepository = tournamentRepository;
         this.eliminationRepository = eliminationRepository;
         this.allVersusAllRepository = allVersusAllRepository;
+        this.setSettingsService = setSettingsService;
     }
     
     public Tournament createTournament(Tournament tournament){
@@ -112,18 +116,48 @@ public class TournamentService {
     
     
     public void delete(Long id){
-        /* *** no need becaus Tournament.matches has cascadeType.Remove *** */
-//        Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
-//        List<Game> games = new ArrayList<>(tournament.getMatches());
-//        gameService.delete(games);
+        //delete its setSettings if no other tournament has them
+        SetSettings setSettings = findOne(id).getSetSettings();
+        List<Tournament> found_BySetSettings = findBySetSettings(setSettings);
+        if(found_BySetSettings.size() == 1){
+            setSettingsService.delete(setSettings.getId());
+        }
         
         tournamentRepository.delete(id);
     }
     
     public void delete(Collection<Tournament> tournaments){
-        
+        //gather set settings 
+        List<SetSettings> setSettingsList = new ArrayList<>();      
+        for (Tournament tournament : tournaments) {
+            setSettingsList.add(tournament.getSetSettings());
+        }
+        //delete tournaments
         tournamentRepository.delete(tournaments);
+        
+        //delete orphaned setSettings
+        while (!setSettingsList.isEmpty()) {            
+            SetSettings setSettings = pop(setSettingsList);
+            if(findBySetSettings(setSettings).isEmpty()){
+                setSettingsService.delete(setSettings.getId());
+            }
+        }
     }
+    
+    /**
+     * removes element from list and returns it 
+     * 
+     * @param list
+     * @return null if list is empty or null, SetSettings entity otherwise
+     */
+    private static SetSettings pop(List<SetSettings> list) {
+        if(list == null || list.isEmpty()) return null;
+        int index = list.size() - 1;
+        SetSettings result = list.get(index);
+        list.remove(index);
+        return result;
+    }
+    
     
     
     

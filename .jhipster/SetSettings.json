@@ -31,5 +31,6 @@
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "set_settings",
+    "jpaMetamodelFiltering": false,
     "pagination": "no"
 }

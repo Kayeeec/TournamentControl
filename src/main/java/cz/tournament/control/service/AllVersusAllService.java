@@ -2,6 +2,8 @@ package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
+import cz.tournament.control.domain.SetSettings;
+import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.repository.AllVersusAllRepository;
@@ -33,13 +35,17 @@ public class AllVersusAllService {
     private final UserRepository userRepository;
     private final GameService gameService;
     private final SetSettingsService setSettingsService;
+    private final TournamentService tournamentService;
 
-    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository, GameService gameService, SetSettingsService setSettingsService) {
+    public AllVersusAllService(AllVersusAllRepository allVersusAllRepository, UserRepository userRepository, GameService gameService, SetSettingsService setSettingsService, TournamentService tournamentService) {
         this.allVersusAllRepository = allVersusAllRepository;
         this.userRepository = userRepository;
         this.gameService = gameService;
         this.setSettingsService = setSettingsService;
+        this.tournamentService = tournamentService;
     }
+
+    
 
     /**
      * Save a allVersusAll.
@@ -144,11 +150,46 @@ public class AllVersusAllService {
      */
     public void delete(Long id) {
         log.debug("Request to delete AllVersusAll : {}", id);
+        
+        //delete its setSettings if no other tournament has them
+        SetSettings setSettings = findOne(id).getSetSettings();
+        List<Tournament> found_BySetSettings = tournamentService.findBySetSettings(setSettings);
+        if(found_BySetSettings.size() == 1){
+            setSettingsService.delete(setSettings.getId());
+        }
+        
         allVersusAllRepository.delete(id);
     }
     public void delete(Collection<AllVersusAll> tournaments){
+        //gather set settings 
+        List<SetSettings> setSettingsList = new ArrayList<>();      
+        for (Tournament tournament : tournaments) {
+            setSettingsList.add(tournament.getSetSettings());
+        }
         
         allVersusAllRepository.delete(tournaments);
+        
+        //delete orphaned setSettings
+        while (!setSettingsList.isEmpty()) {            
+            SetSettings setSettings = pop(setSettingsList);
+            if(tournamentService.findBySetSettings(setSettings).isEmpty()){
+                setSettingsService.delete(setSettings.getId());
+            }
+        }
+    }
+    
+    /**
+     * removes element from list and returns it 
+     * 
+     * @param list
+     * @return null if list is empty or null, SetSettings entity otherwise
+     */
+    private static SetSettings pop(List<SetSettings> list) {
+        if(list == null || list.isEmpty()) return null;
+        int index = list.size() - 1;
+        SetSettings result = list.get(index);
+        list.remove(index);
+        return result;
     }
     
     //delete all tournaments matches from tournament and database

@@ -81,8 +81,7 @@ public class Tournament implements Serializable {
                inverseJoinColumns = @JoinColumn(name="participants_id", referencedColumnName="id"))
     private Set<Participant> participants = new HashSet<>();
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
-    @JoinColumn(unique = true)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private SetSettings setSettings;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -98,7 +97,7 @@ public class Tournament implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     private List<EvaluationParticipant> computeEvaluation(){
         Map<Long, EvaluationParticipant> map = new HashMap<>();
         
@@ -232,15 +231,6 @@ public class Tournament implements Serializable {
     }
 
     public Tournament playingFields(Integer playingFields) {
-        if(playingFields<1){
-            throw new IllegalArgumentException("Tournament.playingFields cannot "
-                    + "be smaller than 1. Given argument: "+playingFields);
-        }
-        if(!participants.isEmpty() && playingFields > (participants.size()/2)){
-            throw new IllegalArgumentException("Tournament.playingFields cannot "
-                    + "be greater than number of participants divided by 2. Given argument = "+playingFields
-                    +", number of participants = "+participants.size());
-        }
         this.playingFields = playingFields;
         return this;
     }

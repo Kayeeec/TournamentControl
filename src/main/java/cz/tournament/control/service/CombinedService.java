@@ -3,6 +3,7 @@ package cz.tournament.control.service;
 import cz.tournament.control.domain.Combined;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Participant;
+import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Swiss;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.EliminationType;
@@ -223,6 +224,11 @@ public class CombinedService {
 
     private Combined generateGroups(CombinedDTO combinedDTO) {
         combinedDTO = resolveFields(combinedDTO);
+        SetSettings setSettings = combinedDTO.getGroupSettings().getSetSettings();
+        if(setSettings != null){
+            combinedDTO.getGroupSettings().setSetSettings(setSettingsService.save(setSettings));
+        }
+        
         switch (combinedDTO.getCombined().getInGroupTournamentType()){
             case ALL_VERSUS_ALL:
                 return generate_allVersusAllGroups(combinedDTO);
@@ -236,7 +242,6 @@ public class CombinedService {
     private Combined generate_allVersusAllGroups_noGrouping(CombinedDTO combinedDTO){
         GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
-        groupSettings.setSetSettings(setSettingsService.save(groupSettings.getSetSettings()));
                 
         int participantIndex = 0;
         List<Participant> participants = new ArrayList<>(combined.getAllParticipants());
@@ -270,7 +275,6 @@ public class CombinedService {
     private Combined generate_allVersusAllGroups_withGrouping(CombinedDTO combinedDTO){
         GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
-        groupSettings.setSetSettings(setSettingsService.save(groupSettings.getSetSettings()));
         
         for (Map.Entry<String, List<Participant>> groupEntry : combinedDTO.getGrouping().entrySet()) {
             String group = groupEntry.getKey();
@@ -315,7 +319,6 @@ public class CombinedService {
     private Combined generate_swissGroups_withGrouping(CombinedDTO combinedDTO) {
         GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
-        groupSettings.setSetSettings(setSettingsService.save(groupSettings.getSetSettings()));
         
         for (Map.Entry<String, List<Participant>> groupEntry : combinedDTO.getGrouping().entrySet()) {
             String group = groupEntry.getKey();
@@ -336,7 +339,6 @@ public class CombinedService {
     private Combined generate_swissGroups_noGrouping(CombinedDTO combinedDTO) {
         GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
-        groupSettings.setSetSettings(setSettingsService.save(groupSettings.getSetSettings()));
                 
         int participantIndex = 0;
         List<Participant> participants = new ArrayList<>(combined.getAllParticipants());
@@ -369,7 +371,6 @@ public class CombinedService {
     private Combined generate_eliminationGroups_withGrouping(CombinedDTO combinedDTO) {
         GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
-        groupSettings.setSetSettings(setSettingsService.save(groupSettings.getSetSettings()));
         
         for (Map.Entry<String, List<Participant>> groupEntry : combinedDTO.getGrouping().entrySet()) {
             String group = groupEntry.getKey();
@@ -388,7 +389,6 @@ public class CombinedService {
     private Combined generate_eliminationGroups_noGrouping(CombinedDTO combinedDTO) {
         GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
-        groupSettings.setSetSettings(setSettingsService.save(groupSettings.getSetSettings()));
                 
         int participantIndex = 0;
         List<Participant> participants = new ArrayList<>(combined.getAllParticipants());

@@ -4,6 +4,8 @@ import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
+import cz.tournament.control.domain.SetSettings;
+import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.EliminationType;
 import cz.tournament.control.repository.EliminationRepository;
 import cz.tournament.control.repository.UserRepository;
@@ -39,15 +41,16 @@ public class EliminationService {
     private final GameService gameService;
     private final SetSettingsService setSettingsService;
     private final ParticipantService participantService;
+    private final TournamentService tournamentService;
 
-    public EliminationService(EliminationRepository eliminationRepository, UserRepository userRepository, GameService gameService, SetSettingsService setSettingsService, ParticipantService participantService) {
+    public EliminationService(EliminationRepository eliminationRepository, UserRepository userRepository, GameService gameService, SetSettingsService setSettingsService, ParticipantService participantService, TournamentService tournamentService) {
         this.eliminationRepository = eliminationRepository;
         this.userRepository = userRepository;
         this.gameService = gameService;
         this.setSettingsService = setSettingsService;
         this.participantService = participantService;
+        this.tournamentService = tournamentService;
     }
-
     
     public Elimination updateElimination(Elimination elimination, List<Participant> seeding) {
         log.debug("Request to update Elimination : {}", elimination);
@@ -176,11 +179,48 @@ public class EliminationService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Elimination : {}", id);
+        //delete its setSettings if no other tournament has them
+        SetSettings setSettings = findOne(id).getSetSettings();
+        List<Tournament> found_BySetSettings = tournamentService.findBySetSettings(setSettings);
+        if(found_BySetSettings.size()==1){
+            setSettingsService.delete(setSettings.getId());
+        }
+        
         eliminationRepository.delete(id);
     }
+    
     public void delete(Collection<Elimination> tournaments) {
         log.debug("Request to delete Eliminations : {}", tournaments);
+        
+        //gather set settings 
+        List<SetSettings> setSettingsList = new ArrayList<>();      
+        for (Tournament tournament : tournaments) {
+            setSettingsList.add(tournament.getSetSettings());
+        }
+        
         eliminationRepository.delete(tournaments);
+        
+        //delete orphaned setSettings
+        while (!setSettingsList.isEmpty()) {            
+            SetSettings setSettings = pop(setSettingsList);
+            if(tournamentService.findBySetSettings(setSettings).isEmpty()){
+                setSettingsService.delete(setSettings.getId());
+            }
+        }
+    }
+    
+    /**
+     * removes element from list and returns it 
+     * 
+     * @param list
+     * @return null if list is empty or null, SetSettings entity otherwise
+     */
+    private static SetSettings pop(List<SetSettings> list) {
+        if(list == null || list.isEmpty()) return null;
+        int index = list.size() - 1;
+        SetSettings result = list.get(index);
+        list.remove(index);
+        return result;
     }
     
     

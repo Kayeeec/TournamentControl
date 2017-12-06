@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static cz.tournament.control.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -72,10 +73,11 @@ public class SetSettingsResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        SetSettingsResource setSettingsResource = new SetSettingsResource(setSettingsService);
+        final SetSettingsResource setSettingsResource = new SetSettingsResource(setSettingsService);
         this.restSetSettingsMockMvc = MockMvcBuilders.standaloneSetup(setSettingsResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -132,7 +134,7 @@ public class SetSettingsResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(setSettings)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the SetSettings in the database
         List<SetSettings> setSettingsList = setSettingsRepository.findAll();
         assertThat(setSettingsList).hasSize(databaseSizeBeforeCreate);
     }
@@ -246,5 +248,14 @@ public class SetSettingsResourceIntTest {
     @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(SetSettings.class);
+        SetSettings setSettings1 = new SetSettings();
+        setSettings1.setId(1L);
+        SetSettings setSettings2 = new SetSettings();
+        setSettings2.setId(setSettings1.getId());
+        assertThat(setSettings1).isEqualTo(setSettings2);
+        setSettings2.setId(2L);
+        assertThat(setSettings1).isNotEqualTo(setSettings2);
+        setSettings1.setId(null);
+        assertThat(setSettings1).isNotEqualTo(setSettings2);
     }
 }

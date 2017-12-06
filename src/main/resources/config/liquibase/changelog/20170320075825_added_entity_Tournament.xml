@@ -9,7 +9,7 @@
     <property name="now" value="now()" dbms="h2"/>
     <property name="now" value="current_timestamp" dbms="postgresql"/>
     <property name="now" value="now()" dbms="mysql"/>
-    
+
     <property name="autoIncrement" value="true"/>
 
     <property name="floatType" value="float4" dbms="postgresql, h2"/>
@@ -66,9 +66,11 @@
             <column name="user_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+
             <column name="set_settings_id" type="bigint">
-                <constraints unique="true" nullable="true" />
+                <constraints nullable="true" />
             </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="tournament" columnName="created" columnDataType="datetime"/>

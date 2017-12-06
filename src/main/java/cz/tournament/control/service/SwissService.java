@@ -2,7 +2,9 @@ package cz.tournament.control.service;
 
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
+import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Swiss;
+import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.exceptions.RunPythonScriptException;
 import cz.tournament.control.repository.SwissRepository;
@@ -47,12 +49,16 @@ public class SwissService {
     private final UserRepository userRepository;
     private final ParticipantService participantService;
     private final GameService gameService;
+    private final TournamentService tournamentService;
+    private final SetSettingsService setSettingsService;
 
-    public SwissService(SwissRepository swissRepository, UserRepository userRepository, ParticipantService participantService, GameService gameService) {
+    public SwissService(SwissRepository swissRepository, UserRepository userRepository, ParticipantService participantService, GameService gameService, TournamentService tournamentService, SetSettingsService setSettingsService) {
         this.swissRepository = swissRepository;
         this.userRepository = userRepository;
         this.participantService = participantService;
         this.gameService = gameService;
+        this.tournamentService = tournamentService;
+        this.setSettingsService = setSettingsService;
     }
     
     /**
@@ -306,11 +312,47 @@ public class SwissService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Swiss : {}", id);
+        //delete its setSettings if no other tournament has them
+        SetSettings setSettings = findOne(id).getSetSettings();
+        List<Tournament> found_BySetSettings = tournamentService.findBySetSettings(setSettings);
+        if(found_BySetSettings.size()==1){
+            setSettingsService.delete(setSettings.getId());
+        }
+        
         swissRepository.delete(id);
     }
     public void delete(Collection<Swiss> tournaments) {
         log.debug("Request to delete Swiss : {}", tournaments);
+        
+        //gather set settings 
+        List<SetSettings> setSettingsList = new ArrayList<>();      
+        for (Tournament tournament : tournaments) {
+            setSettingsList.add(tournament.getSetSettings());
+        }
+        
         swissRepository.delete(tournaments);
+        
+        //delete orphaned setSettings
+        while (!setSettingsList.isEmpty()) {            
+            SetSettings setSettings = pop(setSettingsList);
+            if(tournamentService.findBySetSettings(setSettings).isEmpty()){
+                setSettingsService.delete(setSettings.getId());
+            }
+        }
+    }
+    
+    /**
+     * removes element from list and returns it 
+     * 
+     * @param list
+     * @return null if list is empty or null, SetSettings entity otherwise
+     */
+    private static SetSettings pop(List<SetSettings> list) {
+        if(list == null || list.isEmpty()) return null;
+        int index = list.size() - 1;
+        SetSettings result = list.get(index);
+        list.remove(index);
+        return result;
     }
     
     /**

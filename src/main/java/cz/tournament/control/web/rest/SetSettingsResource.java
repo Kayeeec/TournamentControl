@@ -3,6 +3,7 @@ package cz.tournament.control.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.service.SetSettingsService;
+import cz.tournament.control.web.rest.errors.BadRequestAlertException;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,7 @@ public class SetSettingsResource {
     private final Logger log = LoggerFactory.getLogger(SetSettingsResource.class);
 
     private static final String ENTITY_NAME = "setSettings";
-        
+
     private final SetSettingsService setSettingsService;
 
     public SetSettingsResource(SetSettingsService setSettingsService) {
@@ -45,7 +47,7 @@ public class SetSettingsResource {
     public ResponseEntity<SetSettings> createSetSettings(@Valid @RequestBody SetSettings setSettings) throws URISyntaxException {
         log.debug("REST request to save SetSettings : {}", setSettings);
         if (setSettings.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new setSettings cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new setSettings cannot already have an ID", ENTITY_NAME, "idexists");
         }
         SetSettings result = setSettingsService.save(setSettings);
         return ResponseEntity.created(new URI("/api/set-settings/" + result.getId()))
@@ -59,7 +61,7 @@ public class SetSettingsResource {
      * @param setSettings the setSettings to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated setSettings,
      * or with status 400 (Bad Request) if the setSettings is not valid,
-     * or with status 500 (Internal Server Error) if the setSettings couldnt be updated
+     * or with status 500 (Internal Server Error) if the setSettings couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/set-settings")
@@ -85,7 +87,7 @@ public class SetSettingsResource {
     public List<SetSettings> getAllSetSettings() {
         log.debug("REST request to get all SetSettings");
         return setSettingsService.findAll();
-    }
+        }
 
     /**
      * GET  /set-settings/:id : get the "id" setSettings.
@@ -114,5 +116,4 @@ public class SetSettingsResource {
         setSettingsService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
 }

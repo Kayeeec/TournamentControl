@@ -24,10 +24,8 @@
         {
             "relationshipName": "setSettings",
             "otherEntityName": "setSettings",
-            "relationshipType": "one-to-one",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "tournament"
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
         }
     ],
     "fields": [

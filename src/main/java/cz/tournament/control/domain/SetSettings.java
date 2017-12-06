@@ -19,7 +19,8 @@ public class SetSettings implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @Min(value = 1)
@@ -34,9 +35,7 @@ public class SetSettings implements Serializable {
     @Column(name = "lead_by_points")
     private Integer leadByPoints;
 
-    public SetSettings() {
-    }
-
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -83,6 +82,7 @@ public class SetSettings implements Serializable {
     public void setLeadByPoints(Integer leadByPoints) {
         this.leadByPoints = leadByPoints;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -119,10 +119,10 @@ public class SetSettings implements Serializable {
     @Override
     public String toString() {
         return "SetSettings{" +
-            "id=" + id +
-            ", maxScore='" + maxScore + "'" +
-            ", minReachedScore='" + minReachedScore + "'" +
-            ", leadByPoints='" + leadByPoints + "'" +
-            '}';
+            "id=" + getId() +
+            ", maxScore='" + getMaxScore() + "'" +
+            ", minReachedScore='" + getMinReachedScore() + "'" +
+            ", leadByPoints='" + getLeadByPoints() + "'" +
+            "}";
     }
 }

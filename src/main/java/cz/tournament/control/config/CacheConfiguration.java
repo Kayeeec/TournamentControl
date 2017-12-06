@@ -60,6 +60,7 @@ public class CacheConfiguration {
             cm.createCache(cz.tournament.control.domain.Combined.class.getName(), jcacheConfiguration);
             cm.createCache(cz.tournament.control.domain.Combined.class.getName() + ".allParticipants", jcacheConfiguration);
             cm.createCache(cz.tournament.control.domain.Combined.class.getName() + ".groups", jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.SetSettings.class.getName() + ".tournaments", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }
