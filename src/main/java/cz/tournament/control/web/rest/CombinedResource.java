@@ -43,13 +43,13 @@ public class CombinedResource {
     }
 
     /**
-     * POST  /combineds : Create a new combined.
+     * POST  /combined : Create a new combined.
      *
      * @param combinedDTO the combined to create
      * @return the ResponseEntity with status 201 (Created) and with body the new combined, or with status 400 (Bad Request) if the combined has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PostMapping("/combineds")
+    @PostMapping("/combined")
     @Timed
     public ResponseEntity<Combined> createCombined(@Valid @RequestBody CombinedDTO combinedDTO) throws URISyntaxException {
         log.debug("REST request to save Combined : {}", combinedDTO);
@@ -58,13 +58,13 @@ public class CombinedResource {
         }
        Combined result = combinedService.createCombined(combinedDTO);
        
-        return ResponseEntity.created(new URI("/api/combineds/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/combined/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /combineds : Updates an existing combined.
+     * PUT  /combined : Updates an existing combined.
      *
      * @param combinedDTO the combined to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated combined,
@@ -72,7 +72,7 @@ public class CombinedResource {
      * or with status 500 (Internal Server Error) if the combined couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PutMapping("/combineds")
+    @PutMapping("/combined")
     @Timed
     public ResponseEntity<Combined> updateCombined(@Valid @RequestBody CombinedDTO combinedDTO) throws URISyntaxException {
         log.debug("REST request to update Combined : {}", combinedDTO);
@@ -87,27 +87,27 @@ public class CombinedResource {
     }
 
     /**
-     * GET  /combineds : get all the combineds.
+     * GET  /combined : get all the combined.
      *
      * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of combineds in body
+     * @return the ResponseEntity with status 200 (OK) and the list of combined in body
      */
-    @GetMapping("/combineds")
+    @GetMapping("/combined")
     @Timed
     public ResponseEntity<List<Combined>> getAllCombineds(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Combineds");
         Page<Combined> page = combinedService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/combineds");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/combined");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
-     * GET  /combineds/:id : get the "id" combined.
+     * GET  /combined/:id : get the "id" combined.
      *
      * @param id the id of the combined to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the combined, or with status 404 (Not Found)
      */
-    @GetMapping("/combineds/{id}")
+    @GetMapping("/combined/{id}")
     @Timed
     public ResponseEntity<Combined> getCombined(@PathVariable Long id) {
         log.debug("REST request to get Combined : {}", id);
@@ -116,16 +116,28 @@ public class CombinedResource {
     }
 
     /**
-     * DELETE  /combineds/:id : delete the "id" combined.
+     * DELETE  /combined/:id : delete the "id" combined.
      *
      * @param id the id of the combined to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @DeleteMapping("/combineds/{id}")
+    @DeleteMapping("/combined/{id}")
     @Timed
     public ResponseEntity<Void> deleteCombined(@PathVariable Long id) {
         log.debug("REST request to delete Combined : {}", id);
         combinedService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+    
+    @PutMapping("/combined/{id}")
+    @Timed
+    public ResponseEntity<Combined> generatePlayoff(@PathVariable Long id) throws URISyntaxException {
+        log.debug("REST request to generate playoff for combined with id : {}", id);
+        
+        Combined result = combinedService.generatePlayoff(id);
+        
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 }

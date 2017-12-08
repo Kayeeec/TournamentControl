@@ -48,13 +48,15 @@ public class CombinedService {
 
     private final CombinedRepository combinedRepository;
     private final UserRepository userRepository;
+    
     private final SetSettingsService setSettingsService;
     private final AllVersusAllService allVersusAllService;
     private final EliminationService eliminationService;
     private final SwissService swissService;
     private final TournamentService tournamentService;
+    private final ParticipantService participantService;
 
-    public CombinedService(CombinedRepository combinedRepository, UserRepository userRepository, SetSettingsService setSettingsService, AllVersusAllService allVersusAllService, EliminationService eliminationService, SwissService swissService, TournamentService tournamentService) {
+    public CombinedService(CombinedRepository combinedRepository, UserRepository userRepository, SetSettingsService setSettingsService, AllVersusAllService allVersusAllService, EliminationService eliminationService, SwissService swissService, TournamentService tournamentService, ParticipantService participantService) {
         this.combinedRepository = combinedRepository;
         this.userRepository = userRepository;
         this.setSettingsService = setSettingsService;
@@ -62,6 +64,7 @@ public class CombinedService {
         this.eliminationService = eliminationService;
         this.swissService = swissService;
         this.tournamentService = tournamentService;
+        this.participantService = participantService;
     }
     
     /**
@@ -82,24 +85,20 @@ public class CombinedService {
             for (Map.Entry<String, List<Participant>> groupingEntry : combinedDTO.getGrouping().entrySet()) {
                 String group = groupingEntry.getKey();
                 List<Participant> participantList = groupingEntry.getValue();
-                //enough players
+                
+                //enough players for each group, checked on frontend
                 if(participantList.size() < combined.getNumberOfWinnersToPlayoff()){
                     throw new IllegalArgumentException("Group "+group+" does not have enough "
                             + "participants ("+participantList.size()+").");
                 }
-//                //maxPlayingfields - max should not be an issue 
-//                if(combined.getInGroupTournamentType() == TournamentType.ALL_VERSUS_ALL 
-//                        || combined.getInGroupTournamentType() == TournamentType.SWISS 
-//                        && combinedDTO.getGroupSettings().getPlayingFields() != null){
-//                    Integer playingFields = combinedDTO.getGroupSettings().getPlayingFields().get(group);
-//                    int max = (int) Math.floor(participantList.size()/2);
-//                    if( playingFields < 1 || playingFields > max ){
-//                        throw new IllegalArgumentException("Group "+group+" cannot have "+playingFields+" playing field/s.");
-//                    }
-//                }
+                
+                //valid seeding for each group - keys should be the same
+                if(combinedDTO.getSeeding() != null){
+                    List<Participant> seeding = combinedDTO.getSeeding().get(group);
+                    validateSeeding(seeding);
+                }
             }
         }
-        
     }
     
     public Combined createCombined(CombinedDTO combinedDTO) {
@@ -148,8 +147,8 @@ public class CombinedService {
     }
     
     /**
-     * 1. checks if all games in all groups - validateForPlayoff(combined);
-     * 2. extracts desired number of winners from them 
+     * 1. checks if all games in all groups are finished - validateForPlayoff(combined);
+     * 2. extracts desired number of winners from groups 
      * 3. sets them as participants of playoff
      * 4. lets playof generate matches by updating it
      * 5. saves combined with updated and persisted playoff and returns it
@@ -166,24 +165,27 @@ public class CombinedService {
         validateForPlayoff(combined);
         
         Set<Participant> playoffParticipants = extractWinners(combined);
+        
+        List<Participant> seeding = preparePlayoffSeeding(combined);
+        
         Long playoffId = combined.getPlayoff().getId();
         
         switch (combined.getPlayoffType()) {
             case ALL_VERSUS_ALL:
-                    AllVersusAll allVersusAll = allVersusAllService.findOne(playoffId);
-                    allVersusAll.setParticipants(playoffParticipants);
-                    combined.setPlayoff(allVersusAllService.updateAllVersusAll(allVersusAll));
-                    return save(combined);
+                AllVersusAll allVersusAll = allVersusAllService.findOne(playoffId);
+                allVersusAll.setParticipants(playoffParticipants);
+                combined.setPlayoff(allVersusAllService.updateAllVersusAll(allVersusAll));
+                return save(combined);
             case SWISS:
                 Swiss swiss = swissService.findOne(playoffId);
                 swiss.setParticipants(playoffParticipants);
-                SwissDTO swissDTO = new SwissDTO(swiss);
+                SwissDTO swissDTO = new SwissDTO().swiss(swiss).seeding(seeding);
                 combined.setPlayoff(swissService.updateSwiss(swissDTO));
                 return save(combined);
             default://elimination single or double, type already set
                 Elimination elimination = eliminationService.findOne(playoffId);
                 elimination.setParticipants(playoffParticipants);
-                combined.setPlayoff(eliminationService.updateElimination(elimination, null));
+                combined.setPlayoff(eliminationService.updateElimination(elimination, seeding));
                 return save(combined);    
         } 
     }
@@ -240,7 +242,6 @@ public class CombinedService {
     }
     
     private Combined generate_allVersusAllGroups_noGrouping(CombinedDTO combinedDTO){
-        GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
                 
         int participantIndex = 0;
@@ -273,7 +274,6 @@ public class CombinedService {
     
     
     private Combined generate_allVersusAllGroups_withGrouping(CombinedDTO combinedDTO){
-        GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
         
         for (Map.Entry<String, List<Participant>> groupEntry : combinedDTO.getGrouping().entrySet()) {
@@ -317,7 +317,6 @@ public class CombinedService {
     }
 
     private Combined generate_swissGroups_withGrouping(CombinedDTO combinedDTO) {
-        GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
         
         for (Map.Entry<String, List<Participant>> groupEntry : combinedDTO.getGrouping().entrySet()) {
@@ -337,7 +336,6 @@ public class CombinedService {
     }
 
     private Combined generate_swissGroups_noGrouping(CombinedDTO combinedDTO) {
-        GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
                 
         int participantIndex = 0;
@@ -369,7 +367,6 @@ public class CombinedService {
     }
     
     private Combined generate_eliminationGroups_withGrouping(CombinedDTO combinedDTO) {
-        GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
         
         for (Map.Entry<String, List<Participant>> groupEntry : combinedDTO.getGrouping().entrySet()) {
@@ -387,7 +384,6 @@ public class CombinedService {
     }
 
     private Combined generate_eliminationGroups_noGrouping(CombinedDTO combinedDTO) {
-        GroupSettingsDTO groupSettings = combinedDTO.getGroupSettings();
         Combined combined = combinedDTO.getCombined();
                 
         int participantIndex = 0;
@@ -731,7 +727,13 @@ public class CombinedService {
         return result;
     }
 
-    //expects grouping
+    /**
+     * expects grouping
+     * each group can have different number of participants
+     * 
+     * @param combinedDTO
+     * @return 
+     */
     private CombinedDTO resolveFields_withGrouping(CombinedDTO combinedDTO) {
         Integer total = combinedDTO.getGroupSettings().getTotalPlayingFields();
         Integer groupsNum = combinedDTO.getCombined().getNumberOfGroups();
@@ -794,16 +796,18 @@ public class CombinedService {
         return result;
 
     }
-
+    
+    /**
+     * with no grouping, participants are assigned to groups evenly 
+     * @param combinedDTO
+     * @return 
+     */
     private CombinedDTO resolveFields_noGrouping(CombinedDTO combinedDTO) {
         Map<String,Integer> idealsMap = new HashMap();
-        
         int allParticipantsNum = combinedDTO.getCombined().getAllParticipants().size();
         Integer groupsNum = combinedDTO.getCombined().getNumberOfGroups();
         int participantDivider = allParticipantsNum / groupsNum;
         int participantRemainder = allParticipantsNum % groupsNum;
-        
-        
         int idealTotal = 0;
         
         //couts idealTotal, participantsCountMap and idealsMap
@@ -870,7 +874,14 @@ public class CombinedService {
         }
         return resolveFields_noGrouping(combinedDTO);
     }
-
+    
+    /**
+     * map of one field for each group
+     * used in case of no fields map sent from frontend
+     * 
+     * @param combinedDTO
+     * @return 
+     */
     private CombinedDTO initBasicPlayingFieldsMap(CombinedDTO combinedDTO) {
         Map<String,Integer> playingFields = new HashMap<>();
         String letter = "A";
@@ -881,6 +892,89 @@ public class CombinedService {
         combinedDTO.getGroupSettings().setPlayingFields(playingFields);
         return combinedDTO;
                 
+    }
+    
+    /**
+     * removes element from list and returns it 
+     * 
+     * @param list
+     * @return null if list is empty or null, entity otherwise
+     */
+    private static Participant pop(List<Participant> list) {
+        if(list == null || list.isEmpty()) return null;
+        int index = list.size() - 1;
+        Participant result = list.get(index);
+        list.remove(index);
+        return result;
+    }
+    
+    /**
+     * prepares seeding so that participants from the same group are not seeded together 
+     * or at least not likely to do so
+     * 
+     * @param combined
+     * @return 
+     */
+    private List<Participant> preparePlayoffSeeding(Combined combined) {
+        if(combined.getPlayoffType() == TournamentType.ALL_VERSUS_ALL 
+                || combined.getAllParticipants().size() < 2) return null;
+        
+        Integer wn = combined.getNumberOfWinnersToPlayoff();
+        List<Participant> result = new ArrayList<>();
+        int numberOfParticipants = 0; //numberOfParticipants
+        
+        Integer groupIndex = 0;
+        Map<Integer, List<Participant>> winners = new HashMap<>();
+        for (Tournament group : combined.getGroups()) {
+            List<Participant> nWinners = group.getNWinners(wn);
+            winners.put(groupIndex, nWinners);
+            numberOfParticipants += wn;
+            groupIndex++;
+        }
+        int numberOfByes = getNumberOfByes(numberOfParticipants, combined);
+        int N = numberOfParticipants + numberOfByes;
+        int byesAdded = 0;
+        groupIndex = 0;
+        int groupsN = combined.getNumberOfGroups();
+        Participant bye = participantService.getByeParticipant();
+        
+        for (int i = 0; i < N/2; i++) {
+            if(byesAdded < numberOfByes){
+                result.add(bye);
+                byesAdded++;
+            }else{
+                result.add(pop(winners.get( groupIndex % groupsN )));
+                groupIndex++;
+            }
+            result.add(0, pop(winners.get( groupIndex % groupsN )));
+            groupIndex++;
+        }
+        
+        validateSeeding(result);
+        
+        return result;
+    }
+    
+    private int getNumberOfByes(int n, Combined combined) {
+        if (combined.getPlayoffType() == TournamentType.SWISS) {
+            return n%2;
+        }
+        //elimination
+        int N = Elimination.getNextPowerOfTwo(n);
+        return N - n;
+    }
+    
+    /**
+     * no nulls and even length
+     * @param result 
+     */
+    private void validateSeeding(List<Participant> result) {
+        if(result.size() % 2 == 1){
+            throw new IllegalStateException("Seeding does not have even length.");
+        }
+        if(result.contains(null)){
+            throw new IllegalStateException("Seeding contains null.");
+        }
     }
 
     

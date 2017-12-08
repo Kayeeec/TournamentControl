@@ -17,6 +17,7 @@ import java.util.Objects;
 public class Swiss extends Tournament implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final String TOURNAMENT_TYPE = "swiss";
 
     @Column(name = "rounds")
     private Integer rounds;
@@ -34,10 +35,9 @@ public class Swiss extends Tournament implements Serializable {
     }
     
     
-    
     @Override
     public String getTournamentType(){
-        return "swiss";
+        return TOURNAMENT_TYPE;
     }
     
     public Integer getRounds() {

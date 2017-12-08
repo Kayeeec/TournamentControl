@@ -96,6 +96,9 @@
                     array[i]=i;
                 }
                 return array;
+            },
+            'back': function back() {
+                window.history.back();
             }
         };
     }

@@ -19,6 +19,7 @@ import java.util.Objects;
 public class AllVersusAll extends Tournament implements Serializable  {
 
     private static final long serialVersionUID = 1L;
+    public static final String TOURNAMENT_TYPE = "allVersusAll";
 
 
     @NotNull
@@ -45,7 +46,7 @@ public class AllVersusAll extends Tournament implements Serializable  {
     
     @Override
     public String getTournamentType(){
-        return "allVersusAll";
+        return TOURNAMENT_TYPE;
     }
 
     @Override

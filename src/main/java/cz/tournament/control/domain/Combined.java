@@ -65,7 +65,7 @@ public class Combined implements Serializable {
     @JoinColumn(unique = true)
     private Tournament playoff;
 
-    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Tournament> groups = new HashSet<>();
 

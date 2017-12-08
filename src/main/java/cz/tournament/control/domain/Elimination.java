@@ -1,5 +1,6 @@
 package cz.tournament.control.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -19,6 +20,8 @@ import cz.tournament.control.domain.enumeration.EliminationType;
 public class Elimination extends Tournament implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    public static final String TOURNAMENT_TYPE = "elimination";
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
@@ -59,7 +62,7 @@ public class Elimination extends Tournament implements Serializable {
     
     @Override
     public String getTournamentType(){
-        return "elimination";
+        return TOURNAMENT_TYPE;
     }
 
     @Override
@@ -115,7 +118,8 @@ public class Elimination extends Tournament implements Serializable {
      * @param n int, positive, number of participants
      * @return nearest power of two bigger or equal to n
      */
-    private int getNextPowerOfTwo(int n){
+    @JsonIgnore
+    public static int getNextPowerOfTwo(int n){
         if ((n & (n - 1)) == 0) {
             return n;
         }

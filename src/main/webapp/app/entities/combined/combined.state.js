@@ -70,6 +70,11 @@
                     templateUrl: 'app/entities/combined/combined-detail.html',
                     controller: 'CombinedDetailController',
                     controllerAs: 'vm'
+                },
+                'combined-evaluation-table@combined-detail':{
+                    templateUrl: 'app/components/my/evaluation-table/combined-evaluation-table.html',
+                    controller: 'CombinedEvaluationTableController',
+                    controllerAs: 'vm'
                 }
             },
             resolve: {

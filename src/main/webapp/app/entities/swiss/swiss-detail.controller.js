@@ -39,17 +39,19 @@
         
         vm.generateNextRound = function () {
             vm.isGeneratingNextRound = true;
-            
             Swiss.generateNextRound(vm.swiss, onGenerateNextRoundSuccess, onGenerateNextRoundError);
-            function onGenerateNextRoundSuccess() {
-                    vm.isGeneratingNextRound = false;
-                    $window.location.reload();
-            }
-            function onGenerateNextRoundError(error) {
-                console.log('generateNextRound() - error occured: ', error.data.message);
-                vm.isGeneratingNextRound = false;
-            }
         };
+        
+        function onGenerateNextRoundSuccess(result) {
+            $scope.$emit('tournamentControlApp:swissUpdate', result);
+            vm.isGeneratingNextRound = false;
+            //$window.location.reload();
+        }
+        
+        function onGenerateNextRoundError(error) {
+            console.log('generateNextRound() - error occured: ', error.data.message);
+            vm.isGeneratingNextRound = false;
+        }
         
         vm.nextRoundGenerated = function (round) {
             return round < (vm.swiss.rounds - vm.swiss.roundsToGenerate);
@@ -60,5 +62,9 @@
             // business logic...
             //$btn.button('reset');
         });
+        
+        vm.back = function () {
+            window.history.back();
+        };
     }
 })();

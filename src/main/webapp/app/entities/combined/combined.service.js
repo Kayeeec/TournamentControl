@@ -7,7 +7,7 @@
     Combined.$inject = ['$resource', 'DateUtils'];
 
     function Combined ($resource, DateUtils) {
-        var resourceUrl =  'api/combineds/:id';
+        var resourceUrl =  'api/combined/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},
@@ -21,7 +21,8 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'generatePlayoff': {method: 'PUT'}
         });
     }
 })();
