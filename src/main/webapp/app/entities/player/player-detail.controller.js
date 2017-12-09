@@ -5,9 +5,9 @@
         .module('tournamentControlApp')
         .controller('PlayerDetailController', PlayerDetailController);
 
-    PlayerDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Player', 'User', 'Team'];
+    PlayerDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Player', 'User', 'Team', 'My'];
 
-    function PlayerDetailController($scope, $rootScope, $stateParams, previousState, entity, Player, User, Team) {
+    function PlayerDetailController($scope, $rootScope, $stateParams, previousState, entity, Player, User, Team, My) {
         var vm = this;
 
         vm.player = entity;
@@ -19,17 +19,6 @@
         });
         $scope.$on('$destroy', unsubscribe);
 
-        vm.getTournamentLink =function(tournament){
-            if(tournament.tournamentType === "swiss"){
-                return "swiss-detail({id: "+tournament.id+"})";
-            }
-            if(tournament.tournamentType === "elimination"){
-                return "elimination-detail({id: "+tournament.id+"})";
-            }
-            if(tournament.tournamentType === "allVersusAll"){
-                return "all-versus-all-detail({id:"+tournament.id+"})";
-            }
-            return "tournament-detail({id:"+tournament.id+"})";
-        };
+        vm.getTournamentLink = My.getTournamentLink;
     }
 })();

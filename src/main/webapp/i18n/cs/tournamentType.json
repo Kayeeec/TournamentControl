@@ -3,8 +3,10 @@
         "TournamentType" : {
             "null": "",
             "ALL_VERSUS_ALL": "ALL_VERSUS_ALL",
+            "SWISS": "SWISS",
             "ELIMINATION": "ELIMINATION",
-            "SWISS": "SWISS"
+            "ELIMINATION_SINGLE": "ELIMINATION_SINGLE",
+            "ELIMINATION_DOUBLE": "ELIMINATION_DOUBLE"
         }
     }
 }

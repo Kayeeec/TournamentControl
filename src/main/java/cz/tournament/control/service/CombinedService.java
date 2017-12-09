@@ -690,21 +690,14 @@ public class CombinedService {
 
 
     private Combined deleteGroups(Combined combined) {
-        Tournament next = combined.getGroups().iterator().next();
-        log.debug("next get class: {}", next.getClass());
-        log.debug("tournament type: {}", next.getTournamentType());
-        
-        if(next instanceof AllVersusAll){
-            log.debug("next is allVersusAll");
-        }
-        if(next instanceof Swiss){
-            log.debug("next is Swiss");
-        }
-        if(next instanceof Elimination){
-            log.debug("next is Elimination");
+        List<Tournament> groups = new ArrayList<>(combined.getGroups());
+
+        //try to just delete stuff by id
+        for (Tournament group : groups) {
+            tournamentService.delete(group.getId());
         }
                 
-        tournamentService.delete(combined.getGroups());
+        //tournamentService.delete(combined.getGroups());
         combined.setGroups(new HashSet<>());
         return save(combined);
     }

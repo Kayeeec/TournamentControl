@@ -5,9 +5,9 @@
         .module('tournamentControlApp')
         .controller('CombinedDetailController', CombinedDetailController);
 
-    CombinedDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Combined', 'Participant', 'Tournament', 'User'];
+    CombinedDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Combined', 'Participant', 'Tournament', 'User', 'My'];
 
-    function CombinedDetailController($scope, $rootScope, $stateParams, previousState, entity, Combined, Participant, Tournament, User) {
+    function CombinedDetailController($scope, $rootScope, $stateParams, previousState, entity, Combined, Participant, Tournament, User, My) {
         var vm = this;
 
         vm.combined = entity;
@@ -25,7 +25,7 @@
         };
         vm.tournamentIsFinished = function (tournament) {
             if(!tournament) return false;
-            if(tournament.type === 'swiss' 
+            if(tournament.tournamentType === 'SWISS' 
                     && tournament.roundsToGenerate 
                     && tournament.roundsToGenerate !== 0){
                 return false;
@@ -40,16 +40,7 @@
             return true;
         };
         
-        vm.getLink = function (tournament) {
-            switch (tournament.tournamentType) {
-                case 'allVersusAll':
-                    return "all-versus-all-detail({id:"+tournament.id+"})";
-                case 'swiss':
-                    return "swiss-detail({id:"+tournament.id+"})";
-                default:
-                    return "elimination-detail({id:"+tournament.id+"})";
-            }
-        };
+        vm.getLink = My.getTournamentLink;
         
         /**
          * @returns true if all group tournaments are finished, false otherwise

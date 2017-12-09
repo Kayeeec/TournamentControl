@@ -97,6 +97,17 @@
                 }
                 return array;
             },
+            'getTournamentLink': function getTournamentLink(tournament) {
+                switch (tournament.tournamentType) {
+                    case 'ALL_VERSUS_ALL':
+                        return "all-versus-all-detail({id:"+tournament.id+"})";
+                    case 'SWISS':
+                        return "swiss-detail({id: "+tournament.id+"})";
+                        
+                    default: //ELIMINATION
+                        return "elimination-detail({id: "+tournament.id+"})";
+                }
+            },
             'back': function back() {
                 window.history.back();
             }

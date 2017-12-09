@@ -25,8 +25,7 @@ public class Combined implements Serializable {
     public static final String TOURNAMENT_TYPE = "combined";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull

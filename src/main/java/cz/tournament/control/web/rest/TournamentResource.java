@@ -26,8 +26,9 @@ import java.util.Optional;
 public class TournamentResource {
 
     private final Logger log = LoggerFactory.getLogger(TournamentResource.class);
+
     private static final String ENTITY_NAME = "tournament";
-    
+
     private final TournamentService tournamentService;
 
     public TournamentResource(TournamentService tournamentService) {
@@ -89,7 +90,7 @@ public class TournamentResource {
         log.debug("REST request to get all Tournaments");
         List<Tournament> tournaments = tournamentService.findAll();
         return tournaments;
-    }
+        }
 
     /**
      * GET  /tournaments/:id : get the "id" tournament.
@@ -131,7 +132,7 @@ public class TournamentResource {
         log.debug("REST request to get seeding of Tournament: {}", id);
         if(id == null){
             return new ArrayList<>();
-        }
+}
         List<Participant> seeding = tournamentService.getSeeding(id);
         return seeding;
     }

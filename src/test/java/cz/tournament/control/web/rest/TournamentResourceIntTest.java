@@ -29,11 +29,13 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static cz.tournament.control.web.rest.TestUtil.sameInstant;
+import static cz.tournament.control.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import cz.tournament.control.domain.enumeration.TournamentType;
 /**
  * Test class for the TournamentResource REST controller.
  *
@@ -73,6 +75,9 @@ public class TournamentResourceIntTest {
     private static final Boolean DEFAULT_IN_COMBINED = false;
     private static final Boolean UPDATED_IN_COMBINED = true;
 
+    private static final TournamentType DEFAULT_TOURNAMENT_TYPE = TournamentType.ALL_VERSUS_ALL;
+    private static final TournamentType UPDATED_TOURNAMENT_TYPE = TournamentType.SWISS;
+
     @Autowired
     private TournamentRepository tournamentRepository;
 
@@ -102,6 +107,7 @@ public class TournamentResourceIntTest {
         this.restTournamentMockMvc = MockMvcBuilders.standaloneSetup(tournamentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -122,7 +128,8 @@ public class TournamentResourceIntTest {
             .pointsForWinning(DEFAULT_POINTS_FOR_WINNING)
             .pointsForTie(DEFAULT_POINTS_FOR_TIE)
             .pointsForLosing(DEFAULT_POINTS_FOR_LOSING)
-            .inCombined(DEFAULT_IN_COMBINED);
+            .inCombined(DEFAULT_IN_COMBINED)
+            .tournamentType(DEFAULT_TOURNAMENT_TYPE);
         return tournament;
     }
 
@@ -156,6 +163,7 @@ public class TournamentResourceIntTest {
         assertThat(testTournament.getPointsForTie()).isEqualTo(DEFAULT_POINTS_FOR_TIE);
         assertThat(testTournament.getPointsForLosing()).isEqualTo(DEFAULT_POINTS_FOR_LOSING);
         assertThat(testTournament.isInCombined()).isEqualTo(DEFAULT_IN_COMBINED);
+        assertThat(testTournament.getTournamentType()).isEqualTo(DEFAULT_TOURNAMENT_TYPE);
     }
 
     @Test
@@ -233,7 +241,8 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.[*].pointsForWinning").value(hasItem(DEFAULT_POINTS_FOR_WINNING.doubleValue())))
             .andExpect(jsonPath("$.[*].pointsForTie").value(hasItem(DEFAULT_POINTS_FOR_TIE.doubleValue())))
             .andExpect(jsonPath("$.[*].pointsForLosing").value(hasItem(DEFAULT_POINTS_FOR_LOSING.doubleValue())))
-            .andExpect(jsonPath("$.[*].inCombined").value(hasItem(DEFAULT_IN_COMBINED.booleanValue())));
+            .andExpect(jsonPath("$.[*].inCombined").value(hasItem(DEFAULT_IN_COMBINED.booleanValue())))
+            .andExpect(jsonPath("$.[*].tournamentType").value(hasItem(DEFAULT_TOURNAMENT_TYPE.toString())));
     }
 
     @Test
@@ -256,7 +265,8 @@ public class TournamentResourceIntTest {
             .andExpect(jsonPath("$.pointsForWinning").value(DEFAULT_POINTS_FOR_WINNING.doubleValue()))
             .andExpect(jsonPath("$.pointsForTie").value(DEFAULT_POINTS_FOR_TIE.doubleValue()))
             .andExpect(jsonPath("$.pointsForLosing").value(DEFAULT_POINTS_FOR_LOSING.doubleValue()))
-            .andExpect(jsonPath("$.inCombined").value(DEFAULT_IN_COMBINED.booleanValue()));
+            .andExpect(jsonPath("$.inCombined").value(DEFAULT_IN_COMBINED.booleanValue()))
+            .andExpect(jsonPath("$.tournamentType").value(DEFAULT_TOURNAMENT_TYPE.toString()));
     }
 
     @Test
@@ -286,7 +296,8 @@ public class TournamentResourceIntTest {
             .pointsForWinning(UPDATED_POINTS_FOR_WINNING)
             .pointsForTie(UPDATED_POINTS_FOR_TIE)
             .pointsForLosing(UPDATED_POINTS_FOR_LOSING)
-            .inCombined(UPDATED_IN_COMBINED);
+            .inCombined(UPDATED_IN_COMBINED)
+            .tournamentType(UPDATED_TOURNAMENT_TYPE);
 
         restTournamentMockMvc.perform(put("/api/tournaments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -307,6 +318,7 @@ public class TournamentResourceIntTest {
         assertThat(testTournament.getPointsForTie()).isEqualTo(UPDATED_POINTS_FOR_TIE);
         assertThat(testTournament.getPointsForLosing()).isEqualTo(UPDATED_POINTS_FOR_LOSING);
         assertThat(testTournament.isInCombined()).isEqualTo(UPDATED_IN_COMBINED);
+        assertThat(testTournament.getTournamentType()).isEqualTo(UPDATED_TOURNAMENT_TYPE);
     }
 
     @Test

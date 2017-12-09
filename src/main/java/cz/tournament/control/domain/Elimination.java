@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import cz.tournament.control.domain.enumeration.EliminationType;
+import cz.tournament.control.domain.enumeration.TournamentType;
 
 /**
  * A Elimination.
@@ -21,8 +22,6 @@ public class Elimination extends Tournament implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    public static final String TOURNAMENT_TYPE = "elimination";
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private EliminationType type = EliminationType.SINGLE;
@@ -31,7 +30,7 @@ public class Elimination extends Tournament implements Serializable {
     private Boolean bronzeMatch = true;
 
     public Elimination() {
-        super();
+        super(TournamentType.ELIMINATION);
     }
     
     public EliminationType getType() {
@@ -60,10 +59,6 @@ public class Elimination extends Tournament implements Serializable {
         this.bronzeMatch = bronzeMatch;
     }
     
-    @Override
-    public String getTournamentType(){
-        return TOURNAMENT_TYPE;
-    }
 
     @Override
     public boolean equals(Object o) {

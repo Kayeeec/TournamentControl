@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Objects;
 
+import cz.tournament.control.domain.enumeration.TournamentType;
+
 /**
  * A Tournament.
  */
@@ -28,7 +30,6 @@ import java.util.Objects;
 public class Tournament implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final String TOURNAMENT_TYPE = "tournament";
 
     @Id
     @Column(name = "id")
@@ -65,6 +66,10 @@ public class Tournament implements Serializable {
 
     @Column(name = "in_combined")
     private Boolean inCombined = false;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tournament_type")
+    private TournamentType tournamentType;
 
     @OneToMany(mappedBy = "tournament", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -88,6 +93,12 @@ public class Tournament implements Serializable {
 
     public Tournament() {
     }
+
+    public Tournament(TournamentType tournamentType) {
+        this.tournamentType = tournamentType;
+    }
+    
+    
     
     
     public Long getId() {
@@ -291,6 +302,19 @@ public class Tournament implements Serializable {
         this.inCombined = inCombined;
     }
 
+    public TournamentType getTournamentType() {
+        return tournamentType;
+    }
+
+    public Tournament tournamentType(TournamentType tournamentType) {
+        this.tournamentType = tournamentType;
+        return this;
+    }
+
+    public void setTournamentType(TournamentType tournamentType) {
+        this.tournamentType = tournamentType;
+    }
+
     public Set<Game> getMatches() {
         return matches;
     }
@@ -365,9 +389,7 @@ public class Tournament implements Serializable {
         this.setSettings = setSettings;
     }
     
-    public String getTournamentType(){
-        return TOURNAMENT_TYPE;
-    }
+    
     
     @JsonIgnore //though it might be useful on frontend
     public Boolean allMatchesFinished(){
@@ -440,6 +462,7 @@ public class Tournament implements Serializable {
             ", pointsForTie='" + getPointsForTie() + "'" +
             ", pointsForLosing='" + getPointsForLosing() + "'" +
             ", inCombined='" + isInCombined() + "'" +
+            ", tournamentType='" + getTournamentType() + "'" +
             "}";
     }
 }

@@ -1,6 +1,7 @@
 package cz.tournament.control.domain.tournaments;
 
 import cz.tournament.control.domain.Tournament;
+import cz.tournament.control.domain.enumeration.TournamentType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -28,7 +29,7 @@ public class AllVersusAll extends Tournament implements Serializable  {
     private Integer numberOfMutualMatches = 1;
 
     public AllVersusAll() {
-        super();
+        super(TournamentType.ALL_VERSUS_ALL);
     }
     
     public Integer getNumberOfMutualMatches() {
@@ -42,11 +43,6 @@ public class AllVersusAll extends Tournament implements Serializable  {
 
     public void setNumberOfMutualMatches(Integer numberOfMutualMatches) {
         this.numberOfMutualMatches = numberOfMutualMatches;
-    }
-    
-    @Override
-    public String getTournamentType(){
-        return TOURNAMENT_TYPE;
     }
 
     @Override
