@@ -127,19 +127,25 @@ public class CombinedService {
      * @return persiste Combined entity
      */
     public Combined updateCombined(CombinedDTO combinedDTO) {
+        log.debug("Request to update Combined: {}", combinedDTO.getCombined());
         CombinedDTO oldCombinedDTO = parseToDTO(findOne(combinedDTO.getCombined().getId()));
         
         validate(combinedDTO);
         boolean groupsRegenerated = false;
         
         if(regenerating_groups_needed(combinedDTO, oldCombinedDTO)){
+            log.debug("updateCombined() - regenerating groups.");
             combinedDTO.setCombined(deleteGroups(combinedDTO.getCombined()));
             combinedDTO.setCombined(generateGroups(combinedDTO));
             groupsRegenerated = true;
         }
         if (regenerating_playoff_needed(groupsRegenerated, combinedDTO, oldCombinedDTO)) {
+            log.debug("updateCombined() - regenerating playoff.");
             tournamentService.delete(combinedDTO.getCombined().getPlayoff().getId());
-            combinedDTO.getCombined().setPlayoff(null);
+            Combined combined = combinedDTO.getCombined();
+            combined.setPlayoff(null);
+            combinedDTO.setCombined(save(combined));
+            
             combinedDTO.setCombined(createEmptyPlayoff(combinedDTO));
         }
         
@@ -659,16 +665,16 @@ public class CombinedService {
      * @return 
      */
     private boolean regenerating_groups_needed(CombinedDTO combinedDTO, CombinedDTO oldCombinedDTO) {
-        return Objects.equals(combinedDTO.getGrouping(),oldCombinedDTO.getGrouping())
-                && !Objects.equals(combinedDTO.getSeeding(),oldCombinedDTO.getSeeding())
+        return !Objects.equals(combinedDTO.getGrouping(),oldCombinedDTO.getGrouping())
+                || !Objects.equals(combinedDTO.getSeeding(),oldCombinedDTO.getSeeding())
                 
-                && !Objects.equals(combinedDTO.getGroupSettings().getColor(),oldCombinedDTO.getGroupSettings().getColor())
-                && !Objects.equals(combinedDTO.getGroupSettings().getNumberOfMutualMatches(),oldCombinedDTO.getGroupSettings().getNumberOfMutualMatches())
-                && !Objects.equals(combinedDTO.getGroupSettings().getBronzeMatch(),oldCombinedDTO.getGroupSettings().getBronzeMatch())
+                || !Objects.equals(combinedDTO.getGroupSettings().getColor(),oldCombinedDTO.getGroupSettings().getColor())
+                || !Objects.equals(combinedDTO.getGroupSettings().getNumberOfMutualMatches(),oldCombinedDTO.getGroupSettings().getNumberOfMutualMatches())
+                || !Objects.equals(combinedDTO.getGroupSettings().getBronzeMatch(),oldCombinedDTO.getGroupSettings().getBronzeMatch())
                    
-                && !Objects.equals(combinedDTO.getCombined().getNumberOfGroups(),oldCombinedDTO.getCombined().getNumberOfGroups())
-                && !Objects.equals(combinedDTO.getCombined().getInGroupTournamentType(),oldCombinedDTO.getCombined().getInGroupTournamentType())
-                && !Objects.equals(combinedDTO.getCombined().getAllParticipants(),oldCombinedDTO.getCombined().getAllParticipants());
+                || !Objects.equals(combinedDTO.getCombined().getNumberOfGroups(),oldCombinedDTO.getCombined().getNumberOfGroups())
+                || !Objects.equals(combinedDTO.getCombined().getInGroupTournamentType(),oldCombinedDTO.getCombined().getInGroupTournamentType())
+                || !Objects.equals(combinedDTO.getCombined().getAllParticipants(),oldCombinedDTO.getCombined().getAllParticipants());
     }
     private boolean regenerating_playoff_needed(boolean groupsRegenerated, CombinedDTO combinedDTO, CombinedDTO oldCombinedDTO) {
         if(!combinedDTO.getCombined().getPlayoff().getParticipants().isEmpty()){
@@ -676,17 +682,31 @@ public class CombinedService {
                     !Objects.equals(combinedDTO.getCombined().getNumberOfWinnersToPlayoff(),oldCombinedDTO.getCombined().getNumberOfWinnersToPlayoff());
         }
         return !Objects.equals(combinedDTO.getPlayoffSettings().getColor(),oldCombinedDTO.getPlayoffSettings().getColor())
-                && !Objects.equals(combinedDTO.getPlayoffSettings().getNumberOfMutualMatches(),oldCombinedDTO.getPlayoffSettings().getNumberOfMutualMatches())
-                && !Objects.equals(combinedDTO.getPlayoffSettings().getBronzeMatch(),oldCombinedDTO.getPlayoffSettings().getBronzeMatch())
+                || !Objects.equals(combinedDTO.getPlayoffSettings().getNumberOfMutualMatches(),oldCombinedDTO.getPlayoffSettings().getNumberOfMutualMatches())
+                || !Objects.equals(combinedDTO.getPlayoffSettings().getBronzeMatch(),oldCombinedDTO.getPlayoffSettings().getBronzeMatch())
                 
-                && !Objects.equals(combinedDTO.getCombined().getPlayoffType(),oldCombinedDTO.getCombined().getPlayoffType());
+                || !Objects.equals(combinedDTO.getCombined().getPlayoffType(),oldCombinedDTO.getCombined().getPlayoffType());
     }
 
 
     private Combined deleteGroups(Combined combined) {
+        Tournament next = combined.getGroups().iterator().next();
+        log.debug("next get class: {}", next.getClass());
+        log.debug("tournament type: {}", next.getTournamentType());
+        
+        if(next instanceof AllVersusAll){
+            log.debug("next is allVersusAll");
+        }
+        if(next instanceof Swiss){
+            log.debug("next is Swiss");
+        }
+        if(next instanceof Elimination){
+            log.debug("next is Elimination");
+        }
+                
         tournamentService.delete(combined.getGroups());
         combined.setGroups(new HashSet<>());
-        return combined;
+        return save(combined);
     }
 
     private List<Participant> getSeeding(Combined oldCombined, Tournament group) {

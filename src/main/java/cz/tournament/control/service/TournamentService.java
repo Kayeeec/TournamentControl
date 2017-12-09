@@ -5,19 +5,19 @@
  */
 package cz.tournament.control.service;
 
-import aj.org.objectweb.asm.Opcodes;
+import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.User;
-import cz.tournament.control.repository.AllVersusAllRepository;
-import cz.tournament.control.repository.EliminationRepository;
 import cz.tournament.control.repository.TournamentRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,15 +35,11 @@ public class TournamentService {
 
     private final UserRepository userRepository;
     private final TournamentRepository tournamentRepository;
-    private final EliminationRepository eliminationRepository;
-    private final AllVersusAllRepository allVersusAllRepository;
     private final SetSettingsService setSettingsService;
 
-    public TournamentService(UserRepository userRepository, TournamentRepository tournamentRepository, EliminationRepository eliminationRepository, AllVersusAllRepository allVersusAllRepository, SetSettingsService setSettingsService) {
+    public TournamentService(UserRepository userRepository, TournamentRepository tournamentRepository, SetSettingsService setSettingsService) {
         this.userRepository = userRepository;
         this.tournamentRepository = tournamentRepository;
-        this.eliminationRepository = eliminationRepository;
-        this.allVersusAllRepository = allVersusAllRepository;
         this.setSettingsService = setSettingsService;
     }
     
@@ -80,13 +76,6 @@ public class TournamentService {
         log.debug("Request to get Tournament : {}", id);
         Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
         return tournament;
-
-//        Tournament tournament = eliminationRepository.findOne(id);
-//        if(tournament != null) return tournament;
-//        tournament = allVersusAllRepository.findOne(id);
-//        if(tournament != null) return tournament;
-//        //none of the above
-//        return tournamentRepository.findOneWithEagerRelationships(id);
     }
     
     /**
@@ -156,6 +145,47 @@ public class TournamentService {
         SetSettings result = list.get(index);
         list.remove(index);
         return result;
+    }
+    
+    /**
+     * Goes through matches sorted by round and extracts seeding.
+     * seeding:
+     *  [1A,2A,3A,3B,2B,1B]
+     *    |  |  |  |  |  |
+     *    |  |  +--+  |  |
+     *    |  +--------+  |
+     *    +--------------+
+     * 
+     * @param id - od a tournament
+     * @return null if 1) id null - tournament to be created or no tournament found in db
+     *                 2) tournament has no matches
+     *         List<Participant> otherwise
+     */
+    public List<Participant> getSeeding(Long id) {
+        if(id == null){ return null; }
+        Tournament tournament = findOne(id);
+        if(tournament == null){return null;}
+        
+        //get matches and sort them by round
+        List<Game> matches = new ArrayList<>(tournament.getMatches());
+        if(matches.isEmpty()) return null;
+        Collections.sort(matches, Game.RoundComparator);
+        
+        int N = tournament.getParticipants().size() + tournament.getParticipants().size()%2;
+        Participant[] seeding = new Participant[N];
+        
+        int a = 0;
+        for (Game match : matches) {
+            if(match.getRound() != 1){
+                break;
+            }            
+            seeding[a]=match.getRivalA();
+            seeding[N - 1 - a] = match.getRivalB();
+            a += 1;
+        }
+        
+        return Arrays.asList(seeding);
+        
     }
     
     

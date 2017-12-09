@@ -1,6 +1,7 @@
 package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,6 +117,23 @@ public class TournamentResource {
         log.debug("REST request to delete Tournament : {}", id);
         tournamentService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+    
+    /**
+     * GET  /tournaments/seeding/{id} : get seeding of an existing tournament
+     * @param id of an existing tournament to get seeding of
+     * @return List od Participant objects
+     * or empty list if no seeding found.
+     */
+    @GetMapping("/tournaments/seeding/{id}")
+    @Timed
+    public List<Participant> getSeeding(@PathVariable Long id) {
+        log.debug("REST request to get seeding of Tournament: {}", id);
+        if(id == null){
+            return new ArrayList<>();
+        }
+        List<Participant> seeding = tournamentService.getSeeding(id);
+        return seeding;
     }
 
 }

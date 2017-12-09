@@ -176,8 +176,8 @@
         vm.assign_to_group_manually = false;
         vm.playerGrouping = {};
         vm.teamGrouping = {};
-        vm.playersToChoose = [];
-        vm.teamsToChoose = [];
+        vm.playersToChoose = angular.copy(vm.selectedPlayers);
+        vm.teamsToChoose = angular.copy(vm.selectedTeams);
         
         
         vm.getName = My.getParticipantName;
@@ -272,12 +272,12 @@
             if(vm.combined.id && vm.combined.groups && vm.combined.groups.length > 0){
                 for (var i = 0; i < vm.combined.groups.length; i++) {
                     var groupTournament = vm.combined.groups[i];
-                    vm.playerGroupObject[groupTournament.name] = 
+                    vm.playerGrouping[groupTournament.name] = 
                             filterFilter(groupTournament.participants, {team : null});
-                    vm.teamGroupObject[groupTournament.name] = 
+                    vm.teamGrouping[groupTournament.name] = 
                             filterFilter(groupTournament.participants, {player : null});
-                    vm.playersToChoose = [];
-                    vm.teamsToChoose = [];
+                    vm.playersToChoose = angular.copy(vm.selectedPlayers);
+                    vm.teamsToChoose = angular.copy(vm.selectedTeams);
                 }
             }else if (!vm.combined.id) {
                 vm.init_groupParticipantObject();
@@ -523,8 +523,10 @@
         function getSeeding() {
             console.log("getSeeding()");
             if (vm.combined.id && vm.combined.groups){
-                for (var groupTournament in vm.combined.groups){
-                    Tournament.getSeeding({id: groupTournament}, onGetSeedingSuccess, onGetSeedingError);
+                for (var i = 0; i < vm.combined.groups.length; i++) {
+                    var groupTournament = vm.combined.groups[i];
+                    console.log("groupTournament.id: ", groupTournament.id);
+                    Tournament.getSeeding({id: groupTournament.id}, onGetSeedingSuccess, onGetSeedingError);
                     function onGetSeedingSuccess(seeding) {
                         vm.playerSeedingObject[groupTournament.name] = filterFilter(seeding, {team : null});
                         vm.teamSeedingObject[groupTournament.name] = filterFilter(seeding, {player : null});
@@ -538,6 +540,7 @@
                 vm.initSeeding();
             }
         }getSeeding();
+        
 
         function getNumberOfByes(n) {
             if(vm.combined.inGroupTournamentType === 'SWISS'){

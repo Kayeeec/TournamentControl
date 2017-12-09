@@ -21,7 +21,13 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'getSeeding':{
+                method: 'GET',
+                url: 'api/tournaments/seeding/:id',
+                isArray: true
+                
+            }
         });
     }
 })();

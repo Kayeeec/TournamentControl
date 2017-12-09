@@ -75,6 +75,11 @@
         {
             "fieldName": "inCombined",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "tournamentType",
+            "fieldType": "TournamentType",
+            "fieldValues": "ALL_VERSUS_ALL, SWISS, ELIMINATION, ELIMINATION_SINGLE, ELIMINATION_DOUBLE"
         }
     ],
     "changelogDate": "20170320075825",
