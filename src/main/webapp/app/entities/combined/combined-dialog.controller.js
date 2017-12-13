@@ -811,6 +811,7 @@
             playingFields: {}, //this wil be an object with key for each group
             totalPlayingFields: 1,
             
+            eliminationType: "SINGLE",
             bronzeMatch: false,
             color: false, //if swiss
             numberOfMutualMatches: 1,
@@ -900,6 +901,7 @@
             tiesAllowed: false,
             setSettings: {id: null, maxScore: null, minReachedScore: null, leadByPoints: null}, //this will be an object
             playingFields: 1, //this wil be an object with key for each group
+            eliminationType: "SINGLE",
             bronzeMatch: false,
             color: false, //if swiss
             numberOfMutualMatches: 1,
@@ -992,6 +994,14 @@
             if(vm.setNumberOfFields === 'FOR_EACH'){
                 dto.groupSettings.totalPlayingFields = null;
             }
+            
+            if (dto.combined.inGroupTournamentType === 'ELIMINATION_DOUBLE') {
+                dto.groupSettings.eliminationType = 'DOUBLE';
+            }
+            if (dto.combined.playoffType === 'ELIMINATION_DOUBLE') {
+                dto.playoffSettings.eliminationType = 'DOUBLE';
+            }
+            //otherwise left as single
             
             console.log("DTO: ");
             console.log(JSON.parse(JSON.stringify(dto)));

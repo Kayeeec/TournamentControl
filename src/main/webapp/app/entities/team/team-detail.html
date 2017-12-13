@@ -25,13 +25,16 @@
         <dt><span data-translate="">Is in tournaments</span></dt><!--TODO: data-translate -->
         <dd>
             <span ng-repeat="tournament in vm.tournaments">
-                <a ui-sref="{{vm.getTournamentLink(tournament)}}">{{tournament.name}}</a>{{$last ? '' : ', '}}
+                <a ui-sref="{{vm.getTournamentLink(tournament)}}">{{tournament.name}}</a>{{$last && vm.combinedTournaments.length === 0 ? '' : ', '}}
+            </span>
+            <span ng-repeat="tournament in vm.combinedTournaments">
+                <a ui-sref="{{vm.getCombinedTournamentLink(tournament)}}">{{tournament.name}}</a>{{$last ? '' : ', '}}
             </span>
         </dd>
     </dl>
 
     <button type="submit"
-            back
+            ui-sref="{{vm.backLink()}}"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>

@@ -150,15 +150,14 @@ public class AllVersusAllService {
      */
     public void delete(Long id) {
         log.debug("Request to delete AllVersusAll : {}", id);
+        SetSettings setSettings = findOne(id).getSetSettings();
+        allVersusAllRepository.delete(id);
         
         //delete its setSettings if no other tournament has them
-        SetSettings setSettings = findOne(id).getSetSettings();
         List<Tournament> found_BySetSettings = tournamentService.findBySetSettings(setSettings);
-        if(found_BySetSettings.size() == 1){
+        if(found_BySetSettings.isEmpty()){
             setSettingsService.delete(setSettings.getId());
         }
-        
-        allVersusAllRepository.delete(id);
     }
     public void delete(Collection<AllVersusAll> tournaments){
         //gather set settings 

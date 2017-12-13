@@ -140,9 +140,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="advancedSetSettings_heading">
                     <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" 
-                           data-target="#advancedSetSettings" aria-expanded="false" aria-controls="advancedSetSettings">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" data-target="#advancedSetSettings" 
+                           aria-expanded="false" aria-controls="advancedSetSettings">
                             Advanced Set Settings [optional]
+                            <span class=" text text-muted glyphicon glyphicon-chevron-down pull-right"></span>
+                            <span class="glyphicon glyphicon-chevron-up pull-right"></span>
                         </a>
                     </h4>
                 </div>
@@ -150,73 +152,79 @@
                      role="tabpanel" aria-labelledby="advancedSetSettings_heading">
                     <div class="panel-body">
                         <!--Set settings-->
-                        <div class=" form-inline myPaqddingBottom">
-                            <div class=" form-group">
-                                <label for="maxScore_radio" class="control-label" for="field_maxScore">
-                                    <input id="maxScore_radio" type="radio" ng-model="vm.setSettingsChosen" value="maxScore" checked> 
-                                    Max Score
-                                </label>
-                                <input ng-disabled="vm.setSettingsChosen !== 'maxScore'" type="number" class="form-control" 
-                                    name="maxScore" id="field_maxScore" ng-model="vm.preparedSettings.maxScore"
-                                    min="1"/>
-
-                                <div ng-show="editForm.maxScore.$invalid">
-                                    <p class="help-block"
-                                       ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" 
-                                       translate-value-min="1">
-                                        This field should be at least 1.
-                                    </p>
-                                    <p class="help-block"
-                                       ng-show="editForm.maxScore.$error.number" data-translate="entity.validation.number">
-                                        This field should be a number.
-                                    </p>
+                        <div class="form-group">
+                            <div class="form-inline">
+                                <span>Set&nbsp; </span>    
+                                <div class="form-group">
+                                    <label for="maxScore_radio">
+                                        <input class="radio radio-inline" id="maxScore_radio" type="radio"
+                                               ng-model="vm.setSettingsChosen" value="maxScore">
+                                        maximum score </label>
+                                </div>
+                                <span>&nbsp; or &nbsp; </span>  
+                                <div class="form-group">
+                                    <label  for="leadByPoints_radio">
+                                        <input class="radio radio-inline" id="leadByPoints_radio" type="radio"
+                                               ng-model="vm.setSettingsChosen" value="leadByPoints">
+                                        minimum reached score</label> with <label>point difference  
+                                            <input ng-hide="true" type="radio" class="radio radio-inline"/></label>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <label for="leadByPoints_radio" class="control-label" for="field_leadByPoints">
-                                    <input id="leadByPoints_radio" type="radio" ng-model="vm.setSettingsChosen" value="leadByPoints"> 
-                                    Lead-by points
-                                </label>
-                                <input ng-disabled="vm.setSettingsChosen !== 'leadByPoints'" type="number" 
-                                       class="form-control" name="leadByPoints" id="field_leadByPoints"
-                                       ng-model="vm.preparedSettings.leadByPoints"
-                                       min="1"/>
-                                <div ng-show="editForm.leadByPoints.$invalid">
-                                    <p class="help-block"
-                                       ng-show="editForm.leadByPoints.$error.min" data-translate="entity.validation.min" 
-                                       translate-value-min="1">
-                                        This field should be at least 1.
-                                    </p>
-                                    <p class="help-block"
-                                       ng-show="editForm.leadByPoints.$error.number" 
-                                       data-translate="entity.validation.number">
-                                        This field should be a number.
-                                    </p>
-                                </div>
+                        
+                        <div class="row" ng-if="vm.setSettingsChosen === 'maxScore'">
+                            <div class="form-group col-md-6">
+                                <label for="field_maxScore">Maximum Score</label>
+                                <input type="number" class="form-control" name="maxScore" id="field_maxScore"
+                                           ng-model="vm.preparedSettings.maxScore" min="1"/>
+                                    <div ng-show="editForm.maxScore.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.maxScore.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.maxScore.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>
                             </div>
-                            <div class="form-group">
-                                <label for="leadByPoints_radio" class="control-label" 
-                                       data-translate="tournamentControlApp.setSettings.minReachedScore" 
-                                       for="field_minReachedScore">
-                                    Min Reached Score
-                                </label>
-                                <input ng-disabled="vm.setSettingsChosen !== 'leadByPoints'" type="number" 
-                                       class="form-control" name="minReachedScore" id="field_minReachedScore"
-                                       ng-model="vm.preparedSettings.minReachedScore" min="0"/>
-                                <div ng-show="editForm.minReachedScore.$invalid">
-                                    <p class="help-block"
-                                       ng-show="editForm.minReachedScore.$error.min" data-translate="entity.validation.min" 
-                                       translate-value-min="0">
-                                        This field should be at least 0.
-                                    </p>
-                                    <p class="help-block"
-                                       ng-show="editForm.minReachedScore.$error.number" 
-                                       data-translate="entity.validation.number">
-                                        This field should be a number.
-                                    </p>
-                                </div>
+                        </div>
+                        
+                        <div class="row" ng-if="vm.setSettingsChosen === 'leadByPoints'">
+                            <div class="form-group col-md-6">
+                                <label for="field_minReachedScore">Minimum Reached Score</label>
+                                <input type="number" class="form-control" name="minReachedScore" id="field_minReachedScore"
+                                           ng-model="vm.preparedSettings.minReachedScore" min="0"/>
+
+                                    <div ng-show="editForm.minReachedScore.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.minReachedScore.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="0">
+                                            This field should be at least 0.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.minReachedScore.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="field_leadByPoints">Point Difference </label>
+                                <input type="number" class="form-control" name="leadByPoints" id="field_leadByPoints"
+                                           ng-model="vm.preparedSettings.leadByPoints" min="1"/>
+
+                                    <div ng-show="editForm.leadByPoints.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.leadByPoints.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.leadByPoints.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>
                             </div>
                         </div>
                         <!--Set settings--> 
@@ -315,66 +323,83 @@
             <div ng-if="vm.getSelectedParticipants().length >= 2 ">
                 <table ng-if="chosen===1" name="seeding-players" class="table table-responsive">
                    <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(),1)">
-                       <td ng-if="!vm.isBye(vm.player_seeding[i])">
-                           <select class="form-control"
-                               ng-options="participant as vm.getSeedingOptionName(participant) for participant 
-                                                in vm.selectedPlayers track by participant.id"
-                               ng-model="vm.player_seeding[i]" 
-                               ng-change="vm.onPlayerSelect({{vm.player_seeding}}, vm.player_seeding[i], i); vm.playersChanged = false">
-                               <option value=""> - </option>
-                           </select>
+                       <td class="col-md-5" style="width: 45.83333333%">
+                           <ui-select ng-model="vm.player_seeding[i]" theme="bootstrap"
+                                    ng-disabled="vm.isBye($select.selected)"
+                                    ng-change="vm.onPlayerSelect({{vm.player_seeding}}, vm.player_seeding[i], i); vm.playersChanged = false"
+                                    ng-class="{'has-warning': vm.player_seeding[i] === null}">
+                                <ui-select-match placeholder="Select or search a person in the list...">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="item in vm.selectedPlayers | filter: $select.search">
+                                    <div class="row">
+                                        <div class="pull-left text">
+                                            <div class="glyphicon" ng-init="selected = vm.contains(vm.player_seeding, item)"
+                                                 ng-class="{'glyphicon-check': selected, 'glyphicon-unchecked': !selected }"></div>
+                                            &nbsp;
+                                        </div>
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </div>
+                                </ui-select-choices>
+                            </ui-select>
                        </td>
-                       <td ng-if="vm.isBye(vm.player_seeding[i])">
-                           <select class="form-control" disabled="true">
-                               <option value="">BYE</option>
-                           </select>
-                       </td>
-                       <td><p class="text-center">vs.</p></td>
-                       <td ng-if="!vm.isBye(vm.player_seeding[vm.getN() - 1 - i])">
-                           <select class="form-control" 
-                               ng-options="participant as vm.getSeedingOptionName(participant) for participant 
-                                                in vm.selectedPlayers track by participant.id"
-                               ng-model="vm.player_seeding[vm.getN() - 1 - i]"
-                               ng-change="vm.onPlayerSelect({{vm.player_seeding}}, vm.player_seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.playersChanged = false">
-                               <option value=""> - </option>
-                           </select>
-                       </td>
-                       <td ng-if="vm.isBye(vm.player_seeding[vm.getN() - 1 - i])">
-                           <select class="form-control" disabled="true">
-                               <option value="">BYE</option>
-                           </select>
+                       <td class="col-md-1 text-center" style="vertical-align: middle">vs.</td>
+                       <td class="col-md-5" style="width: 45.83333333%">
+                           <ui-select ng-model="vm.player_seeding[vm.getN() - 1 - i]" theme="bootstrap"
+                                    ng-disabled="vm.isBye($select.selected)"
+                                    ng-change="vm.onPlayerSelect({{vm.player_seeding}}, vm.player_seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.playersChanged = false"
+                                    ng-class="{'has-warning': vm.player_seeding[vm.getN() - 1 - i] === null}">
+                                <ui-select-match placeholder="Select or search a person in the list...">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="item in vm.selectedPlayers | filter: $select.search">
+                                    <div class="row">
+                                        <div class="pull-left text">
+                                            <div class="glyphicon" ng-init="selected = vm.contains(vm.player_seeding, item)"
+                                                 ng-class="{'glyphicon-check': selected, 'glyphicon-unchecked': !selected }"></div>
+                                            &nbsp;
+                                        </div>
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </div>
+                                </ui-select-choices>
+                            </ui-select>
                        </td>
                    </tr>
                </table>
                 <table ng-if="chosen===2" name="seeding-teams" class="table table-responsive">
                    <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(),1)">
-                       <td ng-if="!vm.isBye(vm.team_seeding[i])">
-                           <select class="form-control"
-                               ng-options="participant as vm.getSeedingOptionName(participant) for participant 
-                                                in vm.selectedTeams track by participant.id"
-                               ng-model="vm.team_seeding[i]" 
-                               ng-change="vm.onTeamSelect({{vm.team_seeding}}, vm.team_seeding[i], i); vm.teamsChanged = false">
-                               <option value=""> - </option>
-                           </select>
+                       <td class="col-md-5" style="width: 45.83333333%">
+                           <ui-select ng-model="vm.team_seeding[i]" theme="bootstrap"
+                                    ng-disabled="vm.isBye($select.selected)"
+                                    ng-change="vm.onTeamSelect({{vm.team_seeding}}, vm.team_seeding[i], i); vm.teamsChanged = false"
+                                    ng-class="{'has-warning': vm.team_seeding[i] === null}">
+                                <ui-select-match placeholder="Select or search a team in the list...">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="item in vm.selectedTeams | filter: $select.search">
+                                    <div class="row">
+                                        <div class="pull-left text">
+                                            <div class="glyphicon" ng-init="selected = vm.contains(vm.team_seeding, item)"
+                                                 ng-class="{'glyphicon-check': selected, 'glyphicon-unchecked': !selected }"></div>
+                                            &nbsp;
+                                        </div>
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </div>
+                                </ui-select-choices>
+                            </ui-select>
                        </td>
-                       <td ng-if="vm.isBye(vm.team_seeding[i])">
-                           <select class="form-control" disabled="true">
-                               <option value="">BYE</option>
-                           </select>
-                       </td>
-                       <td><p class="text-center">vs.</p></td>
-                       <td ng-if="!vm.isBye(vm.team_seeding[vm.getN() - 1 - i])">
-                           <select class="form-control" 
-                               ng-options="participant as vm.getSeedingOptionName(participant) for participant in vm.selectedTeams track by participant.id"
-                               ng-model="vm.team_seeding[vm.getN() - 1 - i]"
-                               ng-change="vm.onTeamSelect({{vm.team_seeding}}, vm.team_seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.teamsChanged = false">
-                               <option value=""> - </option>
-                           </select>
-                       </td>
-                       <td ng-if="vm.isBye(vm.team_seeding[vm.getN() - 1 - i])">
-                           <select class="form-control" disabled="true">
-                               <option value="">BYE</option>
-                           </select>
+                       <td class="col-md-1 text-center" style="vertical-align: middle">vs.</td>
+                       <td class="col-md-5" style="width: 45.83333333%">
+                           <ui-select ng-model="vm.team_seeding[vm.getN() - 1 - i]" theme="bootstrap"
+                                    ng-disabled="vm.isBye($select.selected)"
+                                    ng-change="vm.onTeamSelect({{vm.team_seeding}}, vm.team_seeding[vm.getN() - 1 - i], vm.getN() - 1 - i); vm.teamsChanged = false"
+                                    ng-class="{'has-warning': vm.team_seeding[vm.getN() - 1 - i] === null}">
+                                <ui-select-match placeholder="Select or search a team in the list...">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="item in vm.selectedTeams | filter: $select.search">
+                                    <div class="row">
+                                        <div class="pull-left text">
+                                            <div class="glyphicon" ng-init="selected = vm.contains(vm.team_seeding, item)"
+                                                 ng-class="{'glyphicon-check': selected, 'glyphicon-unchecked': !selected }"></div>
+                                            &nbsp;
+                                        </div>
+                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                    </div>
+                                </ui-select-choices>
+                            </ui-select>
                        </td>
                    </tr>
                </table> 

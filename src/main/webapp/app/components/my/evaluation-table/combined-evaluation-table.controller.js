@@ -19,22 +19,27 @@
         $scope.$on('$destroy', unsubscribe);
         
         /**
+         * contains computed evaluation data 
+         * 
          * object 
          * { participant.id : pointCountObject }
          * 
          * pointCountObject {
-         *  rank:
-         *  name : 
-         *  wins:
-         *  loses:
-         *  ties:
-         *  score:
-         *  rivalScore:
-         *  points:
+         *       rank:
+         *       name : 
+         *       wins:
+         *       loses:
+         *       ties:
+         *       score:
+         *       rivalScore:
+         *       points:
          * }
          */
         vm.evaluation = init_evaluation();
         
+        /**
+         * for storing sorted evaluation data and computing rank 
+         */
         vm.pointCountArray = preparePointCountArray();
         
         function init_evaluation() {
@@ -85,22 +90,19 @@
         };
         
         function evaluateMatch(tournament, match) {
-            if(!match || !match.finished){
-                return;
+            if(!match || !match.finished 
+                    || (match.rivalA && match.rivalA.bye)
+                    || (match.rivalB && match.rivalB.bye) ){
+                return; //ignores bye matches
             }
             //is finished 
             var score = getSumScore(match);
             
-            console.log("match: ", match);
-            if (!match.rivalA.bye) {
-                vm.evaluation[match.rivalA.id].score += score.A;
-                vm.evaluation[match.rivalA.id].rivalScore += score.B;
-            }
-            if (!match.rivalB.bye) {
-                vm.evaluation[match.rivalB.id].score += score.B;
-                vm.evaluation[match.rivalB.id].rivalScore += score.A;
-            }
-            //tie - finished and winner and loser are null, only one of them being null should not happen
+            vm.evaluation[match.rivalA.id].score += score.A;
+            vm.evaluation[match.rivalA.id].rivalScore += score.B;
+            vm.evaluation[match.rivalB.id].score += score.B;
+            vm.evaluation[match.rivalB.id].rivalScore += score.A;
+            //tie - finished && winner and loser are null, only one of them being null should not happen
             if(match.winner === null && match.loser === null){
                 vm.evaluation[match.rivalA.id].ties += 1;
                 vm.evaluation[match.rivalA.id].points += tournament.pointsForTie;
@@ -113,11 +115,9 @@
             vm.evaluation[match.winner.id].wins += 1;
             vm.evaluation[match.winner.id].points += tournament.pointsForWinning;
             
-            //loser and don't forget bye 
-            if(!match.loser.bye){
-                vm.evaluation[match.loser.id].loses += 1;
-                vm.evaluation[match.loser.id].points -= tournament.pointsForLosing;
-            }
+            //loser
+            vm.evaluation[match.loser.id].loses += 1;
+            vm.evaluation[match.loser.id].points -= tournament.pointsForLosing;
             
         }
         

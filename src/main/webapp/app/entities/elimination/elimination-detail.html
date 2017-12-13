@@ -63,13 +63,20 @@
     
     <!-- buttons -->
     <div style="padding-top: 20px; padding-bottom: 20px">
-        <button type="submit"
-                back
+        <button type="submit" ng-if="!vm.elimination.inCombined"
+                ui-sref="{{vm.backLink()}}"
                 class="btn btn-info">
             <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
         </button>
+        
+        <button type="button" ng-if="vm.elimination.inCombined"
+                ui-sref="combined-detail({id:vm.combined.id})"
+                class="btn btn-info">
+            <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;
+            <span data-translate="entity.action.back"> Back</span>
+        </button>
 
-        <button type="button" ui-sref="elimination-detail.edit({id:vm.elimination.id})" class="btn btn-primary">
+        <button ng-if="!vm.elimination.inCombined" type="button" ui-sref="elimination-detail.edit({id:vm.elimination.id})" class="btn btn-primary">
             <span class="glyphicon glyphicon-pencil"></span>
             <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
         </button>
@@ -79,10 +86,6 @@
             <span class="hidden-sm-down" data-translate=""> Generate .ods spreadsheet </span>
         </button>
         
-        <button type="button" class="btn btn-success" ng-click="vm.print()">
-            <span class="glyphicon glyphicon-download-alt"></span>
-            <span class="hidden-sm-down" data-translate=""> Print </span>
-        </button>
     </div>
     <!-- buttons -->
     

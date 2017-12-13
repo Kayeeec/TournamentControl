@@ -83,40 +83,6 @@
                 }]
             }
         })
-        .state('public-elimination-detail', {
-            parent: 'home',
-            url: '/elimination/{id}/public',
-            data: {
-                authorities: [],
-                pageTitle: 'tournamentControlApp.elimination.detail.title'
-            },
-            views: {
-                'content@': {
-                    templateUrl: 'app/entities/elimination/elimination-detail.html',
-                    controller: 'EliminationDetailController',
-                    controllerAs: 'vm'
-                }
-            },
-            resolve: {
-                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('elimination');
-                    $translatePartialLoader.addPart('tournament');
-                    $translatePartialLoader.addPart('global');
-                    return $translate.refresh();
-                }],
-                entity: ['$stateParams', 'Elimination', function($stateParams, Elimination) {
-                    return Elimination.get({id : $stateParams.id}).$promise;
-                }],
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                        name: $state.current.name || 'home',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
         .state('elimination-detail.edit', {
             parent: 'elimination-detail',
             url: '/detail/edit',

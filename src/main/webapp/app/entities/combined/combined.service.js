@@ -22,7 +22,21 @@
                 }
             },
             'update': { method:'PUT' },
-            'generatePlayoff': {method: 'PUT'}
+            'generatePlayoff': {method: 'PUT',
+                url: 'api/combined/generate-playoff'
+            },
+            'findByTournament': {
+                method: 'POST',
+                url: 'api/combined/tournament',
+                transformResponse: function (data) {
+                    if (data) {
+                        data = angular.fromJson(data);
+                        data.created = DateUtils.convertDateTimeFromServer(data.created);
+                    }
+                    return data;
+                }
+            }
+                    
         });
     }
 })();

@@ -11,7 +11,12 @@
         var vm = this;
 
         vm.combined = entity;
-        vm.previousState = previousState.name;
+        
+        My.savePreviousUrl(previousState);
+        vm.backLink = function () {
+            return My.backLink(previousState);
+        };
+        
         vm.generatePlayoff = generatePlayoff;
         vm.isGeneratingPlayoff = false;
 
@@ -41,7 +46,6 @@
         };
         
         vm.getLink = My.getTournamentLink;
-        
         /**
          * @returns true if all group tournaments are finished, false otherwise
          */
@@ -59,7 +63,7 @@
         function generatePlayoff() {
             if(vm.isGeneratingPlayoff || vm.cannotGeneratePlayoff())return;
             vm.isGeneratingPlayoff = true;
-            Combined.generatePlayoff({id : vm.combined.id}, onSuccess, onError);
+            Combined.generatePlayoff(vm.combined.id, onSuccess, onError);
         }
         
         function onSuccess(result) {

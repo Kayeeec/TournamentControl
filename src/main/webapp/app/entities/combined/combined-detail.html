@@ -44,7 +44,7 @@
     </dl>
         <div class="form-group">
             <button type="submit"
-                    back
+                    ui-sref="{{vm.backLink()}}"
                     class="btn btn-info">
                 <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;
                 <span data-translate="entity.action.back"> Back</span>
@@ -107,7 +107,7 @@
         <div ng-if="!vm.playoffNotGenerated()" class="panel panel-primary">
             <table id="combined_playoff" class="table table-hover">
                 <tbody>
-                    <tr>
+                    <tr ui-sref="{{vm.getLink(vm.combined.playoff)}}">
                         <td class="text text-center col-md-1"><b>Playoff</b></td>
                         <td>
                             <span ng-repeat="participant in vm.combined.playoff.participants">
@@ -115,7 +115,7 @@
                             </span>
                         </td>
                         <td class="text text-center col-md-1">{{vm.combined.playoff.playingFields || '-'}}</td>
-                        <td class="text text-center col-md-1">{{vm.tournamentIsFinished(vm.combined.playoff)||'-'}}</td>
+                        <td class="text text-center col-md-1">{{vm.tournamentIsFinished(vm.combined.playoff)}}</td>
                         <td class="text-right col-md-1">
                             <div class="btn-group flex-btn-group-container">
                                 <button type="submit"

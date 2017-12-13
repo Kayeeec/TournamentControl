@@ -11,6 +11,7 @@ import cz.tournament.control.domain.Team;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.exceptions.ParticipantInTournamentException;
+import cz.tournament.control.repository.CombinedRepository;
 import cz.tournament.control.repository.ParticipantRepository;
 import cz.tournament.control.repository.PlayerRepository;
 import cz.tournament.control.repository.UserRepository;
@@ -36,13 +37,15 @@ public class PlayerService {
     private final ParticipantRepository participantRepository;
     private final TournamentService tournamentService;
     private final TeamService teamService;
+    private final CombinedRepository combinedRepository;
 
-    public PlayerService(UserRepository userRepository, PlayerRepository playerRepository, ParticipantRepository participantRepository, TournamentService tournamentService, TeamService teamService) {
+    public PlayerService(UserRepository userRepository, PlayerRepository playerRepository, ParticipantRepository participantRepository, TournamentService tournamentService, TeamService teamService, CombinedRepository combinedRepository) {
         this.userRepository = userRepository;
         this.playerRepository = playerRepository;
         this.participantRepository = participantRepository;
         this.tournamentService = tournamentService;
         this.teamService = teamService;
+        this.combinedRepository = combinedRepository;
     }
 
     
@@ -92,7 +95,6 @@ public class PlayerService {
         return tournamentService.findByParticipant(parfticipant);
     }
     
-    
     /**
      * Deletes a player entity and its associated participant entity.
      * 
@@ -112,8 +114,8 @@ public class PlayerService {
         Participant participant = participantRepository.findByPlayer(player);
         
         //check if its in any tournaments 
-        List<Tournament> hisTournaments = tournamentService.findByParticipant(participant);
-        if(!hisTournaments.isEmpty()){
+        if(!tournamentService.findByParticipant(participant).isEmpty() 
+                || !combinedRepository.findByAllParticipantsContains(participant).isEmpty()){
             throw new ParticipantInTournamentException(participant);
         }
         //remove itself from each team 

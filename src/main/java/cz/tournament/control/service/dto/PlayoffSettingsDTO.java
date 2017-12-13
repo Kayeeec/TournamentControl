@@ -5,6 +5,7 @@ import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Swiss;
 import cz.tournament.control.domain.Tournament;
+import cz.tournament.control.domain.enumeration.EliminationType;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
 
 /**
@@ -23,6 +24,7 @@ public class PlayoffSettingsDTO {
     private Integer playingFields;          //SA-
     private Boolean tiesAllowed;            //SA-
     private Boolean  bronzeMatch;           //--E
+    private EliminationType eliminationType;//--E
     
     
 
@@ -58,6 +60,7 @@ public class PlayoffSettingsDTO {
                 default: //elimination single/double
                     Elimination elimination = (Elimination) tournament;
                     this.bronzeMatch = elimination.getBronzeMatch();
+                    this.eliminationType = elimination.getType();
                     
             }
             
@@ -143,6 +146,16 @@ public class PlayoffSettingsDTO {
     public void setPlayingFields(Integer playingFields) {
         this.playingFields = playingFields;
     }
+
+    public EliminationType getEliminationType() {
+        return eliminationType;
+    }
+
+    public void setEliminationType(EliminationType eliminationType) {
+        this.eliminationType = eliminationType;
+    }
+    
+    
     
     private String printValueOrNull(Object o){
         if(o != null){

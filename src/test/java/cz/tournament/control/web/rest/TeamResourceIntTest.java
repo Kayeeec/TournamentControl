@@ -4,6 +4,7 @@ import cz.tournament.control.TournamentControlApp;
 
 import cz.tournament.control.domain.Team;
 import cz.tournament.control.repository.TeamRepository;
+import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.TeamService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
 
@@ -49,6 +50,9 @@ public class TeamResourceIntTest {
     
     @Autowired
     private TeamService teamService;
+    
+    @Autowired
+    private CombinedService combinedService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -69,7 +73,7 @@ public class TeamResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        TeamResource teamResource = new TeamResource(teamService);
+        TeamResource teamResource = new TeamResource(teamService, combinedService);
         this.restTeamMockMvc = MockMvcBuilders.standaloneSetup(teamResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

@@ -312,14 +312,15 @@ public class SwissService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Swiss : {}", id);
-        //delete its setSettings if no other tournament has them
+        
         SetSettings setSettings = findOne(id).getSetSettings();
+        swissRepository.delete(id);
+        
+        //delete its setSettings if no other tournament has them
         List<Tournament> found_BySetSettings = tournamentService.findBySetSettings(setSettings);
-        if(found_BySetSettings.size()==1){
+        if(found_BySetSettings.isEmpty()){
             setSettingsService.delete(setSettings.getId());
         }
-        
-        swissRepository.delete(id);
     }
     public void delete(Collection<Swiss> tournaments) {
         log.debug("Request to delete Swiss : {}", tournaments);

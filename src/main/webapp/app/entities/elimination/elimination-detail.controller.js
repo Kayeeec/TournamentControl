@@ -5,13 +5,19 @@
         .module('tournamentControlApp')
         .controller('EliminationDetailController', EliminationDetailController);
 
-    EliminationDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Elimination', 'Game', '$timeout', '$location'];
+    EliminationDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Elimination', 'My', '$timeout', 'Combined'];
 
-    function EliminationDetailController($scope, $rootScope, $stateParams, previousState, entity, Elimination, Game, $timeout, $location) {
+    function EliminationDetailController($scope, $rootScope, $stateParams, previousState, entity, Elimination, My, $timeout, Combined) {
         var vm = this;
         vm.elimination = entity;
-        vm.previousState = previousState.name;
-        vm.publicURL = 'http://localhost:8080/#' + $location.url().toString() + '/public';
+        vm.backLink = function () {
+            return My.backLink(previousState);
+        };
+        My.savePreviousUrl(previousState);
+        
+        if(vm.elimination.inCombined){
+            vm.combined = Combined.findByTournament(vm.elimination); 
+        }
 
         vm.getName = function (rival) {
             if(rival !== null){

@@ -28,5 +28,7 @@ public interface TournamentRepository extends JpaRepository<Tournament, Long> {
     List<Tournament> findBySetSettings(SetSettings setSettings);
     
     List<Tournament> findByParticipantsContains(Participant participant);
+    
+    List<Tournament> findByParticipantsContainsAndInCombinedFalse(Participant participant);
 
 }

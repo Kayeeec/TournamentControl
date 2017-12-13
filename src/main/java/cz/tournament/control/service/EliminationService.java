@@ -179,14 +179,16 @@ public class EliminationService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Elimination : {}", id);
-        //delete its setSettings if no other tournament has them
         SetSettings setSettings = findOne(id).getSetSettings();
+        eliminationRepository.delete(id);
+        
+        //delete its setSettings if no other tournament has them
         List<Tournament> found_BySetSettings = tournamentService.findBySetSettings(setSettings);
-        if(found_BySetSettings.size()==1){
+        if(found_BySetSettings.isEmpty()){
             setSettingsService.delete(setSettings.getId());
         }
         
-        eliminationRepository.delete(id);
+        
     }
     
     public void delete(Collection<Elimination> tournaments) {

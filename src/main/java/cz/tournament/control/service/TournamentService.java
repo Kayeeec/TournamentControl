@@ -42,6 +42,9 @@ public class TournamentService {
         this.tournamentRepository = tournamentRepository;
         this.setSettingsService = setSettingsService;
     }
+
+    
+    
     
     public Tournament createTournament(Tournament tournament){
         //set creator as user
@@ -93,26 +96,29 @@ public class TournamentService {
     
     /**
      * Finds tournaments with given participant.
+     * Tournaments that are not in Combined tournament.
      * @param participant
      * @return 
      */
     @Transactional(readOnly = true)
     public List<Tournament> findByParticipant(Participant participant) {
         log.debug("Request to get Tournaments with participant : {}", participant);
-        List<Tournament> tournaments = tournamentRepository.findByParticipantsContains(participant);
+        List<Tournament> tournaments = tournamentRepository.findByParticipantsContainsAndInCombinedFalse(participant);
         return tournaments;
     }
     
     
     public void delete(Long id){
-        //delete its setSettings if no other tournament has them
-        SetSettings setSettings = findOne(id).getSetSettings();
-        List<Tournament> found_BySetSettings = findBySetSettings(setSettings);
-        if(found_BySetSettings.size() == 1){
-            setSettingsService.delete(setSettings.getId());
-        }
+        Tournament toDelete = findOne(id);
+        SetSettings setSettings = toDelete.getSetSettings();
         
         tournamentRepository.delete(id);
+        
+        //delete its setSettings if no other tournament has them
+        List<Tournament> found_BySetSettings = findBySetSettings(setSettings);
+        if(found_BySetSettings.size() == 0){
+            setSettingsService.delete(setSettings.getId());
+        }
     }
     
     public void delete(Collection<Tournament> tournaments){

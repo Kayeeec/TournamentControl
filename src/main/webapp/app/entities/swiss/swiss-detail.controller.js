@@ -5,13 +5,20 @@
         .module('tournamentControlApp')
         .controller('SwissDetailController', SwissDetailController);
 
-    SwissDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Swiss', '$window'];
+    SwissDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Swiss', 'My', 'Combined'];
 
-    function SwissDetailController($scope, $rootScope, $stateParams, previousState, entity, Swiss, $window) {
+    function SwissDetailController($scope, $rootScope, $stateParams, previousState, entity, Swiss, My, Combined) {
         var vm = this;
 
         vm.swiss = entity;
-        vm.previousState = previousState.name;
+        vm.backLink = function () {
+            return My.backLink(previousState);
+        };
+        My.savePreviousUrl(previousState);
+        
+        if(vm.swiss.inCombined){
+            vm.combined = Combined.findByTournament(vm.swiss); 
+        }
         
         vm.isSwiss = true; //for game dialog
 

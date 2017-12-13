@@ -22,16 +22,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="count in vm.counts | orderBy:['-total', '-wins', 'loses', '-(score/scoreRival)']">
+                <tr ng-repeat="count in vm.pointCountArray">
                     <td >{{count.rank}}</td>
-                    <td id="participant">{{count.rival}}</td>
+                    <td id="participant">{{count.name}}</td>
                     <td id="wins" class="myWins">{{count.wins}}</td>
                     <td id="loses" class="myLoses">{{count.loses}}</td>
                     <td id="ties">{{count.ties}}</td>    
                     <td id="score" style="text-align: right">{{count.score}}</td>
                     <td id="colon" style="text-align: center; padding: 0px">:</td>
-                    <td id="scoreRival" style="text-align: left">{{count.scoreRival}}</td>
-                    <td id="points" class="myTotal">{{count.total}}</td>
+                    <td id="scoreRival" style="text-align: left">{{count.rivalScore}}</td>
+                    <td id="points" class="myTotal">{{count.points}}</td>
                 </tr>
                 </tbody>
             </table>

@@ -1,9 +1,11 @@
 package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import cz.tournament.control.domain.Combined;
 import cz.tournament.control.domain.Team;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.exceptions.ParticipantInTournamentException;
+import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.TeamService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -32,13 +34,13 @@ public class TeamResource {
     private static final String ENTITY_NAME = "team";
     
     private final TeamService teamService;
+    private final CombinedService combinedService;
 
-    public TeamResource(TeamService teamService) {
+    public TeamResource(TeamService teamService, CombinedService combinedService) {
         this.teamService = teamService;
+        this.combinedService = combinedService;
     }
 
-    
-    
     /**
      * POST  /teams : Create a new team.
      *
@@ -107,6 +109,14 @@ public class TeamResource {
         if(id == null) return new ArrayList<>();
         Team team = teamService.findOne(id);
         return teamService.findAllTournaments(team);
+    }
+    
+    @GetMapping("/teams/combined/{id}")
+    @Timed
+    public List<Combined> getAllCombinedTournaments(@PathVariable Long id){
+        if(id == null) return new ArrayList<>();
+        Team team = teamService.findOne(id);
+        return combinedService.findByTeam(team);
     }
 
     /**

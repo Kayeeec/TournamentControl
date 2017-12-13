@@ -49,9 +49,8 @@ public class Game implements Serializable {
     @Column(name = "playing_field")
     private Integer playingField;
 
-
-    @JsonIgnoreProperties({"matches"})
     @ManyToOne()
+    @JsonIgnoreProperties(value = {"matches"}, allowSetters = true, ignoreUnknown = true)
     private Tournament tournament;
 
     @ManyToOne
@@ -406,10 +405,24 @@ public class Game implements Serializable {
      * @return  null - unfinished
      *          {winner: null,          loser: null} - tie (scores of each rival are equal)
      *          {winner: Participant,   loser: Participant} - not a tie and finished
+     *          {winner: Participant    loser: BYE} - if one rival is bye, non bye participant automatically a winner
      */
     @JsonAnyGetter
     public Map<String,Participant> getWinnerAndLoser(){
         if(!finished) return null;
+        
+        Map<String,Participant> result = new HashMap();
+        
+        if(this.rivalA.isBye()){
+            result.put("winner", this.rivalB);
+            result.put("loser", this.rivalA);
+            return result;
+        }
+        if (this.rivalB.isBye()) {
+            result.put("winner", this.rivalA);
+            result.put("loser", this.rivalB);
+            return result;
+        }
         
         Map<String, Integer> scoreSum = this.getSumsOfScores();
         Integer scoreSumA = scoreSum.get("A");
@@ -422,7 +435,7 @@ public class Game implements Serializable {
         if(scoreSumA == scoreSumB){
             return tie;
         }
-        Map<String,Participant> result = new HashMap();
+        
         if (scoreSumA > scoreSumB) {
             result.put("winner", this.rivalA);
             result.put("loser", this.rivalB);

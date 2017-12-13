@@ -2,6 +2,7 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Combined;
+import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.dto.CombinedDTO;
 import cz.tournament.control.web.rest.errors.BadRequestAlertException;
@@ -85,6 +86,18 @@ public class CombinedResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+    
+    @PutMapping("/combined/generate-playoff")
+    @Timed
+    public ResponseEntity<Combined> generatePlayoff(@Valid @RequestBody Long id) throws URISyntaxException {
+        log.debug("REST request to generate playoff for combined with id : {}", id);
+        
+        Combined result = combinedService.generatePlayoff(id);
+        
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 
     /**
      * GET  /combined : get all the combined.
@@ -114,7 +127,16 @@ public class CombinedResource {
         Combined combined = combinedService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(combined));
     }
-
+    
+    @PostMapping("/combined/tournament")
+    @Timed
+    public ResponseEntity<Combined> getCombinedForTournament(@Valid @RequestBody Tournament tournament) {
+        log.debug("REST request to get Combined for Tournament with id {}", tournament.getId());
+        Combined combined = combinedService.findByTournament(tournament);
+        
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(combined));
+    }
+    
     /**
      * DELETE  /combined/:id : delete the "id" combined.
      *
@@ -129,15 +151,5 @@ public class CombinedResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
     
-    @PutMapping("/combined/{id}")
-    @Timed
-    public ResponseEntity<Combined> generatePlayoff(@PathVariable Long id) throws URISyntaxException {
-        log.debug("REST request to generate playoff for combined with id : {}", id);
-        
-        Combined result = combinedService.generatePlayoff(id);
-        
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
+    
 }

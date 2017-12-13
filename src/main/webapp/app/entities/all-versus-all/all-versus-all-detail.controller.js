@@ -5,15 +5,23 @@
             .module('tournamentControlApp')
             .controller('AllVersusAllDetailController', AllVersusAllDetailController);
 
-    AllVersusAllDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'AllVersusAll', 'Game', 'User', 'Participant'];
+    AllVersusAllDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'AllVersusAll', 'Game', 'Combined', 'My'];
 
-    function AllVersusAllDetailController($scope, $rootScope, $stateParams, previousState, entity, AllVersusAll, Game, User, Participant) {
+    function AllVersusAllDetailController($scope, $rootScope, $stateParams, previousState, entity, AllVersusAll, Game, Combined, My) {
         var vm = this;
 
         vm.allVersusAll = entity;
-        vm.previousState = previousState.name;
         
-
+        My.savePreviousUrl(previousState);
+        
+        vm.backLink = function () {
+            return My.backLink(previousState);
+        };
+        
+        if(vm.allVersusAll.inCombined){
+            vm.combined = Combined.findByTournament(vm.allVersusAll); 
+        }
+        
         var unsubscribe = $rootScope.$on('tournamentControlApp:allVersusAllUpdate', function (event, result) {
             vm.allVersusAll = result;
             $scope.counts = [];

@@ -5,13 +5,16 @@
         .module('tournamentControlApp')
         .controller('ParticipantDetailController', ParticipantDetailController);
 
-    ParticipantDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Participant', 'Player', 'Team', 'User'];
+    ParticipantDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Participant', 'Player', 'Team', 'My'];
 
-    function ParticipantDetailController($scope, $rootScope, $stateParams, previousState, entity, Participant, Player, Team, User) {
+    function ParticipantDetailController($scope, $rootScope, $stateParams, previousState, entity, Participant, Player, Team, My) {
         var vm = this;
 
         vm.participant = entity;
-        vm.previousState = previousState.name;
+        vm.backLink = function () {
+            return My.backLink(previousState);
+        };
+        My.savePreviousUrl(previousState);
 
         var unsubscribe = $rootScope.$on('tournamentControlApp:participantUpdate', function(event, result) {
             vm.participant = result;

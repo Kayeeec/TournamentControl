@@ -4,7 +4,7 @@
             .module('tournamentControlApp')
             .factory('My', My);
 
-    My.$inject = [];
+    My.$inject = ['$window'];
     
     function getParticipantName(participant) {
         if(participant){
@@ -42,7 +42,7 @@
         return -1;
     }
 
-    function My() {
+    function My($window) {
         return {
             'getParticipantName': function (participant) {
                 return getParticipantName(participant);
@@ -108,9 +108,21 @@
                         return "elimination-detail({id: "+tournament.id+"})";
                 }
             },
-            'back': function back() {
-                window.history.back();
+            'getCombinedTournamentLink': function getCombinedTournamentLink(tournament) {
+                return "combined-detail({id:"+tournament.id+"})";
+            },
+            'backLink': function back(previousState) {
+                if(previousState.params.hasOwnProperty("id")){
+                    return previousState.name+"({id:"+previousState.params.id+"})";
+                }
+                return previousState.name;
+            },
+            'savePreviousUrl': function savePreviousUrl(previousState) {
+                if(previousState.url){
+                    window.localStorage.setItem("url",previousState.url);
+                }
             }
+            
         };
     }
 })();

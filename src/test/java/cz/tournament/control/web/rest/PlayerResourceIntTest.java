@@ -4,6 +4,7 @@ import cz.tournament.control.TournamentControlApp;
 
 import cz.tournament.control.domain.Player;
 import cz.tournament.control.repository.PlayerRepository;
+import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.PlayerService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
 
@@ -49,6 +50,9 @@ public class PlayerResourceIntTest {
     
     @Autowired
     private PlayerService playerService;
+    
+    @Autowired
+    private CombinedService combinedService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -69,7 +73,7 @@ public class PlayerResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        PlayerResource playerResource = new PlayerResource(playerService);
+        PlayerResource playerResource = new PlayerResource(playerService, combinedService);
         this.restPlayerMockMvc = MockMvcBuilders.standaloneSetup(playerResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

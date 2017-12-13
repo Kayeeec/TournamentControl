@@ -29,11 +29,18 @@ public class ParticipantService {
     
     private final UserRepository userRepository;
     private final ParticipantRepository participantRepository;
+    
+    private final TeamService teamService;
+    private final PlayerService playerService;
 
-    public ParticipantService(UserRepository userRepository, ParticipantRepository participantRepository) {
+    public ParticipantService(UserRepository userRepository, ParticipantRepository participantRepository, TeamService teamService, PlayerService playerService) {
         this.userRepository = userRepository;
         this.participantRepository = participantRepository;
+        this.teamService = teamService;
+        this.playerService = playerService;
     }
+
+    
     
     public Participant createParticipant(Participant participant){
         User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
@@ -66,6 +73,16 @@ public class ParticipantService {
     public Participant findByPlayer(Player player){
         return participantRepository.findByPlayer(player);
         
+    }
+    
+    @Transactional(readOnly = true)
+    public Participant findByTeamId(Long teamId){
+        return participantRepository.findByTeam(teamService.findOne(teamId));
+    }
+    
+    @Transactional(readOnly = true)
+    public Participant findByPlayerId(Long playerId){
+        return participantRepository.findByPlayer(playerService.findOne(playerId));
     }
     
     

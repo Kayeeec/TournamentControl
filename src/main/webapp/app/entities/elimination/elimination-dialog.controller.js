@@ -399,13 +399,6 @@
             }
         };
         
-        vm.getSeedingOptionName = function (participant) {
-            if($scope.chosen===1){
-                 return My.getSeedingOptionName(vm.player_seeding,participant);
-            }
-            return My.getSeedingOptionName(vm.team_seeding,participant);
-        };
-        
         vm.invalidSeeding = function () {
             if(!$scope.seedRandomly){//custom
                 var seeding = vm.player_seeding;

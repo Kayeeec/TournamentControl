@@ -27,9 +27,9 @@
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.combined.note" for="field_note">Note</label>
-            <input type="text" class="form-control" name="note" id="field_note"
-                    ng-model="vm.combined.note"
-                    />
+            <textarea rows="2" type="text" class="form-control" name="note" id="field_note"
+                      ng-model="vm.combined.note">  
+            </textarea>
         </div>
 
 <!-- ********* PARTICIPANTS ********* -->
@@ -179,6 +179,7 @@
                                                                                     {display: 'Yes', value: true}]"> 
                 </select>
             </div>
+            
 
             <div class="form-group col-xs-6 col-md-4"
                  ng-if="vm.combined.inGroupTournamentType != 'ELIMINATION_SINGLE' && vm.combined.inGroupTournamentType != 'ELIMINATION_DOUBLE'">
@@ -229,7 +230,8 @@
                 </select>
             </div>
         </div>
-<div ng-if="vm.combined.inGroupTournamentType !== 'ELIMINATION_SINGLE' && vm.combined.inGroupTournamentType !== 'ELIMINATION_DOUBLE'">
+<div ng-if="    vm.combined.inGroupTournamentType !== 'ELIMINATION_SINGLE' 
+            &&  vm.combined.inGroupTournamentType !== 'ELIMINATION_DOUBLE'">
     
     <div class="form-group radio">
         <label>
@@ -298,105 +300,105 @@
 
 <!-- ********* Set Settings ********* -->
 <!-- ********* set settings tab ********* -->
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="group_setSettings_heading">
-                    <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" 
-                           data-parent="#accordion" data-target="#group_setSettings" 
-                           aria-expanded="false" aria-controls="group_setSettings">
-                            Advanced Set Settings [optional]
-                            <span class=" text text-muted glyphicon glyphicon-chevron-down pull-right"></span>
-                            <span class="glyphicon glyphicon-chevron-up pull-right"></span>
-                        </a>
-                    </h4>
-                </div>
-                
-                <div id="group_setSettings" class="panel-collapse collapse" ng-class="{'in': vm.groupSettings.setSettings.maxScore || vm.groupSettings.setSettings.leadByPoints}" 
-                     role="tabpanel" aria-labelledby="group_setSettings_heading">
-                    <div class="panel-body">
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="group_setSettings_heading">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" 
+                   data-parent="#accordion" data-target="#group_setSettings" 
+                   aria-expanded="false" aria-controls="group_setSettings">
+                    Advanced Set Settings [optional]
+                    <span class=" text text-muted glyphicon glyphicon-chevron-down pull-right"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right"></span>
+                </a>
+            </h4>
+        </div>
 
-                        <!--Set settings-->
+        <div id="group_setSettings" class="panel-collapse collapse" ng-class="{'in': vm.groupSettings.setSettings.maxScore || vm.groupSettings.setSettings.leadByPoints}" 
+             role="tabpanel" aria-labelledby="group_setSettings_heading">
+            <div class="panel-body">
+
+                <!--Set settings-->
+                <div class="form-group">
+                    <div class="form-inline">
+                        <span>Set&nbsp; </span>    
                         <div class="form-group">
-                            <div class="form-inline">
-                                <span>Set&nbsp; </span>    
-                                <div class="form-group">
-                                    <label for="group_maxScore_radio">
-                                        <input class="radio radio-inline" id="group_maxScore_radio" type="radio"
-                                               ng-model="vm.groupSettings.chosenSetSettings" value="maxScore">
-                                        maximum score </label>
-                                </div>
-                                <span>&nbsp; or &nbsp; </span>  
-                                <div class="form-group">
-                                    <label  for="group_leadByPoints_radio">
-                                        <input class="radio radio-inline" id="group_leadByPoints_radio" type="radio"
-                                               ng-model="vm.groupSettings.chosenSetSettings" value="leadByPoints">
-                                        minimum reached score</label> with <label>point difference  
-                                            <input ng-hide="true" type="radio" class="radio radio-inline"/></label>
-                                </div>
-                            </div>
+                            <label for="group_maxScore_radio">
+                                <input class="radio radio-inline" id="group_maxScore_radio" type="radio"
+                                       ng-model="vm.groupSettings.chosenSetSettings" value="maxScore">
+                                maximum score </label>
                         </div>
-                        
-                        <div class="row" ng-if="vm.groupSettings.chosenSetSettings === 'maxScore'">
-                            <div class="form-group col-md-6">
-                                <label for="field_groupMaxScore">Maximum Score</label>
-                                <input type="number" class="form-control" name="groupMaxScore" id="field_groupMaxScore"
-                                           ng-model="vm.groupSettings.setSettings.maxScore" min="1"/>
-                                    <div ng-show="editForm.groupMaxScore.$invalid">
-                                        <p class="help-block"
-                                           ng-show="editForm.groupMaxScore.$error.min" data-translate="entity.validation.min" 
-                                           translate-value-min="1">
-                                            This field should be at least 1.
-                                        </p>
-                                        <p class="help-block"
-                                           ng-show="editForm.groupMaxScore.$error.number" data-translate="entity.validation.number">
-                                            This field should be a number.
-                                        </p>
-                                    </div>
-                            </div>
+                        <span>&nbsp; or &nbsp; </span>  
+                        <div class="form-group">
+                            <label  for="group_leadByPoints_radio">
+                                <input class="radio radio-inline" id="group_leadByPoints_radio" type="radio"
+                                       ng-model="vm.groupSettings.chosenSetSettings" value="leadByPoints">
+                                minimum reached score</label> with <label>point difference  
+                                    <input ng-hide="true" type="radio" class="radio radio-inline"/></label>
                         </div>
-                        
-                        <div class="row" ng-if="vm.groupSettings.chosenSetSettings === 'leadByPoints'">
-                            <div class="form-group col-md-6">
-                                <label for="field_groupMinReachedScore">Minimum Reached Score</label>
-                                <input type="number" class="form-control" name="groupMinReachedScore" id="field_groupMinReachedScore"
-                                           ng-model="vm.groupSettings.setSettings.minReachedScore" min="0"/>
-                                 
-                                    <div ng-show="editForm.groupMinReachedScore.$invalid">
-                                        <p class="help-block"
-                                           ng-show="editForm.groupMinReachedScore.$error.min" data-translate="entity.validation.min" 
-                                           translate-value-min="0">
-                                            This field should be at least 0.
-                                        </p>
-                                        <p class="help-block"
-                                           ng-show="editForm.groupMinReachedScore.$error.number" data-translate="entity.validation.number">
-                                            This field should be a number.
-                                        </p>
-                                    </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="field_groupLeadByPoints">Point Difference </label>
-                                <input type="number" class="form-control" name="groupLeadByPoints" id="field_groupLeadByPoints"
-                                           ng-model="vm.groupSettings.setSettings.leadByPoints" min="1"/>
-                                 
-                                    <div ng-show="editForm.groupLeadByPoints.$invalid">
-                                        <p class="help-block"
-                                           ng-show="editForm.groupLeadByPoints.$error.min" data-translate="entity.validation.min" 
-                                           translate-value-min="1">
-                                            This field should be at least 1.
-                                        </p>
-                                        <p class="help-block"
-                                           ng-show="editForm.groupLeadByPoints.$error.number" data-translate="entity.validation.number">
-                                            This field should be a number.
-                                        </p>
-                                    </div>
-                            </div>
-                        </div>
-                        
                     </div>
                 </div>
+
+                <div class="row" ng-if="vm.groupSettings.chosenSetSettings === 'maxScore'">
+                    <div class="form-group col-md-6">
+                        <label for="field_groupMaxScore">Maximum Score</label>
+                        <input type="number" class="form-control" name="groupMaxScore" id="field_groupMaxScore"
+                                   ng-model="vm.groupSettings.setSettings.maxScore" min="1"/>
+                            <div ng-show="editForm.groupMaxScore.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.groupMaxScore.$error.min" data-translate="entity.validation.min" 
+                                   translate-value-min="1">
+                                    This field should be at least 1.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.groupMaxScore.$error.number" data-translate="entity.validation.number">
+                                    This field should be a number.
+                                </p>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-if="vm.groupSettings.chosenSetSettings === 'leadByPoints'">
+                    <div class="form-group col-md-6">
+                        <label for="field_groupMinReachedScore">Minimum Reached Score</label>
+                        <input type="number" class="form-control" name="groupMinReachedScore" id="field_groupMinReachedScore"
+                                   ng-model="vm.groupSettings.setSettings.minReachedScore" min="0"/>
+
+                            <div ng-show="editForm.groupMinReachedScore.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.groupMinReachedScore.$error.min" data-translate="entity.validation.min" 
+                                   translate-value-min="0">
+                                    This field should be at least 0.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.groupMinReachedScore.$error.number" data-translate="entity.validation.number">
+                                    This field should be a number.
+                                </p>
+                            </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="field_groupLeadByPoints">Point Difference </label>
+                        <input type="number" class="form-control" name="groupLeadByPoints" id="field_groupLeadByPoints"
+                                   ng-model="vm.groupSettings.setSettings.leadByPoints" min="1"/>
+
+                            <div ng-show="editForm.groupLeadByPoints.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.groupLeadByPoints.$error.min" data-translate="entity.validation.min" 
+                                   translate-value-min="1">
+                                    This field should be at least 1.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.groupLeadByPoints.$error.number" data-translate="entity.validation.number">
+                                    This field should be a number.
+                                </p>
+                            </div>
+                    </div>
+                </div>
+                <!--set settings-->     
             </div>
         </div>
+    </div>
+</div>
 <!-- ********* END - SetSettings ********* -->
 
 

@@ -1,10 +1,12 @@
 package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import cz.tournament.control.domain.Combined;
 import cz.tournament.control.domain.Player;
 import cz.tournament.control.domain.Team;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.exceptions.ParticipantInTournamentException;
+import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.PlayerService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -33,12 +35,13 @@ public class PlayerResource {
     private static final String ENTITY_NAME = "player";
     
     private final PlayerService playerService;
+    private final CombinedService combinedService;
 
-    public PlayerResource(PlayerService playerService) {
+    public PlayerResource(PlayerService playerService, CombinedService combinedService) {
         this.playerService = playerService;
+        this.combinedService = combinedService;
     }
-    
-    
+
 
     /**
      * POST  /players : Create a new player.
@@ -109,6 +112,15 @@ public class PlayerResource {
         
         Player player = playerService.findOne(id);
         return playerService.findAllTournaments(player);
+    }
+    
+    @GetMapping("/players/combined/{id}")
+    @Timed
+    public List<Combined> getAllCombinedTournaments(@PathVariable Long id){
+        if(id == null){return new ArrayList<>();}
+        
+        Player player = playerService.findOne(id);
+        return combinedService.findByPlayer(player);
     }
     
     /**

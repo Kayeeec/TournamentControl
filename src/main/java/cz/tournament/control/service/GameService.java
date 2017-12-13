@@ -543,19 +543,37 @@ public class GameService {
         } 
     }
     
+    private int indexOfGame(List<Game> array, Game game){
+        for (int i = 0; i < array.size(); i++) {
+            Game other = array.get(i);
+            if (game.getId() == other.getId()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    
     private void doubleElimination_nextGameUpdate(Game game, Elimination elimination){
         log.debug("###### doubleElimination_nextGameUpdate() triggered");
         List<Game> matches = new ArrayList<>(elimination.getMatches());
         Collections.sort(matches, Game.PeriodRoundComparator);
+        
         int N = elimination.getN();
-        int index = matches.indexOf(game);
+        int index = indexOfGame(matches, game);
         int newFinalIndex = nextFinalIndex(N, matches.size(), elimination);
+        
+        log.debug("matches: {}", matches);
+        log.debug("N: {}", N);
+        log.debug("index: {}", index);
+        log.debug("newFinalIndex: {}", newFinalIndex);
+        
+        
         if(newFinalIndex == index){
             return ;
         }
         int root = 2*N - 3;
         Map<String, Participant> winnerAndLoser = game.getWinnerAndLoser();
-        
         if(index == root){
             //special case if game is final AND the one who lost once won
             Game previousLoserGame = matches.get(index-1);
@@ -623,7 +641,7 @@ public class GameService {
     }
     
     private void propagateRivalsRemoval(Game game, List<Game> matches, Elimination elimination){
-        int index = matches.indexOf(game);
+        int index = indexOfGame(matches, game);
         
         List<Game> gamesToRemoveFrom = new ArrayList<>();
         for (int i = index + 1; i < matches.size(); i++) {

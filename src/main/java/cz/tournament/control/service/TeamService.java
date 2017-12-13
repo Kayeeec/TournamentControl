@@ -6,6 +6,7 @@ import cz.tournament.control.domain.Team;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.exceptions.ParticipantInTournamentException;
+import cz.tournament.control.repository.CombinedRepository;
 import cz.tournament.control.repository.ParticipantRepository;
 import cz.tournament.control.repository.TeamRepository;
 import cz.tournament.control.repository.UserRepository;
@@ -30,13 +31,17 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final ParticipantRepository participantRepository;
     private final TournamentService tournamentService;
+    private final CombinedRepository combinedRepository;
 
-    public TeamService(UserRepository userRepository, TeamRepository teamRepository, ParticipantRepository participantRepository, TournamentService tournamentService) {
+    public TeamService(UserRepository userRepository, TeamRepository teamRepository, ParticipantRepository participantRepository, TournamentService tournamentService, CombinedRepository combinedRepository) {
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.participantRepository = participantRepository;
         this.tournamentService = tournamentService;
+        this.combinedRepository = combinedRepository;
     }
+
+   
     
     public Team createTeam(Team team){
         //set creator as user
@@ -78,6 +83,7 @@ public class TeamService {
         return tournamentService.findByParticipant(participant);
     }
     
+    
     @Transactional(readOnly = true)
     public List<Team> findTeamsForPlayer(Player player){
         return teamRepository.findByMembersContains(player);
@@ -92,8 +98,9 @@ public class TeamService {
      */
     public void delete(Long id) throws ParticipantInTournamentException{
         Participant participant = participantRepository.findByTeam(teamRepository.findOne(id));
-        List<Tournament> hisTournaments = tournamentService.findByParticipant(participant);
-        if(!hisTournaments.isEmpty()){
+        
+        if(!tournamentService.findByParticipant(participant).isEmpty() 
+                || !combinedRepository.findByAllParticipantsContains(participant).isEmpty()){
             throw new ParticipantInTournamentException(participant);
         }
         teamRepository.delete(id);

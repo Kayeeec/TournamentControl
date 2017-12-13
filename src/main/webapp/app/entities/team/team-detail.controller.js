@@ -11,8 +11,12 @@
         var vm = this;
 
         vm.team = entity;
-        vm.previousState = previousState.name;
+        vm.backLink = function () {
+            return My.backLink(previousState);
+        };
+        My.savePreviousUrl(previousState);
         vm.tournaments = Team.getAllTournaments({id: vm.team.id});
+        vm.combinedTournaments = Team.getAllCombinedTournaments({id: vm.team.id});
 
         var unsubscribe = $rootScope.$on('tournamentControlApp:teamUpdate', function(event, result) {
             vm.team = result;
@@ -20,5 +24,6 @@
         $scope.$on('$destroy', unsubscribe);
         
         vm.getTournamentLink = My.getTournamentLink;
+        vm.getCombinedTournamentLink = My.getCombinedTournamentLink;
     }
 })();

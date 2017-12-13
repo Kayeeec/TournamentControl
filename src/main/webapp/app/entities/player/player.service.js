@@ -26,6 +26,11 @@
                 url: 'api/players/tournaments/:id',
                 isArray: true
             },
+            'getAllCombinedTournaments': {
+                method: 'GET',
+                url: 'api/players/combined/:id',
+                isArray: true
+            },
             'getTeams': {
                 method: 'GET',
                 url: 'api/players/teams/:id',

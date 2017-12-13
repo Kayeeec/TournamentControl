@@ -366,11 +366,6 @@
             return false; 
         };
         
-        vm.getSeedingOptionName = function (participant) {
-            if($scope.chosen === 1){ return My.getSeedingOptionName(vm.player_seeding, participant);}
-            return My.getSeedingOptionName(vm.team_seeding, participant);
-        };
-        
         vm.getRoundNum = function () {
             if(vm.getSelectedParticipants.length === 0)return 0;
             return Math.ceil(Math.log2(vm.getSelectedParticipants.length));

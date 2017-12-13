@@ -3,8 +3,10 @@ package cz.tournament.control.service;
 import cz.tournament.control.domain.Combined;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Participant;
+import cz.tournament.control.domain.Player;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Swiss;
+import cz.tournament.control.domain.Team;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.EliminationType;
 import cz.tournament.control.domain.enumeration.TournamentType;
@@ -132,7 +134,7 @@ public class CombinedService {
         
         validate(combinedDTO);
         boolean groupsRegenerated = false;
-        
+        boolean playoffRegenerated = false;
         if(regenerating_groups_needed(combinedDTO, oldCombinedDTO)){
             log.debug("updateCombined() - regenerating groups.");
             combinedDTO.setCombined(deleteGroups(combinedDTO.getCombined()));
@@ -141,12 +143,22 @@ public class CombinedService {
         }
         if (regenerating_playoff_needed(groupsRegenerated, combinedDTO, oldCombinedDTO)) {
             log.debug("updateCombined() - regenerating playoff.");
-            tournamentService.delete(combinedDTO.getCombined().getPlayoff().getId());
+            Long idOfPlayoffToDelete = combinedDTO.getCombined().getPlayoff().getId();
+            
             Combined combined = combinedDTO.getCombined();
             combined.setPlayoff(null);
             combinedDTO.setCombined(save(combined));
             
+            tournamentService.delete(idOfPlayoffToDelete);
+            
             combinedDTO.setCombined(createEmptyPlayoff(combinedDTO));
+            playoffRegenerated = true;
+        }
+        if(!groupsRegenerated && updating_groups_needed(combinedDTO, oldCombinedDTO)){
+            combinedDTO.setCombined(updateGroups(combinedDTO));
+        }
+        if(!playoffRegenerated && updating_playoff_needed(combinedDTO, oldCombinedDTO)){
+            combinedDTO.setCombined(updatePlayoff(combinedDTO));
         }
         
         return combinedRepository.save(combinedDTO.getCombined());
@@ -207,7 +219,35 @@ public class CombinedService {
         log.debug("Request to get all Combineds");
         return combinedRepository.findByUserIsCurrentUser(pageable);
     }
-
+    
+    @Transactional(readOnly = true)
+    public List<Combined> findByParticipant(Participant participant) {
+        log.debug("Request to get all Combineds for participant {}", participant);
+        return combinedRepository.findByAllParticipantsContains(participant);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Combined> findByTeam(Team team) {
+        log.debug("Request to get all Combineds for team {}", team);
+        return combinedRepository.findByAllParticipantsContains(participantService.findByTeam(team));
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Combined> findByPlayer(Player player) {
+        log.debug("Request to get all Combineds for player {}", player);
+        return combinedRepository.findByAllParticipantsContains(participantService.findByPlayer(player));
+    }
+    
+    @Transactional(readOnly = true)
+    public Combined findByTournament(Tournament tournament) {
+        log.debug("Request to get all Combineds for tournament {}", tournament);
+        if(tournament.getName().length() == 1){ //all groups have one letter name 
+            return combinedRepository.findByGroupsContains(tournament).get(0);
+        }
+        return combinedRepository.findByPlayoff(tournament);
+    }
+    
+    
     /**
      *  Get one combined by id.
      *
@@ -625,81 +665,101 @@ public class CombinedService {
     
     
     /**
-     * +=============================+======+==============================================+
-     * |    CHANGED ATTRIBUTE        |      | CAUSES DELETE AND RECREATE TO                |
-     * +=============================+======+==============================================+
-     * | - grouping                  |      |       groups                                 |
-     * | - seeding                   |      |       groups                                 |
-     * +------GROUP SETTINGS---------+------+----------------------------------------------|
-     * | - pointsForWinning;         |      |                                              |
-     * | - pointsForTie;             |      |                                              |
-     * | - pointsForLosing;          |      |                                              |
-     * | - setsToWin;                |      |       -TODO recoputeSetsToWin()              |
-     * | - setSettings;              |      |                                              |
-     * | - color;                    | S--  |       groups                                 |
-     * | - numberOfMutualMatches;    | -A-  |       groups                                 |
-     * | - playingFields;            | SA-  |       TODO make recomputePlayingFields()     |
-     * | - totalPlayingFields;       | SA-  |       -"-                                    |
-     * | - tiesAllowed;              | SA-  |                                              |
-     * | - bronzeMatch;              | --E  |       groups                                 |
-     * +------PLAYOFF SETTINGS-------+------+----------------------------------------------+
-     * | - pointsForWinning;         |      |                                              |
-     * | - pointsForTie;             |      |                                              |
-     * | - pointsForLosing;          |      |                                              |
-     * | - setsToWin;                |      |       -recomputeSetsToWin()?                 |
-     * | - setSettings;              |      |                                              |
-     * | - color;                    | S--  |       playoff                                |
-     * | - numberOfMutualMatches;    | -A-  |       playoff                                |
-     * | - playingFields;            | SA-  |       TODO make recomputePlayingFields()     |
-     * | - tiesAllowed;              | SA-  |                                              |
-     * | - bronzeMatch;              | --E  |       playoff                                |
-     * +------COMBINED---------------+------+----------------------------------------------+
-     * | - numberOfWinnersToPlayoff  |      |       playoff if it has participants         |
-     * | - numberOfGroups            |      |       groups                                 |
-     * | - playoffType               |      |       playoff                                |
-     * | - inGroupTournamentType     |      |       groups                                 |
-     * | - allParticipants           |      |       groups, playoff if it has participants |
-     * +-----------------------------+------+----------------------------------------------+
+     * +------------------------------------------+-----------------------------------------------------+
+     * | combinedDTO:                                                                                   |
+     * +------------------------------------------+-----------------------------------------------------+
+     * | combined.numberOfWinnersToPlayoff        |  if playoff.participants not empty -> reg. playoff  |
+     * |         .numberOfGroups                  |  regenerate groups                                  |
+     * |         .allParticipants                 |  regenerate groups and playoff                      |
+     * |         .playoffType                     |  reg. playoff                                       |
+     * |         .playoff                         |                                                     |
+     * |         .inGroupTournamentType           |  reg. groups                                        |
+     * |         .groups                          |                                                     |
+     * +------------------------------------------+-----------------------------------------------------+
+     * | groupSettings.pointsForWinning;          |  trigger update on groups                           |
+     * |              .pointsForTie;              |  trigger update on groups                           |
+     * |              .pointsForLosing;           |  trigger update on groups                           |
+     * |              .setsToWin;                 |  trigger update on groups                           |
+     * |              .setSettings;               |                                                     |
+     * |              .color;                     |  trigger update on groups                           |
+     * |              .numberOfMutualMatches;     |  trigger update on groups                           |
+     * |              .playingFields;             |  trigger update on groups                           |
+     * |              .totalPlayingFields;        |  trigger update on groups                           |
+     * |              .tiesAllowed;               |  trigger update on groups                           |
+     * |              .bronzeMatch;               |  trigger update on groups                           |
+     * +------------------------------------------+-----------------------------------------------------+
+     * | playoffSettings.pointsForWinning;        |  trigger update on playoff                          |
+     * |                .pointsForTie;            |  trigger update on playoff                          |
+     * |                .pointsForLosing;         |  trigger update on playoff                          |
+     * |                .setsToWin;               |  trigger update on playoff                          |
+     * |                .setSettings;             |                                                     |
+     * |                .color;                   |  trigger update on playoff                          |
+     * |                .numberOfMutualMatches;   |  trigger update on playoff                          |
+     * |                .playingFields;           |  trigger update on playoff                          |
+     * |                .tiesAllowed;             |  trigger update on playoff                          |
+     * |                .bronzeMatch;             |  trigger update on playoff                          |
+     * +------------------------------------------+-----------------------------------------------------+
+     * | grouping                                 |  reg. groups, playoff if not empty                  |
+     * | seeding                                  |  reg. groups, playoff if not empty                  |
+     * +------------------------------------------+-----------------------------------------------------+
      * @param combinedDTO
      * @param oldCombinedDTO
      * @return 
      */
     private boolean regenerating_groups_needed(CombinedDTO combinedDTO, CombinedDTO oldCombinedDTO) {
-        return !Objects.equals(combinedDTO.getGrouping(),oldCombinedDTO.getGrouping())
-                || !Objects.equals(combinedDTO.getSeeding(),oldCombinedDTO.getSeeding())
-                
-                || !Objects.equals(combinedDTO.getGroupSettings().getColor(),oldCombinedDTO.getGroupSettings().getColor())
-                || !Objects.equals(combinedDTO.getGroupSettings().getNumberOfMutualMatches(),oldCombinedDTO.getGroupSettings().getNumberOfMutualMatches())
-                || !Objects.equals(combinedDTO.getGroupSettings().getBronzeMatch(),oldCombinedDTO.getGroupSettings().getBronzeMatch())
-                   
-                || !Objects.equals(combinedDTO.getCombined().getNumberOfGroups(),oldCombinedDTO.getCombined().getNumberOfGroups())
-                || !Objects.equals(combinedDTO.getCombined().getInGroupTournamentType(),oldCombinedDTO.getCombined().getInGroupTournamentType())
-                || !Objects.equals(combinedDTO.getCombined().getAllParticipants(),oldCombinedDTO.getCombined().getAllParticipants());
+        return      !Objects.equals(combinedDTO.getCombined().getNumberOfGroups(),          oldCombinedDTO.getCombined().getNumberOfGroups())
+                ||  !Objects.equals(combinedDTO.getCombined().getAllParticipants(),         oldCombinedDTO.getCombined().getAllParticipants())
+                ||  !Objects.equals(combinedDTO.getCombined().getInGroupTournamentType(),   oldCombinedDTO.getCombined().getInGroupTournamentType())
+                ||  !Objects.equals(combinedDTO.getGrouping(),   oldCombinedDTO.getGrouping())
+                ||  !Objects.equals(combinedDTO.getSeeding(),   oldCombinedDTO.getSeeding())
+                ;
+    }
+    private boolean updating_groups_needed(CombinedDTO combinedDTO, CombinedDTO oldCombinedDTO){
+        return     !Objects.equals(combinedDTO.getGroupSettings().getPointsForWinning(),    oldCombinedDTO.getGroupSettings().getPointsForWinning())
+                || !Objects.equals(combinedDTO.getGroupSettings().getPointsForLosing(),     oldCombinedDTO.getGroupSettings().getPointsForLosing())
+                || !Objects.equals(combinedDTO.getGroupSettings().getPointsForTie(),        oldCombinedDTO.getGroupSettings().getPointsForTie())
+                || !Objects.equals(combinedDTO.getGroupSettings().getSetsToWin(),           oldCombinedDTO.getGroupSettings().getSetsToWin())
+                || !Objects.equals(combinedDTO.getGroupSettings().getColor(),                   oldCombinedDTO.getGroupSettings().getColor())
+                || !Objects.equals(combinedDTO.getGroupSettings().getNumberOfMutualMatches(),   oldCombinedDTO.getGroupSettings().getNumberOfMutualMatches())
+                || !Objects.equals(combinedDTO.getGroupSettings().getBronzeMatch(),             oldCombinedDTO.getGroupSettings().getBronzeMatch())
+                || !Objects.equals(combinedDTO.getGroupSettings().getTiesAllowed(),         oldCombinedDTO.getGroupSettings().getTiesAllowed())
+                || !Objects.equals(combinedDTO.getGroupSettings().getPlayingFields(),       oldCombinedDTO.getGroupSettings().getPlayingFields())
+                || !Objects.equals(combinedDTO.getGroupSettings().getTotalPlayingFields(),  oldCombinedDTO.getGroupSettings().getTotalPlayingFields())
+                ;
     }
     private boolean regenerating_playoff_needed(boolean groupsRegenerated, CombinedDTO combinedDTO, CombinedDTO oldCombinedDTO) {
         if(!combinedDTO.getCombined().getPlayoff().getParticipants().isEmpty()){
             return groupsRegenerated || 
                     !Objects.equals(combinedDTO.getCombined().getNumberOfWinnersToPlayoff(),oldCombinedDTO.getCombined().getNumberOfWinnersToPlayoff());
         }
-        return !Objects.equals(combinedDTO.getPlayoffSettings().getColor(),oldCombinedDTO.getPlayoffSettings().getColor())
-                || !Objects.equals(combinedDTO.getPlayoffSettings().getNumberOfMutualMatches(),oldCombinedDTO.getPlayoffSettings().getNumberOfMutualMatches())
-                || !Objects.equals(combinedDTO.getPlayoffSettings().getBronzeMatch(),oldCombinedDTO.getPlayoffSettings().getBronzeMatch())
-                
-                || !Objects.equals(combinedDTO.getCombined().getPlayoffType(),oldCombinedDTO.getCombined().getPlayoffType());
+        return !Objects.equals(combinedDTO.getCombined().getPlayoffType(),  oldCombinedDTO.getCombined().getPlayoffType());
+    }
+    private boolean updating_playoff_needed(CombinedDTO combinedDTO, CombinedDTO oldCombinedDTO){
+        return     !Objects.equals(combinedDTO.getPlayoffSettings().getPointsForWinning(),    oldCombinedDTO.getPlayoffSettings().getPointsForWinning())
+                || !Objects.equals(combinedDTO.getPlayoffSettings().getPointsForLosing(),     oldCombinedDTO.getPlayoffSettings().getPointsForLosing())
+                || !Objects.equals(combinedDTO.getPlayoffSettings().getPointsForTie(),        oldCombinedDTO.getPlayoffSettings().getPointsForTie())
+                || !Objects.equals(combinedDTO.getPlayoffSettings().getSetsToWin(),           oldCombinedDTO.getPlayoffSettings().getSetsToWin())
+                || !Objects.equals(combinedDTO.getPlayoffSettings().getColor(),                   oldCombinedDTO.getPlayoffSettings().getColor())
+                || !Objects.equals(combinedDTO.getPlayoffSettings().getNumberOfMutualMatches(),   oldCombinedDTO.getPlayoffSettings().getNumberOfMutualMatches())
+                || !Objects.equals(combinedDTO.getPlayoffSettings().getBronzeMatch(),             oldCombinedDTO.getPlayoffSettings().getBronzeMatch())
+                || !Objects.equals(combinedDTO.getPlayoffSettings().getTiesAllowed(),         oldCombinedDTO.getPlayoffSettings().getTiesAllowed())
+                || !Objects.equals(combinedDTO.getPlayoffSettings().getPlayingFields(),       oldCombinedDTO.getPlayoffSettings().getPlayingFields())
+                ;
     }
 
 
     private Combined deleteGroups(Combined combined) {
         List<Tournament> groups = new ArrayList<>(combined.getGroups());
-
-        //try to just delete stuff by id
+        
+        combined.setGroups(new HashSet<>());
+        Combined saved = save(combined);
+        
+        //try to just delete stuff by id, replace with orphan removal? 
         for (Tournament group : groups) {
             tournamentService.delete(group.getId());
         }
-                
-        //tournamentService.delete(combined.getGroups());
-        combined.setGroups(new HashSet<>());
-        return save(combined);
+        
+        return saved;
     }
 
     private List<Participant> getSeeding(Combined oldCombined, Tournament group) {
@@ -986,8 +1046,140 @@ public class CombinedService {
             throw new IllegalStateException("Seeding does not have even length.");
         }
         if(result.contains(null)){
+            log.debug("seeding: {}", result);
             throw new IllegalStateException("Seeding contains null.");
         }
+    }
+
+    private Combined updateGroups(CombinedDTO combinedDTO) {
+        //save set settings //resolve fields
+        combinedDTO = resolveFields(combinedDTO);
+        SetSettings setSettings = combinedDTO.getGroupSettings().getSetSettings();
+        if(setSettings != null){
+            combinedDTO.getGroupSettings().setSetSettings(setSettingsService.save(setSettings));
+        }
+        
+        switch (combinedDTO.getCombined().getInGroupTournamentType()){
+            case ALL_VERSUS_ALL:
+                return update_allVersusAllGroups(combinedDTO);
+            case SWISS:
+                return update_swissGroups(combinedDTO);
+            default: //elimination single and double
+                return update_eliminationGroups(combinedDTO); 
+        }
+    }
+
+    private Combined update_allVersusAllGroups(CombinedDTO combinedDTO) {
+        Set<AllVersusAll> saved = new HashSet<>();
+        for (Tournament group : combinedDTO.getCombined().getGroups()) {
+            AllVersusAll toUpdate = allVersusAllService.findOne(group.getId());
+            
+            toUpdate.setNumberOfMutualMatches(combinedDTO.getGroupSettings().getNumberOfMutualMatches());
+            toUpdate.setPlayingFields(combinedDTO.getGroupSettings().getPlayingFields().get(group.getName()));
+            toUpdate.setPointsForWinning(combinedDTO.getGroupSettings().getPointsForWinning());
+            toUpdate.setPointsForLosing(combinedDTO.getGroupSettings().getPointsForLosing());
+            toUpdate.setPointsForTie(combinedDTO.getGroupSettings().getPointsForTie());
+            toUpdate.setSetsToWin(combinedDTO.getGroupSettings().getSetsToWin());
+            toUpdate.setTiesAllowed(combinedDTO.getGroupSettings().getTiesAllowed());
+            
+            saved.add(allVersusAllService.updateAllVersusAll(toUpdate));
+        }
+        Combined combined = combinedDTO.getCombined();
+        combined.getGroups().clear();
+        combined.getGroups().addAll(saved);
+        return combined;
+    }
+
+    private Combined update_swissGroups(CombinedDTO combinedDTO) {
+        Set<Swiss> saved = new HashSet<>();
+        for (Tournament group : combinedDTO.getCombined().getGroups()) {
+            Swiss toUpdate = swissService.findOne(group.getId());
+            
+            toUpdate.setColor(combinedDTO.getGroupSettings().getColor());
+            toUpdate.setPlayingFields(combinedDTO.getGroupSettings().getPlayingFields().get(group.getName()));
+            toUpdate.setPointsForWinning(combinedDTO.getGroupSettings().getPointsForWinning());
+            toUpdate.setPointsForLosing(combinedDTO.getGroupSettings().getPointsForLosing());
+            toUpdate.setPointsForTie(combinedDTO.getGroupSettings().getPointsForTie());
+            toUpdate.setSetsToWin(combinedDTO.getGroupSettings().getSetsToWin());
+            toUpdate.setTiesAllowed(combinedDTO.getGroupSettings().getTiesAllowed());
+            
+            saved.add(swissService.updateSwiss( new SwissDTO(toUpdate, combinedDTO.getSeeding().get(group.getName())) ));
+        }
+        Combined combined = combinedDTO.getCombined();
+        combined.getGroups().clear();
+        combined.getGroups().addAll(saved);
+        return combined;
+    }
+
+    private Combined update_eliminationGroups(CombinedDTO combinedDTO) {
+        Set<Elimination> saved = new HashSet<>();
+        for (Tournament group : combinedDTO.getCombined().getGroups()) {
+            Elimination toUpdate = eliminationService.findOne(group.getId());
+            
+            toUpdate.setBronzeMatch(combinedDTO.getGroupSettings().getBronzeMatch());
+            toUpdate.setType(combinedDTO.getGroupSettings().getEliminationType());
+            
+            toUpdate.setPointsForWinning(combinedDTO.getGroupSettings().getPointsForWinning());
+            toUpdate.setPointsForLosing(combinedDTO.getGroupSettings().getPointsForLosing());
+            toUpdate.setPointsForTie(combinedDTO.getGroupSettings().getPointsForTie());
+            toUpdate.setSetsToWin(combinedDTO.getGroupSettings().getSetsToWin());
+           
+            saved.add(eliminationService.updateElimination(toUpdate, combinedDTO.getSeeding().get(group.getName()) ));
+        }
+        Combined combined = combinedDTO.getCombined();
+        combined.getGroups().clear();
+        combined.getGroups().addAll(saved);
+        return combined;
+    }
+
+    private Combined updatePlayoff(CombinedDTO combinedDTO) {
+        SetSettings setSettings = combinedDTO.getPlayoffSettings().getSetSettings();
+        if(setSettings != null){
+            combinedDTO.getPlayoffSettings().setSetSettings(setSettingsService.save(setSettings));
+        }
+        Combined combined = combinedDTO.getCombined();
+        switch (combinedDTO.getCombined().getPlayoffType()){
+            case ALL_VERSUS_ALL:
+                AllVersusAll allVersusAll = allVersusAllService.findOne(combined.getPlayoff().getId());
+                
+                allVersusAll.setNumberOfMutualMatches(  combinedDTO.getPlayoffSettings().getNumberOfMutualMatches() );
+                allVersusAll.setPlayingFields(          combinedDTO.getPlayoffSettings().getPlayingFields()         );
+                allVersusAll.setPointsForWinning(       combinedDTO.getPlayoffSettings().getPointsForWinning()      );
+                allVersusAll.setPointsForLosing(        combinedDTO.getPlayoffSettings().getPointsForLosing()       );
+                allVersusAll.setPointsForTie(           combinedDTO.getPlayoffSettings().getPointsForTie()          );
+                allVersusAll.setSetsToWin(              combinedDTO.getPlayoffSettings().getSetsToWin()             );
+                allVersusAll.setTiesAllowed(            combinedDTO.getPlayoffSettings().getTiesAllowed()           );
+                
+                combined.setPlayoff(allVersusAllService.updateAllVersusAll(allVersusAll));
+                return combined;
+                
+            case SWISS:
+                Swiss swiss = swissService.findOne(combined.getPlayoff().getId());
+                
+                swiss.setColor(combinedDTO.getPlayoffSettings().getColor());
+                swiss.setPlayingFields(          combinedDTO.getPlayoffSettings().getPlayingFields()         );
+                swiss.setPointsForWinning(       combinedDTO.getPlayoffSettings().getPointsForWinning()      );
+                swiss.setPointsForLosing(        combinedDTO.getPlayoffSettings().getPointsForLosing()       );
+                swiss.setPointsForTie(           combinedDTO.getPlayoffSettings().getPointsForTie()          );
+                swiss.setSetsToWin(              combinedDTO.getPlayoffSettings().getSetsToWin()             );
+                swiss.setTiesAllowed(            combinedDTO.getPlayoffSettings().getTiesAllowed()           );
+                
+                combined.setPlayoff(swissService.updateSwiss(new SwissDTO(swiss)));
+                return combined;
+            default: //elimination single and double
+                Elimination elimination = eliminationService.findOne(combined.getPlayoff().getId());
+                elimination.setBronzeMatch(       combinedDTO.getPlayoffSettings().getBronzeMatch());
+                elimination.setPointsForWinning(  combinedDTO.getPlayoffSettings().getPointsForWinning()      );
+                elimination.setPointsForLosing(   combinedDTO.getPlayoffSettings().getPointsForLosing()       );
+                elimination.setPointsForTie(      combinedDTO.getPlayoffSettings().getPointsForTie()          );
+                elimination.setSetsToWin(         combinedDTO.getPlayoffSettings().getSetsToWin()             );
+                elimination.setType(              combinedDTO.getPlayoffSettings().getEliminationType()       );
+                
+                combined.setPlayoff(eliminationService.updateElimination(elimination, null));
+                return combined;
+        }
+        
+        
     }
 
     
