@@ -5,9 +5,9 @@
         .module('tournamentControlApp')
         .controller('EvaluationTableController', EvaluationTableController);
 
-    EvaluationTableController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'My'];
+    EvaluationTableController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Evaluation'];
 
-    function EvaluationTableController($scope, $rootScope, $stateParams, previousState, entity, My) {
+    function EvaluationTableController($scope, $rootScope, $stateParams, previousState, entity, Evaluation) {
         var vm = this;
         vm.tournament = entity;
         vm.previousState = previousState.name;
@@ -87,7 +87,7 @@
                 return; //ignores bye matches
             }
             //is finished 
-            var score = getSumScore(match);
+            var score = Evaluation.getSumScore(match);
             
             vm.evaluation[match.rivalA.id].score += score.A;
             vm.evaluation[match.rivalA.id].rivalScore += score.B;
@@ -110,51 +110,7 @@
             vm.evaluation[match.loser.id].loses += 1;
             vm.evaluation[match.loser.id].points -= tournament.pointsForLosing;
             
-        }
-        
-        function getSumScore(match) {
-            var result = {A: 0, B: 0};
-            for (var s = 0; s < match.sets; s++) {
-                var set = match.sets[s];
-                result.A += set.scoreA;
-                result.B += set.scoreB; 
-            }
-            return result;
-        }
-        
-        /**
-         * 
-         * @param {Object} a = {rival: string, wins: int, loses: int, ties: int, 
-         *                      total: double,  score: double, scoreRival: double }
-         * @param {type} b
-         * @returns {Number}    a, b   : 1
-         *                      b, a   :-1
-         *                      a == b : 0
-         */
-        function pointCount_compare(b, a) { 
-            if(a.points > b.points) return 1;
-            if(a.points < b.points) return -1;
-            
-            if(a.wins > b.wins) return 1;
-            if(a.wins < b.wins) return -1;
-            
-            if(a.loses > b.loses) return -1;
-            if(a.loses < b.loses) return 1;
-            
-            if(a.score/a.rivalScore > b.score/b.rivalScore) return 1;
-            if(a.score/a.rivalScore < b.score/b.rivalScore) return -1;
-            
-            return 0;
-            
-        }
-        
-        function notCompletelyEqual(prev, pointCount) {
-            return prev.points !== pointCount.points
-                        || prev.wins !== pointCount.wins
-                        || prev.loses !== pointCount.loses
-                        || prev.score !== pointCount.score;
-        }
-        
+        }        
         
         function preparePointCountArray() {
             evaluate();
@@ -165,7 +121,7 @@
                 pointcounts_arr.push(vm.evaluation[pointcount]);
             }
             
-            pointcounts_arr.sort(pointCount_compare);
+            pointcounts_arr.sort(Evaluation.pointCount_compare);
             console.log("pointcounts_arr: ", pointcounts_arr);
             
             //compute ranks
@@ -176,7 +132,7 @@
                 
                 pointCount["rank"] = prev.rank;
                 
-                if(notCompletelyEqual(prev, pointCount)){
+                if(Evaluation.notCompletelyEqual(prev, pointCount)){
                     pointCount["rank"]  += 1;
                 }
             }
