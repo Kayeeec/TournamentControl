@@ -1,5 +1,6 @@
 package cz.tournament.control.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -12,6 +13,12 @@ import java.util.Set;
 import java.util.Objects;
 
 import cz.tournament.control.domain.enumeration.TournamentType;
+import cz.tournament.control.service.util.EvaluationParticipant;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Combined.
@@ -74,6 +81,83 @@ public class Combined implements Serializable {
     private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    
+    private List<EvaluationParticipant> computeEvaluation(){
+        Map<Long, EvaluationParticipant> map = new HashMap<>();
+        
+        //init map
+        for (Participant participant : this.allParticipants) {
+            map.put(participant.getId(), new EvaluationParticipant(participant));
+        }
+        
+        //groups
+        for (Tournament group : groups) {
+            for (Game match : group.getMatches()) {
+                 map = evaluateMatch(map, group, match);
+            }
+        }
+        
+        //playoff
+        for (Game match : playoff.getMatches()) {
+            map = evaluateMatch(map, playoff, match);
+        }
+        
+        return new ArrayList<>(map.values());
+    }
+    
+    @JsonIgnore
+    public List<EvaluationParticipant> getRankedEvaluation(){
+        List<EvaluationParticipant> evaluatedParticipants = this.computeEvaluation();
+        if(evaluatedParticipants == null) return null;
+        
+        //sort
+        Collections.sort(evaluatedParticipants, EvaluationParticipant.TotalWinsLosesScoreRatioDescendingComparator);
+        
+        //determine rank
+        for (int i = 1; i < evaluatedParticipants.size(); i++) {
+            EvaluationParticipant prev = evaluatedParticipants.get(i-1);
+            EvaluationParticipant current = evaluatedParticipants.get(i);
+            
+            current.rank = prev.rank;
+            if(current.notCompletelyEqual(prev)){
+                current.rank += 1;
+            }
+            
+        }
+        return evaluatedParticipants;
+    }
+    
+    
+    
+    private Map<Long, EvaluationParticipant> evaluateMatch(Map<Long, EvaluationParticipant> map, Tournament group, Game match){
+        if(match.isFinished() && !match.getRivalA().isBye() && !match.getRivalB().isBye()){
+            Map<String, Participant> winnerAndLoser = match.getWinnerAndLoser();
+            Participant winner = winnerAndLoser.get("winner");
+            Participant loser = winnerAndLoser.get("loser");
+            if(winner == null || loser == null){ 
+                //tie
+                map.get(match.getRivalA().getId()).ties += 1;
+                map.get(match.getRivalA().getId()).addToTotal(group.getPointsForTie());
+                map.get(match.getRivalB().getId()).ties += 1;
+                map.get(match.getRivalB().getId()).addToTotal(group.getPointsForTie());
+            }else{
+                map.get(winner.getId()).wins += 1;
+                map.get(winner.getId()).addToTotal(group.getPointsForWinning());
+                map.get(loser.getId()).loses +=1;
+                map.get(loser.getId()).addToTotal(group.getPointsForLosing());
+            }
+            //score
+            Map<String, Integer> score = match.getSumsOfScores(); //{A: 0, B: 0}
+            map.get(match.getRivalA().getId()).score += score.get("A");
+            map.get(match.getRivalA().getId()).rivalScore += score.get("B");
+
+            map.get(match.getRivalB().getId()).score += score.get("B");
+            map.get(match.getRivalB().getId()).rivalScore += score.get("A");
+         }
+        
+        return map;
+    }
+    
     public Long getId() {
         return id;
     }

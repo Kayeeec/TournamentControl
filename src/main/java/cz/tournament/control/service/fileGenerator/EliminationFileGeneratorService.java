@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -42,7 +41,7 @@ public class EliminationFileGeneratorService extends FileGeneratorService {
         SpreadSheet spreadSheet = SpreadSheet.create(2, 1, 1);
         
         //participant evaluation 
-        TableModel participantEvaluation_model = getParticipantEvaluationModel(tournament);
+        TableModel participantEvaluation_model = getParticipantEvaluationModel(tournament.getRankedEvaluation());
         spreadSheet.getSheet(0).setName("Participant Evaluation");
         spreadSheet.getSheet(0).merge(participantEvaluation_model, 0, 0, true);
         
@@ -54,7 +53,7 @@ public class EliminationFileGeneratorService extends FileGeneratorService {
         return spreadSheet.saveAs(temp);
     }
 
-    private TableModel getMatchModel(Elimination tournament) {
+    public TableModel getMatchModel(Elimination tournament) {
         if (tournament.getType() == EliminationType.SINGLE) {
             return getSingleMatchModel(tournament);
         }

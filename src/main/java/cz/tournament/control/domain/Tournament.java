@@ -131,10 +131,14 @@ public class Tournament implements Serializable {
                 if(winner == null || loser == null){ 
                     //tie
                     map.get(match.getRivalA().getId()).ties += 1;
+                    map.get(match.getRivalA().getId()).addToTotal(pointsForTie);
                     map.get(match.getRivalB().getId()).ties += 1;
+                    map.get(match.getRivalB().getId()).addToTotal(pointsForTie);
                 }else{
                     map.get(winner.getId()).wins += 1;
+                    map.get(winner.getId()).addToTotal(pointsForWinning);
                     map.get(loser.getId()).loses +=1;
+                    map.get(loser.getId()).addToTotal(pointsForLosing);
                 }
                 //score
                 Map<String, Integer> score = match.getSumsOfScores(); //{A: 0, B: 0}
@@ -154,9 +158,9 @@ public class Tournament implements Serializable {
         if(evaluatedParticipants == null) return null;
         
         //compute total on all
-        for (EvaluationParticipant ep : evaluatedParticipants) {
-            ep.computeTotal(pointsForWinning, pointsForLosing, pointsForTie);
-        }
+//        for (EvaluationParticipant ep : evaluatedParticipants) {
+//            ep.computeTotal(pointsForWinning, pointsForLosing, pointsForTie);
+//        }
         //sort
         Collections.sort(evaluatedParticipants, EvaluationParticipant.TotalWinsLosesScoreRatioDescendingComparator);
         
@@ -166,7 +170,7 @@ public class Tournament implements Serializable {
             EvaluationParticipant current = evaluatedParticipants.get(i);
             
             current.rank = prev.rank;
-            if(notCompletelyEqual(prev, current)){
+            if(current.notCompletelyEqual(prev)){
                 current.rank += 1;
             }
             
@@ -193,9 +197,9 @@ public class Tournament implements Serializable {
         if(evaluatedParticipants == null) return null;
         
         //compute total on all
-        for (EvaluationParticipant ep : evaluatedParticipants) {
-            ep.computeTotal(pointsForWinning, pointsForLosing, pointsForTie);
-        }
+//        for (EvaluationParticipant ep : evaluatedParticipants) {
+//            ep.computeTotal(pointsForWinning, pointsForLosing, pointsForTie);
+//        }
         //sort
         Collections.sort(evaluatedParticipants, EvaluationParticipant.TotalWinsLosesScoreRatioDescendingComparator);
         
@@ -508,29 +512,7 @@ public class Tournament implements Serializable {
             "}";
     }
 
-    private boolean notCompletelyEqual(EvaluationParticipant prev, EvaluationParticipant current) {
-        return !Objects.equals(prev.loses, current.loses) 
-                || !Objects.equals(prev.total, current.total) 
-                || !Objects.equals(prev.wins, current.wins)
-                || scoreComparison(prev, current)
-                ;
-    }
-
-    private boolean scoreComparison(EvaluationParticipant prev, EvaluationParticipant current) {
-        Double prevRatio;
-        if(prev.rivalScore == 0){
-            prevRatio = prev.score;
-        }else{
-            prevRatio = prev.score/prev.rivalScore;
-        }
-        Double currentRatio;
-        if(current.rivalScore == 0){
-            currentRatio = current.score;
-        }else{
-            currentRatio = current.score/current.rivalScore;
-        }
-        return !Objects.equals(prevRatio,currentRatio);
-    }
+    
     
     
 }

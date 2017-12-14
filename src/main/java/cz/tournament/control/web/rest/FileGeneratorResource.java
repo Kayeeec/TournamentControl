@@ -1,12 +1,15 @@
 package cz.tournament.control.web.rest;
 
+import cz.tournament.control.domain.Combined;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Swiss;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.service.AllVersusAllService;
+import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.EliminationService;
 import cz.tournament.control.service.SwissService;
 import cz.tournament.control.service.fileGenerator.AllVersusAllFileGeneratorService;
+import cz.tournament.control.service.fileGenerator.CombinedFileGeneratorService;
 import cz.tournament.control.service.fileGenerator.EliminationFileGeneratorService;
 import cz.tournament.control.service.fileGenerator.SwissFileGeneratorService;
 
@@ -43,14 +46,19 @@ public class FileGeneratorResource {
     
     private final EliminationService eliminationService;
     private final EliminationFileGeneratorService eliminationFileGeneratorService;
+    
+    private final CombinedService combinedService;
+    private final CombinedFileGeneratorService combinedFileGeneratorService;
 
-    public FileGeneratorResource(AllVersusAllFileGeneratorService avaFileGeneratorService, AllVersusAllService allVersusAllService, SwissService swissService, SwissFileGeneratorService swissFileGeneratorService, EliminationService eliminationService, EliminationFileGeneratorService eliminationFileGeneratorService) {
+    public FileGeneratorResource(AllVersusAllFileGeneratorService avaFileGeneratorService, AllVersusAllService allVersusAllService, SwissService swissService, SwissFileGeneratorService swissFileGeneratorService, EliminationService eliminationService, EliminationFileGeneratorService eliminationFileGeneratorService, CombinedService combinedService, CombinedFileGeneratorService combinedFileGeneratorService) {
         this.avaFileGeneratorService = avaFileGeneratorService;
         this.allVersusAllService = allVersusAllService;
         this.swissService = swissService;
         this.swissFileGeneratorService = swissFileGeneratorService;
         this.eliminationService = eliminationService;
         this.eliminationFileGeneratorService = eliminationFileGeneratorService;
+        this.combinedService = combinedService;
+        this.combinedFileGeneratorService = combinedFileGeneratorService;
     }
 
     @GetMapping(value = "/allVersusAll/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -84,6 +92,18 @@ public class FileGeneratorResource {
         Elimination tournament = eliminationService.findOne(id);
         String filename = "elimination-tournament_"+tournament.getName()+".ods";
         File file = eliminationFileGeneratorService.generateSpreadSheet(tournament);
+        
+        response.setHeader("Content-Disposition", " inline; filename=\""+filename+"\"");
+        return new InputStreamResource(new FileInputStream(file));
+    }
+    
+    @GetMapping(value = "/combined/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public InputStreamResource getCombinedFile(@PathVariable Long id) throws FileNotFoundException, IOException {
+        log.debug("REST request for generated file for combined tournament.id: {}", id);
+        
+        Combined tournament = combinedService.findOne(id);
+        String filename = "combined-tournament_"+tournament.getName()+".ods";
+        File file = combinedFileGeneratorService.generateSpreadSheet(tournament);
         
         response.setHeader("Content-Disposition", " inline; filename=\""+filename+"\"");
         return new InputStreamResource(new FileInputStream(file));

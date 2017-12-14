@@ -32,7 +32,7 @@ public class AllVersusAllFileGeneratorService extends FileGeneratorService {
         SpreadSheet spreadSheet = SpreadSheet.create(2, 1, 1);
         
         //participant evaluation 
-        TableModel participantEvaluation_model = getParticipantEvaluationModel(tournament);
+        TableModel participantEvaluation_model = getParticipantEvaluationModel(tournament.getRankedEvaluation());
         spreadSheet.getSheet(0).setName("Participant Evaluation");
         spreadSheet.getSheet(0).merge(participantEvaluation_model, 0, 0, true);
         
@@ -44,7 +44,7 @@ public class AllVersusAllFileGeneratorService extends FileGeneratorService {
         return spreadSheet.saveAs(temp);
     }
     
-    private TableModel getMatchModel(AllVersusAll tournament) {
+    public TableModel getMatchModel(AllVersusAll tournament) {
         List<Game> matches = new ArrayList<>(tournament.getMatches());
         Collections.sort(matches, Game.PeriodRoundComparator);
         

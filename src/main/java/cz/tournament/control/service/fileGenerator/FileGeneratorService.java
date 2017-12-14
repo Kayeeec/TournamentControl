@@ -26,10 +26,9 @@ public class FileGeneratorService {
     public FileGeneratorService() {
     }
 
-    public TableModel getParticipantEvaluationModel(Tournament tournament){
-        List<EvaluationParticipant> participantEvaluation = tournament.getRankedEvaluation();
-        System.out.println("participantEvaluation: ");
-        System.out.println(participantEvaluation);
+    public TableModel getParticipantEvaluationModel(List<EvaluationParticipant> participantEvaluation){
+//        List<EvaluationParticipant> participantEvaluation = tournament.getRankedEvaluation();
+        
         Object[][] participantEvaluation_data = getParticipantEvaluationData(participantEvaluation);
         return new DefaultTableModel(participantEvaluation_data, PARTICIPANT_EVALUATION_COLS);
     }
