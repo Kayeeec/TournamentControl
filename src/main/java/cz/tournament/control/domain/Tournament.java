@@ -116,49 +116,33 @@ public class Tournament implements Serializable {
      */
     private List<EvaluationParticipant> computeEvaluation(){
         Map<Long, EvaluationParticipant> map = new HashMap<>();
-        boolean noMatchFinished = true;
-        if(matches.isEmpty()){
-            for (Participant participant : this.getParticipants()) {
-                map.put(participant.getId(), new EvaluationParticipant(participant));
-            }
+        
+        //init map
+        for (Participant participant : this.getParticipants()) {
+            map.put(participant.getId(), new EvaluationParticipant(participant));
         }
+        
         //gather number of wins, loses and ties from finished matches, ignores matches with BYE 
         for (Game match : matches) {
-            if(match.isFinished()){
-                noMatchFinished = false;
-                //add rivals to map if not bye - saves us a cycle on nonempty matches
-                if(!match.getRivalA().isBye() && !map.containsKey(match.getRivalA().getId()) ){
-                    map.put(match.getRivalA().getId(), new EvaluationParticipant(match.getRivalA()) );
+            if(match.isFinished() && !match.getRivalA().isBye() && !match.getRivalB().isBye()){
+                Map<String, Participant> winnerAndLoser = match.getWinnerAndLoser();
+                Participant winner = winnerAndLoser.get("winner");
+                Participant loser = winnerAndLoser.get("loser");
+                if(winner == null || loser == null){ 
+                    //tie
+                    map.get(match.getRivalA().getId()).ties += 1;
+                    map.get(match.getRivalB().getId()).ties += 1;
+                }else{
+                    map.get(winner.getId()).wins += 1;
+                    map.get(loser.getId()).loses +=1;
                 }
-                if(!match.getRivalB().isBye() && !map.containsKey(match.getRivalB().getId()) ){
-                    map.put(match.getRivalB().getId(), new EvaluationParticipant(match.getRivalB()) );
-                }
-                if(!match.getRivalA().isBye() && !match.getRivalB().isBye()){ //here bcse of adding participants above 
-                    Map<String, Participant> winnerAndLoser = match.getWinnerAndLoser();
-                    Participant winner = winnerAndLoser.get("winner");
-                    Participant loser = winnerAndLoser.get("loser");
-                    if(winner == null || loser == null){ 
-                        //tie
-                        map.get(match.getRivalA().getId()).ties += 1;
-                        map.get(match.getRivalB().getId()).ties += 1;
-                    }else{
-                        map.get(winner.getId()).wins += 1;
-                        map.get(loser.getId()).loses +=1;
-                    }
-                    //score
-                    Map<String, Integer> score = match.getSumsOfScores(); //{A: 0, B: 0}
-                    map.get(match.getRivalA().getId()).score += score.get("A");
-                    map.get(match.getRivalA().getId()).rivalScore += score.get("B");
-                    
-                    map.get(match.getRivalB().getId()).score += score.get("B");
-                    map.get(match.getRivalB().getId()).rivalScore += score.get("A");
-                    
-                }
-            }
-        }
-        if(noMatchFinished){
-            for (Participant participant : this.getParticipants()) {
-                map.put(participant.getId(), new EvaluationParticipant(participant));
+                //score
+                Map<String, Integer> score = match.getSumsOfScores(); //{A: 0, B: 0}
+                map.get(match.getRivalA().getId()).score += score.get("A");
+                map.get(match.getRivalA().getId()).rivalScore += score.get("B");
+
+                map.get(match.getRivalB().getId()).score += score.get("B");
+                map.get(match.getRivalB().getId()).rivalScore += score.get("A");
             }
         }
         return new ArrayList<>(map.values());

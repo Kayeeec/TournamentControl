@@ -53,31 +53,34 @@ public class SwissFileGeneratorService extends FileGeneratorService {
         
         for (int i = 0; i < matches.size(); i++) {
             Game match = matches.get(i);
-            List<Object> objList = new ArrayList<>();
-            objList.add(match.getRound());
-            objList.add(match.getRivalA().getName());
-            objList.add(match.getRivalB().getName());
             
-            maxSetCount = Math.max(maxSetCount, match.getSets().size());
-            
-            for (GameSet set : match.getSets()) {
-                objList.add(set.getScoreA());
-                objList.add(set.getScoreB());
+            if (!match.getRivalA().isBye() && !match.getRivalB().isBye()) { //ignores bye matches
+                List<Object> objList = new ArrayList<>();
+                objList.add(match.getRound());
+                objList.add(match.getRivalA().getName());
+                objList.add(match.getRivalB().getName());
+
+                maxSetCount = Math.max(maxSetCount, match.getSets().size());
+
+                for (GameSet set : match.getSets()) {
+                    objList.add(set.getScoreA());
+                    objList.add(set.getScoreB());
+                }
+
+                dataList.add(objList.toArray());
             }
-            
-            dataList.add(objList.toArray());
         }
         
         //adding not yet generated rounds
-        int matchCountPerRound = (int) Math.ceil(tournament.getParticipants().size()/2.);
+        int nonByeMatchCountPerRound = ((int) Math.ceil(tournament.getParticipants().size()/2.))
+                - (tournament.getParticipants().size()%2);
         for (int r = 0; r < tournament.getRoundsToGenerate(); r++) {
-            for (int m = 0; m < matchCountPerRound; m++) {
+            for (int m = 0; m < nonByeMatchCountPerRound; m++) {
                 int round = r + 1 + (tournament.getRounds() - tournament.getRoundsToGenerate());
                 Object[] obj = new Object[] {round, "-", "-"};
                 dataList.add(obj);
             }
         }
-        
         
         String[] match_cols = getMatchCols(maxSetCount);
         Object[][] data = dataList.toArray(new Object[][] {});
