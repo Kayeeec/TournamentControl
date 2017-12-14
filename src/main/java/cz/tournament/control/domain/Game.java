@@ -307,6 +307,23 @@ public class Game implements Serializable {
 
     };
     
+    public static Comparator<Game> RoundPeriodComparator
+            = new Comparator<Game>() {
+        @Override
+        public int compare(Game game1, Game game2) {
+            if (game1 == null || game2 == null) {
+                throw new NullPointerException("At least one of the games to compare is null.");
+            }
+            
+            int byRound = game1.getRound().compareTo(game2.getRound());
+            if (byRound != 0) {
+                return byRound;
+            }
+            return game1.getPeriod().compareTo(game2.getPeriod());
+        }
+
+    };
+    
     public static Comparator<Game> RoundComparator
             = new Comparator<Game>() {
         @Override

@@ -162,9 +162,12 @@
         
         var unsubscribe = $rootScope.$on('tournamentControlApp:eliminationUpdate', function(event, result) {
             vm.elimination = result;
-            loadTrees();
+            //loadTrees();
         });
         $scope.$on('$destroy', unsubscribe);
+        $scope.$on('tournamentControlApp:gameUpdate', function () {
+            loadTrees();
+        });
         
         vm.disabledIfBYE = function (match) {
             if((match.rivalA !== null && match.rivalA.bye) || (match.rivalB !== null && match.rivalB.bye)){
@@ -179,20 +182,6 @@
             }
             return '';
             
-        };
-        
-        /* *** sending dto pokus TODO: delete when seeding finished*** */
-        vm.sendDTO = function () {
-            var seeding = [];
-            seeding.push(angular.copy(vm.elimination.participants[0]));
-            seeding.push(angular.copy(vm.elimination.participants[1]));
-            
-            var eliminationDTO = {
-                elimination: vm.elimination,
-                seeding: seeding
-            };
-            console.log(eliminationDTO);
-            Elimination.sendDTO(eliminationDTO);
         };
         
         vm.print = function () {

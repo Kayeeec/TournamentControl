@@ -2,7 +2,6 @@ package cz.tournament.control.service.fileGenerator;
 
 import cz.tournament.control.service.util.EvaluationParticipant;
 import cz.tournament.control.domain.Tournament;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -53,5 +52,6 @@ public class FileGeneratorService {
         }
         return data;
     }
+    
     
 }

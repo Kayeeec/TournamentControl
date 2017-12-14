@@ -275,7 +275,7 @@ public class EliminationService {
      */
     
     /**
-     * "Populate first round" part might need to be loodek at.
+     * "Populate first round" part might need to be looked at.
      * @param tournament 
      */
     public void generateSingle(Elimination tournament, List<Participant> seeding){

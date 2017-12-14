@@ -1,10 +1,13 @@
 package cz.tournament.control.web.rest;
 
+import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Swiss;
 import cz.tournament.control.domain.tournaments.AllVersusAll;
 import cz.tournament.control.service.AllVersusAllService;
+import cz.tournament.control.service.EliminationService;
 import cz.tournament.control.service.SwissService;
 import cz.tournament.control.service.fileGenerator.AllVersusAllFileGeneratorService;
+import cz.tournament.control.service.fileGenerator.EliminationFileGeneratorService;
 import cz.tournament.control.service.fileGenerator.SwissFileGeneratorService;
 
 import java.io.File;
@@ -37,14 +40,19 @@ public class FileGeneratorResource {
     
     private final SwissService swissService;
     private final SwissFileGeneratorService swissFileGeneratorService;
+    
+    private final EliminationService eliminationService;
+    private final EliminationFileGeneratorService eliminationFileGeneratorService;
 
-    public FileGeneratorResource(AllVersusAllFileGeneratorService avaFileGeneratorService, AllVersusAllService allVersusAllService, SwissService swissService, SwissFileGeneratorService swissFileGeneratorService) {
+    public FileGeneratorResource(AllVersusAllFileGeneratorService avaFileGeneratorService, AllVersusAllService allVersusAllService, SwissService swissService, SwissFileGeneratorService swissFileGeneratorService, EliminationService eliminationService, EliminationFileGeneratorService eliminationFileGeneratorService) {
         this.avaFileGeneratorService = avaFileGeneratorService;
         this.allVersusAllService = allVersusAllService;
         this.swissService = swissService;
         this.swissFileGeneratorService = swissFileGeneratorService;
+        this.eliminationService = eliminationService;
+        this.eliminationFileGeneratorService = eliminationFileGeneratorService;
     }
-    
+
     @GetMapping(value = "/allVersusAll/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public InputStreamResource getAllVersusAllFile(@PathVariable Long id) throws FileNotFoundException, IOException {
         log.debug("REST request for generated file for allVersusAll tournament.id: {}", id);
@@ -64,6 +72,18 @@ public class FileGeneratorResource {
         Swiss tournament = swissService.findOne(id);
         String filename = "swiss-tournament_"+tournament.getName()+".ods";
         File file = swissFileGeneratorService.generateSpreadSheet(tournament);
+        
+        response.setHeader("Content-Disposition", " inline; filename=\""+filename+"\"");
+        return new InputStreamResource(new FileInputStream(file));
+    }
+    
+    @GetMapping(value = "/elimination/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public InputStreamResource getEliminationFile(@PathVariable Long id) throws FileNotFoundException, IOException {
+        log.debug("REST request for generated file for elimination tournament.id: {}", id);
+        
+        Elimination tournament = eliminationService.findOne(id);
+        String filename = "elimination-tournament_"+tournament.getName()+".ods";
+        File file = eliminationFileGeneratorService.generateSpreadSheet(tournament);
         
         response.setHeader("Content-Disposition", " inline; filename=\""+filename+"\"");
         return new InputStreamResource(new FileInputStream(file));

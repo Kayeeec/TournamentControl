@@ -31,7 +31,10 @@ public class EvaluationParticipant {
         return participant;
     }
     
-    public double computeTotal(double pointsForWinning, double pointsForLosing, double pointsForTie){
+    public double computeTotal(Double pointsForWinning, Double pointsForLosing, Double pointsForTie){
+        pointsForWinning = pointsForWinning == null ? 0. : pointsForWinning;
+        pointsForLosing = pointsForLosing == null ? 0. : pointsForLosing;
+        pointsForTie = pointsForTie == null ? 0. : pointsForTie;
         
         this.total = (wins * pointsForWinning) + (ties * pointsForTie) - (loses * pointsForLosing);
         return total;
