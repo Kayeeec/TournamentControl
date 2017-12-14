@@ -2,7 +2,7 @@ package cz.tournament.control.service.fileGenerator;
 
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
-import cz.tournament.control.domain.tournaments.AllVersusAll;
+import cz.tournament.control.domain.Swiss;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,13 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class AllVersusAllFileGeneratorService extends FileGeneratorService {
+public class SwissFileGeneratorService extends FileGeneratorService {
 
-    public AllVersusAllFileGeneratorService() {
+    public SwissFileGeneratorService() {
     }
     
-    public File generateSpreadSheet(AllVersusAll tournament) throws FileNotFoundException, IOException {
-        String name = "allVersusAll_" + tournament.getName();
+    public File generateSpreadSheet(Swiss tournament) throws FileNotFoundException, IOException {
+        String name = "swiss_" + tournament.getName();
         File temp = File.createTempFile(name, ".ods");
         SpreadSheet spreadSheet = SpreadSheet.create(2, 1, 1);
         
@@ -43,10 +43,10 @@ public class AllVersusAllFileGeneratorService extends FileGeneratorService {
         
         return spreadSheet.saveAs(temp);
     }
-    
-    private TableModel getMatchModel(AllVersusAll tournament) {
+
+    private TableModel getMatchModel(Swiss tournament) {
         List<Game> matches = new ArrayList<>(tournament.getMatches());
-        Collections.sort(matches, Game.PeriodRoundComparator);
+        Collections.sort(matches, Game.RoundComparator);
         
         List<Object[]> dataList = new ArrayList<>();
         int maxSetCount = 0;
@@ -54,7 +54,6 @@ public class AllVersusAllFileGeneratorService extends FileGeneratorService {
         for (int i = 0; i < matches.size(); i++) {
             Game match = matches.get(i);
             List<Object> objList = new ArrayList<>();
-            objList.add(match.getPeriod());
             objList.add(match.getRound());
             objList.add(match.getRivalA().getName());
             objList.add(match.getRivalB().getName());
@@ -69,6 +68,17 @@ public class AllVersusAllFileGeneratorService extends FileGeneratorService {
             dataList.add(objList.toArray());
         }
         
+        //adding not yet generated rounds
+        int matchCountPerRound = (int) Math.ceil(tournament.getParticipants().size()/2.);
+        for (int r = 0; r < tournament.getRoundsToGenerate(); r++) {
+            for (int m = 0; m < matchCountPerRound; m++) {
+                int round = r + 1 + (tournament.getRounds() - tournament.getRoundsToGenerate());
+                Object[] obj = new Object[] {round, "-", "-"};
+                dataList.add(obj);
+            }
+        }
+        
+        
         String[] match_cols = getMatchCols(maxSetCount);
         Object[][] data = dataList.toArray(new Object[][] {});
         return new DefaultTableModel(data, match_cols);
@@ -76,7 +86,6 @@ public class AllVersusAllFileGeneratorService extends FileGeneratorService {
 
     private String[] getMatchCols(int maxSetCount) {
         List<String> header = new ArrayList<>();
-        header.add("Period");
         header.add("Round");
         header.add("Rival A");
         header.add("Rival B");
@@ -86,5 +95,7 @@ public class AllVersusAllFileGeneratorService extends FileGeneratorService {
         }
         return header.toArray(new String[0]); //new optimizations
     }
+    
+    
     
 }

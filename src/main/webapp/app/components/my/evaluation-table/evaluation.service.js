@@ -36,9 +36,6 @@
 
     function Evaluation() {
         return {
-            'method': function () {
-                
-            },
             'getSumScore': function getSumScore(match) {
                 var result = {A: 0, B: 0};
                 for (var s = 0; s < match.sets.length; s++) {
@@ -52,10 +49,17 @@
                 return pointCount_compare(b, a);
             },
             'notCompletelyEqual': function notCompletelyEqual(prev, pointCount) {
-                return prev.points !== pointCount.points
+                                
+                var result = prev.points !== pointCount.points
                             || prev.wins !== pointCount.wins
                             || prev.loses !== pointCount.loses
                             || prev.score/prev.rivalScore !== pointCount.score/pointCount.rivalScore;
+                    
+                console.log('notCompletelyEqual = ', result);
+                console.log("prev: ", prev);
+                console.log("pointCount: ", pointCount);
+                
+                return result;
             }
         
         

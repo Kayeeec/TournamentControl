@@ -2,6 +2,7 @@ package cz.tournament.control.service.fileGenerator;
 
 import cz.tournament.control.service.util.EvaluationParticipant;
 import cz.tournament.control.domain.Tournament;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -28,6 +29,8 @@ public class FileGeneratorService {
 
     public TableModel getParticipantEvaluationModel(Tournament tournament){
         List<EvaluationParticipant> participantEvaluation = tournament.getRankedEvaluation();
+        System.out.println("participantEvaluation: ");
+        System.out.println(participantEvaluation);
         Object[][] participantEvaluation_data = getParticipantEvaluationData(participantEvaluation);
         return new DefaultTableModel(participantEvaluation_data, PARTICIPANT_EVALUATION_COLS);
     }

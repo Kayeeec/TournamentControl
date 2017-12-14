@@ -116,16 +116,16 @@ public class Tournament implements Serializable {
      */
     private List<EvaluationParticipant> computeEvaluation(){
         Map<Long, EvaluationParticipant> map = new HashMap<>();
-        
+        boolean noMatchFinished = true;
         if(matches.isEmpty()){
-            for (Participant participant : participants) {
+            for (Participant participant : this.getParticipants()) {
                 map.put(participant.getId(), new EvaluationParticipant(participant));
             }
         }
-        
         //gather number of wins, loses and ties from finished matches, ignores matches with BYE 
         for (Game match : matches) {
             if(match.isFinished()){
+                noMatchFinished = false;
                 //add rivals to map if not bye - saves us a cycle on nonempty matches
                 if(!match.getRivalA().isBye() && !map.containsKey(match.getRivalA().getId()) ){
                     map.put(match.getRivalA().getId(), new EvaluationParticipant(match.getRivalA()) );
@@ -154,6 +154,11 @@ public class Tournament implements Serializable {
                     map.get(match.getRivalB().getId()).rivalScore += score.get("A");
                     
                 }
+            }
+        }
+        if(noMatchFinished){
+            for (Participant participant : this.getParticipants()) {
+                map.put(participant.getId(), new EvaluationParticipant(participant));
             }
         }
         return new ArrayList<>(map.values());

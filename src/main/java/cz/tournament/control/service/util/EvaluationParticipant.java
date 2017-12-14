@@ -60,4 +60,19 @@ public class EvaluationParticipant {
         }
 
     };
+
+    @Override
+    public String toString() {
+        return "EvaluationParticipant{ rank: "+rank+
+                ", "+participant.getName()
+                +", wins: "+wins
+                +", loses: "+loses
+                +", ties: "+ties
+                +", score: "+score
+                +", rivalScore: "+rivalScore
+                +", total: "+total
+                +"}";
+    }
+    
+    
 }
