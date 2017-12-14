@@ -7,7 +7,7 @@
             .module('tournamentControlApp')
             .factory('Evaluation', Evaluation);
 
-    Evaluation.$inject = ['My'];
+    Evaluation.$inject = [];
     
     /**
     * @param {Object} a = {rival: string, wins: int, loses: int, ties: int, 
@@ -34,14 +34,14 @@
 
    }
 
-    function Evaluation(My) {
+    function Evaluation() {
         return {
             'method': function () {
                 
             },
             'getSumScore': function getSumScore(match) {
                 var result = {A: 0, B: 0};
-                for (var s = 0; s < match.sets; s++) {
+                for (var s = 0; s < match.sets.length; s++) {
                     var set = match.sets[s];
                     result.A += set.scoreA;
                     result.B += set.scoreB; 
@@ -55,7 +55,7 @@
                 return prev.points !== pointCount.points
                             || prev.wins !== pointCount.wins
                             || prev.loses !== pointCount.loses
-                            || prev.score !== pointCount.score;
+                            || prev.score/prev.rivalScore !== pointCount.score/pointCount.rivalScore;
             }
         
         

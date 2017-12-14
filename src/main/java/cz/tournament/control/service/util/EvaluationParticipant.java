@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.tournament.control.domain;
+package cz.tournament.control.service.util;
 
+import cz.tournament.control.domain.Participant;
 import java.util.Comparator;
 
 /**
@@ -18,6 +19,9 @@ public class EvaluationParticipant {
     public Integer loses = 0;
     public Integer ties = 0;
     public Double total = 0.;
+    public Double score = 0.;
+    public Double rivalScore = 0.;
+    public Integer rank = 1;
 
     public EvaluationParticipant(Participant participant) {
         this.participant = participant;
@@ -28,11 +32,12 @@ public class EvaluationParticipant {
     }
     
     public double computeTotal(double pointsForWinning, double pointsForLosing, double pointsForTie){
+        
         this.total = (wins * pointsForWinning) + (ties * pointsForTie) - (loses * pointsForLosing);
         return total;
     }
     
-    public static Comparator<EvaluationParticipant> TotalWinsLosesTiesDescendingComparator
+    public static Comparator<EvaluationParticipant> TotalWinsLosesScoreRatioDescendingComparator
             = new Comparator<EvaluationParticipant>() {
         @Override
         public int compare(EvaluationParticipant ev2, EvaluationParticipant ev1) {
@@ -49,7 +54,9 @@ public class EvaluationParticipant {
             int byLoses = ev2.loses.compareTo(ev1.loses); //we want the least loses
             if(byLoses != 0) return byLoses;
             
-            return ev1.ties.compareTo(ev2.ties);
+            Double ev1_scoreRatio = ev1.score/ev1.rivalScore;
+            Double ev2_scoreRatio = ev2.score/ev2.rivalScore;
+            return ev1_scoreRatio.compareTo(ev2_scoreRatio);
         }
 
     };

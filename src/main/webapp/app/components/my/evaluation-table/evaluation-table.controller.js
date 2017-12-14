@@ -93,6 +93,9 @@
             vm.evaluation[match.rivalA.id].rivalScore += score.B;
             vm.evaluation[match.rivalB.id].score += score.B;
             vm.evaluation[match.rivalB.id].rivalScore += score.A;
+            console.log("score: ", score);
+            console.log("vm.evaluation[match.rivalA.id]: ", vm.evaluation[match.rivalA.id]);
+            console.log("vm.evaluation[match.rivalB.id]: ", vm.evaluation[match.rivalB.id]);
             //tie - finished && winner and loser are null, only one of them being null should not happen
             if(match.winner === null && match.loser === null){
                 vm.evaluation[match.rivalA.id].ties += 1;

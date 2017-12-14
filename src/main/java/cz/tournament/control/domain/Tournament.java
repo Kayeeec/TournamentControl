@@ -1,5 +1,6 @@
 package cz.tournament.control.domain;
 
+import cz.tournament.control.service.util.EvaluationParticipant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
@@ -56,13 +57,13 @@ public class Tournament implements Serializable {
     private Integer playingFields;
 
     @Column(name = "points_for_winning")
-    private Double pointsForWinning;
+    private Double pointsForWinning = 0d;
 
     @Column(name = "points_for_tie")
-    private Double pointsForTie;
+    private Double pointsForTie = 0d;
 
     @Column(name = "points_for_losing")
-    private Double pointsForLosing;
+    private Double pointsForLosing = 0d;
 
     @Column(name = "in_combined")
     private Boolean inCombined = false;
@@ -108,7 +109,11 @@ public class Tournament implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
+    /**
+     * Computes evaluation for each participant from finished non-bye matches. 
+     * @JsonIgnore just to be sure.
+     * @return List of EvaluationParticipant object for each participant in a tournament. 
+     */
     private List<EvaluationParticipant> computeEvaluation(){
         Map<Long, EvaluationParticipant> map = new HashMap<>();
         
@@ -140,11 +145,46 @@ public class Tournament implements Serializable {
                         map.get(winner.getId()).wins += 1;
                         map.get(loser.getId()).loses +=1;
                     }
+                    //score
+                    Map<String, Integer> score = match.getSumsOfScores(); //{A: 0, B: 0}
+                    map.get(match.getRivalA().getId()).score += score.get("A");
+                    map.get(match.getRivalA().getId()).rivalScore += score.get("B");
+                    
+                    map.get(match.getRivalB().getId()).score += score.get("B");
+                    map.get(match.getRivalB().getId()).rivalScore += score.get("A");
+                    
                 }
             }
         }
         return new ArrayList<>(map.values());
     }
+    
+    @JsonIgnore
+    public List<EvaluationParticipant> getRankedEvaluation(){
+        List<EvaluationParticipant> evaluatedParticipants = this.computeEvaluation();
+        if(evaluatedParticipants == null) return null;
+        
+        //compute total on all
+        for (EvaluationParticipant ep : evaluatedParticipants) {
+            ep.computeTotal(pointsForWinning, pointsForLosing, pointsForTie);
+        }
+        //sort
+        Collections.sort(evaluatedParticipants, EvaluationParticipant.TotalWinsLosesScoreRatioDescendingComparator);
+        
+        //determine rank
+        for (int i = 1; i < evaluatedParticipants.size(); i++) {
+            EvaluationParticipant prev = evaluatedParticipants.get(i-1);
+            EvaluationParticipant current = evaluatedParticipants.get(i);
+            
+            current.rank = prev.rank;
+            if(notCompletelyEqual(prev, current)){
+                current.rank += 1;
+            }
+            
+        }
+        return evaluatedParticipants;
+    }
+    
     
     /**
      * If all games are finished returns given number of participants sorted by their place:
@@ -168,7 +208,7 @@ public class Tournament implements Serializable {
             ep.computeTotal(pointsForWinning, pointsForLosing, pointsForTie);
         }
         //sort
-        Collections.sort(evaluatedParticipants, EvaluationParticipant.TotalWinsLosesTiesDescendingComparator);
+        Collections.sort(evaluatedParticipants, EvaluationParticipant.TotalWinsLosesScoreRatioDescendingComparator);
         
         //extract first n participants 
         List<Participant> result = new ArrayList<>();
@@ -477,5 +517,13 @@ public class Tournament implements Serializable {
             ", inCombined='" + isInCombined() + "'" +
             ", tournamentType='" + getTournamentType() + "'" +
             "}";
+    }
+
+    private boolean notCompletelyEqual(EvaluationParticipant prev, EvaluationParticipant current) {
+        return !Objects.equals(prev.loses, current.loses) 
+                || !Objects.equals(prev.total, current.total) 
+                || !Objects.equals(prev.wins, current.wins)
+                || !Objects.equals(prev.score/prev.rivalScore, current.score/current.rivalScore)
+                ;
     }
 }
