@@ -59,6 +59,17 @@
         </createTable>
         <dropDefaultValue tableName="combined" columnName="created" columnDataType="datetime"/>
         
+        <createTable tableName="combined_all_participants">
+            <column name="all_participants_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="combineds_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="combineds_id, all_participants_id" tableName="combined_all_participants"/>
+        
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

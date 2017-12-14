@@ -33,6 +33,22 @@
        return 0;
 
    }
+   
+    function getScoreComparison(prev, pointcount){
+        var prevRatio;
+        if(prev.rivalScore === 0){
+            prevRatio = prev.score;
+        }else{
+            prevRatio = prev.score/prev.rivalScore;
+        }
+        var pointCountRatio;
+        if(pointcount.rivalScore === 0){
+            pointCountRatio = pointcount.score;
+        }else{
+            pointCountRatio = pointcount.score/pointcount.rivalScore;
+        }
+        return prevRatio !== pointCountRatio;
+    }
 
     function Evaluation() {
         return {
@@ -49,11 +65,13 @@
                 return pointCount_compare(b, a);
             },
             'notCompletelyEqual': function notCompletelyEqual(prev, pointCount) {
+                
+                var scoreComparison = getScoreComparison(prev, pointCount);
                                 
                 var result = prev.points !== pointCount.points
                             || prev.wins !== pointCount.wins
                             || prev.loses !== pointCount.loses
-                            || prev.score/prev.rivalScore !== pointCount.score/pointCount.rivalScore;
+                            || scoreComparison;
                     
                 console.log('notCompletelyEqual = ', result);
                 console.log("prev: ", prev);

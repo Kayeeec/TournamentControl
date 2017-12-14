@@ -257,7 +257,7 @@ public class CombinedService {
     @Transactional(readOnly = true)
     public Combined findOne(Long id) {
         log.debug("Request to get Combined : {}", id);
-        return combinedRepository.findOne(id);
+        return combinedRepository.findOneWithEagerRelationships(id);
     }
 
     /**

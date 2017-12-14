@@ -8,6 +8,17 @@
     -->
     <changeSet id="20171123170253-2" author="jhipster">
         
+        <addForeignKeyConstraint baseColumnNames="combineds_id"
+                                 baseTableName="combined_all_participants"
+                                 constraintName="fk_combined_all_participants_combineds_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="combined"/>
+        <addForeignKeyConstraint baseColumnNames="all_participants_id"
+                                 baseTableName="combined_all_participants"
+                                 constraintName="fk_combined_all_participants_all_participants_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="participant"/>
+        
         <addForeignKeyConstraint baseColumnNames="playoff_id"
                                  baseTableName="combined"
                                  constraintName="fk_combined_playoff_id"

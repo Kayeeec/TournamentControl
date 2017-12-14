@@ -22,7 +22,6 @@ import cz.tournament.control.domain.enumeration.TournamentType;
 public class Combined implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final String TOURNAMENT_TYPE = "combined";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,8 +55,11 @@ public class Combined implements Serializable {
     @Column(name = "in_group_tournament_type")
     private TournamentType inGroupTournamentType;
 
-    @OneToMany()
+    @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "combined_all_participants",
+               joinColumns = @JoinColumn(name="combineds_id", referencedColumnName="id"),
+               inverseJoinColumns = @JoinColumn(name="all_participants_id", referencedColumnName="id"))
     private Set<Participant> allParticipants = new HashSet<>();
 
     @OneToOne(cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER)
@@ -182,13 +184,11 @@ public class Combined implements Serializable {
 
     public Combined addAllParticipants(Participant participant) {
         this.allParticipants.add(participant);
-//        participant.setCombined(this);
         return this;
     }
 
     public Combined removeAllParticipants(Participant participant) {
         this.allParticipants.remove(participant);
-//        participant.setCombined(null);
         return this;
     }
 
@@ -220,13 +220,11 @@ public class Combined implements Serializable {
 
     public Combined addGroups(Tournament tournament) {
         this.groups.add(tournament);
-//        tournament.setCombined(this);
         return this;
     }
 
     public Combined removeGroups(Tournament tournament) {
         this.groups.remove(tournament);
-//        tournament.setCombined(null);
         return this;
     }
 
@@ -249,60 +247,23 @@ public class Combined implements Serializable {
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.id);
-        hash = 53 * hash + Objects.hashCode(this.name);
-        hash = 53 * hash + Objects.hashCode(this.note);
-        hash = 53 * hash + Objects.hashCode(this.created);
-        hash = 53 * hash + Objects.hashCode(this.numberOfWinnersToPlayoff);
-        hash = 53 * hash + Objects.hashCode(this.numberOfGroups);
-        hash = 53 * hash + Objects.hashCode(this.playoffType);
-        hash = 53 * hash + Objects.hashCode(this.inGroupTournamentType);
-        hash = 53 * hash + Objects.hashCode(this.user);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Combined combined = (Combined) o;
+        if (combined.getId() == null || getId() == null) {
+            return false;
+        }
+        return Objects.equals(getId(), combined.getId());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Combined other = (Combined) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.note, other.note)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.created, other.created)) {
-            return false;
-        }
-        if (!Objects.equals(this.numberOfWinnersToPlayoff, other.numberOfWinnersToPlayoff)) {
-            return false;
-        }
-        if (!Objects.equals(this.numberOfGroups, other.numberOfGroups)) {
-            return false;
-        }
-        if (this.playoffType != other.playoffType) {
-            return false;
-        }
-        if (this.inGroupTournamentType != other.inGroupTournamentType) {
-            return false;
-        }
-        if (!Objects.equals(this.user, other.user)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
     
     private String printValueOrNull(Object o){
@@ -311,7 +272,7 @@ public class Combined implements Serializable {
         }
         return "null";
     }
-
+    
     @Override
     public String toString() {
         return "Combined{" + "id=" +  printValueOrNull(id)
@@ -336,6 +297,4 @@ public class Combined implements Serializable {
         str = str + "]";
         return str;
     }
-
-    
 }

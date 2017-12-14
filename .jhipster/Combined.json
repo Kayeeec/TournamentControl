@@ -1,11 +1,13 @@
 {
     "fluentMethods": true,
     "relationships": [
-        {
+        {        
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "",
             "relationshipName": "allParticipants",
             "otherEntityName": "participant",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "combined"
+            "otherEntityField": "id",
+            "ownerSide": true
         },
         {
             "relationshipName": "playoff",

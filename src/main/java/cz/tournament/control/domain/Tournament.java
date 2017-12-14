@@ -528,7 +528,25 @@ public class Tournament implements Serializable {
         return !Objects.equals(prev.loses, current.loses) 
                 || !Objects.equals(prev.total, current.total) 
                 || !Objects.equals(prev.wins, current.wins)
-                || !Objects.equals(prev.score/prev.rivalScore, current.score/current.rivalScore)
+                || scoreComparison(prev, current)
                 ;
     }
+
+    private boolean scoreComparison(EvaluationParticipant prev, EvaluationParticipant current) {
+        Double prevRatio;
+        if(prev.rivalScore == 0){
+            prevRatio = prev.score;
+        }else{
+            prevRatio = prev.score/prev.rivalScore;
+        }
+        Double currentRatio;
+        if(current.rivalScore == 0){
+            currentRatio = current.score;
+        }else{
+            currentRatio = current.score/current.rivalScore;
+        }
+        return !Objects.equals(prevRatio,currentRatio);
+    }
+    
+    
 }
