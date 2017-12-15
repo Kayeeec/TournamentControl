@@ -51,7 +51,7 @@ public class CacheConfiguration {
             cm.createCache(cz.tournament.control.domain.Tournament.class.getName(), jcacheConfiguration);
             cm.createCache(cz.tournament.control.domain.Tournament.class.getName() + ".matches", jcacheConfiguration);
             cm.createCache(cz.tournament.control.domain.Tournament.class.getName() + ".participants", jcacheConfiguration);
-            cm.createCache(cz.tournament.control.domain.tournaments.AllVersusAll.class.getName(), jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.AllVersusAll.class.getName(), jcacheConfiguration);
             cm.createCache(cz.tournament.control.domain.Elimination.class.getName(), jcacheConfiguration);
             cm.createCache(cz.tournament.control.domain.GameSet.class.getName(), jcacheConfiguration);
             cm.createCache(cz.tournament.control.domain.Game.class.getName() + ".sets", jcacheConfiguration);

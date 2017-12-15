@@ -5,7 +5,7 @@ import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Swiss;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.TournamentType;
-import cz.tournament.control.domain.tournaments.AllVersusAll;
+import cz.tournament.control.domain.AllVersusAll;
 import cz.tournament.control.service.util.EvaluationParticipant;
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -3,7 +3,7 @@ package cz.tournament.control.web.rest;
 import cz.tournament.control.domain.Combined;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Swiss;
-import cz.tournament.control.domain.tournaments.AllVersusAll;
+import cz.tournament.control.domain.AllVersusAll;
 import cz.tournament.control.service.AllVersusAllService;
 import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.EliminationService;

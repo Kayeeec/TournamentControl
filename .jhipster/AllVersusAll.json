@@ -16,5 +16,6 @@
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "all_versus_all",
-    "pagination": "no"
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
 }

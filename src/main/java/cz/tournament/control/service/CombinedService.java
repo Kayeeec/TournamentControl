@@ -10,7 +10,7 @@ import cz.tournament.control.domain.Team;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.EliminationType;
 import cz.tournament.control.domain.enumeration.TournamentType;
-import cz.tournament.control.domain.tournaments.AllVersusAll;
+import cz.tournament.control.domain.AllVersusAll;
 import cz.tournament.control.repository.CombinedRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;

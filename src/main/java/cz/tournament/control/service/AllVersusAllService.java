@@ -5,7 +5,7 @@ import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.User;
-import cz.tournament.control.domain.tournaments.AllVersusAll;
+import cz.tournament.control.domain.AllVersusAll;
 import cz.tournament.control.repository.AllVersusAllRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.SecurityUtils;
@@ -16,8 +16,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +32,7 @@ import java.util.Objects;
 public class AllVersusAllService {
 
     private final Logger log = LoggerFactory.getLogger(AllVersusAllService.class);
-    
+
     private final AllVersusAllRepository allVersusAllRepository;
     private final UserRepository userRepository;
     private final GameService gameService;
@@ -45,8 +47,6 @@ public class AllVersusAllService {
         this.tournamentService = tournamentService;
     }
 
-    
-
     /**
      * Save a allVersusAll.
      *
@@ -55,8 +55,7 @@ public class AllVersusAllService {
      */
     public AllVersusAll save(AllVersusAll allVersusAll) {
         log.debug("Request to save AllVersusAll : {}", allVersusAll);
-        AllVersusAll result = allVersusAllRepository.save(allVersusAll);
-        return result;
+        return allVersusAllRepository.save(allVersusAll);
     }
     
     /**
@@ -118,16 +117,15 @@ public class AllVersusAllService {
     }
 
     /**
-     *  Get all curent user's allVersusAll entities.
-     *  
+     *  Get all the allVersusAlls.
+     *
+     *  @param pageable the pagination information
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<AllVersusAll> findAll() {
+    public Page<AllVersusAll> findAll(Pageable pageable) {
         log.debug("Request to get all AllVersusAlls");
-        List<AllVersusAll> result = allVersusAllRepository.findByUserIsCurrentUserAndInCombinedFalse();
-
-        return result;
+        return allVersusAllRepository.findByUserIsCurrentUserAndInCombinedFalse(pageable);
     }
 
     /**
@@ -139,8 +137,7 @@ public class AllVersusAllService {
     @Transactional(readOnly = true)
     public AllVersusAll findOne(Long id) {
         log.debug("Request to get AllVersusAll : {}", id);
-        AllVersusAll allVersusAll = allVersusAllRepository.findOne(id);
-        return allVersusAll;
+        return allVersusAllRepository.findOne(id);
     }
 
     /**
@@ -157,8 +154,8 @@ public class AllVersusAllService {
         List<Tournament> found_BySetSettings = tournamentService.findBySetSettings(setSettings);
         if(found_BySetSettings.isEmpty()){
             setSettingsService.delete(setSettings.getId());
-        }
     }
+}
     public void delete(Collection<AllVersusAll> tournaments){
         //gather set settings 
         List<SetSettings> setSettingsList = new ArrayList<>();      

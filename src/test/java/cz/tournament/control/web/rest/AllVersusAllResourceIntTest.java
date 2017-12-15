@@ -2,13 +2,10 @@ package cz.tournament.control.web.rest;
 
 import cz.tournament.control.TournamentControlApp;
 
-import cz.tournament.control.domain.tournaments.AllVersusAll;
+import cz.tournament.control.domain.AllVersusAll;
 import cz.tournament.control.repository.AllVersusAllRepository;
 import cz.tournament.control.service.AllVersusAllService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static cz.tournament.control.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -43,8 +41,6 @@ public class AllVersusAllResourceIntTest {
 
     private static final Integer DEFAULT_NUMBER_OF_MUTUAL_MATCHES = 1;
     private static final Integer UPDATED_NUMBER_OF_MUTUAL_MATCHES = 2;
-    private static final String DEFAULT_NAME = "all versus all test";
-    private static final ZonedDateTime DEFAULT_CREATED = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
 
     @Autowired
     private AllVersusAllRepository allVersusAllRepository;
@@ -71,12 +67,12 @@ public class AllVersusAllResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        AllVersusAllResource allVersusAllResource = new AllVersusAllResource(allVersusAllService);
+        final AllVersusAllResource allVersusAllResource = new AllVersusAllResource(allVersusAllService);
         this.restAllVersusAllMockMvc = MockMvcBuilders.standaloneSetup(allVersusAllResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
-        
     }
 
     /**
@@ -88,10 +84,6 @@ public class AllVersusAllResourceIntTest {
     public static AllVersusAll createEntity(EntityManager em) {
         AllVersusAll allVersusAll = new AllVersusAll()
             .numberOfMutualMatches(DEFAULT_NUMBER_OF_MUTUAL_MATCHES);
-        allVersusAll.setName(DEFAULT_NAME);
-        allVersusAll.setCreated(DEFAULT_CREATED);
-        allVersusAll.setCreated(ZonedDateTime.now());
-        
         return allVersusAll;
     }
 
@@ -132,7 +124,7 @@ public class AllVersusAllResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(allVersusAll)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the AllVersusAll in the database
         List<AllVersusAll> allVersusAllList = allVersusAllRepository.findAll();
         assertThat(allVersusAllList).hasSize(databaseSizeBeforeCreate);
     }
@@ -256,6 +248,14 @@ public class AllVersusAllResourceIntTest {
     @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(AllVersusAll.class);
+        AllVersusAll allVersusAll1 = new AllVersusAll();
+        allVersusAll1.setId(1L);
+        AllVersusAll allVersusAll2 = new AllVersusAll();
+        allVersusAll2.setId(allVersusAll1.getId());
+        assertThat(allVersusAll1).isEqualTo(allVersusAll2);
+        allVersusAll2.setId(2L);
+        assertThat(allVersusAll1).isNotEqualTo(allVersusAll2);
+        allVersusAll1.setId(null);
+        assertThat(allVersusAll1).isNotEqualTo(allVersusAll2);
     }
-    
 }

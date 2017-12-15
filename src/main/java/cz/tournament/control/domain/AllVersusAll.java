@@ -1,4 +1,4 @@
-package cz.tournament.control.domain.tournaments;
+package cz.tournament.control.domain;
 
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.TournamentType;

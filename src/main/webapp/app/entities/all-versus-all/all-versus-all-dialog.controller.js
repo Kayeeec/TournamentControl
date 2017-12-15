@@ -20,6 +20,7 @@
 //        initiating default values 
         vm.allVersusAll.tiesAllowed =  vm.allVersusAll.tiesAllowed || true ;
         vm.allVersusAll.numberOfMutualMatches = vm.allVersusAll.numberOfMutualMatches || 1;
+        vm.allVersusAll.playingFields = vm.allVersusAll.playingFields || 1;
         
         /**** participants stuff ****/
         vm.participants = Participant.query();
