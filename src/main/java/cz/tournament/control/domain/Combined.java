@@ -62,7 +62,7 @@ public class Combined implements Serializable {
     @Column(name = "in_group_tournament_type")
     private TournamentType inGroupTournamentType;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "combined_all_participants",
                joinColumns = @JoinColumn(name="combineds_id", referencedColumnName="id"),

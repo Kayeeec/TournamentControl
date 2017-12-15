@@ -11,12 +11,15 @@ My styles
   vertical-align: middle !important;
 }
 
-
 a[aria-expanded=true] .glyphicon-chevron-down {
    display: none;
 }
 a[aria-expanded=false] .glyphicon-chevron-up {
    display: none;
+}
+
+.table-white-body tbody{
+    background-color: white !important;
 }
 
 .panel-heading-sm{
