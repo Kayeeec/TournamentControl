@@ -8,7 +8,9 @@ import cz.tournament.control.domain.exceptions.ParticipantInTournamentException;
 import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.TeamService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
+import cz.tournament.control.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -88,14 +93,16 @@ public class TeamResource {
     /**
      * GET  /teams : get all the teams.
      *
+     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of teams in body
      */
     @GetMapping("/teams")
     @Timed
-    public List<Team> getAllTeams() {
-        log.debug("REST request to get all Teams");
-        List<Team> teams = teamService.findAll();
-        return teams;
+    public ResponseEntity<List<Team>> getAllTeams(@ApiParam Pageable pageable) {
+        log.debug("REST request to get a page of Teams");
+        Page<Team> page = teamService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/teams");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
     
     /**
