@@ -97,7 +97,7 @@
            id="match_{{match.id}}" class="" ng-class="vm.disabledIfBYE(match)">  <!-- ng-class="vm.disabledIfBYE(match)" --> 
             <table class="bracket-table" ng-class="vm.greenIfFinished(match)">
                 <tr>
-                    <td rowspan="2" class="bracket-period-td">P:{{match.period}} <br/> R:{{match.round}}&nbsp;</td>
+                    <td rowspan="2" class="bracket-period-td">{{match.period}}&nbsp;</td>
                     <td class="bracket-name-td bracket-name-td-a">{{vm.getName(match.rivalA)}}</td>
                     <td ng-repeat="set in match.sets" class="bracket-scores-td bracket-scores-td-a">{{set.scoreA}}</td>
                     <td rowspan="2" class="bracket-glyphicon-td">
