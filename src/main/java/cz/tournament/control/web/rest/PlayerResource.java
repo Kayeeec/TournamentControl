@@ -9,7 +9,9 @@ import cz.tournament.control.domain.exceptions.ParticipantInTournamentException;
 import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.PlayerService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
+import cz.tournament.control.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -94,10 +99,11 @@ public class PlayerResource {
      */
     @GetMapping("/players")
     @Timed
-    public List<Player> getAllPlayers() {
-        log.debug("REST request to get all Players");
-        List<Player> players = playerService.findAll();
-        return players;
+    public ResponseEntity<List<Player>> getAllPlayers(@ApiParam Pageable pageable) {
+        log.debug("REST request to get a page of players");
+        Page<Player> page = playerService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/players");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
     
     /**

@@ -19,6 +19,8 @@ import cz.tournament.control.security.SecurityUtils;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +49,10 @@ public class PlayerService {
         this.teamService = teamService;
         this.combinedRepository = combinedRepository;
     }
+    
+    public Player save(Player player){
+        return playerRepository.save(player);
+    }
 
     
     public Player createPlayer(Player player){
@@ -72,8 +78,8 @@ public class PlayerService {
     }
     
     @Transactional(readOnly = true)
-    public List<Player> findAll(){
-        List<Player> players = playerRepository.findByUserIsCurrentUser();
+    public Page<Player> findAll(Pageable pageable){
+        Page<Player> players = playerRepository.findByUserIsCurrentUser(pageable);
         return players;
     }
     

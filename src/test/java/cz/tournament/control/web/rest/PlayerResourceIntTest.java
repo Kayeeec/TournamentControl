@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static cz.tournament.control.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,10 +48,10 @@ public class PlayerResourceIntTest {
 
     @Autowired
     private PlayerRepository playerRepository;
-    
+
     @Autowired
     private PlayerService playerService;
-    
+
     @Autowired
     private CombinedService combinedService;
 
@@ -73,10 +74,11 @@ public class PlayerResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        PlayerResource playerResource = new PlayerResource(playerService, combinedService);
+        final PlayerResource playerResource = new PlayerResource(playerService, combinedService);
         this.restPlayerMockMvc = MockMvcBuilders.standaloneSetup(playerResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -131,7 +133,7 @@ public class PlayerResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(player)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Player in the database
         List<Player> playerList = playerRepository.findAll();
         assertThat(playerList).hasSize(databaseSizeBeforeCreate);
     }
@@ -196,7 +198,8 @@ public class PlayerResourceIntTest {
     @Transactional
     public void updatePlayer() throws Exception {
         // Initialize the database
-        playerRepository.saveAndFlush(player);
+        playerService.save(player);
+
         int databaseSizeBeforeUpdate = playerRepository.findAll().size();
 
         // Update the player
@@ -240,7 +243,8 @@ public class PlayerResourceIntTest {
     @Transactional
     public void deletePlayer() throws Exception {
         // Initialize the database
-        playerRepository.saveAndFlush(player);
+        playerService.save(player);
+
         int databaseSizeBeforeDelete = playerRepository.findAll().size();
 
         // Get the player
@@ -257,5 +261,14 @@ public class PlayerResourceIntTest {
     @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(Player.class);
+        Player player1 = new Player();
+        player1.setId(1L);
+        Player player2 = new Player();
+        player2.setId(player1.getId());
+        assertThat(player1).isEqualTo(player2);
+        player2.setId(2L);
+        assertThat(player1).isNotEqualTo(player2);
+        player1.setId(null);
+        assertThat(player1).isNotEqualTo(player2);
     }
 }
