@@ -16,5 +16,6 @@
     "dto": "no",
     "service": "serviceClass",
     "entityTableName": "elimination",
-    "pagination": "infinite-scroll"
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
 }

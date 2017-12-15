@@ -11,7 +11,7 @@
         $stateProvider
         .state('elimination', {
             parent: 'entity',
-            url: '/elimination',
+            url: '/elimination?page&sort&search',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'tournamentControlApp.elimination.home.title'
@@ -35,6 +35,15 @@
                 search: null
             },
             resolve: {
+                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    return {
+                        page: PaginationUtil.parsePage($stateParams.page),
+                        sort: $stateParams.sort,
+                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                        ascending: PaginationUtil.parseAscending($stateParams.sort),
+                        search: $stateParams.search
+                    };
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('elimination');
                     $translatePartialLoader.addPart('eliminationType');
@@ -66,8 +75,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('elimination');
-                    $translatePartialLoader.addPart('tournament');
-                    $translatePartialLoader.addPart('global');
+                    $translatePartialLoader.addPart('eliminationType');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'Elimination', function($stateParams, Elimination) {
@@ -102,7 +110,7 @@
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('^', {}, { reload: 'elimination-detail' });
+                    $state.go('^', {}, { reload: false });
                 }, function() {
                     $state.go('^');
                 });
@@ -126,9 +134,9 @@
                             return {
                                 name: null,
                                 note: null,
-                                pointsForWinning: null,
-                                pointsForLosing: null,
-                                pointsForTie: null,
+                                pointsForWinning: 1,
+                                pointsForLosing: 0,
+                                pointsForTie: 0.5,
                                 created: null,
                                 numberOfSets: null,
                                 setsToWin: null,
