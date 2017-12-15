@@ -28,5 +28,7 @@
             console.log('on update counts: ' + $scope.counts);
         });
         $scope.$on('$destroy', unsubscribe);
+        
+        console.log("previousState: ", previousState);
     }
 })();

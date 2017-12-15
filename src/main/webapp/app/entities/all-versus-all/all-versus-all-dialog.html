@@ -114,12 +114,6 @@
                         This field should be a number.
                     </p>
                 </div>
-                <div ng-if="vm.playingFieldsInvalid()">
-                    <p class="help-block" data-translate="entity.validation.playingFields_max"
-                       translate-value-max="{{vm.maxPlayingFields()}}">
-                        Field should not be bigger than max.
-                    </p>
-                </div>
             </div>
 
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3" >
@@ -305,7 +299,7 @@
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
         </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving || vm.playingFieldsInvalid()" class="btn btn-primary">
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
             <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
         </button>
     </div>

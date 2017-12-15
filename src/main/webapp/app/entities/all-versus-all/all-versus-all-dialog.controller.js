@@ -17,6 +17,8 @@
         vm.save = save;
         var contains = My.containsElemWithId; //contains(array,elem)
         
+        
+        
 //        initiating default values 
         vm.allVersusAll.tiesAllowed =  vm.allVersusAll.tiesAllowed || true ;
         vm.allVersusAll.numberOfMutualMatches = vm.allVersusAll.numberOfMutualMatches || 1;
@@ -138,22 +140,6 @@
             }
         };
         /**** end Participant stuff ****/
-        
-        /** Playing Fields Validation **/
-        vm.maxPlayingFields = function () {
-            if($scope.chosen===1){//players
-                return Math.floor(vm.selectedPlayers.length/2);
-            }
-            else {//teams
-                return Math.floor(vm.selectedTeams.length/2);
-            }
-        };
-        
-        vm.playingFieldsInvalid = function () {
-            return vm.participantsTouched && vm.allVersusAll.playingFields > vm.maxPlayingFields();
-        };
-        /** end - Playing Fields Validation **/
-        
         
         /* setSettings stuff */
         vm.setSettingsChosen = initSetSettingsChosen();
