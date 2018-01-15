@@ -1,14 +1,12 @@
 package cz.tournament.control.config.audit;
 
 import cz.tournament.control.domain.PersistentAuditEvent;
-
-import org.springframework.boot.actuate.audit.AuditEvent;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.stereotype.Component;
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.*;
+import org.springframework.boot.actuate.audit.AuditEvent;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.stereotype.Component;
 
 @Component
 public class AuditEventConverter {

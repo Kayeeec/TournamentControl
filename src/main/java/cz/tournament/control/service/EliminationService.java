@@ -1,11 +1,11 @@
 package cz.tournament.control.service;
 
-import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
+import cz.tournament.control.domain.User;
 import cz.tournament.control.domain.enumeration.EliminationType;
 import cz.tournament.control.repository.EliminationRepository;
 import cz.tournament.control.repository.UserRepository;
@@ -23,8 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**

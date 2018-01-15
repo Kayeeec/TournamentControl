@@ -1,15 +1,12 @@
 package cz.tournament.control.web.rest;
 
 import cz.tournament.control.config.DefaultProfileUtil;
-
 import io.github.jhipster.config.JHipsterProperties;
-
-import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.core.env.Environment;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Resource to return information about the currently running Spring profiles.

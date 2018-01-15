@@ -1,9 +1,9 @@
 package cz.tournament.control.web.rest;
 
+import cz.tournament.control.domain.AllVersusAll;
 import cz.tournament.control.domain.Combined;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Swiss;
-import cz.tournament.control.domain.AllVersusAll;
 import cz.tournament.control.service.AllVersusAllService;
 import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.EliminationService;
@@ -12,7 +12,6 @@ import cz.tournament.control.service.fileGenerator.AllVersusAllFileGeneratorServ
 import cz.tournament.control.service.fileGenerator.CombinedFileGeneratorService;
 import cz.tournament.control.service.fileGenerator.EliminationFileGeneratorService;
 import cz.tournament.control.service.fileGenerator.SwissFileGeneratorService;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,11 +19,10 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST controller for managing Tournament.

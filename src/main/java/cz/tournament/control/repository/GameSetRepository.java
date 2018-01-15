@@ -3,10 +3,8 @@ package cz.tournament.control.repository;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
 import cz.tournament.control.domain.SetSettings;
-
-import org.springframework.data.jpa.repository.*;
-
 import java.util.List;
+import org.springframework.data.jpa.repository.*;
 
 /**
  * Spring Data JPA repository for the GameSet entity.

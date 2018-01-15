@@ -1,7 +1,6 @@
 package cz.tournament.control.security;
 
 import cz.tournament.control.config.Constants;
-
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 

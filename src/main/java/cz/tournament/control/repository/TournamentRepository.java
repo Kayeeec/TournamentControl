@@ -3,11 +3,10 @@ package cz.tournament.control.repository;
 import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Tournament;
-import org.springframework.stereotype.Repository;
-
+import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
  * Spring Data JPA repository for the Tournament entity.

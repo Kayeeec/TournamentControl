@@ -1,12 +1,15 @@
 package cz.tournament.control.web.rest;
 
 import cz.tournament.control.TournamentControlApp;
-
 import cz.tournament.control.domain.AllVersusAll;
 import cz.tournament.control.repository.AllVersusAllRepository;
 import cz.tournament.control.service.AllVersusAllService;
+import static cz.tournament.control.web.rest.TestUtil.createFormattingConversionService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
-
+import java.util.List;
+import javax.persistence.EntityManager;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,17 +21,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.util.List;
-
-import static cz.tournament.control.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Test class for the AllVersusAllResource REST controller.

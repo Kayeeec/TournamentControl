@@ -1,8 +1,8 @@
 package cz.tournament.control.service.fileGenerator;
 
+import cz.tournament.control.domain.AllVersusAll;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
-import cz.tournament.control.domain.AllVersusAll;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

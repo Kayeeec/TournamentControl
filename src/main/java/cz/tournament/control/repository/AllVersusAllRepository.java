@@ -3,9 +3,8 @@ package cz.tournament.control.repository;
 import cz.tournament.control.domain.AllVersusAll;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**

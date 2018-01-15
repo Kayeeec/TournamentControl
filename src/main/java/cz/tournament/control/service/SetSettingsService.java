@@ -2,12 +2,11 @@ package cz.tournament.control.service;
 
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.repository.SetSettingsRepository;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Service Implementation for managing SetSettings.

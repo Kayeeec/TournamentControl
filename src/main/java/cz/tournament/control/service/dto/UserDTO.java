@@ -1,16 +1,13 @@
 package cz.tournament.control.service.dto;
 
 import cz.tournament.control.config.Constants;
-
 import cz.tournament.control.domain.Authority;
 import cz.tournament.control.domain.User;
-
-import org.hibernate.validator.constraints.Email;
-
-import javax.validation.constraints.*;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.validation.constraints.*;
+import org.hibernate.validator.constraints.Email;
 
 /**
  * A DTO representing a user, with his authorities.

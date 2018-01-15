@@ -3,21 +3,19 @@ package cz.tournament.control.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.Tournament;
-
 import cz.tournament.control.service.GameService;
 import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST controller for managing Game.

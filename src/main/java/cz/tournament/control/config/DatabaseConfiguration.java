@@ -1,9 +1,9 @@
 package cz.tournament.control.config;
 
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.liquibase.AsyncSpringLiquibase;
-
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import javax.sql.DataSource;
 import liquibase.integration.spring.SpringLiquibase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +16,6 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories("cz.tournament.control.repository")

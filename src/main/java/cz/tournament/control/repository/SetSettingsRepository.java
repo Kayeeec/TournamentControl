@@ -1,9 +1,8 @@
 package cz.tournament.control.repository;
 
 import cz.tournament.control.domain.SetSettings;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**

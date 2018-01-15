@@ -1,9 +1,9 @@
 package cz.tournament.control.service;
 
 import cz.tournament.control.domain.User;
-
 import io.github.jhipster.config.JHipsterProperties;
-
+import java.util.Locale;
+import javax.mail.internet.MimeMessage;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +14,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
-
-import javax.mail.internet.MimeMessage;
-import java.util.Locale;
 
 /**
  * Service for sending e-mails.

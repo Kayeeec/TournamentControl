@@ -4,9 +4,11 @@ import cz.tournament.control.domain.PersistentToken;
 import cz.tournament.control.repository.PersistentTokenRepository;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.service.util.RandomUtil;
-
 import io.github.jhipster.config.JHipsterProperties;
-
+import java.time.LocalDate;
+import java.util.Arrays;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -16,11 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.rememberme.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
-import java.util.Arrays;
 
 /**
  * Custom implementation of Spring Security's RememberMeServices.

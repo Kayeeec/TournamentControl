@@ -1,16 +1,18 @@
 package cz.tournament.control.service;
 
+import cz.tournament.control.config.Constants;
 import cz.tournament.control.domain.Authority;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.repository.AuthorityRepository;
 import cz.tournament.control.repository.PersistentTokenRepository;
-import cz.tournament.control.config.Constants;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.security.AuthoritiesConstants;
 import cz.tournament.control.security.SecurityUtils;
-import cz.tournament.control.service.util.RandomUtil;
 import cz.tournament.control.service.dto.UserDTO;
-
+import cz.tournament.control.service.util.RandomUtil;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,10 +21,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.*;
 
 /**
  * Service class for managing users.
@@ -77,7 +75,7 @@ public class UserService {
     }
 
     public Optional<User> requestPasswordReset(String mail) {
-        return userRepository.findOneByEmail(mail)
+        return userRepository.findOneByEmailIgnoreCase(mail)
             .filter(User::getActivated)
             .map(user -> {
                 user.setResetKey(RandomUtil.generateResetKey());

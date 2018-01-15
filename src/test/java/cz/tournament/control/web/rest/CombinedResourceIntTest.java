@@ -1,12 +1,18 @@
 package cz.tournament.control.web.rest;
 
 import cz.tournament.control.TournamentControlApp;
-
 import cz.tournament.control.domain.Combined;
+import cz.tournament.control.domain.enumeration.TournamentType;
 import cz.tournament.control.repository.CombinedRepository;
 import cz.tournament.control.service.CombinedService;
+import static cz.tournament.control.web.rest.TestUtil.createFormattingConversionService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
-
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import javax.persistence.EntityManager;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,22 +24,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-
-import static cz.tournament.control.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import cz.tournament.control.domain.enumeration.TournamentType;
-import cz.tournament.control.domain.enumeration.TournamentType;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 /**
  * Test class for the CombinedResource REST controller.
  *

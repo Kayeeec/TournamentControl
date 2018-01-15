@@ -3,11 +3,10 @@ package cz.tournament.control.service.mapper;
 import cz.tournament.control.domain.Authority;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.service.dto.UserDTO;
-import org.mapstruct.*;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.mapstruct.*;
 
 /**
  * Mapper for the entity User and its DTO UserDTO.

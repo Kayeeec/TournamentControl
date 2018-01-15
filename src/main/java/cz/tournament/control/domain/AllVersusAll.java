@@ -1,14 +1,12 @@
 package cz.tournament.control.domain;
 
-import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.TournamentType;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A AllVersusAll.

@@ -184,22 +184,6 @@
             
         };
         
-        vm.print = function () {
-            var img;
-            var elem = document.getElementById("winner-tree");
-            html2canvas(elem,
-                {   
-                    onrendered: function (canvas) {
-                            console.log("canvas: ", canvas);
-                        img = canvas.toDataURL("image/jpg");
-                        
-                    }
-                });
-            var imgwindow = window.open(img);
-            imgwindow.document.write("<img src='"+img+"'>");
-            console.log("img: ", img);
-        };
-        
         
         
         

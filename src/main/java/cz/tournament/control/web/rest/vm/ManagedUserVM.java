@@ -1,10 +1,9 @@
 package cz.tournament.control.web.rest.vm;
 
 import cz.tournament.control.service.dto.UserDTO;
-import javax.validation.constraints.Size;
-
 import java.time.ZonedDateTime;
 import java.util.Set;
+import javax.validation.constraints.Size;
 
 /**
  * View Model extending the UserDTO, which is meant to be used in the user management UI.

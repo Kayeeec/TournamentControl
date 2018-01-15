@@ -1,7 +1,6 @@
 package cz.tournament.control.web.rest.errors;
 
 import java.util.List;
-
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.HttpStatus;

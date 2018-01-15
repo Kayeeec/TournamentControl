@@ -1,12 +1,12 @@
 package cz.tournament.control.service.dto;
 
+import cz.tournament.control.domain.AllVersusAll;
 import cz.tournament.control.domain.Combined;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.SetSettings;
 import cz.tournament.control.domain.Swiss;
 import cz.tournament.control.domain.Tournament;
 import cz.tournament.control.domain.enumeration.EliminationType;
-import cz.tournament.control.domain.AllVersusAll;
 
 /**
  *
