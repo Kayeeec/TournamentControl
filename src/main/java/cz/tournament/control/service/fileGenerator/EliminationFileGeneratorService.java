@@ -3,6 +3,7 @@ package cz.tournament.control.service.fileGenerator;
 import cz.tournament.control.domain.Elimination;
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.domain.GameSet;
+import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.enumeration.EliminationType;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,12 +61,18 @@ public class EliminationFileGeneratorService extends FileGeneratorService {
         return getDoubleMatchModel(tournament);
     }
     
+    private boolean nullSafeIsBye(Participant rival){
+        if(rival == null) return false;
+        return rival.isBye();
+    }
+    
     /**
      * determining 
      *      final match: period == N - 1
      *      bronze match: period == N
      * no need to translate round 
      * BYE matches ignored 
+     * matches with null rival(s) NOT ignored
      * @param tournament
      * @return 
      */
@@ -85,12 +92,15 @@ public class EliminationFileGeneratorService extends FileGeneratorService {
         int maxSetCount = 0;
         
         for (Game match : matches) {
-            if (!match.getRivalA().isBye() && !match.getRivalB().isBye()) {
+//            if (!match.getRivalA().isBye() && !match.getRivalB().isBye()) { //rival can be null
+            if (!nullSafeIsBye(match.getRivalA()) && !nullSafeIsBye(match.getRivalB())) { //rival can be null
                 List<Object> objList = new ArrayList<>();
                 objList.add(singleMatchDeterminant(match, N));
                 objList.add(match.getRound());
-                objList.add(match.getRivalA().getName());
-                objList.add(match.getRivalB().getName());
+//                objList.add(match.getRivalA().getName());
+//                objList.add(match.getRivalB().getName());
+                objList.add(nullSafeGetRivalName(match.getRivalA()));
+                objList.add(nullSafeGetRivalName(match.getRivalB()));
 
                 maxSetCount = Math.max(maxSetCount, match.getSets().size());
 
@@ -203,6 +213,11 @@ public class EliminationFileGeneratorService extends FileGeneratorService {
             header.add("Score B - set "+(i+1));
         }
         return header.toArray(new String[0]); //new optimizations
+    }
+
+    private String nullSafeGetRivalName(Participant rival) {
+        if(rival == null)return "-";
+        return rival.getName();
     }
     
     
