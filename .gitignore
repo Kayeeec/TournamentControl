@@ -148,3 +148,5 @@ Desktop.ini
 =======
 /src/main/webapp/my_components/
 >>>>>>> 36ff9943778e25b52b3be877bbdc5d94f1f2e6fb
+/src/main/resources/config/application-dev.yml
+/src/main/resources/config/application-prod.yml
