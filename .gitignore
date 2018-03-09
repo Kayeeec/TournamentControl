@@ -143,3 +143,4 @@ Desktop.ini
 /src/main/webapp/my_components/
 /src/main/resources/config/secret.js
 /src/main/resources/config/secret.json
+/.git-rewrite/t/src/main/webapp/bower_components/
