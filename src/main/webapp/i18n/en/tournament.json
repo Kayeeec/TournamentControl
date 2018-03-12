@@ -17,13 +17,19 @@
             },
             "name": "Name",
             "note": "Note",
-            "numberOfMutualMatches": "Number Of Mutual Matches",
+            "created": "Created",
+            "setsToWin": "Sets To Win",
+            "tiesAllowed": "Ties Allowed",
+            "playingFields": "Playing Fields",
             "pointsForWinning": "Points For Winning",
-            "pointsForLosing": "Points For Losing",
             "pointsForTie": "Points For Tie",
+            "pointsForLosing": "Points For Losing",
+            "inCombined": "In Combined",
+            "tournamentType": "Tournament Type",
             "matches": "Matches",
             "user": "User",
-            "participants": "Participants"
+            "participants": "Participants",
+            "setSettings": "Set Settings"
         }
     }
 }

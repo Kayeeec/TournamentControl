@@ -1,28 +1,26 @@
 package cz.tournament.control.service;
 
 import cz.tournament.control.TournamentControlApp;
+import cz.tournament.control.config.Constants;
 import cz.tournament.control.domain.PersistentToken;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.repository.PersistentTokenRepository;
-import cz.tournament.control.config.Constants;
 import cz.tournament.control.repository.UserRepository;
 import cz.tournament.control.service.dto.UserDTO;
-import java.time.ZonedDateTime;
 import cz.tournament.control.service.util.RandomUtil;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import java.util.Optional;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Test class for the UserResource REST controller.

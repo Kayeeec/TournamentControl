@@ -1,0 +1,31 @@
+{
+    "tournamentControlApp": {
+        "combined" : {
+            "home": {
+                "title": "Combineds",
+                "createLabel": "Vytvořit Combined",
+                "createOrEditLabel": "Vytvořit nebo upravit Combined"
+            },
+            "created": "Byl vytvořen potomek entity Combined s identifikátorem {{ param }}",
+            "updated": "Potomek entity Combined s identifikátorem {{ param }} byl upravený.",
+            "deleted": "Potomek entity Combined s identifikátorem {{ param }} bol smazaný.",
+            "delete": {
+                "question": "Jste si jisti, že chcete smazat Combined {{ id }}?"
+            },
+            "detail": {
+                "title": "Combined"
+            },
+            "name": "Name",
+            "note": "Note",
+            "created": "Created",
+            "numberOfWinnersToPlayoff": "Number Of Winners To Playoff",
+            "numberOfGroups": "Number Of Groups",
+            "playoffType": "Playoff Type",
+            "inGroupTournamentType": "In Group Tournament Type",
+            "allParticipants": "All Participants",
+            "playoff": "Playoff",
+            "groups": "Groups",
+            "user": "User"
+        }
+    }
+}

@@ -31,6 +31,7 @@
     "changelogDate": "20170320075825",
     "entityTableName": "player",
     "dto": "no",
-    "pagination": "no",
-    "service": "no"
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
 }

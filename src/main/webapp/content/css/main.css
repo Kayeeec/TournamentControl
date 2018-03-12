@@ -5,6 +5,184 @@ body {
 }
 
 /* ==========================================================================
+My styles
+============================================================================= */
+#combined_groups #combined_playoff td {
+  vertical-align: middle !important;
+}
+
+a[aria-expanded=true] .glyphicon-chevron-down {
+   display: none;
+}
+a[aria-expanded=false] .glyphicon-chevron-up {
+   display: none;
+}
+
+.table-white-body tbody{
+    background-color: white !important;
+}
+
+.panel-heading-sm{
+    height: 28px;
+    padding: 4px 10px;
+}
+.panel-body-sm{
+    height: 28px;
+    padding: 4px 10px;
+    margin-bottom: 4px;
+}
+
+.gi-1_5x{font-size: 1.5em;}
+.gi-2x{font-size: 2em;}
+.gi-3x{font-size: 3em;}
+.gi-4x{font-size: 4em;}
+.gi-5x{font-size: 5em;}
+
+.gamePointsInput{
+    width: 150px;
+}
+.byeMatch{
+    background-color: #EFF0F1 !important;
+}
+
+.white{
+    color: #ccc;
+}
+.myWins{
+    color: #060;
+}
+.myLoses{
+    color: #a00;
+}
+.myTotal{
+    font-weight: bold; 
+}
+.myTextCenter{
+    text-align: center;
+}
+.myPaqddingBottom{
+    padding-bottom: 10px;
+}
+.bracket-table{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 200;
+    width: fit-content;
+    background-color:#FFFFFF;
+    border-collapse: separate;
+    border:0.5px solid #7A7A7A;
+    border-radius: 5px;
+    
+}
+.bracket-table, .bracket-table td {
+    padding: 3px;
+    overflow: visible;
+    white-space: nowrap;
+}
+.bracket-name-td-a{
+    border-bottom: 0.5px solid #7A7A7A;
+}
+.bracket-period-td {
+    vertical-align: middle;
+    text-align: center;
+    border-right: 0.5px solid #7A7A7A;
+}
+.bracket-glyphicon-td{
+    vertical-align: middle;
+    text-align: center;
+    border-left: 0.5px solid #7A7A7A;
+}
+
+.bracket-name-td{
+    width: 70px;
+}
+.bracket-scores-td{
+    text-align: center;
+    border-left: 0.5px solid #7A7A7A;
+}
+
+.bracket-scores-td-a{
+    border-bottom: 0.5px solid #7A7A7A;
+}
+
+.mylinkDisabled {
+  cursor: not-allowed;
+  pointer-events: none;
+/*  color: grey;*/
+  opacity: .5;
+}
+.bracket-match-finished{
+    color: #4cae4c;
+}
+
+.tree-node-table{
+    width: 150px;
+    background-color:#F5F5F5;
+    border:0.5px solid #DDDDDD;
+    border-radius: 5px
+}
+
+.not_a_first_round{
+    width: 90px;
+}
+.tree-node-table-A{
+    width: auto;
+    height: 32px;
+    padding: auto;
+    border-bottom: 0.5px solid #DDDDDD;
+    text-align: center;
+    line-height: 32px;
+}
+.tree-node-table-B{
+    width: auto;
+    height: 32px;
+    padding: auto;
+    text-align: center;
+    line-height: 32px;
+}
+.my-wrap{
+    position: relative;
+}
+.this-is-under{
+    z-index: 0;
+    opacity: 0;
+}
+.this-is-over{
+    position: absolute; 
+    z-index: 1;
+}
+.my-dropzones-container{
+    position: absolute; 
+    top: 0px; 
+    left: 0px;
+}
+.clear-both{
+    clear: both;
+}
+
+
+/* ==========================================================================
+Treant.css
+========================================================================== */
+/* required LIB STYLES */
+/* .Treant se automatski dodaje na svaki chart conatiner */
+.Treant { position: relative; overflow: hidden; padding: 0 !important; }
+.Treant > .node,
+.Treant > .pseudo { position: absolute; display: block; visibility: hidden; }
+.Treant.Treant-loaded .node,
+.Treant.Treant-loaded .pseudo { visibility: visible; }
+.Treant > .pseudo { width: 0; height: 0; border: none; padding: 0; }
+.Treant .collapse-switch { width: 3px; height: 3px; display: block; border: 1px solid black; position: absolute; top: 1px; right: 1px; cursor: pointer; }
+.Treant .collapsed .collapse-switch { background-color: #868DEE; }
+.Treant > .node img {	border: none; float: left; }
+/* ==========================================================================
+END - Treant.css
+========================================================================== */
+
+
+
+
+/* ==========================================================================
 Hide ng-cloak on page load, https://docs.angularjs.org/api/ng/directive/ngCloak
 ========================================================================== */
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {

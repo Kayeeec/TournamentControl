@@ -15,30 +15,23 @@
     </div>
     <br/>
     <div class="table-responsive">
-        <table class="jh-table table table-striped">
+        <table class="jh-table table table-hover table-white-body">
             <thead>
-                <tr>
-                    <th><span data-translate="global.field.id">ID</span></th>
-                    <th><span data-translate="tournamentControlApp.team.name">Name</span></th>
-                    <th><span data-translate="tournamentControlApp.team.note">Note</span></th>
-                    <th><span data-translate="tournamentControlApp.team.user">User</span></th>
-                    <th><span data-translate="tournamentControlApp.team.members">Members</span></th>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span data-translate="tournamentControlApp.team.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="note"><span data-translate="tournamentControlApp.team.note">Note</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="members.size"><span data-translate="">Members Count</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="team in vm.teams track by team.id">
+                <tr ng-repeat="team in vm.teams track by team.id"
+                    ui-sref="team-detail({id:team.id})">
                     <td><a ui-sref="team-detail({id:team.id})">{{team.id}}</a></td>
                     <td>{{team.name}}</td>
                     <td>{{team.note}}</td>
-                    <td>
-                        {{team.user.login}}
-                    </td>
-                    <td>
-                        <span ng-repeat="member in team.members">
-                            <a class="form-control-static" ui-sref="player-detail({id: member.id})">{{member.name}}</a>{{$last ? '' : ', '}}
-                        </span>
-                    </td>
+                    <td>{{team.members.length}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
@@ -64,5 +57,9 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
     </div>
 </div>

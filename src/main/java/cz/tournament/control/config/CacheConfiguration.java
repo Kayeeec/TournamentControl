@@ -1,14 +1,12 @@
 package cz.tournament.control.config;
 
 import io.github.jhipster.config.JHipsterProperties;
+import java.util.concurrent.TimeUnit;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.expiry.Duration;
 import org.ehcache.expiry.Expirations;
 import org.ehcache.jsr107.Eh107Configuration;
-
-import java.util.concurrent.TimeUnit;
-
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
@@ -51,6 +49,16 @@ public class CacheConfiguration {
             cm.createCache(cz.tournament.control.domain.Tournament.class.getName(), jcacheConfiguration);
             cm.createCache(cz.tournament.control.domain.Tournament.class.getName() + ".matches", jcacheConfiguration);
             cm.createCache(cz.tournament.control.domain.Tournament.class.getName() + ".participants", jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.AllVersusAll.class.getName(), jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.Elimination.class.getName(), jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.GameSet.class.getName(), jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.Game.class.getName() + ".sets", jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.SetSettings.class.getName(), jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.Swiss.class.getName(), jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.Combined.class.getName(), jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.Combined.class.getName() + ".allParticipants", jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.Combined.class.getName() + ".groups", jcacheConfiguration);
+            cm.createCache(cz.tournament.control.domain.SetSettings.class.getName() + ".tournaments", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

@@ -3,10 +3,10 @@ package cz.tournament.control.domain;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Persist AuditEvent managed by the Spring Boot actuator

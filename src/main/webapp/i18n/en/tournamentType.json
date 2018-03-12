@@ -1,0 +1,12 @@
+{
+    "tournamentControlApp": {
+        "TournamentType" : {
+            "null": "",
+            "ALL_VERSUS_ALL": "All Versus All",
+            "SWISS": "Swiss system",
+            "ELIMINATION": "Elimination",
+            "ELIMINATION_SINGLE": "Single Elimination",
+            "ELIMINATION_DOUBLE": "Double Elimination"
+        }
+    }
+}

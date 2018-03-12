@@ -1,12 +1,11 @@
 package cz.tournament.control.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A Participant.
@@ -22,11 +21,11 @@ public class Participant implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(unique = true)
     private Player player;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(unique = true)
     private Team team;
 
@@ -45,6 +44,12 @@ public class Participant implements Serializable {
     public Participant(Team team, User user) {
         this.team = team;
         this.user = user;
+    }
+    
+    public String getName(){
+        if(this.player != null) return player.getName();
+        if(this.team != null) return team.getName();
+        return "BYE";
     }
 
     public Long getId() {
@@ -106,7 +111,13 @@ public class Participant implements Serializable {
         if (participant.id == null || id == null) {
             return false;
         }
-        return Objects.equals(id, participant.id);
+//        if(this.id !=null && participant.getId() != null){
+//            return Objects.equals(id, participant.id);
+//        }
+        return Objects.equals(this.getPlayer(), participant.getPlayer())
+                && Objects.equals(this.getTeam(), participant.getTeam())
+                && Objects.equals(this.getUser(), participant.getUser())
+                && Objects.equals(id, participant.id);
     }
 
     @Override
@@ -116,8 +127,40 @@ public class Participant implements Serializable {
 
     @Override
     public String toString() {
-        return "Participant{" +
-            "id=" + id +
-            '}';
+        String is;
+        if(this.player != null){
+            is = "player";
+        }else if(this.team != null){
+            is = "team";
+        }else{
+            is = "BYE";
+        }
+        
+        return "Participant{id: "+this.id+", name: "+this.getName()+", "+is+"}";
+        
+        
+//        String result = "Participant { id="+id;
+//        if(this.player != null){
+//            String concat = result.concat(", " + player.toString() + " }");
+//            return concat;
+//            
+//        }
+//        if(this.team != null){
+//            String concat = result.concat(", " + team.toString() + " }");
+//            return concat;
+//        }
+//        String concat = result.concat(", BYE }");
+//        return concat;
     }
+    
+    public boolean isBye(){
+        return Objects.equals(this.team, null) && Objects.equals(this.player, null);
+    }
+    
+//    public boolean getBye(){
+//        return Objects.equals(this.team, null) && Objects.equals(this.player, null);
+//    }
+//    public void setBye(){
+//        
+//    }
 }

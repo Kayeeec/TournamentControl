@@ -21,12 +21,18 @@
                     <th><span data-translate="global.field.id">ID</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.name">Name</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.note">Note</span></th>
-                    <th><span data-translate="tournamentControlApp.tournament.numberOfMutualMatches">Number Of Mutual Matches</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.created">Created</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.tiesAllowed">Ties Allowed</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></th>
-                    <th><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.inCombined">In Combined</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.tournamentType">Tournament Type</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.user">User</span></th>
                     <th><span data-translate="tournamentControlApp.tournament.participants">Participants</span></th>
+                    <th><span data-translate="tournamentControlApp.tournament.setSettings">Set Settings</span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -35,10 +41,15 @@
                     <td><a ui-sref="tournament-detail({id:tournament.id})">{{tournament.id}}</a></td>
                     <td>{{tournament.name}}</td>
                     <td>{{tournament.note}}</td>
-                    <td>{{tournament.numberOfMutualMatches}}</td>
+                    <td>{{tournament.created | date:'medium'}}</td>
+                    <td>{{tournament.setsToWin}}</td>
+                    <td>{{tournament.tiesAllowed}}</td>
+                    <td>{{tournament.playingFields}}</td>
                     <td>{{tournament.pointsForWinning}}</td>
-                    <td>{{tournament.pointsForLosing}}</td>
                     <td>{{tournament.pointsForTie}}</td>
+                    <td>{{tournament.pointsForLosing}}</td>
+                    <td>{{tournament.inCombined}}</td>
+                    <td data-translate="{{'tournamentControlApp.TournamentType.' + tournament.tournamentType}}">{{tournament.tournamentType}}</td>
                     <td>
                         {{tournament.user.login}}
                     </td>
@@ -46,6 +57,9 @@
                         <span ng-repeat="participants in tournament.participants">
                             <a class="form-control-static" ui-sref="participant-detail({id: participants.id})">{{participants.id}}</a>{{$last ? '' : ', '}}
                         </span>
+                    </td>
+                    <td>
+                        <a ui-sref="set-settings-detail({id:tournament.setSettings.id})">{{tournament.setSettings.id}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

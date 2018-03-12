@@ -1,12 +1,16 @@
 package cz.tournament.control.web.rest;
 
 import cz.tournament.control.TournamentControlApp;
-
 import cz.tournament.control.domain.Player;
 import cz.tournament.control.repository.PlayerRepository;
-import cz.tournament.control.repository.UserRepository;
+import cz.tournament.control.service.CombinedService;
+import cz.tournament.control.service.PlayerService;
+import static cz.tournament.control.web.rest.TestUtil.createFormattingConversionService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
-
+import java.util.List;
+import javax.persistence.EntityManager;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,16 +22,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Test class for the PlayerResource REST controller.
@@ -46,9 +44,12 @@ public class PlayerResourceIntTest {
 
     @Autowired
     private PlayerRepository playerRepository;
-    
+
     @Autowired
-    private UserRepository userRepository;
+    private PlayerService playerService;
+
+    @Autowired
+    private CombinedService combinedService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -69,10 +70,11 @@ public class PlayerResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        PlayerResource playerResource = new PlayerResource(playerRepository, userRepository);
+        final PlayerResource playerResource = new PlayerResource(playerService, combinedService);
         this.restPlayerMockMvc = MockMvcBuilders.standaloneSetup(playerResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -127,7 +129,7 @@ public class PlayerResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(player)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Player in the database
         List<Player> playerList = playerRepository.findAll();
         assertThat(playerList).hasSize(databaseSizeBeforeCreate);
     }
@@ -192,7 +194,8 @@ public class PlayerResourceIntTest {
     @Transactional
     public void updatePlayer() throws Exception {
         // Initialize the database
-        playerRepository.saveAndFlush(player);
+        playerService.save(player);
+
         int databaseSizeBeforeUpdate = playerRepository.findAll().size();
 
         // Update the player
@@ -236,7 +239,8 @@ public class PlayerResourceIntTest {
     @Transactional
     public void deletePlayer() throws Exception {
         // Initialize the database
-        playerRepository.saveAndFlush(player);
+        playerService.save(player);
+
         int databaseSizeBeforeDelete = playerRepository.findAll().size();
 
         // Get the player
@@ -253,5 +257,14 @@ public class PlayerResourceIntTest {
     @Transactional
     public void equalsVerifier() throws Exception {
         TestUtil.equalsVerifier(Player.class);
+        Player player1 = new Player();
+        player1.setId(1L);
+        Player player2 = new Player();
+        player2.setId(player1.getId());
+        assertThat(player1).isEqualTo(player2);
+        player2.setId(2L);
+        assertThat(player1).isNotEqualTo(player2);
+        player1.setId(null);
+        assertThat(player1).isNotEqualTo(player2);
     }
 }

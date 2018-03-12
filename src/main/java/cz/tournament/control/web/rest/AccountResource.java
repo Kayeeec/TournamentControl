@@ -1,7 +1,6 @@
 package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-
 import cz.tournament.control.domain.PersistentToken;
 import cz.tournament.control.domain.User;
 import cz.tournament.control.repository.PersistentTokenRepository;
@@ -10,10 +9,14 @@ import cz.tournament.control.security.SecurityUtils;
 import cz.tournament.control.service.MailService;
 import cz.tournament.control.service.UserService;
 import cz.tournament.control.service.dto.UserDTO;
+import cz.tournament.control.web.rest.util.HeaderUtil;
 import cz.tournament.control.web.rest.vm.KeyAndPasswordVM;
 import cz.tournament.control.web.rest.vm.ManagedUserVM;
-import cz.tournament.control.web.rest.util.HeaderUtil;
-
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.*;
 
 /**
  * REST controller for managing the current user's account.
@@ -71,7 +68,7 @@ public class AccountResource {
 
         return userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase())
             .map(user -> new ResponseEntity<>("login already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
-            .orElseGet(() -> userRepository.findOneByEmail(managedUserVM.getEmail())
+            .orElseGet(() -> userRepository.findOneByEmailIgnoreCase(managedUserVM.getEmail())
                 .map(user -> new ResponseEntity<>("e-mail address already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
                 .orElseGet(() -> {
                     User user = userService
@@ -134,7 +131,7 @@ public class AccountResource {
     @PostMapping("/account")
     @Timed
     public ResponseEntity saveAccount(@Valid @RequestBody UserDTO userDTO) {
-        Optional<User> existingUser = userRepository.findOneByEmail(userDTO.getEmail());
+        Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userDTO.getLogin()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("user-management", "emailexists", "Email already in use")).body(null);
         }

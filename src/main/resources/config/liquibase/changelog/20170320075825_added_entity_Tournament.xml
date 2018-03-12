@@ -3,13 +3,12 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <property name="now" value="now()" dbms="h2"/>
 
-    <property name="now" value="now()" dbms="mysql"/>
-    <property name="autoIncrement" value="true"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
 
     <property name="floatType" value="float4" dbms="postgresql, h2"/>
     <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
@@ -30,19 +29,39 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="number_of_mutual_matches" type="integer">
+            <column name="created" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="sets_to_win" type="integer">
                 <constraints nullable="true" />
             </column>
 
-            <column name="points_for_winning" type="integer">
+            <column name="ties_allowed" type="boolean">
                 <constraints nullable="true" />
             </column>
 
-            <column name="points_for_losing" type="integer">
+            <column name="playing_fields" type="integer">
                 <constraints nullable="true" />
             </column>
 
-            <column name="points_for_tie" type="integer">
+            <column name="points_for_winning" type="double">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="points_for_tie" type="double">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="points_for_losing" type="double">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="in_combined" type="boolean">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="tournament_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 
@@ -50,8 +69,13 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="set_settings_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
+        <dropDefaultValue tableName="tournament" columnName="created" columnDataType="datetime"/>
         
         <createTable tableName="tournament_participants">
             <column name="participants_id" type="bigint">
@@ -65,4 +89,5 @@
         <addPrimaryKey columnNames="tournaments_id, participants_id" tableName="tournament_participants"/>
         
     </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

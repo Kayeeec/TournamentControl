@@ -32,8 +32,8 @@
             }
         })
         .state('game-detail', {
-            parent: 'game',
-            url: '/game/{id}',
+            parent: 'all-versus-all-detail',
+            url: '/game-detail/{gameId}',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'tournamentControlApp.game.detail.title'
@@ -51,11 +51,11 @@
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'Game', function($stateParams, Game) {
-                    return Game.get({id : $stateParams.id}).$promise;
+                    return Game.get({id : $stateParams.gameId}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'game',
+                        name: $state.current.name || 'all-versus-all-detail',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -104,12 +104,11 @@
                     resolve: {
                         entity: function () {
                             return {
-                                scoreA: null,
-                                scoreB: null,
                                 finished: null,
                                 round: null,
                                 period: null,
                                 note: null,
+                                playingField: null,
                                 id: null
                             };
                         }
@@ -121,9 +120,9 @@
                 });
             }]
         })
-        .state('game.edit', {
-            parent: 'game',
-            url: '/{id}/edit',
+        .state('game.swiss-edit', {
+            parent: 'swiss-detail',
+            url: '/game-edit/{gameId}',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -136,11 +135,64 @@
                     size: 'lg',
                     resolve: {
                         entity: ['Game', function(Game) {
-                            return Game.get({id : $stateParams.id}).$promise;
+                                console.log("gameId is "+ $stateParams.gameId);
+                            return Game.get({id : $stateParams.gameId}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('game', null, { reload: 'game' });
+                    $state.go('swiss-detail', null, { reload: 'swiss-detail' });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
+        .state('game.allVersusAll-edit', {
+            parent: 'all-versus-all-detail',
+            url: '/game-edit/{gameId}',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/entities/game/game-dialog.html',
+                    controller: 'GameDialogController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: ['Game', function(Game) {
+                                console.log("gameId is "+ $stateParams.gameId);
+                            return Game.get({id : $stateParams.gameId}).$promise;
+                        }]
+                    }
+                }).result.then(function() {
+                    $state.go('all-versus-all-detail', null, { reload: 'all-versus-all-detail' });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
+        .state('game.elimination-edit', {
+            parent: 'elimination-detail',
+            url: '/game-edit/{gameId}',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/entities/game/game-dialog.html',
+                    controller: 'GameDialogController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: ['Game', function(Game) {
+                                console.log("gameId is "+ $stateParams.gameId);
+                            return Game.get({id : $stateParams.gameId}).$promise;
+                        }]
+                    }
+                }).result.then(function() {
+                    $state.go('elimination-detail', null, { reload: 'elimination-detail' });
                 }, function() {
                     $state.go('^');
                 });

@@ -1,18 +1,25 @@
 package cz.tournament.control.repository;
 
 import cz.tournament.control.domain.Player;
-
-import org.springframework.data.jpa.repository.*;
-
+import cz.tournament.control.domain.User;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 /**
  * Spring Data JPA repository for the Player entity.
  */
 @SuppressWarnings("unused")
-public interface PlayerRepository extends JpaRepository<Player,Long> {
+@Repository
+public interface PlayerRepository extends JpaRepository<Player, Long> {
 
     @Query("select player from Player player where player.user.login = ?#{principal.username}")
-    List<Player> findByUserIsCurrentUser();
+    Page<Player> findByUserIsCurrentUser(Pageable pageable);
+
+    List<Player> findByUser(User user);
+    
+    List<Player> findByName(String name);
 
 }

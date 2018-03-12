@@ -1,0 +1,31 @@
+{
+    "tournamentControlApp": {
+        "combined" : {
+            "home": {
+                "title": "Combined Group Tournament: ",
+                "createLabel": "Create a new Combined Tournament",
+                "createOrEditLabel": "Create or edit a Combined Tournament"
+            },
+            "created": "A new Combined tournament is created with identifier {{ param }}",
+            "updated": "A Combined tournament is updated with identifier {{ param }}",
+            "deleted": "A Combined tournament is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Combined tournament #{{ id }}?"
+            },
+            "detail": {
+                "title": "Combined Group Tournament"
+            },
+            "name": "Name",
+            "note": "Note",
+            "created": "Created",
+            "numberOfWinnersToPlayoff": "Number Of Winners To Playoff",
+            "numberOfGroups": "Number Of Groups",
+            "playoffType": "Playoff Type",
+            "inGroupTournamentType": "Group Tournament Type",
+            "allParticipants": "All Participants",
+            "playoff": "Playoff",
+            "groups": "Groups",
+            "user": "User"
+        }
+    }
+}

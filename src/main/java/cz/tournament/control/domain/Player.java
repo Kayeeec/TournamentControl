@@ -1,15 +1,14 @@
 package cz.tournament.control.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A Player.
@@ -35,7 +34,7 @@ public class Player implements Serializable {
     @ManyToOne
     private User user;
 
-    @ManyToMany(mappedBy = "members")
+    @ManyToMany(mappedBy = "members", fetch = FetchType.EAGER)
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Team> teams = new HashSet<>();
@@ -104,12 +103,14 @@ public class Player implements Serializable {
     public Player addTeams(Team team) {
         this.teams.add(team);
         team.getMembers().add(this);
+//        team.addMembers(this);
         return this;
     }
 
     public Player removeTeams(Team team) {
         this.teams.remove(team);
         team.getMembers().remove(this);
+//        team.removeMembers(this);
         return this;
     }
 
@@ -126,10 +127,15 @@ public class Player implements Serializable {
             return false;
         }
         Player player = (Player) o;
-        if (player.id == null || id == null) {
+        if(this.id == null || player.getId() == null){
             return false;
         }
-        return Objects.equals(id, player.id);
+        if(this.id != null && player.getId() != null){
+            return Objects.equals(this.id, player.getId());
+        }
+        return Objects.equals(this.id, player.getId())
+                && Objects.equals(this.name, player.getName())
+                && Objects.equals(this.user,player.getUser());
     }
 
     @Override
@@ -139,10 +145,15 @@ public class Player implements Serializable {
 
     @Override
     public String toString() {
+        String teams = "";
+        for (Team team : this.teams) {
+            teams = teams + "("+team.getId()+", "+team.getName()+"), ";
+        }
+        
         return "Player{" +
             "id=" + id +
             ", name='" + name + "'" +
-            ", note='" + note + "'" +
+            ", teams=[" + teams + "]" +
             '}';
     }
 }

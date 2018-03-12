@@ -1,11 +1,15 @@
 package cz.tournament.control.web.rest;
 
 import cz.tournament.control.TournamentControlApp;
-
 import cz.tournament.control.domain.Game;
 import cz.tournament.control.repository.GameRepository;
+import cz.tournament.control.service.GameService;
+import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.errors.ExceptionTranslator;
-
+import java.util.List;
+import javax.persistence.EntityManager;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,16 +21,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Test class for the GameResource REST controller.
@@ -36,12 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TournamentControlApp.class)
 public class GameResourceIntTest {
-
-    private static final Integer DEFAULT_SCORE_A = 0;
-    private static final Integer UPDATED_SCORE_A = 1;
-
-    private static final Integer DEFAULT_SCORE_B = 0;
-    private static final Integer UPDATED_SCORE_B = 1;
 
     private static final Boolean DEFAULT_FINISHED = false;
     private static final Boolean UPDATED_FINISHED = true;
@@ -55,8 +47,18 @@ public class GameResourceIntTest {
     private static final String DEFAULT_NOTE = "AAAAAAAAAA";
     private static final String UPDATED_NOTE = "BBBBBBBBBB";
 
+    private static final Integer DEFAULT_PLAYING_FIELD = 1;
+    private static final Integer UPDATED_PLAYING_FIELD = 2;
+
     @Autowired
     private GameRepository gameRepository;
+    
+    @Autowired
+    private GameService gameService;
+    
+    @Autowired
+    private TournamentService tournamentService;
+    
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -77,7 +79,7 @@ public class GameResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        GameResource gameResource = new GameResource(gameRepository);
+        GameResource gameResource = new GameResource(gameService, tournamentService);
         this.restGameMockMvc = MockMvcBuilders.standaloneSetup(gameResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -92,12 +94,11 @@ public class GameResourceIntTest {
      */
     public static Game createEntity(EntityManager em) {
         Game game = new Game()
-            .scoreA(DEFAULT_SCORE_A)
-            .scoreB(DEFAULT_SCORE_B)
             .finished(DEFAULT_FINISHED)
             .round(DEFAULT_ROUND)
             .period(DEFAULT_PERIOD)
-            .note(DEFAULT_NOTE);
+            .note(DEFAULT_NOTE)
+            .playingField(DEFAULT_PLAYING_FIELD);
         return game;
     }
 
@@ -121,12 +122,11 @@ public class GameResourceIntTest {
         List<Game> gameList = gameRepository.findAll();
         assertThat(gameList).hasSize(databaseSizeBeforeCreate + 1);
         Game testGame = gameList.get(gameList.size() - 1);
-        assertThat(testGame.getScoreA()).isEqualTo(DEFAULT_SCORE_A);
-        assertThat(testGame.getScoreB()).isEqualTo(DEFAULT_SCORE_B);
         assertThat(testGame.isFinished()).isEqualTo(DEFAULT_FINISHED);
         assertThat(testGame.getRound()).isEqualTo(DEFAULT_ROUND);
         assertThat(testGame.getPeriod()).isEqualTo(DEFAULT_PERIOD);
         assertThat(testGame.getNote()).isEqualTo(DEFAULT_NOTE);
+        assertThat(testGame.getPlayingField()).isEqualTo(DEFAULT_PLAYING_FIELD);
     }
 
     @Test
@@ -159,12 +159,11 @@ public class GameResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(game.getId().intValue())))
-            .andExpect(jsonPath("$.[*].scoreA").value(hasItem(DEFAULT_SCORE_A)))
-            .andExpect(jsonPath("$.[*].scoreB").value(hasItem(DEFAULT_SCORE_B)))
             .andExpect(jsonPath("$.[*].finished").value(hasItem(DEFAULT_FINISHED.booleanValue())))
             .andExpect(jsonPath("$.[*].round").value(hasItem(DEFAULT_ROUND)))
             .andExpect(jsonPath("$.[*].period").value(hasItem(DEFAULT_PERIOD)))
-            .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())));
+            .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
+            .andExpect(jsonPath("$.[*].playingField").value(hasItem(DEFAULT_PLAYING_FIELD)));
     }
 
     @Test
@@ -178,12 +177,11 @@ public class GameResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(game.getId().intValue()))
-            .andExpect(jsonPath("$.scoreA").value(DEFAULT_SCORE_A))
-            .andExpect(jsonPath("$.scoreB").value(DEFAULT_SCORE_B))
             .andExpect(jsonPath("$.finished").value(DEFAULT_FINISHED.booleanValue()))
             .andExpect(jsonPath("$.round").value(DEFAULT_ROUND))
             .andExpect(jsonPath("$.period").value(DEFAULT_PERIOD))
-            .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()));
+            .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()))
+            .andExpect(jsonPath("$.playingField").value(DEFAULT_PLAYING_FIELD));
     }
 
     @Test
@@ -204,12 +202,11 @@ public class GameResourceIntTest {
         // Update the game
         Game updatedGame = gameRepository.findOne(game.getId());
         updatedGame
-            .scoreA(UPDATED_SCORE_A)
-            .scoreB(UPDATED_SCORE_B)
             .finished(UPDATED_FINISHED)
             .round(UPDATED_ROUND)
             .period(UPDATED_PERIOD)
-            .note(UPDATED_NOTE);
+            .note(UPDATED_NOTE)
+            .playingField(UPDATED_PLAYING_FIELD);
 
         restGameMockMvc.perform(put("/api/games")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -220,12 +217,11 @@ public class GameResourceIntTest {
         List<Game> gameList = gameRepository.findAll();
         assertThat(gameList).hasSize(databaseSizeBeforeUpdate);
         Game testGame = gameList.get(gameList.size() - 1);
-        assertThat(testGame.getScoreA()).isEqualTo(UPDATED_SCORE_A);
-        assertThat(testGame.getScoreB()).isEqualTo(UPDATED_SCORE_B);
         assertThat(testGame.isFinished()).isEqualTo(UPDATED_FINISHED);
         assertThat(testGame.getRound()).isEqualTo(UPDATED_ROUND);
         assertThat(testGame.getPeriod()).isEqualTo(UPDATED_PERIOD);
         assertThat(testGame.getNote()).isEqualTo(UPDATED_NOTE);
+        assertThat(testGame.getPlayingField()).isEqualTo(UPDATED_PLAYING_FIELD);
     }
 
     @Test

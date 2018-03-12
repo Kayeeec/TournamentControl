@@ -12,21 +12,41 @@
         <dd>
             <span>{{vm.tournament.note}}</span>
         </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.numberOfMutualMatches">Number Of Mutual Matches</span></dt>
+        <dt><span data-translate="tournamentControlApp.tournament.created">Created</span></dt>
         <dd>
-            <span>{{vm.tournament.numberOfMutualMatches}}</span>
+            <span>{{vm.tournament.created | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></dt>
+        <dd>
+            <span>{{vm.tournament.setsToWin}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.tiesAllowed">Ties Allowed</span></dt>
+        <dd>
+            <span>{{vm.tournament.tiesAllowed}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></dt>
+        <dd>
+            <span>{{vm.tournament.playingFields}}</span>
         </dd>
         <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
         <dd>
             <span>{{vm.tournament.pointsForWinning}}</span>
         </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
+        <dd>
+            <span>{{vm.tournament.pointsForTie}}</span>
+        </dd>
         <dt><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
         <dd>
             <span>{{vm.tournament.pointsForLosing}}</span>
         </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
+        <dt><span data-translate="tournamentControlApp.tournament.inCombined">In Combined</span></dt>
         <dd>
-            <span>{{vm.tournament.pointsForTie}}</span>
+            <span>{{vm.tournament.inCombined}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.tournamentType">Tournament Type</span></dt>
+        <dd>
+            <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.tournament.tournamentType}}">{{vm.tournament.tournamentType}}</span>
         </dd>
         <dt><span data-translate="tournamentControlApp.tournament.user">User</span></dt>
         <dd>
@@ -38,10 +58,14 @@
                 <a ui-sref="participant-detail({id: participants.id})">{{participants.id}}</a>{{$last ? '' : ', '}}
             </span>
         </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.setSettings">Set Settings</span></dt>
+        <dd>
+            <a ui-sref="set-settings-detail({id:vm.tournament.setSettings.id})">{{vm.tournament.setSettings.id}}</a>
+        </dd>
     </dl>
 
     <button type="submit"
-            ui-sref="{{ vm.previousState }}"
+            ui-sref="{{vm.backLink()}}"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>

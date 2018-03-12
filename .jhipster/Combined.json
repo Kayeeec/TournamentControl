@@ -1,0 +1,86 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {        
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "",
+            "relationshipName": "allParticipants",
+            "otherEntityName": "participant",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipName": "playoff",
+            "otherEntityName": "tournament",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "name",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "combined"
+        },
+        {
+            "relationshipName": "groups",
+            "otherEntityName": "tournament",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "combined"
+        },
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "combined"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "note",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "created",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "numberOfWinnersToPlayoff",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": 0
+        },
+        {
+            "fieldName": "numberOfGroups",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": "1"
+        },
+        {
+            "fieldName": "playoffType",
+            "fieldType": "TournamentType",
+            "fieldValues": "ALL_VERSUS_ALL, ELIMINATION, SWISS"
+        },
+        {
+            "fieldName": "inGroupTournamentType",
+            "fieldType": "TournamentType",
+            "fieldValues": "ALL_VERSUS_ALL, ELIMINATION, SWISS"
+        }
+    ],
+    "changelogDate": "20171123170253",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "combined",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
+}

@@ -1,0 +1,1111 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" ><!-- show-validation -->
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myCombinedLabel" data-translate="tournamentControlApp.combined.home.createOrEditLabel">Create or edit a Combined</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.combined.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.combined.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.combined.name" for="field_name">Name</label>
+            <input type="text" class="form-control" name="name" id="field_name"
+                    ng-model="vm.combined.name"
+                    required/>
+            <div ng-show="editForm.name.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.name.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="tournamentControlApp.combined.note" for="field_note">Note</label>
+            <textarea rows="2" type="text" class="form-control" name="note" id="field_note"
+                      ng-model="vm.combined.note">  
+            </textarea>
+        </div>
+
+<!-- ********* PARTICIPANTS ********* -->
+        <div id="participants" class="well well-sm">
+            <div id="participants_header">
+                <ul class="nav nav-pills pull-left" id="myTab">
+                    <li class="active"><a showtab href="#players" ng-click="chosen = 1; vm.init_groupParticipantObject(true)">
+                            <span  data-translate=""> Add Players </span> <!--TODO: data-translate -->
+                            <span class="badge"> {{vm.selectedPlayers.length}}</span>
+                        </a>
+                    </li>
+                    <li><a showtab href="#teams" ng-click="chosen = 2; vm.init_groupParticipantObject(true)">
+                            <span  data-translate=""> Add Teams </span> <!--TODO: data translate-->
+                            <span class="badge"> {{vm.selectedTeams.length}}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="pull-right">
+                    <button ng-disabled="chosen===2" type="button" class="btn btn-default"  ng-click="vm.selectAll()">
+                        <span data-translate="entity.action.selectAll">Select All</span>
+                    </button>
+                    <button type="button" class="btn btn-default"  ng-click="vm.deselectAll()">
+                        <span data-translate="entity.action.deselectAll">Deselect All</span>
+                    </button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div id="participants_checkboxes" class="tab-content" style="padding: 10px">
+                    <div id="players" class="tab-pane active row">
+                        <div class="col-md-3 col-sm-6 col-xs-12"
+                             ng-repeat="participant in vm.participants | filter: isPlayer">
+                            <span>
+                                <label for="player_checkbox_{{$index}}">
+                                    <input  type="checkbox"  id="player_checkbox_{{$index}}" 
+                                            checklist-model="vm.selectedPlayers" checklist-value="participant"
+                                            ng-click="vm.onPlayerClick(participant)"> {{participant.player.name}}
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div id="teams" class="tab-pane row">
+                        <div class="col-md-3 col-sm-6 col-xs-12"
+                             ng-repeat="participant in vm.participants | filter: isTeam">
+                            <span>
+                                <label for="team_checkbox_{{$index}}" ng-class="vm.getTeamCSS_onValidity(participant)">
+                                    <input  type="checkbox"  id="team_checkbox_{{$index}}" name="team_checkbox"
+                                            checklist-model="vm.selectedTeams" checklist-value="participant"
+                                            ng-disabled="vm.teamIsInvalid(participant)"
+                                            ng-click="vm.onTeamClick(participant)">
+
+                                        {{participant.team.name}}
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+            </div>
+        </div>
+<!-- ********* end - PARTICIPANTS ********* -->
+
+<br/>
+<h4>Group Settings</h4>
+<hr/>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.combined.numberOfGroups" for="field_numberOfGroups">Number Of Groups</label>
+                <input type="number" class="form-control" name="numberOfGroups" id="field_numberOfGroups"
+                       ng-model="vm.combined.numberOfGroups"
+                       ng-change="vm.numberOfGroupsChanged()"
+                       required min="1" max="26"/>
+                <div ng-show="editForm.numberOfGroups.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.numberOfGroups.$error.required" data-translate="entity.validation.required">
+                        This field is required.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfGroups.$error.min" data-translate="entity.validation.min" translate-value-min="1">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfGroups.$error.max" data-translate="entity.validation.max" translate-value-max="26">
+                        This field should be at most 26.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfGroups.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+            </div>
+            <div class="form-group col-md-8">
+                <label class="control-label" data-translate="tournamentControlApp.combined.inGroupTournamentType" for="field_inGroupTournamentType">In Group Tournament Type</label>
+                <select class="form-control" name="inGroupTournamentType" ng-model="vm.combined.inGroupTournamentType" id="field_inGroupTournamentType">
+                    <option value="ALL_VERSUS_ALL" data-translate="tournamentControlApp.TournamentType.ALL_VERSUS_ALL">ALL_VERSUS_ALL</option>
+                    <option value="ELIMINATION_SINGLE" data-translate="tournamentControlApp.TournamentType.ELIMINATION_SINGLE">ELIMINATION_SINGLE</option>
+                    <option value="ELIMINATION_DOUBLE" data-translate="tournamentControlApp.TournamentType.ELIMINATION_DOUBLE">ELIMINATION_DOUBLE</option>
+                    <option value="SWISS" data-translate="tournamentControlApp.TournamentType.SWISS">SWISS</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" 
+                       for="field_pointsForWinning">
+                    Points For Winning
+                </label>
+                <input type="number" class="form-control" name="pointsForWinning" id="field_pointsForWinning"
+                       ng-model="vm.groupSettings.pointsForWinning"
+                       />
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" 
+                       for="field_pointsForLosing">
+                    Points For Losing
+                </label>
+                <input type="number" class="form-control" name="pointsForLosing" id="field_pointsForLosing"
+                       ng-model="vm.groupSettings.pointsForLosing"
+                       />
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" 
+                       for="field_pointsForTie">
+                    Points For Tie
+                </label>
+                <input type="number" class="form-control" name="pointsForTie" id="field_pointsForTie"
+                       ng-model="vm.groupSettings.pointsForTie" ng-disabled="!vm.groupSettings.tiesAllowed"
+                       />
+            </div>
+            
+            <div class="form-group col-xs-6 col-md-4" >
+                <label class="control-label" data-translate="tournamentControlApp.tournament.setsToWin" 
+                       for="field_setsToWin">
+                    Sets To Win
+                </label>
+                <input type="number" pattern="" min="1" class="form-control" name="setsToWin" id="field_setsToWin"
+                       ng-model="vm.groupSettings.setsToWin"
+                       />
+            </div>
+            <div class="form-group col-xs-6 col-md-4" 
+             ng-if="vm.combined.inGroupTournamentType === 'ELIMINATION_SINGLE' || vm.combined.inGroupTournamentType === 'ELIMINATION_DOUBLE'">
+                <label class="control-label" data-translate="" for="field_groupBronzeMatch">
+                    Bronze Match
+                </label>
+                <select name="groupBronzeMatch" id="field_groupBronzeMatch" class="form-control"
+                        ng-model="vm.groupSettings.bronzeMatch"  
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, 
+                                                                                    {display: 'Yes', value: true}]"> 
+                </select>
+            </div>
+            
+
+            <div class="form-group col-xs-6 col-md-4"
+                 ng-if="vm.combined.inGroupTournamentType != 'ELIMINATION_SINGLE' && vm.combined.inGroupTournamentType != 'ELIMINATION_DOUBLE'">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.tiesAllowed" 
+                       for="field_tiesAllowed">
+                    Ties Allowed
+                </label>
+                <select name="tiesAllowed" id="field_tiesAllowed" class="form-control"
+                        ng-model="vm.groupSettings.tiesAllowed"  
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, 
+                                                                                    {display: 'Yes', value: true}]"> 
+                </select>
+            </div>
+            
+            <div class="form-group col-xs-6 col-md-4" ng-if="vm.combined.inGroupTournamentType === 'ALL_VERSUS_ALL'">
+                <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" 
+                       for="field_numberOfMutualMatches">
+                    Number Of Mutual Matches
+                </label>
+                <input type="number" class="form-control" name="numberOfMutualMatches" id="field_numberOfMutualMatches"
+                       ng-model="vm.groupSettings.numberOfMutualMatches"
+                       required min="1"/>
+                <div ng-show="editForm.numberOfMutualMatches.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.numberOfMutualMatches.$error.required" data-translate="entity.validation.required">
+                        This field is required.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfMutualMatches.$error.min" data-translate="entity.validation.min" 
+                       translate-value-min="{{1}}">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.numberOfMutualMatches.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4" ng-if="vm.combined.inGroupTournamentType === 'SWISS'">
+                <label class="control-label" data-translate="tournamentControlApp.swiss.color" for="field_color">
+                    Color
+                </label>
+                <select name="color" id="field_color" class="form-control"
+                        ng-model="vm.groupSettings.color"  
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, 
+                                                                                    {display: 'Yes', value: true}]"> 
+                </select>
+            </div>
+        </div>
+<div ng-if="    vm.combined.inGroupTournamentType !== 'ELIMINATION_SINGLE' 
+            &&  vm.combined.inGroupTournamentType !== 'ELIMINATION_DOUBLE'">
+    
+    <div class="form-group radio">
+        <label>
+            <input type="radio" name="setNumberOfPlayingFields" ng-model="vm.setNumberOfFields" value="TOTAL_AUTO">
+            Set total number of playing fields <small>(will be assigned automatically)</small>
+        </label>
+    </div>
+    <div class="form-group radio">
+        <label>
+            <input type="radio" name="setNumberOfPlayingFields" ng-model="vm.setNumberOfFields" value="FOR_EACH">
+            Set number of playing fields for each group
+        </label>
+    </div>
+    <div class="form-group radio">
+        <label>
+            <input type="radio" name="setNumberOfPlayingFields" ng-model="vm.setNumberOfFields" value="DO_NOT_SET">
+            Do not set number of playing fields
+        </label>
+    </div>
+    <div class="form-group" ng-if="vm.setNumberOfFields === 'FOR_EACH'">
+        <div class="row" >
+            <div class="col-md-2" ng-class="{'has-error': fieldsInnerForm.playingFields.$invalid}" 
+                ng-repeat="(group, fields) in vm.groupSettings.playingFields">
+                <ng-form name="fieldsInnerForm">
+                <label>
+                    {{group}}: 
+                    <input type="number" class="form-control" name="playingFields" id="field_playingFields_{{group}}"
+                        ng-model="vm.groupSettings.playingFields[group]" min="1"  />
+                </label>
+                <div ng-show="fieldsInnerForm.playingFields.$invalid">
+                    <p class="help-block"
+                       ng-show="fieldsInnerForm.playingFields.$error.min" data-translate="entity.validation.min" 
+                       translate-value-min="{{1}}">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="fieldsInnerForm.playingFields.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+                </ng-form>
+            </div>
+        </div>
+    </div>
+    <div class="form-group" ng-if="vm.setNumberOfFields === 'TOTAL_AUTO'">
+        <label class="control-label" data-translate="" for="field_totalPlayingFields">
+            Total number of playing fields
+        </label>
+        <input type="number" class="form-control" name="totalPlayingFields" id="field_totalPlayingFields"
+               ng-model="vm.groupSettings.totalPlayingFields" min="1"
+               />
+
+        <div ng-show="editForm.totalPlayingFields.$invalid">
+            <p class="help-block"
+               ng-show="editForm.totalPlayingFields.$error.min" data-translate="entity.validation.min" 
+               translate-value-min="{{1}}">
+                This field should be at least 1.
+            </p>
+            <p class="help-block"
+               ng-show="editForm.totalPlayingFields.$error.number" data-translate="entity.validation.number">
+                This field should be a number.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ********* Set Settings ********* -->
+<!-- ********* set settings tab ********* -->
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="group_setSettings_heading">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" 
+                   data-parent="#accordion" data-target="#group_setSettings" 
+                   aria-expanded="false" aria-controls="group_setSettings">
+                    Advanced Set Settings [optional]
+                    <span class=" text text-muted glyphicon glyphicon-chevron-down pull-right"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right"></span>
+                </a>
+            </h4>
+        </div>
+
+        <div id="group_setSettings" class="panel-collapse collapse" ng-class="{'in': vm.groupSettings.setSettings.maxScore || vm.groupSettings.setSettings.leadByPoints}" 
+             role="tabpanel" aria-labelledby="group_setSettings_heading">
+            <div class="panel-body">
+
+                <!--Set settings-->
+                <div class="form-group">
+                    <div class="form-inline">
+                        <span>Set&nbsp; </span>    
+                        <div class="form-group">
+                            <label for="group_maxScore_radio">
+                                <input class="radio radio-inline" id="group_maxScore_radio" type="radio"
+                                       ng-model="vm.groupSettings.chosenSetSettings" value="maxScore">
+                                maximum score </label>
+                        </div>
+                        <span>&nbsp; or &nbsp; </span>  
+                        <div class="form-group">
+                            <label  for="group_leadByPoints_radio">
+                                <input class="radio radio-inline" id="group_leadByPoints_radio" type="radio"
+                                       ng-model="vm.groupSettings.chosenSetSettings" value="leadByPoints">
+                                minimum reached score</label> with <label>point difference  
+                                    <input ng-hide="true" type="radio" class="radio radio-inline"/></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-if="vm.groupSettings.chosenSetSettings === 'maxScore'">
+                    <div class="form-group col-md-6">
+                        <label for="field_groupMaxScore">Maximum Score</label>
+                        <input type="number" class="form-control" name="groupMaxScore" id="field_groupMaxScore"
+                                   ng-model="vm.groupSettings.setSettings.maxScore" min="1"/>
+                            <div ng-show="editForm.groupMaxScore.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.groupMaxScore.$error.min" data-translate="entity.validation.min" 
+                                   translate-value-min="1">
+                                    This field should be at least 1.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.groupMaxScore.$error.number" data-translate="entity.validation.number">
+                                    This field should be a number.
+                                </p>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-if="vm.groupSettings.chosenSetSettings === 'leadByPoints'">
+                    <div class="form-group col-md-6">
+                        <label for="field_groupMinReachedScore">Minimum Reached Score</label>
+                        <input type="number" class="form-control" name="groupMinReachedScore" id="field_groupMinReachedScore"
+                                   ng-model="vm.groupSettings.setSettings.minReachedScore" min="0"/>
+
+                            <div ng-show="editForm.groupMinReachedScore.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.groupMinReachedScore.$error.min" data-translate="entity.validation.min" 
+                                   translate-value-min="0">
+                                    This field should be at least 0.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.groupMinReachedScore.$error.number" data-translate="entity.validation.number">
+                                    This field should be a number.
+                                </p>
+                            </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="field_groupLeadByPoints">Point Difference </label>
+                        <input type="number" class="form-control" name="groupLeadByPoints" id="field_groupLeadByPoints"
+                                   ng-model="vm.groupSettings.setSettings.leadByPoints" min="1"/>
+
+                            <div ng-show="editForm.groupLeadByPoints.$invalid">
+                                <p class="help-block"
+                                   ng-show="editForm.groupLeadByPoints.$error.min" data-translate="entity.validation.min" 
+                                   translate-value-min="1">
+                                    This field should be at least 1.
+                                </p>
+                                <p class="help-block"
+                                   ng-show="editForm.groupLeadByPoints.$error.number" data-translate="entity.validation.number">
+                                    This field should be a number.
+                                </p>
+                            </div>
+                    </div>
+                </div>
+                <!--set settings-->     
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ********* END - SetSettings ********* -->
+
+
+
+       <!--**** group assignment **** -->
+        <div id="assigning_participants_to_groups" class="form-group">
+            <div class="form-group">
+                <div class="form-inline pull-left">
+                    <div class="form-group">
+                        <label >Assign participants to groups: </label>
+                        <input ng-hide="true" type="radio" class="radio radio-inline"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="assign_to_group_manually_radio">
+                        <input class="radio radio-inline" id="assign_to_group_manually_radio" type="radio"
+                           ng-model="vm.assign_to_group_manually" ng-value="true">
+                        manually</label>
+                    </div>
+                    <div class="form-group ">
+                        <label  for="assign_to_group_automatically_radio">
+                        <input class="radio radio-inline" id="assign_to_group_automatically_radio" type="radio"
+                           ng-model="vm.assign_to_group_manually" ng-value="false">
+                        automatically</label>
+                    </div>
+                </div>
+                <div ng-if="vm.unassignedParticipantsExist()" class=" pull-right text text-warning">
+                    <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;
+                    All chosen participants must be assigned to a group. 
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div ng-if="vm.assign_to_group_manually === true" ng-init="vm.init_groupParticipantObject(true)" class="well well-sm">
+                <div ng-if="chosen === 1" >
+                    <div class="form-group" ng-class="{'has-error': innerForm.participantGroupingLength.$invalid}"
+                         ng-repeat="(groupLetter, groupParticipants) in vm.playerGrouping">
+                        <ng-form name="innerForm">
+                        <label for="group_select_{{groupLetter}}">Group {{groupLetter}}&nbsp;<span class="badge">{{vm.playerGrouping[groupLetter].length}}</span></label>
+                        <ui-select id='group_select_{{groupLetter}}'
+                                   ng-model="vm.playerGrouping[groupLetter]" 
+                                   multiple theme="bootstrap" title="Choose a participant" close-on-select="false"
+                                   on-select="vm.onPlayerUiSelect_Select(group, $item)" 
+                                   on-remove="vm.onPlayerUiSelect_Remove(group, $item)"
+                                   >
+                            <ui-select-match placeholder="Select or search a person in the list...">{{$item.name}}</ui-select-match>
+                            <ui-select-choices repeat="item in vm.playersToChoose | filter: $select.search track by item.id">
+                                <div ng-bind-html="item.name | highlight: $select.search"></div>
+                            </ui-select-choices>
+                            <ui-select-no-choice>
+                                <span class="text text-info"> &nbsp; &nbsp; No players selected. </span>
+                            </ui-select-no-choice>
+                        </ui-select>
+                        <input hidden type="number" name="participantGroupingLength" id="field_participantGroupingLength"
+                               ng-model="vm.playerGrouping[groupLetter].length" min="{{vm.getMinOfGroupParticipants()}}">
+                        <div ng-show="innerForm.participantGroupingLength.$invalid">
+                            <p class="help-block"
+                               ng-show="innerForm.participantGroupingLength.$error.min" data-translate="" 
+                               translate-value-min="">
+                                This group needs at least {{vm.getMinOfGroupParticipants()}} players. <!--TODO: data-translate -->
+                            </p>
+                        </div>
+                        </ng-form>
+                    </div>
+                </div>
+                <div ng-if="chosen === 2">
+                    <div class="form-group" ng-class="{'has-error': innerForm.participantGroupingLength.$invalid}"
+                         ng-repeat="(groupLetter, groupParticipants) in vm.teamGrouping">
+                        <ng-form name="innerForm">
+                        <label for="group_select_{{groupLetter}}">Group {{groupLetter}}&nbsp;<span class="badge">{{vm.teamGrouping[groupLetter].length}}</span></label>
+                        <ui-select id='group_select_{{groupLetter}}'
+                                   ng-model="vm.teamGrouping[groupLetter]" 
+                                   multiple theme="bootstrap" title="Choose a participant" close-on-select="false"
+                                   on-select="vm.onTeamUiSelect_Select(group, $item)" 
+                                   on-remove="vm.onTeamUiSelect_Remove(group, $item)"
+                                   >
+                            <ui-select-match placeholder="Select or search a team in the list...">{{$item.name}}</ui-select-match>
+                            <ui-select-choices repeat="item in vm.teamsToChoose | filter: $select.search track by item.id">
+                                <div ng-bind-html="item.name | highlight: $select.search"></div>
+                            </ui-select-choices>
+                            <ui-select-no-choice>
+                                <span class="text text-info"> &nbsp; &nbsp; No teams selected. </span>
+                            </ui-select-no-choice>
+                        </ui-select>
+                        <input hidden type="number" name="participantGroupingLength" id="field_participantGroupingLength"
+                               ng-model="vm.teamGrouping[groupLetter].length" min="{{vm.getMinOfGroupParticipants()}}">
+                        <div ng-show="innerForm.participantGroupingLength.$invalid">
+                            <p class="help-block"
+                               ng-show="innerForm.participantGroupingLength.$error.min" data-translate="" 
+                               translate-value-min="">
+                                This group needs at least {{vm.getMinOfGroupParticipants()}} players.
+                            </p>
+                        </div>
+                        
+                        </ng-form>
+                    </div>
+                </div>
+            </div>
+        </div>
+       <!--**** END - group assignment **** -->
+
+       <div id="seeding" class="form-group" ng-if="vm.assign_to_group_manually  && vm.combined.inGroupTournamentType !== 'ALL_VERSUS_ALL'">
+            <div class="form-inline">
+                <div class="form-group">
+                    <label >Seed participants: </label>
+                    <input ng-hide="true" type="radio" class="radio radio-inline"/>
+                </div>
+                <div class="form-group">
+                    <label for="seed_manually_radio">
+                    <input class="radio radio-inline" id="seed_manually_radio" type="radio"
+                       ng-model="vm.seed_manually" ng-value="true">
+                    manually</label>
+                </div>
+                <div class="form-group">
+                    <label  for="seed_automatically_radio">
+                    <input class="radio radio-inline" id="seed_automatically_radio" type="radio"
+                       ng-model="vm.seed_manually" ng-value="false">
+                    automatically</label>
+                </div>
+            </div>
+           <div ng-if="vm.seed_manually">
+           <div ng-if="vm.noParticipantsSelected()" class="alert alert-info">
+               No participants have been selected, nothing to seed.
+           </div>
+           <div ng-if="!vm.noParticipantsSelected()">
+               <div ng-if="vm.unassignedParticipantsExist()" class="alert alert-warning">
+                   All chosen participants must be assigned to a group.
+               </div>
+               <!--***** This is where seeding actually happens ******-->
+               <div ng-if="!vm.unassignedParticipantsExist()" ng-init="vm.initSeeding(true)">
+                   <div ng-if="vm.combined.inGroupTournamentType === 'SWISS'">
+                       <div ng-if="chosen === 1">
+                            <div ng-repeat="(group, seeding) in vm.playerSeedingObject">
+                            <div class="panel panel-info">
+                                <div class="panel-heading panel-heading-sm">
+                                    <div class="pull-left">Group {{group}}</div>
+                                    <span class="pull-right text text-warning"
+                                        ng-show="vm.seedingInvalidForGroup(group)" data-translate="">
+                                        Participants need to be assigned to all available seeding positions.
+                                    </span>
+                                </div> 
+                                <table name="seeding-players" class="table table-condensed">
+                                    <tbody>
+                                        <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(group),1)">
+                                            <td class="col-md-5" style="width: 45.83333333%">
+                                    
+                                            <ui-select ng-model="vm.playerSeedingObject[group][i]" theme="bootstrap"
+                                            ng-disabled="vm.isBye($select.selected)"
+                                            ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][i], i, group)"
+                                            ng-class="{'has-warning': vm.playerSeedingObject[group][i] === null}">
+                                                <ui-select-match placeholder="Select or search a person in the list...">{{$select.selected.name}}</ui-select-match>
+                                                <ui-select-choices repeat="item in vm.playerGrouping[group] | filter: $select.search">
+                                                    <div class="row">
+                                                        <div class="pull-left text">
+                                                            <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                            &nbsp;
+                                                        </div>
+                                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                      
+                                        </td>
+                                        <td class="col-md-1 text-center" style="vertical-align: middle">vs.</td>
+                                        <td class="col-md-5" style="width: 45.83333333%" ng-init="rivalIndex = vm.getRivalIndex(group, i)">
+                                            <ui-select ng-model="vm.playerSeedingObject[group][rivalIndex]" theme="bootstrap"
+                                            ng-disabled="vm.isBye($select.selected)" 
+                                            ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][rivalIndex], rivalIndex, group)"
+                                            ng-class="{'has-warning': vm.playerSeedingObject[group][rivalIndex] === null}">
+                                                <ui-select-match placeholder="Select or search a person in the list...">{{$select.selected.name}}</ui-select-match>
+                                                <ui-select-choices repeat="item in vm.playerGrouping[group] | filter: $select.search">
+                                                    <div class="row">
+                                                        <div class="pull-left text">
+                                                            <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                            &nbsp;
+                                                        </div>
+                                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </td>
+                                        </tr>
+                                            
+                                    </tbody>
+                                </table>
+                            </div>
+                            </div>
+                       </div>
+                       <div ng-if="chosen === 2">
+                           <div ng-repeat="(group, seeding) in vm.teamSeedingObject">
+                           <div class="panel panel-info">
+                                <div class="panel-heading panel-heading-sm">
+                                    <div class="pull-left">Group {{group}}</div>
+                                    <span class="pull-right text text-warning"
+                                          ng-show="vm.seedingInvalidForGroup(group)" data-translate="">
+                                        Participants need to be assigned to all available seeding positions.
+                                    </span>
+                                </div>
+                                <table name="seeding-teams" class="table table-condensed">
+                                    <tbody>
+                                        <tr ng-repeat="i in vm.iterator(0,vm.pairsNumber(group),1)">
+                                            <td class="col-md-5" style="width: 45.83333333%">
+                                            <ui-select ng-model="vm.teamSeedingObject[group][i]" theme="bootstrap"
+                                            ng-disabled="vm.isBye($select.selected)"
+                                            ng-change="vm.onTeamSelect({{vm.teamSeedingObject[group]}}, vm.teamSeedingObject[group][i], i, group)"
+                                            ng-class="{'has-warning': vm.teamSeedingObject[group][i] === null}">
+                                                <ui-select-match placeholder="Select or search a team in the list...">{{$select.selected.name}}</ui-select-match>
+                                                <ui-select-choices repeat="item in vm.teamGrouping[group] | filter: $select.search">
+                                                    <div class="row">
+                                                        <div class="pull-left text">
+                                                            <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                            &nbsp;
+                                                        </div>
+                                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </td>
+                                        <td class="col-md-1 text-center" style="vertical-align: middle">vs.</td>
+                                        <td class="col-md-5" style="width: 45.83333333%" ng-init="rivalIndex = vm.getRivalIndex(group, i)">
+                                            <ui-select ng-model="vm.teamSeedingObject[group][rivalIndex]" theme="bootstrap"
+                                            ng-disabled="vm.isBye($select.selected)"
+                                            ng-change="vm.onTeamSelect({{vm.teamSeedingObject[group]}}, vm.teamSeedingObject[group][rivalIndex], rivalIndex, group)"
+                                            ng-class="{'has-warning': vm.teamSeedingObject[group][rivalIndex] === null}">
+                                                <ui-select-match placeholder="Select or search a team in the list...">{{$select.selected.name}}</ui-select-match>
+                                                <ui-select-choices repeat="item in vm.teamGrouping[group] | filter: $select.search">
+                                                    <div class="row">
+                                                        <div class="pull-left text">
+                                                            <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                            &nbsp;
+                                                        </div>
+                                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </td>
+                                        </tr>
+                                            
+                                    </tbody>
+                                </table>
+                            </div>
+                       </div>
+                   </div>
+                   </div>
+                       
+
+                   <div ng-if="vm.combined.inGroupTournamentType === 'ELIMINATION_SINGLE' || vm.combined.inGroupTournamentType === 'ELIMINATION_DOUBLE'">
+                       <div  ng-if="chosen === 1">
+                           <div ng-repeat="(group, seeding) in vm.playerSeedingObject">
+                           <div class="panel panel-info">
+                                <div class="panel-heading panel-heading-sm">
+                                    <div class="pull-left">Group {{group}}</div>
+                                    <span class="pull-right text text-warning" ng-show="vm.seedingInvalidForGroup(group)" data-translate="">
+                                         Participants need to be assigned to all available seeding positions.
+                                    </span>
+                                </div> 
+                                <div class="panel-body">   
+                                <div class="my-wrap " > 
+                                    
+                                    <div id="{{'player_tree_'+group}}"></div>
+                                    
+                                    <div ng-if="vm.playerGrouping[group].length < 3 "
+                                         class="alert alert-warning">
+                                        <!--TODO: data-translate -->
+                                        Group {{group}}: for <b>custom seeding</b> at least <b>three</b>  participants need to be assigned to this group. 
+                                        
+                                    </div>
+
+                                    <div ng-if="vm.playerGrouping[group].length >= 3">
+
+                                        <!--generating tables-->
+                                        <div ng-init="N = vm.playerSeedingObject[group].length;
+                                        vm.initSeeding(!vm.groupNumberChanged && !vm.playersChanged && !vm.groupAssignmentChanged)"></div>
+                                        <div ng-repeat="i in vm.myIterator(0,N/2,1)" class="my-dropzones-container">
+
+                                            <div id="player_over_{{i}}_{{group}}" class="tree-node-table this-is-over" 
+                                                 style="top: {{vm.coordinates[group][i].top}}; left: {{vm.coordinates[group][i].left}}">
+                                                <div name="A" class="tree-node-table-A">
+
+                                                    <ui-select ng-model="vm.playerSeedingObject[group][i]" theme="bootstrap"
+                                                               ng-disabled="vm.isBye($select.selected)" 
+                                                               ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][i], i, group)"
+                                                               ng-class="{'has-warning': vm.playerSeedingObject[group][i] === null}">
+                                                        <ui-select-match placeholder="Select or search... ">{{$select.selected.name}}</ui-select-match>
+                                                        <ui-select-choices repeat="item in vm.playerGrouping[group] | filter: $select.search track by item.id"
+                                                                           position='down'>
+                                                            <div class="row">
+                                                                <div class="pull-left text">
+                                                                    <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                                    &nbsp;
+                                                                </div>
+                                                                <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div name="B" class="tree-node-table-B"  ng-init="rivalIndex = vm.getRivalIndex(group, i)" >
+
+                                                    <ui-select ng-model="vm.playerSeedingObject[group][rivalIndex]" theme="bootstrap"
+                                                               ng-disabled="vm.isBye($select.selected)"
+                                                               ng-change="vm.onPlayerSelect({{vm.playerSeedingObject[group]}}, vm.playerSeedingObject[group][rivalIndex], rivalIndex, group)"
+                                                               ng-class="{'has-warning': vm.playerSeedingObject[group][rivalIndex] === null}">
+                                                        <ui-select-match placeholder="Select or search...">{{$select.selected.name}}</ui-select-match>
+                                                        <ui-select-choices repeat="item in vm.playerGrouping[group] | filter: $select.search track by item.id"
+                                                                           position='down'> 
+                                                            <div class="row">
+                                                                <div class="pull-left text">
+                                                                    <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                                    &nbsp;
+                                                                </div>
+                                                                <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                               
+                            </div>
+                            </div>
+                       </div>
+                       
+                       <div  ng-if="chosen === 2">
+                           <div ng-repeat="(group, seeding) in vm.teamSeedingObject">
+                           <div class="panel panel-info">
+                                <div class="panel-heading panel-heading-sm">
+                                    <div class="pull-left">Group {{group}}</div>
+                                    <span class="pull-right text text-warning" ng-show="vm.seedingInvalidForGroup(group)" data-translate="">
+                                         Participants need to be assigned to all available seeding positions.
+                                    </span>
+                                </div> 
+                                <div class="panel-body">   
+                                <div class="my-wrap " > 
+                                    <div id="{{'team_tree_'+group}}"></div>
+                                    
+                                    <div ng-if="vm.teamGrouping[group].length < 3 "
+                                         class="alert alert-warning">
+                                        <!--TODO: data-translate -->
+                                        Group {{group}}: for <b>custom seeding</b> at least <b>three</b>  participants need to be assigned to this group. 
+                                    </div>
+
+                                    <div ng-if="vm.teamGrouping[group].length >= 3 ">
+                                        <!--generating tables-->
+                                        <div ng-init="N = vm.teamSeedingObject[group].length; 
+                                            vm.initSeeding(!vm.groupNumberChanged && !vm.teamsChanged && !vm.groupAssignmentChanged)">
+                                        </div>
+                                        
+                                        <div ng-repeat="i in vm.myIterator(0,N/2,1)" class="my-dropzones-container">
+
+                                            <div id="team_over_{{i}}" class="tree-node-table this-is-over"
+                                                 style="top: {{vm.coordinates[group][i].top}}; left: {{vm.coordinates[group][i].left}}">
+                                                <div name="A" class="tree-node-table-A">
+
+                                                    <ui-select ng-model="vm.teamSeedingObject[group][i]" theme="bootstrap"
+                                                               ng-disabled="vm.isBye($select.selected)" 
+                                                               ng-change="vm.onTeamSelect({{vm.teamSeedingObject[group]}}, vm.teamSeedingObject[group][i], i, group)"
+                                                               ng-class="{'has-warning': vm.teamSeedingObject[group][i] === null}">
+                                                        <ui-select-match placeholder="Select or search... ">{{$select.selected.name}}</ui-select-match>
+                                                        <ui-select-choices repeat="item in vm.teamGrouping[group] | filter: $select.search track by item.id"
+                                                                           position='down'>
+                                                            <div class="row">
+                                                                <div class="pull-left text">
+                                                                    <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                                    &nbsp;
+                                                                </div>
+                                                                <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div name="B" class="tree-node-table-B"  ng-init="rivalIndex = vm.getRivalIndex(group, i)" >
+
+                                                    <ui-select ng-model="vm.teamSeedingObject[group][rivalIndex]" theme="bootstrap"
+                                                               ng-disabled="vm.isBye($select.selected)"
+                                                               ng-change="vm.onTeamSelect({{vm.teamSeedingObject[group]}}, vm.teamSeedingObject[group][rivalIndex], rivalIndex, group)"
+                                                               ng-class="{'has-warning': vm.teamSeedingObject[group][rivalIndex] === null}">
+                                                        <ui-select-match placeholder="Select or search...">{{$select.selected.name}}</ui-select-match>
+                                                        <ui-select-choices repeat="item in vm.teamGrouping[group] | filter: $select.search track by item.id"
+                                                                           position='down'> 
+                                                            <div class="row">
+                                                                <div class="pull-left text">
+                                                                    <div ng-class="vm.tickIfSelected(group, item)"></div>
+                                                                    &nbsp;
+                                                                </div>
+                                                                <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                               
+                            </div>
+                            </div>
+                       </div>
+                       
+                   </div>
+               </div>
+           </div>
+           </div>
+       </div>
+       <!-- ********* seeding - end ********* -->
+       
+       
+       
+       
+       
+
+
+<!--**** play off **** -->
+<!--<hr/>-->
+<br/>
+<h4>Play-off Settings</h4>
+<hr/>
+    <div class="row">
+        <div class="form-group col-md-4">
+            <label class="control-label" data-translate="tournamentControlApp.combined.numberOfWinnersToPlayoff" for="field_numberOfWinnersToPlayoff">Number Of Winners To Playoff</label>
+            <input type="number" class="form-control" name="numberOfWinnersToPlayoff" id="field_numberOfWinnersToPlayoff"
+                   ng-model="vm.combined.numberOfWinnersToPlayoff"
+                   required min="0"/>
+            <div ng-show="editForm.numberOfWinnersToPlayoff.$invalid">
+                <p class="help-block"
+                   ng-show="editForm.numberOfWinnersToPlayoff.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                   ng-show="editForm.numberOfWinnersToPlayoff.$error.min" data-translate="entity.validation.min" translate-value-min="0">
+                    This field should be at least 0.
+                </p>
+                <p class="help-block"
+                   ng-show="editForm.numberOfWinnersToPlayoff.$error.number" data-translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label class="control-label" data-translate="tournamentControlApp.combined.playoffType" for="field_playoffType">Playoff Type</label>
+            <select class="form-control" name="playoffType" ng-model="vm.combined.playoffType" id="field_playoffType">
+                <option value="ALL_VERSUS_ALL" data-translate="tournamentControlApp.TournamentType.ALL_VERSUS_ALL">ALL_VERSUS_ALL</option>
+                <option value="ELIMINATION_SINGLE" data-translate="tournamentControlApp.TournamentType.ELIMINATION_SINGLE">ELIMINATION_SINGLE</option>
+                <option value="ELIMINATION_DOUBLE" data-translate="tournamentControlApp.TournamentType.ELIMINATION_DOUBLE">ELIMINATION_DOUBLE</option>
+                <option value="SWISS" data-translate="tournamentControlApp.TournamentType.SWISS">SWISS</option>
+            </select>
+        </div>
+    </div>
+
+<div class="checkbox">
+    <label>
+        <input type="checkbox" ng-model="vm.playoffPointsSame">
+        Points for winning, losing and tie same as in groups
+    </label>
+</div>
+<div ng-if="!vm.playoffPointsSame" class="row" >
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForWinning" 
+                       for="field_playoffPointsForWinning">
+                    Points For Winning
+                </label>
+                <input type="number" class="form-control" name="playoffPointsForWinning" id="field_playoffPointsForWinning"
+                       ng-model="vm.playoffSettings.pointsForWinning"
+                       />
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForLosing" 
+                       for="field_playoffPointsForLosing">
+                    Points For Losing
+                </label>
+                <input type="number" class="form-control" name="playoffPointsForLosing" id="field_playoffPointsForLosing"
+                       ng-model="vm.playoffSettings.pointsForLosing"
+                       />
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.pointsForTie" 
+                       for="field_playoffPointsForTie">
+                    Points For Tie
+                </label>
+                <input type="number" class="form-control" name="playoffPointsForTie" id="field_playoffPointsForTie"
+                       ng-model="vm.playoffSettings.pointsForTie" ng-disabled="!vm.playoffSettings.tiesAllowed"
+                       />
+            </div>
+</div>
+    <div class="row">
+        <div class="form-group col-xs-6 col-md-4" >
+                <label class="control-label" data-translate="tournamentControlApp.tournament.setsToWin" 
+                       for="field_playoffSetsToWin">
+                    Sets To Win
+                </label>
+                <input type="number" pattern="" min="1" class="form-control" name="playoffSetsToWin" id="field_playoffSetsToWin"
+                       ng-model="vm.playoffSettings.setsToWin"
+                       />
+            </div>
+        <div class="form-group col-xs-6 col-md-4" 
+             ng-if="vm.combined.playoffType === 'ELIMINATION_SINGLE' || vm.combined.playoffType === 'ELIMINATION_DOUBLE'">
+                <label class="control-label" data-translate="" for="field_playoffBronzeMatch">
+                    Bronze Match
+                </label>
+                <select name="playoffBronzeMatch" id="field_playoffBronzeMatch" class="form-control"
+                        ng-model="vm.playoffSettings.bronzeMatch"  
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, 
+                                                                                    {display: 'Yes', value: true}]"> 
+                </select>
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4"
+                 ng-if="vm.combined.playoffType != 'ELIMINATION_SINGLE' && vm.combined.playoffType != 'ELIMINATION_DOUBLE'">
+                <label class="control-label" data-translate="tournamentControlApp.tournament.tiesAllowed" 
+                       for="field_playoffTiesAllowed">
+                    Ties Allowed
+                </label>
+                <select name="playoffTiesAllowed" id="field_playoffTiesAllowed" class="form-control"
+                        ng-model="vm.playoffSettings.tiesAllowed"  
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, 
+                                                                                    {display: 'Yes', value: true}]"> 
+                </select>
+            </div>
+            
+            <div class="form-group col-xs-6 col-md-4" ng-if="vm.combined.playoffType === 'ALL_VERSUS_ALL'">
+                <label class="control-label" data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches" 
+                       for="field_playoffNumberOfMutualMatches">
+                    Number Of Mutual Matches
+                </label>
+                <input type="number" class="form-control" name="playoffNumberOfMutualMatches" id="field_playoffNumberOfMutualMatches"
+                       ng-model="vm.playoffSettings.numberOfMutualMatches"
+                       required min="1"/>
+                <div ng-show="editForm.playoffNumberOfMutualMatches.$invalid">
+                    <p class="help-block"
+                       ng-show="editForm.playoffNumberOfMutualMatches.$error.required" data-translate="entity.validation.required">
+                        This field is required.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.playoffNumberOfMutualMatches.$error.min" data-translate="entity.validation.min" 
+                       translate-value-min="{{1}}">
+                        This field should be at least 1.
+                    </p>
+                    <p class="help-block"
+                       ng-show="editForm.playoffNumberOfMutualMatches.$error.number" data-translate="entity.validation.number">
+                        This field should be a number.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group col-xs-6 col-md-4" ng-if="vm.combined.playoffType === 'SWISS'">
+                <label class="control-label" data-translate="tournamentControlApp.swiss.color" for="field_playoffColor">
+                    Color
+                </label>
+                <select name="playoffColor" id="field_playoffColor" class="form-control"
+                        ng-model="vm.playoffSettings.color"  
+                        ng-options="bool.value as bool.display for bool in [{display: 'No', value: false}, 
+                                                                                    {display: 'Yes', value: true}]"> 
+                </select>
+            </div>
+        
+        <div class="form-group col-xs-6 col-md-4" 
+            ng-if="vm.combined.playoffType != 'ELIMINATION_SINGLE' && vm.combined.playoffType != 'ELIMINATION_DOUBLE'">
+           <label class="control-label" data-translate="tournamentControlApp.tournament.playingFields" 
+                  for="field_playoffPlayingFields">
+               Playing Fields
+           </label>
+           <input type="number" class="form-control" name="playoffPlayingFields" id="field_playoffPlayingFields"
+                  ng-model="vm.playoffSettings.playingFields" min="1"
+                  />
+           <div ng-show="editForm.playoffPlayingFields.$invalid">
+               <p class="help-block"
+                  ng-show="editForm.playoffPlayingFields.$error.min" data-translate="entity.validation.min" 
+                  translate-value-min="{{1}}">
+                   This field should be at least 1.
+               </p>
+               <p class="help-block"
+                  ng-show="editForm.playoffPlayingFields.$error.number" data-translate="entity.validation.number">
+                   This field should be a number.
+               </p>
+           </div>
+       </div>
+</div>
+<div class="checkbox">
+    <label>
+        <input type="checkbox" ng-model="vm.playoffSetSettingsSame">
+        Advanced set settings same as in groups
+    </label>
+</div>
+<div ng-if="!vm.playoffSetSettingsSame">
+    <!-- ********* Set Settings ********* -->
+<!-- ********* set settings tab ********* -->
+        <div class="panel-group" id="accordion_playoff" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="playoff_setSettings_heading">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" 
+                           data-parent="#accordion_playoff" data-target="#playoff_setSettings" 
+                           aria-expanded="false" aria-controls="playoff_setSettings">
+                            Advanced Set Settings [optional]
+                        </a>
+                    </h4>
+                </div>
+                
+                <div id="playoff_setSettings" class="panel-collapse collapse in"
+                     role="tabpanel" aria-labelledby="playoff_setSettings_heading">
+                    <div class="panel-body">
+
+                        <!--Set settings-->
+                        <div class="form-group">
+                            <div class="form-inline">
+                                <span>Set&nbsp; </span>    
+                                <div class="form-group">
+                                    <label for="playoff_maxScore_radio">
+                                        <input class="radio radio-inline" id="playoff_maxScore_radio" type="radio"
+                                               ng-model="vm.playoffSettings.chosenSetSettings" value="maxScore">
+                                        maximum score </label>
+                                </div>
+                                <span>&nbsp; or &nbsp; </span>  
+                                <div class="form-group">
+                                    <label  for="playoff_leadByPoints_radio">
+                                        <input class="radio radio-inline" id="playoff_leadByPoints_radio" type="radio"
+                                               ng-model="vm.playoffSettings.chosenSetSettings" value="leadByPoints">
+                                        minimum reached score</label> with <label>point difference  
+                                            <input ng-hide="true" type="radio" class="radio radio-inline"/></label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row" ng-if="vm.playoffSettings.chosenSetSettings === 'maxScore'">
+                            <div class="form-group col-md-6">
+                                <label for="field_playoffMaxScore">Maximum Score</label>
+                                <input type="number" class="form-control" name="playoffMaxScore" id="field_playoffMaxScore"
+                                           ng-model="vm.playoffSettings.setSettings.maxScore" min="1"/>
+                                    <div ng-show="editForm.playoffMaxScore.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffMaxScore.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffMaxScore.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row" ng-if="vm.playoffSettings.chosenSetSettings === 'leadByPoints'">
+                            <div class="form-group col-md-6">
+                                <label for="field_playoffMinReachedScore">Minimum Reached Score</label>
+                                <input type="number" class="form-control" name="playoffMinReachedScore" id="field_playoffMinReachedScore"
+                                           ng-model="vm.playoffSettings.setSettings.minReachedScore" min="0"/>
+                                 
+                                    <div ng-show="editForm.playoffMinReachedScore.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffMinReachedScore.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffMinReachedScore.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="field_playoffLeadByPoints">Point Difference </label>
+                                <input type="number" class="form-control" name="playoffLeadByPoints" id="field_playoffLeadByPoints"
+                                           ng-model="vm.playoffSettings.setSettings.leadByPoints" min="1"/>
+                                 
+                                    <div ng-show="editForm.playoffLeadByPoints.$invalid">
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffLeadByPoints.$error.min" data-translate="entity.validation.min" 
+                                           translate-value-min="1">
+                                            This field should be at least 1.
+                                        </p>
+                                        <p class="help-block"
+                                           ng-show="editForm.playoffLeadByPoints.$error.number" data-translate="entity.validation.number">
+                                            This field should be a number.
+                                        </p>
+                                    </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- ********* END - SetSettings ********* -->
+    
+    
+</div>
+
+
+
+
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving || vm.seedingInvalid() || vm.unassignedParticipantsExist()" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

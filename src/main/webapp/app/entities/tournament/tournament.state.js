@@ -26,6 +26,12 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('tournament');
+                    $translatePartialLoader.addPart('setSettings');
+                    $translatePartialLoader.addPart('allVersusAll');
+                    $translatePartialLoader.addPart('elimination');
+                    $translatePartialLoader.addPart('eliminationType');
+                    $translatePartialLoader.addPart('game');
+                    $translatePartialLoader.addPart('gameSet');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -106,10 +112,14 @@
                             return {
                                 name: null,
                                 note: null,
-                                numberOfMutualMatches: null,
+                                created: null,
+                                setsToWin: null,
+                                tiesAllowed: null,
+                                playingFields: null,
                                 pointsForWinning: null,
-                                pointsForLosing: null,
                                 pointsForTie: null,
+                                pointsForLosing: null,
+                                inCombined: null,
                                 id: null
                             };
                         }

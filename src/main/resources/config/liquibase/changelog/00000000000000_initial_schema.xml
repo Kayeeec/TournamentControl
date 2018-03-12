@@ -7,6 +7,7 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <property name="now" value="now()" dbms="h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
     <property name="now" value="now()" dbms="mysql"/>
     <property name="autoIncrement" value="true"/>
 
@@ -162,7 +163,7 @@
                                  baseTableName="jhi_persistent_audit_evt_data"
                                  constraintName="fk_evt_pers_audit_evt_data"
                                  referencedColumnNames="event_id"
-                                 referencedTableName="jhi_persistent_audit_event"/>
+                                 referencedTableName="jhi_persistent_audit_event"/>    
     </changeSet>
 
 </databaseChangeLog>

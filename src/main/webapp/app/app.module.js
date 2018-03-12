@@ -17,7 +17,10 @@
             'infinite-scroll',
             // jhipster-needle-angularjs-add-module JHipster will add new module here
             'angular-loading-bar',
-            'checklist-model'
+            'angular.filter',
+            'checklist-model',
+            'ui.select', 
+            'ngSanitize'
         ])
         .run(run);
 

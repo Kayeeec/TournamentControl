@@ -1,9 +1,7 @@
 package cz.tournament.control.config;
 
 import cz.tournament.control.aop.logging.LoggingAspect;
-
 import io.github.jhipster.config.JHipsterConstants;
-
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 

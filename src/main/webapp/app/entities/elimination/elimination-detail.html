@@ -1,0 +1,122 @@
+
+<div>
+    <h2><small>Elimination Tournament:</small> {{vm.elimination.name}}</h2> <!--TODO: data-translate -->
+    <hr/>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="global.field.id">Id</span></dt>
+        <dd>
+            <span>{{vm.elimination.id}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.elimination.type">Type</span></dt>
+        <dd>
+            <span>{{vm.elimination.type}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.note">Note</span></dt>
+        <dd>
+            <span>{{vm.elimination.note}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
+        <dd>
+            <span>{{vm.elimination.pointsForWinning}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
+        <dd>
+            <span>{{vm.elimination.pointsForLosing}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
+        <dd>
+            <span>{{vm.elimination.pointsForTie}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.created">Created</span></dt>
+        <dd>
+            <span>{{vm.elimination.created| date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
+        <dd>
+            <span ng-repeat="participant in vm.elimination.participants">
+                <a ng-if="participant.player" ui-sref="player-detail({id: participant.player.id})">{{participant.player.name}}</a>
+                <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>
+                {{$last ? '' : ', '}}
+            </span>
+        </dd>
+        <dt><span data-translate="">Default set settings</span></dt>
+        <dd>
+            <div ng-if="vm.elimination.setSettings.maxScore">
+                <span><b>Maximal score: </b></span>
+                <span>{{vm.elimination.setSettings.maxScore}}</span>
+            </div>
+            <div ng-if="vm.elimination.setSettings.leadByPoints">
+                <span><b>Lead-by points: </b></span>
+                <span>{{vm.elimination.setSettings.leadByPoints}}</span>
+            </div>
+            <div ng-if="vm.elimination.setSettings.minReachedScore">
+                <span><b>Minimal reached score: </b></span>
+                <span>{{vm.elimination.setSettings.minReachedScore}}</span>
+            </div>
+        </dd>
+    </dl>
+    
+    <!-- buttons -->
+    <div style="padding-top: 20px; padding-bottom: 20px">
+        <button type="submit" ng-if="!vm.elimination.inCombined"
+                ui-sref="{{vm.backLink()}}"
+                class="btn btn-info">
+            <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+        </button>
+        
+        <button type="button" ng-if="vm.elimination.inCombined"
+                ui-sref="combined-detail({id:vm.combined.id})"
+                class="btn btn-info">
+            <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;
+            <span data-translate="entity.action.back"> Back</span>
+        </button>
+
+        <button ng-if="!vm.elimination.inCombined" type="button" ui-sref="elimination-detail.edit({id:vm.elimination.id})" class="btn btn-primary">
+            <span class="glyphicon glyphicon-pencil"></span>
+            <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+        </button>
+        
+        <a type="button" class="btn btn-success" ng-href="/generateFile/elimination/{{vm.elimination.id}}">
+            <span class="glyphicon glyphicon-download-alt"></span>
+            <span class="hidden-sm-down" data-translate=""> Generate .ods spreadsheet </span>
+        </a>
+        
+    </div>
+    <!-- buttons -->
+    
+    <div ui-view="evaluation-table"></div>
+    
+    <!-- tree node templates -->
+    <div ng-repeat="match in vm.elimination.matches" ng-hide="true">
+        <a ui-sref="game.elimination-edit({gameId: match.id, id:vm.elimination.id})" 
+           id="match_{{match.id}}" class="" ng-class="vm.disabledIfBYE(match)">  <!-- ng-class="vm.disabledIfBYE(match)" --> 
+            <table class="bracket-table" ng-class="vm.greenIfFinished(match)">
+                <tr>
+                    <td rowspan="2" class="bracket-period-td">{{match.period}}&nbsp;</td>
+                    <td class="bracket-name-td bracket-name-td-a">{{vm.getName(match.rivalA)}}</td>
+                    <td ng-repeat="set in match.sets" class="bracket-scores-td bracket-scores-td-a">{{set.scoreA}}</td>
+                    <td rowspan="2" class="bracket-glyphicon-td">
+                        <span ng-if="match.finished" class="glyphicon glyphicon-ok"></span>
+                        <span ng-if="!match.finished" class="glyphicon glyphicon-refresh"></span>
+                    </td>
+                </tr> 
+                <tr> 
+                    <td class="bracket-name-td">{{vm.getName(match.rivalB)}}</td>
+                    <td ng-repeat="set in match.sets" class="bracket-scores-td">{{set.scoreB}}</td>
+                </tr>
+            </table>
+        </a>
+    </div>
+    <!-- tree node templates -->
+    
+    <div name="winner">
+        <div id="winner-tree"></div>
+    </div>
+    <div ng-if="vm.elimination.bronzeMatch"  name="bronze">
+        <h3>Bronze match</h3> <!--TODO: data-translate -->
+        <div ng-if="vm.elimination.bronzeMatch" id="bronze-tree"></div>
+    </div>
+    
+    
+</div>

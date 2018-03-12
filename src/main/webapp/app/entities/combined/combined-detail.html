@@ -1,0 +1,146 @@
+
+<div>
+    <h2><small data-translate="tournamentControlApp.combined.detail.title">
+            Combined group tournament: </small> {{vm.combined.name}}
+    </h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="tournamentControlApp.combined.name">Name</span></dt>
+        <dd>
+            <span>{{vm.combined.name}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.note">Note</span></dt>
+        <dd>
+            <span>{{vm.combined.note}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.created">Created</span></dt>
+        <dd>
+            <span>{{vm.combined.created | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.numberOfWinnersToPlayoff">Number Of Winners To Playoff</span></dt>
+        <dd>
+            <span>{{vm.combined.numberOfWinnersToPlayoff}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.numberOfGroups">Number Of Groups</span></dt>
+        <dd>
+            <span>{{vm.combined.numberOfGroups}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.playoffType">Playoff Type</span></dt>
+        <dd>
+            <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.playoffType}}">{{vm.combined.playoffType}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.combined.inGroupTournamentType">In Group Tournament Type</span></dt>
+        <dd>
+            <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.inGroupTournamentType}}">{{vm.combined.inGroupTournamentType}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
+        <dd>
+            <span ng-repeat="participant in vm.combined.allParticipants">
+                <a ng-if="participant.player" ui-sref="player-detail({id: participant.player.id})">{{participant.player.name}}</a>
+                <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
+    </dl>
+        <div class="form-group">
+            <button type="submit"
+                    ui-sref="{{vm.backLink()}}"
+                    class="btn btn-info">
+                <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;
+                <span data-translate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button" ui-sref="combined-detail.edit({id:vm.combined.id})" class="btn btn-primary">
+                <span class="glyphicon glyphicon-pencil"></span>
+                <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+            </button>
+
+            <a type="button" class="btn btn-success" ng-href="/generateFile/combined/{{vm.combined.id}}">
+                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="hidden-sm-down" data-translate=""> Generate .ods spreadsheet </span> <!--TODO: data-translate -->
+            </a>
+        </div>
+    
+        <div ui-view="combined-evaluation-table">
+        </div>
+    
+        <div class="panel panel-primary">
+            <div class="panel-heading">Groups</div> <!--TODO: data-translate -->
+
+            <table id="combined_groups" class="table table-hover">
+                <thead>
+                    <th class="text text-center col-md-1">Group</th>
+                    <th>Participants</th>
+                    <th class="text text-center col-md-1">Fields</th>
+                    <th class="text text-center col-md-1">Finished</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="group in vm.combined.groups | orderBy: 'id'"
+                        ng-init="finished = vm.tournamentIsFinished(group)"
+                        ng-class="{'success':finished}"
+                        ui-sref="{{vm.getLink(group)}}">
+                        
+                        <td class="text text-center">{{group.name}}</td>
+                        <td>
+                            <span ng-repeat="participant in group.participants">
+                                {{participant.name}}{{$last ? '' : ', '}}
+                            </span>
+                        </td>
+                        <td class="text text-center">{{group.playingFields}}</td>
+                        <td class="text text-center">{{finished}}</td>
+                        <td class="text-right col-md-1">
+                            <div class="btn-group flex-btn-group-container">
+                                <button type="submit"
+                                        ui-sref="{{vm.getLink(group)}}"
+                                        class="btn btn-primary btn-sm">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                    <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div> 
+        
+        <div ng-if="!vm.playoffNotGenerated()" class="panel panel-primary">
+            <table id="combined_playoff" class="table table-hover">
+                <tbody>
+                    <tr ui-sref="{{vm.getLink(vm.combined.playoff)}}">
+                        <td class="text text-center col-md-1"><b>Playoff</b></td>
+                        <td>
+                            <span ng-repeat="participant in vm.combined.playoff.participants">
+                                {{participant.name}}{{$last ? '' : ', '}}
+                            </span>
+                        </td>
+                        <td class="text text-center col-md-1">{{vm.combined.playoff.playingFields || '-'}}</td>
+                        <td class="text text-center col-md-1">{{vm.tournamentIsFinished(vm.combined.playoff)}}</td>
+                        <td class="text-right col-md-1">
+                            <div class="btn-group flex-btn-group-container">
+                                <button type="submit"
+                                        ui-sref="{{vm.getLink(vm.combined.playoff)}}"
+                                        class="btn btn-primary btn-sm">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                    <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="popoverWrap" data-toggle="popover" tabindex="0"
+             style="width: fit-content" ng-if="vm.playoffNotGenerated()">
+            <a id="generatePlayoffBtn" ng-disabled="vm.isGeneratingPlayoff || vm.cannotGeneratePlayoff()" type="button" 
+                    class="btn btn-success center-block" ng-click="vm.generatePlayoff()"
+                    ng-if="vm.playoffNotGenerated()"
+                    data-loading-text='<span class="glyphicon glyphicon-refresh"></span>
+                    <span  class="hidden-sm-down" data-translate=""> Generating... </span>'>
+                <span class="glyphicon glyphicon-plus"></span>
+                <span ng-if="vm.swiss.roundsToGenerate !== 0" class="hidden-sm-down" data-translate=""> Generate playoff</span><!--TODO: data-translate -->
+            </a>
+        </div>
+    
+</div>

@@ -2,20 +2,19 @@ package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import cz.tournament.control.domain.Participant;
-
 import cz.tournament.control.repository.ParticipantRepository;
+import cz.tournament.control.service.ParticipantService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST controller for managing Participant.
@@ -29,9 +28,11 @@ public class ParticipantResource {
     private static final String ENTITY_NAME = "participant";
         
     private final ParticipantRepository participantRepository;
+    private final ParticipantService participantService;
 
-    public ParticipantResource(ParticipantRepository participantRepository) {
+    public ParticipantResource(ParticipantRepository participantRepository, ParticipantService participantService) {
         this.participantRepository = participantRepository;
+        this.participantService = participantService;
     }
 
     /**
@@ -86,6 +87,7 @@ public class ParticipantResource {
     public List<Participant> getAllParticipants() {
         log.debug("REST request to get all Participants");
         List<Participant> participants = participantRepository.findByUserIsCurrentUser();
+        log.debug("    participants: {}", participants);
         return participants;
     }
 
@@ -100,6 +102,18 @@ public class ParticipantResource {
     public ResponseEntity<Participant> getParticipant(@PathVariable Long id) {
         log.debug("REST request to get Participant : {}", id);
         Participant participant = participantRepository.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(participant));
+    }
+    
+    /**
+     * Finds or creates and returns BYE participant. Used in Elimination, for seeding.
+     * @return  BYE participant, has no team nor player, for every user only one in database.
+     */
+    @GetMapping("/participants/bye")
+    @Timed
+    public ResponseEntity<Participant> getByeParticipant() {
+        log.debug("REST request to get BYE [articipant");
+        Participant participant = participantService.getByeParticipant();
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(participant));
     }
 

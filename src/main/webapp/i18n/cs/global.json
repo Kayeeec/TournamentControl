@@ -12,6 +12,12 @@
                 "player": "Player",
                 "team": "Team",
                 "tournament": "Tournament",
+                "allVersusAll": "All Versus All",
+                "elimination": "Elimination",
+                "gameSet": "Game Set",
+                "setSettings": "Set Settings",
+                "swiss": "Swiss",
+                "combined": "Combined",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

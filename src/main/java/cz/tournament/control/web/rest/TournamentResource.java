@@ -1,24 +1,21 @@
 package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import cz.tournament.control.domain.Participant;
 import cz.tournament.control.domain.Tournament;
-import cz.tournament.control.domain.User;
-
-import cz.tournament.control.repository.TournamentRepository;
-import cz.tournament.control.repository.UserRepository;
-import cz.tournament.control.security.SecurityUtils;
+import cz.tournament.control.service.TournamentService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing Tournament.
@@ -30,16 +27,13 @@ public class TournamentResource {
     private final Logger log = LoggerFactory.getLogger(TournamentResource.class);
 
     private static final String ENTITY_NAME = "tournament";
-        
-    private final TournamentRepository tournamentRepository;
-    private final UserRepository userRepository;
 
-    public TournamentResource(TournamentRepository tournamentRepository, UserRepository userRepository) {
-        this.tournamentRepository = tournamentRepository;
-        this.userRepository = userRepository;
+    private final TournamentService tournamentService;
+
+    public TournamentResource(TournamentService tournamentService) {
+        this.tournamentService = tournamentService;
     }
-    
-    
+
 
     /**
      * POST  /tournaments : Create a new tournament.
@@ -56,11 +50,7 @@ public class TournamentResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new tournament cannot already have an ID")).body(null);
         }
         
-        //set creator as user
-        User creator = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get();
-        tournament.setUser(creator);
-        
-        Tournament result = tournamentRepository.save(tournament);
+        Tournament result = tournamentService.createTournament(tournament);
         return ResponseEntity.created(new URI("/api/tournaments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -82,7 +72,7 @@ public class TournamentResource {
         if (tournament.getId() == null) {
             return createTournament(tournament);
         }
-        Tournament result = tournamentRepository.save(tournament);
+        Tournament result = tournamentService.updateTournament(tournament);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, tournament.getId().toString()))
             .body(result);
@@ -97,9 +87,9 @@ public class TournamentResource {
     @Timed
     public List<Tournament> getAllTournaments() {
         log.debug("REST request to get all Tournaments");
-        List<Tournament> tournaments = tournamentRepository.findByUserIsCurrentUser();
+        List<Tournament> tournaments = tournamentService.findAll();
         return tournaments;
-    }
+        }
 
     /**
      * GET  /tournaments/:id : get the "id" tournament.
@@ -111,7 +101,7 @@ public class TournamentResource {
     @Timed
     public ResponseEntity<Tournament> getTournament(@PathVariable Long id) {
         log.debug("REST request to get Tournament : {}", id);
-        Tournament tournament = tournamentRepository.findOneWithEagerRelationships(id);
+        Tournament tournament = tournamentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(tournament));
     }
 
@@ -125,8 +115,25 @@ public class TournamentResource {
     @Timed
     public ResponseEntity<Void> deleteTournament(@PathVariable Long id) {
         log.debug("REST request to delete Tournament : {}", id);
-        tournamentRepository.delete(id);
+        tournamentService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+    
+    /**
+     * GET  /tournaments/seeding/{id} : get seeding of an existing tournament
+     * @param id of an existing tournament to get seeding of
+     * @return List od Participant objects
+     * or empty list if no seeding found.
+     */
+    @GetMapping("/tournaments/seeding/{id}")
+    @Timed
+    public List<Participant> getSeeding(@PathVariable Long id) {
+        log.debug("REST request to get seeding of Tournament: {}", id);
+        if(id == null){
+            return new ArrayList<>();
+}
+        List<Participant> seeding = tournamentService.getSeeding(id);
+        return seeding;
     }
 
 }

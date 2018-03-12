@@ -1,83 +1,100 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.tournament.control.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import cz.tournament.control.domain.enumeration.TournamentType;
+import java.io.Serializable;
+import java.util.Objects;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+/**
+ * A AllVersusAll.
+ */
+@Entity
+@Table(name = "all_versus_all")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@PrimaryKeyJoinColumn(name="id")
+public class AllVersusAll extends Tournament implements Serializable  {
+
+    private static final long serialVersionUID = 1L;
+    public static final String TOURNAMENT_TYPE = "allVersusAll";
 
 
-public class AllVersusAll extends Tournament {
+    @NotNull
+    @Min(value = 1)
+    @Column(name = "number_of_mutual_matches", nullable = false)
+    private Integer numberOfMutualMatches = 1;
 
     public AllVersusAll() {
+        super(TournamentType.ALL_VERSUS_ALL);
     }
     
-    public String getType(){
-        return "ALL VERSUS ALL";
-    }
-    
-    private int getNumberOfRounds() {
-        //při sudém počtu týmů je počet kol N–1, při lichém počtu je počet kol roven počtu týmů N
-       int n = this.getParticipants().size();
-       if (n % 2 == 0) return n-1;
-       return n;
-    }
-    
-    private Integer[] assignmentInit(int n){
-        if(n%2==1){
-            Integer[] result = new Integer[n + 1];
-            for (int i = 0; i < n; i++){
-                result[i]=i;
-            }
-            result[n] = null;
-            return result;
-        }
-        Integer[] result = new Integer[n];
-        for (int i = 0; i < n; i++){
-            result[i]=i;
-        }
-        return result;
-    }
-    
-    private void generateMatches(List<Participant> arr, Integer[] index, int round, int period){
-        int n = index.length;
-        for (int i = 0; i <= n/2; i++){
-            if (index[i] != null && index[n-1-i] != null){
-                Game match = new Game(period, round, arr.get(index[i]), arr.get(index[n-1-i]), this);
-                this.addMatches(match);  
-            }  
-        }
-    }
-    
-    private Integer[] shiftIndices(Integer[] index){
-        int n = index.length;
-        Integer[] result = new Integer[n];
-        
-        for (int i = 1; i <= n-2; i++){
-            result[i+1]=index[i];
-        }
-        result[1]=index[n-1];
-        
-        return result;
-    }
-    
-    public void generateAssignment(){
-        int numberOfPeriods = getNumberOfMutualMatches();
-        
-        List<Participant> arr = new ArrayList<>(this.getParticipants());
-        Integer[] index = assignmentInit(arr.size());
-        
-        for (int period = 1; period <= numberOfPeriods; period++) {
-            for (int round = 1; round <= getNumberOfRounds(); round++){
-                generateMatches(arr, index, round, period);
-                index = shiftIndices(index);
-            }
-        }  
+    public Integer getNumberOfMutualMatches() {
+        return numberOfMutualMatches;
     }
 
-    
-    
+    public AllVersusAll numberOfMutualMatches(Integer numberOfMutualMatches) {
+        this.numberOfMutualMatches = numberOfMutualMatches;
+        return this;
+    }
+
+    public void setNumberOfMutualMatches(Integer numberOfMutualMatches) {
+        this.numberOfMutualMatches = numberOfMutualMatches;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AllVersusAll allVersusAll = (AllVersusAll) o;
+        if (allVersusAll.getId() == null || this.getId() == null) {
+            return false;
+        }
+//        if(this.getId()!= null && allVersusAll.getId()!= null){
+//            return Objects.equals(this.getId(), allVersusAll.getId());
+//        }
+        return Objects.equals(this.getCreated(), allVersusAll.getCreated())
+                && Objects.equals(this.getMatches(), allVersusAll.getMatches())
+                && Objects.equals(this.getName(), allVersusAll.getName())
+                && Objects.equals(this.getNote(), allVersusAll.getNote())
+                && Objects.equals(this.getParticipants(), allVersusAll.getParticipants())
+                && Objects.equals(this.getPlayingFields(), allVersusAll.getPlayingFields())
+                && Objects.equals(this.getPointsForLosing(), allVersusAll.getPointsForLosing())
+                && Objects.equals(this.getPointsForTie(), allVersusAll.getPointsForTie())
+                && Objects.equals(this.getPointsForWinning(), allVersusAll.getPointsForWinning())
+                && Objects.equals( this.getSetSettings(), allVersusAll.getSetSettings())
+                && Objects.equals(this.getSetsToWin(), allVersusAll.getSetsToWin())
+                && Objects.equals(this.getTiesAllowed(), allVersusAll.getTiesAllowed())
+                && Objects.equals(this.getUser(), allVersusAll.getUser())
+                
+                && Objects.equals(this.getNumberOfMutualMatches(), allVersusAll.getNumberOfMutualMatches());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getId());
+    }
+
+    @Override
+    public String toString() {
+        return "AllVersusAll{" +
+            "id=" + this.getId() +
+            ", name='" + this.getName() + "'" +
+            ", note='" + this.getNote()+ "'" +
+            ", pointsForWinning='" + this.getPointsForWinning()+ "'" +
+            ", pointsForLosing='" + this.getPointsForLosing()+ "'" +
+            ", pointsForTie='" + this.getPointsForTie()+ "'" +
+            ", created='" + this.getCreated()+ "'" +
+            ", setsToWin='" + this.getSetsToWin()+ "'" +
+            ", tiesAllowed='" + this.getTiesAllowed()+ "'" +
+            ", playingFields='" + this.getPlayingFields()+ "'" +
+            ", numberOfMutualMatches='" + numberOfMutualMatches + "'" +
+            '}';
+    }
     
 }

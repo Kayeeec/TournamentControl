@@ -1,0 +1,69 @@
+<div>
+    <h2 data-translate="tournamentControlApp.elimination.home.title">Eliminations</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="elimination.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span  data-translate="tournamentControlApp.elimination.home.createLabel">
+                        Create new Elimination
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-hover table-white-body">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span data-translate="tournamentControlApp.tournament.name">Name</span><span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="note"><span data-translate="tournamentControlApp.tournament.note">Note</span><span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="type"><span data-translate="tournamentControlApp.elimination.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="participants.size"><span data-translate="">Participant Count</span><span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="created"><span data-translate="tournamentControlApp.tournament.created">Created</span><span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="elimination in vm.eliminations track by elimination.id"
+                    ui-sref="elimination-detail({id:elimination.id})">
+                    <td><a ui-sref="elimination-detail({id:elimination.id})">{{elimination.id}}</a></td>
+                    <td>{{elimination.name}}</td>
+                    <td>{{elimination.note}}</td>
+                    <td data-translate="{{'tournamentControlApp.EliminationType.' + elimination.type}}">{{elimination.type}}</td>
+                    <td>{{elimination.participants.length}}</td>
+                    <td>{{elimination.created | date:'medium'}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="elimination-detail({id:elimination.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="elimination.edit({id:elimination.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="elimination.delete({id:elimination.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

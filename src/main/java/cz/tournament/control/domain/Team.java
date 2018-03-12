@@ -1,14 +1,13 @@
 package cz.tournament.control.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A Team.
@@ -34,7 +33,7 @@ public class Team implements Serializable {
     @ManyToOne
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "team_members",
                joinColumns = @JoinColumn(name="teams_id", referencedColumnName="id"),
@@ -103,12 +102,14 @@ public class Team implements Serializable {
     public Team addMembers(Player player) {
         this.members.add(player);
         player.getTeams().add(this);
+//        player.addTeams(this);
         return this;
     }
 
     public Team removeMembers(Player player) {
         this.members.remove(player);
         player.getTeams().remove(this);
+//        player.removeTeams(this);
         return this;
     }
 
@@ -125,10 +126,16 @@ public class Team implements Serializable {
             return false;
         }
         Team team = (Team) o;
-        if (team.id == null || id == null) {
+        if(this.id == null || team.getId() == null){
             return false;
         }
-        return Objects.equals(id, team.id);
+//        if(this.id != null && team.getId() != null){
+//            return Objects.equals(this.id,team.getId());
+//        }
+        
+        return Objects.equals(this.name,team.getName())
+                && Objects.equals(this.user,team.getUser())
+                && Objects.equals(this.id,team.getId());
     }
 
     @Override
@@ -138,10 +145,15 @@ public class Team implements Serializable {
 
     @Override
     public String toString() {
+        String members = "";
+        for (Player member : this.getMembers()) {
+            members = members + "("+ member.getId() +", "+ member.getName()+"), ";
+        }
         return "Team{" +
             "id=" + id +
             ", name='" + name + "'" +
             ", note='" + note + "'" +
+            ", members=[" + members + "]" +
             '}';
     }
 }

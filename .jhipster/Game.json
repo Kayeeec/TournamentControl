@@ -2,45 +2,32 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "one-to-one",
-            "relationshipName": "rivalA",
-            "otherEntityName": "participant",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "game"
-        },
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "rivalB",
-            "otherEntityName": "participant",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "game"
-        },
-        {
             "relationshipType": "many-to-one",
             "relationshipName": "tournament",
             "otherEntityName": "tournament",
             "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "rivalA",
+            "otherEntityName": "participant",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [],
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "rivalB",
+            "otherEntityName": "participant",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "sets",
+            "otherEntityName": "gameSet",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "game"
         }
     ],
     "fields": [
-        {
-            "fieldName": "scoreA",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "min"
-            ],
-            "fieldValidateRulesMin": 0
-        },
-        {
-            "fieldName": "scoreB",
-            "fieldType": "Integer",
-            "fieldValidateRules": [
-                "min"
-            ],
-            "fieldValidateRulesMin": 0
-        },
         {
             "fieldName": "finished",
             "fieldType": "Boolean"
@@ -64,11 +51,15 @@
         {
             "fieldName": "note",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "playingField",
+            "fieldType": "Integer"
         }
     ],
     "changelogDate": "20170320075825",
-    "entityTableName": "game",
     "dto": "no",
-    "pagination": "no",
-    "service": "no"
+    "service": "no",
+    "entityTableName": "game",
+    "pagination": "no"
 }

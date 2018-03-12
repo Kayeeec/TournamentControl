@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity Combined.
+    -->
+    <changeSet id="20171123170253-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="combineds_id"
+                                 baseTableName="combined_all_participants"
+                                 constraintName="fk_combined_all_participants_combineds_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="combined"/>
+        <addForeignKeyConstraint baseColumnNames="all_participants_id"
+                                 baseTableName="combined_all_participants"
+                                 constraintName="fk_combined_all_participants_all_participants_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="participant"/>
+        
+        <addForeignKeyConstraint baseColumnNames="playoff_id"
+                                 baseTableName="combined"
+                                 constraintName="fk_combined_playoff_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tournament"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="combined"
+                                 constraintName="fk_combined_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+    </changeSet>
+</databaseChangeLog>

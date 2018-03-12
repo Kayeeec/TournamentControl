@@ -139,3 +139,16 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
+/src/main/webapp/my_components/participant-checklist/
+<<<<<<< HEAD
+/src/main/webapp/my_components/
+/src/main/resources/config/secret.js
+/src/main/resources/config/secret.json
+/.git-rewrite/t/src/main/webapp/bower_components/
+=======
+/src/main/webapp/my_components/
+>>>>>>> 36ff9943778e25b52b3be877bbdc5d94f1f2e6fb
+/src/main/resources/config/application-dev.yml
+/src/main/resources/config/application-prod.yml
+/pom.xml
+/src/main/resources/config/liquibase/users.csv

@@ -1,0 +1,39 @@
+
+<div>
+    <h2><span data-translate="tournamentControlApp.gameSet.detail.title">Game Set</span> {{vm.gameSet.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="tournamentControlApp.gameSet.scoreA">Score A</span></dt>
+        <dd>
+            <span>{{vm.gameSet.scoreA}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.gameSet.scoreB">Score B</span></dt>
+        <dd>
+            <span>{{vm.gameSet.scoreB}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.gameSet.finished">Finished</span></dt>
+        <dd>
+            <span>{{vm.gameSet.finished}}</span>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.gameSet.game">Game</span></dt>
+        <dd>
+            <a ui-sref="game-detail({id:vm.gameSet.game.id})">{{vm.gameSet.game.id}}</a>
+        </dd>
+        <dt><span data-translate="tournamentControlApp.gameSet.setSettings">Set Settings</span></dt>
+        <dd>
+            <a ui-sref="set-settings-detail({id:vm.gameSet.setSettings.id})">{{vm.gameSet.setSettings.id}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="game-set-detail.edit({id:vm.gameSet.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

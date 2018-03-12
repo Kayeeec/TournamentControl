@@ -1,25 +1,31 @@
 package cz.tournament.control.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import cz.tournament.control.domain.Combined;
 import cz.tournament.control.domain.Player;
-import cz.tournament.control.domain.User;
-
-import cz.tournament.control.repository.PlayerRepository;
-import cz.tournament.control.repository.UserRepository;
-import cz.tournament.control.security.SecurityUtils;
+import cz.tournament.control.domain.Team;
+import cz.tournament.control.domain.Tournament;
+import cz.tournament.control.domain.exceptions.ParticipantInTournamentException;
+import cz.tournament.control.service.CombinedService;
 import cz.tournament.control.service.PlayerService;
 import cz.tournament.control.web.rest.util.HeaderUtil;
+import cz.tournament.control.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import io.swagger.annotations.ApiParam;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST controller for managing Player.
@@ -31,14 +37,15 @@ public class PlayerResource {
     private final Logger log = LoggerFactory.getLogger(PlayerResource.class);
 
     private static final String ENTITY_NAME = "player";
-        
-    private final PlayerRepository playerRepository;
+    
     private final PlayerService playerService;
+    private final CombinedService combinedService;
 
-    public PlayerResource(PlayerRepository playerRepository, PlayerService playerService) {
-        this.playerRepository = playerRepository;
+    public PlayerResource(PlayerService playerService, CombinedService combinedService) {
         this.playerService = playerService;
+        this.combinedService = combinedService;
     }
+
 
     /**
      * POST  /players : Create a new player.
@@ -78,7 +85,7 @@ public class PlayerResource {
         if (player.getId() == null) {
             return createPlayer(player);
         }
-        Player result = playerRepository.save(player);
+        Player result = playerService.updatePlayer(player);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, player.getId().toString()))
             .body(result);
@@ -91,10 +98,48 @@ public class PlayerResource {
      */
     @GetMapping("/players")
     @Timed
-    public List<Player> getAllPlayers() {
-        log.debug("REST request to get all Players");
-        List<Player> players = playerRepository.findByUserIsCurrentUser();
-        return players;
+    public ResponseEntity<List<Player>> getAllPlayers(@ApiParam Pageable pageable) {
+        log.debug("REST request to get a page of players");
+        Page<Player> page = playerService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/players");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+    
+    /**
+     * Gets all tournaments where player is a participant.
+     * @param id of a player to find tournaments to
+     * @return list of tournaments
+     */
+    @GetMapping("/players/tournaments/{id}")
+    @Timed
+    public List<Tournament> getAllTournaments(@PathVariable Long id){
+        if(id == null){return new ArrayList<>();}
+        
+        Player player = playerService.findOne(id);
+        return playerService.findAllTournaments(player);
+    }
+    
+    @GetMapping("/players/combined/{id}")
+    @Timed
+    public List<Combined> getAllCombinedTournaments(@PathVariable Long id){
+        if(id == null){return new ArrayList<>();}
+        
+        Player player = playerService.findOne(id);
+        return combinedService.findByPlayer(player);
+    }
+    
+    /**
+     * Gets teams for player, because teams attribute is ignored in json.
+     * @param id of a player to find teams to
+     * @return list of teams 
+     */
+    @GetMapping("/players/teams/{id}")
+    @Timed
+    public List<Team> getTeams(@PathVariable Long id){
+        if(id == null){return new ArrayList<>();}
+        
+        Player player = playerService.findOne(id);
+        return new ArrayList<>(player.getTeams());
     }
 
     /**
@@ -107,7 +152,7 @@ public class PlayerResource {
     @Timed
     public ResponseEntity<Player> getPlayer(@PathVariable Long id) {
         log.debug("REST request to get Player : {}", id);
-        Player player = playerRepository.findOne(id);
+        Player player = playerService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(player));
     }
 
@@ -121,7 +166,15 @@ public class PlayerResource {
     @Timed
     public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {
         log.debug("REST request to delete Player : {}", id);
-        playerRepository.delete(id);
+        
+        try {
+            playerService.delete(id);
+        } catch (ParticipantInTournamentException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).
+                    headers(HeaderUtil.
+                            createFailureAlert(ENTITY_NAME, "participantInTournament", ex.getMessage())).build();
+        }
+        
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

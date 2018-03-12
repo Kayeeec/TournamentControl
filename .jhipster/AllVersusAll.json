@@ -1,0 +1,21 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "numberOfMutualMatches",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": "1"
+        }
+    ],
+    "changelogDate": "20170324090742",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "all_versus_all",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
+}

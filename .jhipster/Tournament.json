@@ -20,6 +20,12 @@
             "otherEntityName": "participant",
             "otherEntityField": "id",
             "ownerSide": true
+        },
+        {
+            "relationshipName": "setSettings",
+            "otherEntityName": "setSettings",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
         }
     ],
     "fields": [
@@ -35,29 +41,51 @@
             "fieldType": "String"
         },
         {
-            "fieldName": "numberOfMutualMatches",
-            "fieldType": "Integer",
+            "fieldName": "created",
+            "fieldType": "ZonedDateTime",
             "fieldValidateRules": [
-                "min"
-            ],
-            "fieldValidateRulesMin": 1
+                "required"
+            ]
+        },
+        {
+            "fieldName": "setsToWin",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "tiesAllowed",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "playingFields",
+            "fieldType": "Integer",
+            "fieldValidateRules": []
         },
         {
             "fieldName": "pointsForWinning",
-            "fieldType": "Integer"
-        },
-        {
-            "fieldName": "pointsForLosing",
-            "fieldType": "Integer"
+            "fieldType": "Double"
         },
         {
             "fieldName": "pointsForTie",
-            "fieldType": "Integer"
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "pointsForLosing",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "inCombined",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "tournamentType",
+            "fieldType": "TournamentType",
+            "fieldValues": "ALL_VERSUS_ALL, SWISS, ELIMINATION, ELIMINATION_SINGLE, ELIMINATION_DOUBLE"
         }
     ],
     "changelogDate": "20170320075825",
-    "entityTableName": "tournament",
     "dto": "no",
-    "pagination": "no",
-    "service": "no"
+    "service": "no",
+    "entityTableName": "tournament",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
 }
