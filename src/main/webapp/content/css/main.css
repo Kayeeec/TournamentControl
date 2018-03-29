@@ -7,6 +7,10 @@ body {
 /* ==========================================================================
 My styles
 ============================================================================= */
+.home-container{
+    background-color: #0879c1
+}
+
 #combined_groups #combined_playoff td {
   vertical-align: middle !important;
 }
@@ -251,7 +255,7 @@ Logo styles
 }
 
 .logo .logo-img {
-    height: 45px;
+    height: 35px;
     display: inline-block;
 }
 

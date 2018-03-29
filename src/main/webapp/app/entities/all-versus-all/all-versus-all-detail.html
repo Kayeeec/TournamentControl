@@ -120,7 +120,7 @@
             <table class="jh-table table table-striped">
                 <thead>
                     <tr >
-                        <th>ID</th>
+                        <th>#</th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.round">Round</span></th>
                         <th ng-if="vm.allVersusAll.playingFields && vm.allVersusAll.playingFields > 1" style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.playingField">Playing Field</span></th>
                         <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
@@ -131,7 +131,7 @@
                 </thead>
                 <tbody>
                     <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:['round','id'] track by game.id">
-                        <td>{{game.id}}</td>
+                        <td>{{$index}}</td>
                         <td style="text-align: center; font-weight: bolder">{{game.round}}</td>
                         <td ng-if="vm.allVersusAll.playingFields && vm.allVersusAll.playingFields > 1" style="text-align: center">{{game.playingField}}</td>
                         <td style="text-align: right">
@@ -149,7 +149,9 @@
                             </span>
                         </td>
                         
-                        <td style="text-align: center">{{game.finished}}</td>
+                        <td style="text-align: center">
+                            <span class="glyphicon" ng-class="{'glyphicon-ok' : game.finished, 'glyphicon-refresh' : !game.finished}"></span>
+                        </td>
                         <td class="text-right">
                             <div class="btn-group flex-btn-group-container">
 <!--                                <button type="submit"
