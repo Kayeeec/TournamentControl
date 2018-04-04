@@ -18,7 +18,7 @@
         <table class="jh-table table table-hover table-white-body">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th><span>#</span></th>
                     <th jh-sort-by="name"><span data-translate="tournamentControlApp.player.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="note"><span data-translate="tournamentControlApp.player.note">Note</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
@@ -26,8 +26,10 @@
             </thead>
             <tbody>
                 <tr ng-repeat="player in vm.players track by player.id"
-                    ui-sref="player-detail({id:player.id})">
-                    <td><a ui-sref="player-detail({id:player.id})">{{player.id}}</a></td>
+                    ui-sref="player-detail({id:player.id})"
+                    class="clickableRow">
+                    <!--<td><a ui-sref="player-detail({id:player.id})">{{player.id}}</a></td>-->
+                    <td><a ui-sref="player-detail({id:player.id})">{{$index + 1}}</a></td>
                     <td>{{player.name}}</td>
                     <td>{{player.note}}</td>
                     <td class="text-right">

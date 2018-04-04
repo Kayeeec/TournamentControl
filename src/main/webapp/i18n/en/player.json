@@ -14,7 +14,7 @@
                 "inTournamentError": "<b> {{name}} </b> cannot be deleted because this player is in at least one tournament. "
             },
             "detail": {
-                "title": "Player"
+                "title": "Player: "
             },
             "name": "Name",
             "note": "Note",

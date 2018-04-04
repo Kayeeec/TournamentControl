@@ -7,6 +7,27 @@ body {
 /* ==========================================================================
 My styles
 ============================================================================= */
+tr.clickableRow { cursor: pointer; }
+
+.my-persistent-placeholder-container{
+    position: relative;
+}
+
+.my-persistent-placeholder
+{
+    z-index: 20;
+    position: absolute;
+    bottom: 10px;
+    left: 5px;
+}
+
+.ui-select-match-item {
+    font-size: 14px;
+}
+.ui-select-container {
+    min-height: 67px !important;
+}
+
 .home-container{
     background-color: #0879c1
 }

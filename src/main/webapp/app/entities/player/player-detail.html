@@ -1,13 +1,9 @@
 
 <div>
-    <h2><span data-translate="tournamentControlApp.player.detail.title">Player</span> {{vm.player.id}}</h2>
+    <h2><small data-translate="tournamentControlApp.player.detail.title">Player: </small> {{vm.player.name}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="tournamentControlApp.player.name">Name</span></dt>
-        <dd>
-            <span>{{vm.player.name}}</span>
-        </dd>
         <dt><span data-translate="tournamentControlApp.player.note">Note</span></dt>
         <dd>
             <span>{{vm.player.note}}</span>

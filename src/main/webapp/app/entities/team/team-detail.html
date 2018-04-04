@@ -1,20 +1,12 @@
 
 <div>
-    <h2><span data-translate="tournamentControlApp.team.detail.title">Team</span> {{vm.team.id}}</h2>
+    <h2><small data-translate="tournamentControlApp.team.detail.title">Team: </small> {{vm.team.name}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="tournamentControlApp.team.name">Name</span></dt>
-        <dd>
-            <span>{{vm.team.name}}</span>
-        </dd>
         <dt><span data-translate="tournamentControlApp.team.note">Note</span></dt>
         <dd>
             <span>{{vm.team.note}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.team.user">User</span></dt>
-        <dd>
-            {{vm.team.user.login}}
         </dd>
         <dt><span data-translate="tournamentControlApp.team.members">Members</span></dt>
         <dd>

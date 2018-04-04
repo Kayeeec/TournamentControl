@@ -8,11 +8,6 @@
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.team.id">
-            <label for="id" data-translate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                   ng-model="vm.team.id" readonly />
-        </div>
         <div class="form-group">
             <label class="control-label" data-translate="tournamentControlApp.team.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
@@ -32,7 +27,7 @@
                       ></textarea>
         </div>
 
-        <div class="form-group">
+<!--        <div class="form-group">
             <label data-translate="tournamentControlApp.team.members" for="field_members">Members</label>
             <div class=" panel panel-default panel-body">
                 <div ng-repeat="player in vm.players track by player.id" >
@@ -43,7 +38,41 @@
                     </label> 
                 </div>
             </div>
-        </div>
+        </div>-->
+        
+    <div class="form-group">
+            <label data-translate="tournamentControlApp.team.members" for="members">Members</label> <span class="badge">{{vm.team.members.length}}</span>
+            <div class="input-group my-persistent-placeholder-container">  
+                <div class="my-persistent-placeholder-ui-select"><ui-select id='members' uis-open-close="vm.onOpenClose(isOpen)" 
+                    ng-model="vm.team.members" focus-on="myMembersPlaceholderClicked"
+                    multiple theme="bootstrap" title="Choose a player" close-on-select="false"
+                    >
+                <ui-select-match placeholder="Select or search a person in the list...">{{$item.name}}</ui-select-match>
+                <ui-select-choices group-filter="vm.orderFilterFn" 
+                                   repeat="item in vm.players | filter: $select.search | orderBy: 'name' track by item.id">
+                    <div ng-bind-html="item.name | highlight: $select.search"></div>
+                </ui-select-choices>
+                <ui-select-no-choice>
+                    <span class="text text-info"> &nbsp; &nbsp; No players found. </span>
+                </ui-select-no-choice>
+            </ui-select></div>
+<!--                <span class="my-persistent-placeholder text text-muted"
+                      ng-click="vm.focusMembers()" ng-if="!vm.isOpen">
+                    Click here to select or search for player...
+                </span>-->
+
+                <div class="input-group-btn btn-group-vertical" style="vertical-align: top">
+                <button type="button" ng-click="vm.resetMembers()" class="btn btn-default" title="Reset">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                </button>
+                <button type="button" ng-click="vm.clearMembers()" class="btn btn-default" title="Clear">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </div>
+            </div>
+
+    </div>
+
 
     </div>
     <div class="modal-footer">

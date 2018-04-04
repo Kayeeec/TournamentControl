@@ -13,8 +13,10 @@
         vm.team = entity;
         vm.clear = clear;
         vm.save = save;
-//        vm.users = User.query();
         vm.players = Player.query();
+        vm.originalMembers = angular.copy(vm.team.members);
+        
+        console.log(vm.team.members);
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -42,6 +44,23 @@
         function onSaveError () {
             vm.isSaving = false;
         }
+        
+        /* *** member selecting methods *** */
+        vm.clearMembers = function () {
+            vm.team.members.length = 0;
+        };
+        
+        vm.resetMembers = function () {
+            vm.team.members = angular.copy(vm.originalMembers);
+        };
+        
+        vm.focusMembers = function () {
+            $scope.$broadcast('myMembersPlaceholderClicked');
+        };
+        vm.isOpen = false;
+        vm.onOpenClose = function (isOpen) {
+            vm.isOpen = isOpen;
+        };
 
 
     }
