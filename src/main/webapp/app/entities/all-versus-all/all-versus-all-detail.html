@@ -61,27 +61,27 @@
             </dd>
         </dl>
         
-        <dl class="dl-horizontal jh-entity-details col-md-4" ng-switch="vm.allVersusAll.setSettings.maxScore != null">
+        <dl class="dl-horizontal jh-entity-details col-md-4" >
             <dt><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></dt>
             <dd>
                 <span>{{vm.allVersusAll.playingFields}}</span>
             </dd>
-            <dt ng-switch-when="true">
+            <dt ng-if="vm.allVersusAll.setSettings.maxScore !== null">
                 <span data-translate="tournamentControlApp.setSettings.maxScore">Maximal score:</span>
             </dt>
-            <dd ng-switch-when="true">
+            <dd  ng-if="vm.allVersusAll.setSettings.maxScore !== null">
                 <span>{{vm.allVersusAll.setSettings.maxScore || "-"}}</span>
             </dd>
-            <dt ng-switch-default>
+            <dt  ng-if="vm.allVersusAll.setSettings.leadByPoints !== null">
                 <span data-translate="tournamentControlApp.setSettings.leadByPoints">Lead-by points: </span>
             </dt>
-            <dd ng-switch-default>
+            <dd ng-if="vm.allVersusAll.setSettings.leadByPoints !== null">
                 <span>{{vm.allVersusAll.setSettings.leadByPoints  || "-"}}</span>
             </dd>
-            <dt ng-switch-default>
+            <dt ng-if="vm.allVersusAll.setSettings.minReachedScore !== null">
                 <span data-translate="tournamentControlApp.setSettings.minReachedScore">Minimal reached score: </span>
             </dt>
-            <dd ng-switch-default>
+            <dd ng-if="vm.allVersusAll.setSettings.minReachedScore !== null">
                 <span>{{vm.allVersusAll.setSettings.minReachedScore  || "-"}}</span>
             </dd>
         </dl>
@@ -118,7 +118,7 @@
     </div>
     <!-- END - buttons -->
     
-    <div ui-view="evaluation-table"/></div>
+    <div ui-view="evaluation-table"></div>
 
 <!-- ********* tables for matches and editing scores ********* -->
     <div class="panel panel-primary" ng-repeat="(period,games) in vm.allVersusAll.matches | groupBy: 'period'" >

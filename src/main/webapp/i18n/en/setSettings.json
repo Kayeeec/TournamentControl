@@ -15,8 +15,8 @@
             "detail": {
                 "title": "Set Settings"
             },
-            "maxScore": "Max Score",
-            "minReachedScore": "Min Reached Score",
+            "maxScore": "Maximal Score",
+            "minReachedScore": "Minimal Reached Score",
             "leadByPoints": "Lead By Points"
         }
     }

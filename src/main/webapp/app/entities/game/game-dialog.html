@@ -87,12 +87,15 @@
                     <!-- collapse-able form for advanced set settings  -->
                     <td colspan="6">
                         <!--Set settings-->
-                        <div class=" form-inline myPaqddingBottom">
-                            <div class="form-group">
-                                <label class="control-label" for="field_maxScore_{{set.id}}">
-                                    <input type="radio" value="maxScore" ng-model="vm.setSettingsMap.get(set.id).chosen" 
-                                           ng-disabled="set.finished || vm.game.finished"> Max Score
-                                </label>
+                        <div class="row form-group form-horizontal">
+                            <label class="control-label col-md-1" for="field_maxScore_{{set.id}}">
+                                <input type="radio" value="maxScore" ng-model="vm.setSettingsMap.get(set.id).chosen" 
+                                       ng-disabled="set.finished || vm.game.finished"> 
+                            </label>
+                            <label class="control-label col-md-2" for="field_maxScore_{{set.id}}">
+                                <span data-translate="tournamentControlApp.setSettings.maxScore">Maximal Score</span>
+                            </label>
+                            <div class="col-md-3">
                                 <input ng-disabled="vm.setSettingsMap.get(set.id).chosen !== 'maxScore' 
                                             || set.finished || vm.game.finished" 
                                        type="number" class="form-control" 
@@ -112,12 +115,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-inline myPaqddingBottom">
-                            <div class="form-group">
-                                <label class="control-label" for="field_leadByPoints_{{set.id}}">
+                        <div class="row form-group form-horizontal">
+                                <label class="control-label col-md-1" for="field_leadByPoints_{{set.id}}">
                                     <input type="radio" value="leadByPoints" ng-model="vm.setSettingsMap.get(set.id).chosen"
-                                           ng-disabled="set.finished || vm.game.finished"> Lead-by points
+                                           ng-disabled="set.finished || vm.game.finished">
                                 </label>
+                                <label class="control-label col-md-2" for="field_leadByPoints_{{set.id}}">
+                                    Lead-by points
+                                </label>
+                            <div class="col-md-3">
                                 <input ng-disabled="vm.setSettingsMap.get(set.id).chosen !== 'leadByPoints'" 
                                        type="number" class="form-control" 
                                        name="leadByPoints" id="field_leadByPoints_{{set.id}}"
@@ -134,12 +140,12 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label" data-translate="tournamentControlApp.setSettings.minReachedScore" 
+                            
+                                <label class="col-md-3 control-label text text-right" data-translate="tournamentControlApp.setSettings.minReachedScore" 
                                        for="field_minReachedScore_{{set.id}}">Min Reached Score</label>
-                                <input ng-disabled="vm.setSettingsMap.get(set.id).chosen !== 'leadByPoints' 
-                                            || set.finished || vm.game.finished" 
-                                       type="number" class="form-control" 
+                            <div class="col-md-3">
+                                <input ng-disabled="vm.setSettingsMap.get(set.id).chosen !== 'leadByPoints'  || set.finished || vm.game.finished" 
+                                       type="number" class="form-control col-md-3" 
                                        name="minReachedScore" id="field_minReachedScore_{{set.id}}"
                                        ng-model="vm.setSettingsMap.get(set.id).newSetSettings.minReachedScore"
                                        min="0"/>

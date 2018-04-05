@@ -8,8 +8,8 @@
             <h3 class="panel-title">Evaluation table</h3><!--TODO: data-translate-->
         </div>
         <!-- Table -->
-        <div>
-            <table class="jh-table table table-responsive table-hover table-striped myTextCenter">
+        <div class="table-responsive">
+            <table class="table table-responsive table-striped table-hover  myTextCenter">
                 <thead>
                     <tr>
                         <th class="myTextCenter">Rank</th>
@@ -22,17 +22,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="count in vm.pointCountArray">
-                    <td >{{count.rank}}</td>
-                    <td id="participant">{{count.name}}</td>
-                    <td id="wins" class="myWins">{{count.wins}}</td>
-                    <td id="loses" class="myLoses">{{count.loses}}</td>
-                    <td id="ties">{{count.ties}}</td>    
-                    <td id="score" style="text-align: right">{{count.score}}</td>
-                    <td id="colon" style="text-align: center; padding: 0px">:</td>
-                    <td id="scoreRival" style="text-align: left">{{count.rivalScore}}</td>
-                    <td id="points" class="myTotal">{{count.points}}</td>
-                </tr>
+                    <tr ng-repeat="count in vm.pointCountArray">
+                        <td >{{count.rank}}</td>
+                        <td id="participant">{{count.name}}</td>
+                        <td id="wins" class="myWins">{{count.wins}}</td>
+                        <td id="loses" class="myLoses">{{count.loses}}</td>
+                        <td id="ties">{{count.ties}}</td>    
+                        <td id="score" style="text-align: right">{{count.score}}</td>
+                        <td id="colon" style="text-align: center; padding: 0px">:</td>
+                        <td id="scoreRival" style="text-align: left">{{count.rivalScore}}</td>
+                        <td id="points" class="myTotal">{{count.points}}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
