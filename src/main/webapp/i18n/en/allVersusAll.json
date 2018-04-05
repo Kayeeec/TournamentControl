@@ -2,9 +2,9 @@
     "tournamentControlApp": {
         "allVersusAll" : {
             "home": {
-                "title": "All-play-All tournaments",
-                "createBtnLabel":"new All-Versus-All",
-                "createLabel": "Create All-Versus-All tournament",
+                "title": "All-Versus-All tournaments",
+                "createBtnLabel":"new All Versus All",
+                "createLabel": "Create AllVersus-All tournament",
                 "editLabel":"Edit All-Versus-All tournament #{{ id }}",
                 "createOrEditLabel": "Create or edit a All-play-All tournament"
             },
@@ -17,7 +17,10 @@
             "detail": {
                 "title": "All-play-All tournament"
             },
-            "numberOfMutualMatches": "Number Of Mutual Matches"
+            "numberOfMutualMatches": "Number Of Mutual Matches",
+            "tableTitle":{
+                "numberOfMutualMatches": "Mutual <br/> Matches"
+            }
         }
     }
 }

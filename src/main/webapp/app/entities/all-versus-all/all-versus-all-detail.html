@@ -4,76 +4,88 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-
-        <dt><span data-translate="global.field.id">Id</span></dt>
-        <dd>
-            <span>{{vm.allVersusAll.id}}</span>
-        </dd>
         <dt><span data-translate="tournamentControlApp.tournament.note">Note</span></dt>
         <dd>
             <span>{{vm.allVersusAll.note}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
-        <dd>
-            <span>{{vm.allVersusAll.pointsForWinning}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
-        <dd>
-            <span>{{vm.allVersusAll.pointsForLosing}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
-        <dd>
-            <span>{{vm.allVersusAll.pointsForTie}}</span>
         </dd>
         <dt><span data-translate="tournamentControlApp.tournament.created">Created</span></dt>
         <dd>
             <span>{{vm.allVersusAll.created| date:'medium'}}</span>
         </dd>
-        
-        
-        <dt><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></dt>
-        <dd>
-            <span>{{vm.allVersusAll.setsToWin}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.tiesAllowed">Ties Allowed</span></dt>
-        <dd>
-            <span ng-if="vm.allVersusAll.tiesAllowed">Yes</span>
-            <span ng-if="!vm.allVersusAll.tiesAllowed">No</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></dt>
-        <dd>
-            <span>{{vm.allVersusAll.playingFields}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
+        <dt>
+            <span data-translate="tournamentControlApp.tournament.participants">Participants</span>
+            <span class="badge">{{vm.allVersusAll.participants.length}}</span>
+        </dt>
         <dd>
             <span ng-repeat="participant in vm.allVersusAll.participants">
                 <a ng-if="participant.player" ui-sref="player-detail({id: participant.player.id})">{{participant.player.name}}</a>
                 <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>{{$last ? '' : ', '}}
             </span>
         </dd>
-
-        <dt><span data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches">Number Of Mutual Matches</span></dt>
-        <dd>
-            <span>{{vm.allVersusAll.numberOfMutualMatches}}</span>
-        </dd>
-        
-        <dt><span data-translate="">Default set settings</span></dt>
-        <dd>
-            <div ng-if="vm.allVersusAll.setSettings.maxScore">
-                <span><b>Maximal score: </b></span>
-                <span>{{vm.allVersusAll.setSettings.maxScore}}</span>
-            </div>
-            <div ng-if="vm.allVersusAll.setSettings.leadByPoints">
-                <span><b>Lead-by points: </b></span>
-                <span>{{vm.allVersusAll.setSettings.leadByPoints}}</span>
-            </div>
-            <div ng-if="vm.allVersusAll.setSettings.minReachedScore">
-                <span><b>Minimal reached score: </b></span>
-                <span>{{vm.allVersusAll.setSettings.minReachedScore}}</span>
-            </div>
-        </dd>
     </dl>
     
+    <div class="row">
+        <dl class="dl-horizontal jh-entity-details col-md-4">
+            <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
+            <dd>
+                <span>{{vm.allVersusAll.pointsForWinning}}</span>
+            </dd>
+            <dt ><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
+            <dd>
+                <span>{{vm.allVersusAll.pointsForLosing}}</span>
+            </dd>
+            <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
+            <dd>
+                <span>{{vm.allVersusAll.pointsForTie}}</span>
+            </dd>
+        </dl>
+        
+        <dl class="dl-horizontal jh-entity-details col-md-4">
+            <dt><span data-translate="tournamentControlApp.tournament.tiesAllowed">Ties Allowed</span></dt>
+            <dd>
+                <span ng-if="vm.allVersusAll.tiesAllowed">Yes</span>
+                <span ng-if="!vm.allVersusAll.tiesAllowed">No</span>
+            </dd>
+            <dt><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></dt>
+            <dd>
+                <span>{{vm.allVersusAll.setsToWin}}</span>
+            </dd>
+            <dt>
+                <span data-translate="tournamentControlApp.allVersusAll.numberOfMutualMatches"
+                      title="{{ 'tournamentControlApp.allVersusAll.numberOfMutualMatches' | translate }}">
+                    Number Of Mutual Matches
+                </span>
+            </dt>
+            <dd>
+                <span>{{vm.allVersusAll.numberOfMutualMatches}}</span>
+            </dd>
+        </dl>
+        
+        <dl class="dl-horizontal jh-entity-details col-md-4" ng-switch="vm.allVersusAll.setSettings.maxScore != null">
+            <dt><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></dt>
+            <dd>
+                <span>{{vm.allVersusAll.playingFields}}</span>
+            </dd>
+            <dt ng-switch-when="true">
+                <span data-translate="tournamentControlApp.setSettings.maxScore">Maximal score:</span>
+            </dt>
+            <dd ng-switch-when="true">
+                <span>{{vm.allVersusAll.setSettings.maxScore || "-"}}</span>
+            </dd>
+            <dt ng-switch-default>
+                <span data-translate="tournamentControlApp.setSettings.leadByPoints">Lead-by points: </span>
+            </dt>
+            <dd ng-switch-default>
+                <span>{{vm.allVersusAll.setSettings.leadByPoints  || "-"}}</span>
+            </dd>
+            <dt ng-switch-default>
+                <span data-translate="tournamentControlApp.setSettings.minReachedScore">Minimal reached score: </span>
+            </dt>
+            <dd ng-switch-default>
+                <span>{{vm.allVersusAll.setSettings.minReachedScore  || "-"}}</span>
+            </dd>
+        </dl>
+    </div>
     <!-- buttons -->
     <div style="padding-bottom: 20px">    
         <button type="submit" ng-if="!vm.allVersusAll.inCombined"
@@ -117,7 +129,7 @@
 
         <!-- Table -->
         <div class="table-responsive">
-            <table class="jh-table table table-striped">
+            <table class="jh-table table table-striped table-hover">
                 <thead>
                     <tr >
                         <th>#</th>
@@ -130,7 +142,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:['round','id'] track by game.id">
+                    <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:['round','id'] track by game.id"
+                        class="clickableRow" ui-sref="game.allVersusAll-edit({gameId:game.id, id:vm.allVersusAll.id})">
                         <td>{{$index}}</td>
                         <td style="text-align: center; font-weight: bolder">{{game.round}}</td>
                         <td ng-if="vm.allVersusAll.playingFields && vm.allVersusAll.playingFields > 1" style="text-align: center">{{game.playingField}}</td>

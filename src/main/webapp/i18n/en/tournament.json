@@ -29,7 +29,10 @@
             "matches": "Matches",
             "user": "User",
             "participants": "Participants",
-            "setSettings": "Set Settings"
+            "setSettings": "Set Settings",
+            "tableTitle":{
+                "participantCount":"Participant <br/> Count"
+            }
         }
     }
 }
