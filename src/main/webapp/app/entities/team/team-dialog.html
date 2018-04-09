@@ -42,7 +42,7 @@
         
     <div class="form-group">
             <label data-translate="tournamentControlApp.team.members" for="members">Members</label> <span class="badge">{{vm.team.members.length}}</span>
-            <div class="input-group my-persistent-placeholder-container">  
+            <div class="input-group">  
                 <div class="my-persistent-placeholder-ui-select"><ui-select id='members' uis-open-close="vm.onOpenClose(isOpen)" 
                     ng-model="vm.team.members" focus-on="myMembersPlaceholderClicked"
                     multiple theme="bootstrap" title="Choose a player" close-on-select="false"
@@ -56,10 +56,6 @@
                     <span class="text text-info"> &nbsp; &nbsp; No players found. </span>
                 </ui-select-no-choice>
             </ui-select></div>
-<!--                <span class="my-persistent-placeholder text text-muted"
-                      ng-click="vm.focusMembers()" ng-if="!vm.isOpen">
-                    Click here to select or search for player...
-                </span>-->
 
                 <div class="input-group-btn btn-group-vertical" style="vertical-align: top">
                 <button type="button" ng-click="vm.resetMembers()" class="btn btn-default" title="Reset">

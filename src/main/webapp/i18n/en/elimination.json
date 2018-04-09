@@ -2,7 +2,7 @@
     "tournamentControlApp": {
         "elimination" : {
             "home": {
-                "title": "Eliminations",
+                "title": "Elimination tournaments",
                 "createBtnLabel":"new Elimination",
                 "createLabel": "Create Elimination tournament",
                 "editLabel":"Edit Elimination tournament #{{id}}",

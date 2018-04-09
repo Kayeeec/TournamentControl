@@ -1,32 +1,17 @@
 
 <div>
-    <h2><small>Elimination Tournament:</small> {{vm.elimination.name}}</h2> <!--TODO: data-translate -->
+    <h2 ng-switch="vm.elimination.type">
+        <small ng-switch-when="SINGLE">Single Elimination Tournament:</small> 
+        <small ng-switch-when="DOUBLE">Double Elimination Tournament:</small> 
+        <small ng-switch-default>Elimination Tournament:</small> 
+        {{vm.elimination.name}}
+    </h2> <!--TODO: data-translate -->
     <hr/>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="global.field.id">Id</span></dt>
-        <dd>
-            <span>{{vm.elimination.id}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.elimination.type">Type</span></dt>
-        <dd>
-            <span>{{vm.elimination.type}}</span>
-        </dd>
         <dt><span data-translate="tournamentControlApp.tournament.note">Note</span></dt>
         <dd>
-            <span>{{vm.elimination.note}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
-        <dd>
-            <span>{{vm.elimination.pointsForWinning}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
-        <dd>
-            <span>{{vm.elimination.pointsForLosing}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
-        <dd>
-            <span>{{vm.elimination.pointsForTie}}</span>
+            <span>{{vm.elimination.note || '-'}}</span>
         </dd>
         <dt><span data-translate="tournamentControlApp.tournament.created">Created</span></dt>
         <dd>
@@ -40,22 +25,46 @@
                 {{$last ? '' : ', '}}
             </span>
         </dd>
-        <dt><span data-translate="">Default set settings</span></dt>
-        <dd>
-            <div ng-if="vm.elimination.setSettings.maxScore">
-                <span><b>Maximal score: </b></span>
-                <span>{{vm.elimination.setSettings.maxScore}}</span>
-            </div>
-            <div ng-if="vm.elimination.setSettings.leadByPoints">
-                <span><b>Lead-by points: </b></span>
-                <span>{{vm.elimination.setSettings.leadByPoints}}</span>
-            </div>
-            <div ng-if="vm.elimination.setSettings.minReachedScore">
-                <span><b>Minimal reached score: </b></span>
-                <span>{{vm.elimination.setSettings.minReachedScore}}</span>
-            </div>
-        </dd>
     </dl>
+    <div class="row ">
+        <dl class="dl-horizontal col-md-3">
+            <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
+            <dd>
+                <span>{{vm.elimination.pointsForWinning}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal  col-md-3">
+            <dt><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
+            <dd>
+                <span>{{vm.elimination.pointsForLosing}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal  col-md-3" ng-if="vm.elimination.setSettings.maxScore !== null">
+            <dt>
+                <span data-translate="tournamentControlApp.setSettings.maxScore">Maximal score:</span>
+            </dt>
+            <dd >
+                <span>{{vm.elimination.setSettings.maxScore}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal  col-md-3" ng-if="vm.elimination.setSettings.leadByPoints !== null">
+            <dt>
+                <span data-translate="tournamentControlApp.setSettings.leadByPoints">Lead-by points: </span>
+            </dt>
+            <dd>
+                <span>{{vm.elimination.setSettings.leadByPoints}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal  col-md-3" ng-if="vm.elimination.setSettings.minReachedScore !== null">
+            <dt>
+                <span data-translate="tournamentControlApp.setSettings.minReachedScore">Minimal reached score: </span>
+            </dt>
+            <dd>
+                <span>{{vm.elimination.setSettings.minReachedScore  || "-"}}</span>
+            </dd>
+        </dl>
+    </div>
+    <hr class="my-horizontal-line"/>
     
     <!-- buttons -->
     <div style="padding-top: 20px; padding-bottom: 20px">
@@ -110,13 +119,18 @@
     </div>
     <!-- tree node templates -->
     
-    <div name="winner">
-        <div id="winner-tree"></div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h3>Matches</h3> <!--TODO: data-translate -->
+            <hr class="my-horizontal-line"/>
+            <div id="winner-tree"></div>
+            
+            <div ng-if="vm.elimination.bronzeMatch">
+                <h3>Bronze match</h3> <!--TODO: data-translate -->
+                <hr class="my-horizontal-line"/>
+                <div ng-if="vm.elimination.bronzeMatch" id="bronze-tree"></div>
+            </div>
+        </div>
     </div>
-    <div ng-if="vm.elimination.bronzeMatch"  name="bronze">
-        <h3>Bronze match</h3> <!--TODO: data-translate -->
-        <div ng-if="vm.elimination.bronzeMatch" id="bronze-tree"></div>
-    </div>
-    
     
 </div>

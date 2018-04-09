@@ -19,17 +19,18 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="name"><span data-translate="tournamentControlApp.tournament.name">Name</span><span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="note"><span data-translate="tournamentControlApp.tournament.note">Note</span><span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span data-translate="tournamentControlApp.tournament.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="note"><span data-translate="tournamentControlApp.tournament.note">Note</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="type"><span data-translate="tournamentControlApp.elimination.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="participants.size"><span data-translate="">Participant Count</span><span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="created"><span data-translate="tournamentControlApp.tournament.created">Created</span><span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="participants.size"><span data-translate="tournamentControlApp.tournament.tableTitle.participantCount">Participant <br/> Count</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="created"><span data-translate="tournamentControlApp.tournament.created">Created</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="elimination in vm.eliminations track by elimination.id"
-                    ui-sref="elimination-detail({id:elimination.id})">
+                    ui-sref="elimination-detail({id:elimination.id})"
+                    class="clickableRow">
                     <td><a ui-sref="elimination-detail({id:elimination.id})">{{elimination.id}}</a></td>
                     <td>{{elimination.name}}</td>
                     <td>{{elimination.note}}</td>
