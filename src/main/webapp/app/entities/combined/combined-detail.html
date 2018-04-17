@@ -6,33 +6,13 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="tournamentControlApp.combined.name">Name</span></dt>
-        <dd>
-            <span>{{vm.combined.name}}</span>
-        </dd>
         <dt><span data-translate="tournamentControlApp.combined.note">Note</span></dt>
         <dd>
-            <span>{{vm.combined.note}}</span>
+            <span>{{vm.combined.note || "-"}}</span>
         </dd>
         <dt><span data-translate="tournamentControlApp.combined.created">Created</span></dt>
         <dd>
             <span>{{vm.combined.created | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.combined.numberOfWinnersToPlayoff">Number Of Winners To Playoff</span></dt>
-        <dd>
-            <span>{{vm.combined.numberOfWinnersToPlayoff}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.combined.numberOfGroups">Number Of Groups</span></dt>
-        <dd>
-            <span>{{vm.combined.numberOfGroups}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.combined.playoffType">Playoff Type</span></dt>
-        <dd>
-            <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.playoffType}}">{{vm.combined.playoffType}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.combined.inGroupTournamentType">In Group Tournament Type</span></dt>
-        <dd>
-            <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.inGroupTournamentType}}">{{vm.combined.inGroupTournamentType}}</span>
         </dd>
         <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
         <dd>
@@ -42,6 +22,52 @@
             </span>
         </dd>
     </dl>
+<!--    <div class="row">
+        <dl class="dl-horizontal col-md-4 jh-entity-details">
+            <dt><span data-translate="tournamentControlApp.combined.numberOfWinnersToPlayoff">Number Of Winners To Playoff</span></dt>
+            <dd>
+                <span>{{vm.combined.numberOfWinnersToPlayoff}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal col-md-4 jh-entity-details">
+            <dt><span data-translate="tournamentControlApp.combined.numberOfGroups">Number Of Groups</span></dt>
+            <dd>
+                <span>{{vm.combined.numberOfGroups}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal col-md-4 jh-entity-details">
+            <dt><span data-translate="tournamentControlApp.combined.playoffType">Playoff Type</span></dt>
+            <dd>
+                <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.playoffType}}">{{vm.combined.playoffType}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal col-md-4 jh-entity-details">
+            <dt><span data-translate="tournamentControlApp.combined.inGroupTournamentType">In Group Tournament Type</span></dt>
+            <dd>
+                <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.inGroupTournamentType}}">{{vm.combined.inGroupTournamentType}}</span>
+            </dd>
+        </dl>
+    </div>-->
+    
+    <table>
+        <tbody>
+            <tr>
+                <td class="col-md-2 text-right"><b><span data-translate="tournamentControlApp.combined.numberOfWinnersToPlayoff">Number Of Winners To Playoff</span></b></td>
+                <td><span>{{vm.combined.numberOfWinnersToPlayoff}}</td>
+                
+                <td class="col-md-2 text-right"><b><span data-translate="tournamentControlApp.combined.numberOfGroups">Number Of Groups</span></b></td>
+                <td><span>{{vm.combined.numberOfGroups}}</span></td>
+                
+                <td class="col-md-2 text-right"><b><span data-translate="tournamentControlApp.combined.playoffType">Playoff Type</span></b></td>
+                <td> <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.playoffType}}">{{vm.combined.playoffType}}</span></td>
+                
+                <td class="col-md-2 text-right"><b><span data-translate="tournamentControlApp.combined.inGroupTournamentType">In Group Tournament Type</span></b></td>
+                <td> <span data-translate="{{'tournamentControlApp.TournamentType.' + vm.combined.inGroupTournamentType}}">{{vm.combined.inGroupTournamentType}}</span></td>
+                
+            </tr>
+        </tbody>
+    </table>
+<hr/>
         <div class="form-group">
             <button type="submit"
                     ui-sref="{{vm.backLink()}}"
@@ -79,7 +105,7 @@
                     <tr ng-repeat="group in vm.combined.groups | orderBy: 'id'"
                         ng-init="finished = vm.tournamentIsFinished(group)"
                         ng-class="{'success':finished}"
-                        ui-sref="{{vm.getLink(group)}}">
+                        ui-sref="{{vm.getLink(group)}}" class="clickableRow">
                         
                         <td class="text text-center">{{group.name}}</td>
                         <td>
@@ -95,7 +121,7 @@
                                         ui-sref="{{vm.getLink(group)}}"
                                         class="btn btn-primary btn-sm">
                                     <span class="glyphicon glyphicon-pencil"></span>
-                                    <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
+                                    <span class="hidden-sm-down" data-translate="">Go to tournament detail</span>
                                 </button>
                             </div>
                         </td>

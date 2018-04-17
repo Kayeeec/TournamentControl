@@ -18,21 +18,21 @@
         <table class="jh-table table table-hover table-white-body">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th>#</th>
                     <th jh-sort-by="name"><span data-translate="tournamentControlApp.combined.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="note"><span data-translate="tournamentControlApp.combined.note">Note</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="created"><span data-translate="tournamentControlApp.combined.created">Created</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="numberOfGroups"><span data-translate="tournamentControlApp.combined.numberOfGroups">Number Of Groups</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="playoffType"><span data-translate="tournamentControlApp.combined.playoffType">Playoff Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="inGroupTournamentType"><span data-translate="tournamentControlApp.combined.inGroupTournamentType">In Group Tournament Type</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="allParticipants.size"><span data-translate="">Participant count</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="allParticipants.size"><span data-translate="tournamentControlApp.tournament.tableTitle.participantCount">Participant count</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="combined in vm.combineds track by combined.id"
-                    ui-sref="combined-detail({id:combined.id})">
-                    <td><a ui-sref="combined-detail({id:combined.id})">{{combined.id}}</a></td>
+                    ui-sref="combined-detail({id:combined.id})" class="clickableRow">
+                    <td><a ui-sref="combined-detail({id:combined.id})">{{$index+1}}</a></td>
                     <td>{{combined.name}}</td>
                     <td>{{combined.note}}</td>
                     <td>{{combined.created | date:'medium'}}</td>
