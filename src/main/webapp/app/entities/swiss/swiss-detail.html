@@ -5,59 +5,14 @@
     <jhi-alert-error></jhi-alert-error>
     <!-- ********* entity details ********* -->
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="global.field.id">Id</span></dt>
-        <dd>
-            <span>{{vm.swiss.id}}</span>
-        </dd>
         
         <dt><span data-translate="tournamentControlApp.tournament.note">Note</span></dt>
         <dd>
             <span>{{vm.swiss.note}}</span>
         </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
-        <dd>
-            <span>{{vm.swiss.pointsForWinning}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
-        <dd>
-            <span>{{vm.swiss.pointsForLosing}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
-        <dd>
-            <span>{{vm.swiss.pointsForTie}}</span>
-        </dd>
         <dt><span data-translate="tournamentControlApp.tournament.created">Created</span></dt>
         <dd>
             <span>{{vm.swiss.created| date:'medium'}}</span>
-        </dd>
-        
-        <dt><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></dt>
-        <dd>
-            <span>{{vm.swiss.setsToWin}}</span>
-        </dd>
-        <dt><span data-translate="">Default set settings</span></dt>
-        <dd>
-            <div ng-if="vm.swiss.setSettings.maxScore">
-                <span><b>Maximal score: </b></span>
-                <span>{{vm.swiss.setSettings.maxScore}}</span>
-            </div>
-            <div ng-if="vm.swiss.setSettings.leadByPoints">
-                <span><b>Lead-by points: </b></span>
-                <span>{{vm.swiss.setSettings.leadByPoints}}</span>
-            </div>
-            <div ng-if="vm.swiss.setSettings.minReachedScore">
-                <span><b>Minimal reached score: </b></span>
-                <span>{{vm.swiss.setSettings.minReachedScore}}</span>
-            </div>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.tiesAllowed">Ties Allowed</span></dt>
-        <dd>
-            <span ng-if="vm.swiss.tiesAllowed">Yes</span>
-            <span ng-if="!vm.swiss.tiesAllowed">No</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></dt>
-        <dd>
-            <span>{{vm.swiss.playingFields}}</span>
         </dd>
         <dt><span data-translate="tournamentControlApp.tournament.participants">Participants</span></dt>
         <dd>
@@ -66,20 +21,89 @@
                 <a ng-if="participant.team" ui-sref="team-detail({id: participant.team.id})">{{participant.team.name}}</a>{{$last ? '' : ', '}}
             </span>
         </dd>
-        
-        <dt><span data-translate="tournamentControlApp.swiss.rounds">Rounds</span></dt>
-        <dd>
-            <span>{{vm.swiss.rounds}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.swiss.roundsToGenerate">Rounds To Generate</span></dt>
-        <dd>
-            <span>{{vm.swiss.roundsToGenerate}}</span>
-        </dd>
-        <dt><span data-translate="tournamentControlApp.swiss.color">Color</span></dt>
-        <dd>
-            <span>{{vm.swiss.color}}</span>
-        </dd>
     </dl>
+    <div class="row">
+        <dl class="dl-horizontal jh-entity-details  col-md-4">
+            <dt><span data-translate="tournamentControlApp.tournament.pointsForWinning">Points For Winning</span></dt>
+            <dd>
+                <span>{{vm.swiss.pointsForWinning}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal  jh-entity-details col-md-4">
+            <dt><span data-translate="tournamentControlApp.tournament.pointsForLosing">Points For Losing</span></dt>
+            <dd>
+                <span>{{vm.swiss.pointsForLosing}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal jh-entity-details col-md-4">
+            <dt><span data-translate="tournamentControlApp.tournament.pointsForTie">Points For Tie</span></dt>
+            <dd>
+                <span>{{vm.swiss.pointsForTie}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal jh-entity-details  col-md-4">
+            <dt><span data-translate="tournamentControlApp.tournament.setsToWin">Sets To Win</span></dt>
+            <dd>
+                <span>{{vm.swiss.setsToWin}}</span>
+            </dd>
+        </dl>
+
+        <dl class="dl-horizontal jh-entity-details col-md-4" ng-if="vm.swiss.setSettings.maxScore !== null">
+            <dt>
+                <span data-translate="tournamentControlApp.setSettings.maxScore">Maximal score:</span>
+            </dt>
+            <dd >
+                <span>{{vm.swiss.setSettings.maxScore}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal jh-entity-details col-md-4" ng-if="vm.swiss.setSettings.leadByPoints !== null">
+            <dt>
+                <span data-translate="tournamentControlApp.setSettings.leadByPoints">Lead-by points: </span>
+            </dt>
+            <dd>
+                <span>{{vm.swiss.setSettings.leadByPoints}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal jh-entity-details col-md-4" ng-if="vm.swiss.setSettings.minReachedScore !== null">
+            <dt>
+                <span data-translate="tournamentControlApp.setSettings.minReachedScore">Minimal reached score: </span>
+            </dt>
+            <dd>
+                <span>{{vm.swiss.setSettings.minReachedScore  || "-"}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal jh-entity-details col-md-4">
+            <dt><span data-translate="tournamentControlApp.tournament.tiesAllowed">Ties Allowed</span></dt>
+            <dd>
+                <span ng-if="vm.swiss.tiesAllowed">Yes</span>
+                <span ng-if="!vm.swiss.tiesAllowed">No</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal jh-entity-details col-md-4">
+            <dt><span data-translate="tournamentControlApp.tournament.playingFields">Playing Fields</span></dt>
+            <dd>
+                <span>{{vm.swiss.playingFields}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal jh-entity-details col-md-4">
+            <dt><span data-translate="tournamentControlApp.swiss.rounds">Rounds</span></dt>
+            <dd>
+                <span>{{vm.swiss.rounds}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal jh-entity-details  col-md-4">
+            <dt><span data-translate="tournamentControlApp.swiss.roundsToGenerate">Rounds To Generate</span></dt>
+            <dd>
+                <span>{{vm.swiss.roundsToGenerate}}</span>
+            </dd>
+        </dl>
+        <dl class="dl-horizontal jh-entity-details col-md-4">
+            <dt><span data-translate="tournamentControlApp.swiss.color">Color</span></dt>
+            <dd>
+                <span>{{vm.swiss.color}}</span>
+            </dd>
+        </dl>
+    </div>
     <!-- ********* end entity details ********* -->
     
     <!-- ********* Buttons ********* -->
@@ -121,10 +145,10 @@
 
         <!-- Table -->
         <div class="table-responsive">
-            <table class="jh-table table table-striped">
+            <table class="jh-table table table-striped table-hover">
                 <thead>
                     <tr >
-                        <th>ID</th>
+                        <th>#</th>
                         <th ng-if="vm.swiss.playingFields && vm.swiss.playingFields > 1" style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.game.playingField">Playing Field</span></th>
                         <th style="text-align: center" colspan="3"><span style="text-align: center" data-translate="tournamentControlApp.game.rivals">Rivals</span></th>
                         <th style="text-align: center"><span style="text-align: center" data-translate="tournamentControlApp.gameSet.score">Score</span></th>
@@ -133,10 +157,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-class="{'byeMatch':(game.rivalA.bye || game.rivalB.bye),
-                                'success': (game.finished && !game.rivalA.bye && !game.rivalB.bye)}" 
-                                ng-repeat="game in games| orderBy:'id' track by game.id">
-                        <td>{{game.id}}</td>
+                    <tr ng-class="{'byeMatch':(game.rivalA.bye || game.rivalB.bye), 'success': (game.finished && !game.rivalA.bye && !game.rivalB.bye)}" 
+                                ng-repeat="game in games| orderBy:'id' track by game.id"
+                                ui-sref="game.swiss-edit({gameId:game.id, id:vm.swiss.id})"
+                                class="clickableRow" >
+                        <td>{{$index+1}}</td>
                         <td ng-if="vm.swiss.playingFields && vm.swiss.playingFields > 1" style="text-align: center">{{game.playingField}}</td>
                         <td style="text-align: right">
                             <a ng-if="game.rivalA.player" ui-sref="player-detail({id:game.rivalA.player.id})">{{game.rivalA.player.name}}</a>
@@ -153,7 +178,9 @@
                             </span>
                         </td>
                         
-                        <td style="text-align: center">{{game.finished}}</td>
+                        <td style="text-align: center">
+                            <span class="glyphicon" ng-class="{'glyphicon-ok' : game.finished, 'glyphicon-refresh' : !game.finished}"></span>
+                        </td>
                         <td class="text-right">
                             <div class="btn-group flex-btn-group-container">
                                 <button type="submit"
@@ -173,6 +200,7 @@
     <!-- ********* end game tables  ********* -->
     <button id="generateNextRoundBtn" ng-disabled="vm.isGeneratingNextRound || vm.cannotGenerateNextRound()" type="button" 
             class="btn btn-success center-block" ng-click="vm.generateNextRound()"
+            title="To generate new round, all matches in previous rounds have to be finished. Generated {{vm.swiss.rounds - vm.swiss.roundsToGenerate}} of {{vm.swiss.rounds}} rounds."
             data-loading-text='<span class="glyphicon glyphicon-refresh"></span>
         <span  class="hidden-sm-down" data-translate=""> Generating... </span>'>
         <span class="glyphicon glyphicon-plus"></span>

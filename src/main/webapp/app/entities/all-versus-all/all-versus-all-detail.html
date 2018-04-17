@@ -144,7 +144,7 @@
                 <tbody>
                     <tr ng-class="{'success': game.finished}" ng-repeat="game in games| orderBy:['round','id'] track by game.id"
                         class="clickableRow" ui-sref="game.allVersusAll-edit({gameId:game.id, id:vm.allVersusAll.id})">
-                        <td>{{$index}}</td>
+                        <td>{{$index+1}}</td>
                         <td style="text-align: center; font-weight: bolder">{{game.round}}</td>
                         <td ng-if="vm.allVersusAll.playingFields && vm.allVersusAll.playingFields > 1" style="text-align: center">{{game.playingField}}</td>
                         <td style="text-align: right">

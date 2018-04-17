@@ -18,7 +18,7 @@
         <table class="jh-table table table-hover table-white-body">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th>#</th>
                     <th jh-sort-by="name"><span data-translate="tournamentControlApp.tournament.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="note"><span data-translate="tournamentControlApp.tournament.note">Note</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="type"><span data-translate="tournamentControlApp.elimination.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -31,7 +31,7 @@
                 <tr ng-repeat="elimination in vm.eliminations track by elimination.id"
                     ui-sref="elimination-detail({id:elimination.id})"
                     class="clickableRow">
-                    <td><a ui-sref="elimination-detail({id:elimination.id})">{{elimination.id}}</a></td>
+                    <td><a ui-sref="elimination-detail({id:elimination.id})">{{$index+1}}</a></td>
                     <td>{{elimination.name}}</td>
                     <td>{{elimination.note}}</td>
                     <td data-translate="{{'tournamentControlApp.EliminationType.' + elimination.type}}">{{elimination.type}}</td>

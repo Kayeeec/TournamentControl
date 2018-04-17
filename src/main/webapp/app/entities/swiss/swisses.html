@@ -18,7 +18,7 @@
         <table class="jh-table table table-hover table-white-body">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th>#</th>
                     <th jh-sort-by="name"><span data-translate="tournamentControlApp.tournament.name">name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="note"><span data-translate="tournamentControlApp.tournament.note">note</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="participants.size"><span data-translate="">Number of Participants</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -28,8 +28,9 @@
             </thead>
             <tbody>
                 <tr ng-repeat="swiss in vm.swisses track by swiss.id"
-                    ui-sref="swiss-detail({id:swiss.id})">
-                    <td><a ui-sref="swiss-detail({id:swiss.id})">{{swiss.id}}</a></td>
+                    ui-sref="swiss-detail({id:swiss.id})"
+                    class="clickableRow">
+                    <td><a ui-sref="swiss-detail({id:swiss.id})">{{$index + 1}}</a></td>
                     <td>{{swiss.name}}</td>
                     <td>{{swiss.note}}</td>
                     <td>{{swiss.participants.length}}</td>
